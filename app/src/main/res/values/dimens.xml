@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="margin_16dp">16dp</dimen>
+    <dimen name="margin_24dp">24dp</dimen>
+
+    <dimen name="margin_1dp">1dp</dimen>
+
+    <!--
+    12sp 小字提示
+    14sp（桌面端13sp） 正文/按钮文字
+    16sp（桌面端15sp） 小标题
+    20sp Appbar文字
+    24sp 大标题
+    34sp/45sp/56sp/112sp 超大号文字 -->
+    <dimen name="text_size_14sp">14sp</dimen>
+
+
+</resources>
