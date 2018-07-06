@@ -27,6 +27,10 @@ import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
 import com.mnnyang.gzuclassschedule.utils.spec.ShowTermDialog;
 
+/**
+ * Changed by idealclover on 18-07-07
+ */
+
 public class ImptActivity extends BaseActivity implements
         ImptContract.View, View.OnClickListener {
 
@@ -57,7 +61,7 @@ public class ImptActivity extends BaseActivity implements
         if (TextUtils.isEmpty(schoolUrl)) {
             schoolUrl = Url.URL_GZU_HOST;
         }
-        schoolUrl = schoolUrl.replace(Url.default2,"");
+//        schoolUrl = schoolUrl.replace(Url.default2,"");
        return schoolUrl;
     }
 

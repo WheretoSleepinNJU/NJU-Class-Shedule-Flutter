@@ -24,6 +24,7 @@ import rx.schedulers.Schedulers;
 
 /**
  * Created by mnnyang on 17-10-23.
+ * Changed by idealclover on 18-07-07
  */
 
 public class ImptPresenter implements ImptContract.Presenter {
@@ -59,18 +60,18 @@ public class ImptPresenter implements ImptContract.Presenter {
         }
 
         mImptView.showImpting();
-        HttpUtils.newInstance().toImpt(mSchoolUrl,xh, year, term, new HttpCallback<String>() {
-            @Override
-            public void onSuccess(String s) {
-                parseCoursesHtmlToDb(s, year + "-" + term);
-            }
-
-            @Override
-            public void onFail(String errMsg) {
-                mImptView.hideImpting();
-                mImptView.showErrToast(errMsg, true);
-            }
-        });
+//        HttpUtils.newInstance().toImpt(mSchoolUrl,xh, year, term, new HttpCallback<String>() {
+//            @Override
+//            public void onSuccess(String s) {
+//                parseCoursesHtmlToDb(s, year + "-" + term);
+//            }
+//
+//            @Override
+//            public void onFail(String errMsg) {
+//                mImptView.hideImpting();
+//                mImptView.showErrToast(errMsg, true);
+//            }
+//        });
     }
 
     @Override

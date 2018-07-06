@@ -2,6 +2,7 @@ package com.mnnyang.gzuclassschedule.app;
 
 /**
  * Created by mnnyang on 17-10-23.
+ * Changed by idealclover on 18-07-07
  */
 
 public class Url {
@@ -10,13 +11,18 @@ public class Url {
      * 贵州大学正方教务管理系统
      */
     public static final String URL_GZU_HOST = "http://210.40.2.253:8888/";
+    public static final String URL_NJU_HOST = "http://elite.nju.edu.cn/jiaowu/";
+
 
     public static final String URL_CHECK_UPDATE_APP = "https://raw.githubusercontent.com/mnnyang/GzuClassSchedule/master/check.json";
 
 
-    public static final String CheckCode = "CheckCode.aspx";
-    public static final String xskbcx = "xskbcx.aspx";
-    public static final String default2 = "default2.aspx";
+    //public static final String CheckCode = "CheckCode.aspx";
+    public static final String CheckCode = "ValidateCode.jsp";
+    //public static final String xskbcx = "xskbcx.aspx";
+    public static final String ClassInfo = "student/teachinginfo/courseList.do?method=currentTermCourse";
+    //public static final String default2 = "default2.aspx";
+    public static final String LoginUrl = "login.do";
 
     public static final String PARAM_XH = "xh";
     public static final String PARAM_XND = "xnd";

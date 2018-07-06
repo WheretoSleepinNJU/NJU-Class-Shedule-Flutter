@@ -21,6 +21,7 @@ import com.mnnyang.gzuclassschedule.utils.DialogListener;
 
 /**
  * Created by xxyangyoulin on 2018/4/9.
+ * Changed by idealclover on 18-07-07
  */
 
 public class SchoolActivity extends BaseActivity implements SchoolContract.View, View.OnClickListener {
@@ -43,9 +44,11 @@ public class SchoolActivity extends BaseActivity implements SchoolContract.View,
 
     private void initView() {
         TextView tvGzu = findViewById(R.id.tv_gzu);
+        TextView tvNJU = findViewById(R.id.tv_nju);
         TextView tvOtherSchool = findViewById(R.id.tv_other);
         tvOtherSchool.setOnClickListener(this);
         tvGzu.setOnClickListener(this);
+        tvNJU.setOnClickListener(this);
     }
 
     @Override
@@ -125,6 +128,9 @@ public class SchoolActivity extends BaseActivity implements SchoolContract.View,
             case R.id.tv_gzu:
                 selectedGzu();
                 break;
+            case R.id.tv_nju:
+                selectedNJU();
+                break;
             case R.id.tv_other:
                 selectedOther();
                 break;
@@ -149,5 +155,9 @@ public class SchoolActivity extends BaseActivity implements SchoolContract.View,
 
     private void selectedGzu() {
         mPresenter.testUrl(Url.URL_GZU_HOST);
+    }
+
+    private void selectedNJU() {
+        mPresenter.testUrl(Url.URL_NJU_HOST);
     }
 }

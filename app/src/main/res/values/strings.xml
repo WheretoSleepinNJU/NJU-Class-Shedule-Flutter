@@ -25,8 +25,10 @@
     <string name="app_preference_current_cs_name_id">current_sd_name_id</string>
 
 
-    <string name="captcha_err">验证码不正确</string>
+    <!--<string name="captcha_err">验证码不正确</string>-->
+    <string name="captcha_err">验证码错误！</string>
     <string name="pwd_err">密码错误</string>
+    <string name="timeout_err">验证码已过期</string>
     <string name="string_course_time">%1$s&#160;&#160;%2$d-%3$d 节</string>
     <string name="setting">设置</string>
     <string name="add_course">添加课程</string>
@@ -91,6 +93,7 @@
     <string name="bg_disabled">已禁用背景</string>
     <string name="select_iamge_succeed">设置背景成功</string>
     <string name="gzu">贵州大学</string>
+    <string name="nju">南京大学</string>
     <string name="other_school">其他高校</string>
     <string name="school">学校</string>
     <string name="please_input_school_url">请输入教务管理系统网址</string>

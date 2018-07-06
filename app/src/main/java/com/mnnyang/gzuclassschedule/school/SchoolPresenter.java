@@ -5,6 +5,7 @@ import com.mnnyang.gzuclassschedule.http.HttpUtils;
 
 /**
  * Created by xxyangyoulin on 2018/4/9.
+ * Changed by idealclover on 18-07-07
  */
 
 public class SchoolPresenter implements SchoolContract.Presenter {

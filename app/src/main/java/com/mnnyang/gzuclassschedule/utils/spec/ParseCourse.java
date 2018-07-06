@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 /**
  * GZU课程解析
  * Created by mnnyang on 17-10-19.
+ * Changed by idealclover on 18-07-07
  */
 
 public class ParseCourse {
@@ -49,36 +50,50 @@ public class ParseCourse {
      * @return 解析失敗返回空
      */
     public static CourseTime parseTime(String html) {
-        String SELECTED = "selected";
-        String OPTION = "option";
+        //        String SELECTED = "selected";
+//        String OPTION = "option";
 
         Document doc = org.jsoup.Jsoup.parse(html);
         CourseTime courseTime = new CourseTime();
 
-        Elements selects = doc.getElementsByTag("select");
-        if (selects == null || selects.size() < 2) {
-            LogUtil.e(ParseCourse.class, "select < 2 ");
+        Elements elements = doc.getElementsMatchingOwnText("^20[0-9][0-9]-20[0-9][0-9]学年第(一|二)学期$?");
+        if(elements == null){
+            LogUtil.e(ParseCourse.class, "get the course time failed ");
             return null;
         }
 
-        Elements options = selects.get(0).getElementsByTag(OPTION);
-
-        for (Element o : options) {
-            String year = o.text().trim();
+        for(Element x: elements){
+            String year = x.text().substring(0, 9);
+            String term = x.text().substring(12, 13);
             courseTime.years.add(year);
-            if (o.attr(SELECTED).equals(SELECTED)) {
-                courseTime.selectYear = year;
-            }
+            courseTime.terms.add(term);
+            courseTime.selectYear = year;
+            courseTime.selectTerm = term;
         }
 
-        options = selects.get(1).getElementsByTag(OPTION);
-        for (Element o : options) {
-            String term = o.text().trim();
-            courseTime.terms.add(term);
-            if (o.attr(SELECTED).equals(SELECTED)) {
-                courseTime.selectTerm = term;
-            }
-        }
+//        Elements options = selects.get(0).getElementsByTag(OPTION)
+//        Elements selects = doc.getElementsByTag("select");
+////        if (selects == null || selects.size() < 2) {
+////            LogUtil.e(ParseCourse.class, "select < 2 ");
+////            return null;
+////        };
+//
+//        for (Element o : options) {
+//            String year = o.text().trim();
+//            courseTime.years.add(year);
+//            if (o.attr(SELECTED).equals(SELECTED)) {
+//                courseTime.selectYear = year;
+//            }
+//        }
+//
+//        options = selects.get(1).getElementsByTag(OPTION);
+//        for (Element o : options) {
+//            String term = o.text().trim();
+//            courseTime.terms.add(term);
+//            if (o.attr(SELECTED).equals(SELECTED)) {
+//                courseTime.selectTerm = term;
+//            }
+//        }
 
         return courseTime;
     }
@@ -91,39 +106,43 @@ public class ParseCourse {
 
         Document doc = org.jsoup.Jsoup.parse(html);
 
-        Element table1 = doc.getElementById("Table1");
-        Elements trs = table1.getElementsByTag("tr");
+//        Element table1 = doc.getElementById("Table1");
+//        Elements trs = table1.getElementsByTag("tr");
+
+        Elements table = doc.getElementsMatchingOwnText("^课程编号$");
+        Elements table2 = doc.select("tr.TABLE_TR_02");
+
 
         ArrayList<Course> courses = new ArrayList<>();
 
         int node = 0;
-        for (Element tr : trs) {
-            Elements tds = tr.getElementsByTag("td");
-            for (Element td : tds) {
-                String courseSource = td.text().trim();
-                if (courseSource.length() <= 1) {
-                    //null data
-                    continue;
-                }
-
-                if (Pattern.matches(pattern, courseSource)) {
-                    //node number
-                    try {
-                        node = Integer.decode(courseSource.substring(1, courseSource.length() - 1));
-                    } catch (Exception e) {
-                        node = 0;
-                        e.printStackTrace();
-                    }
-                    continue;
-                }
-
-                if (inArray(other, courseSource)) {
-                    //other data
-                    continue;
-                }
-                courses.addAll(ParseCourse.parseTextInfo(courseSource, node));
-            }
-        }
+//        for (Element tr : trs) {
+//            Elements tds = tr.getElementsByTag("td");
+//            for (Element td : tds) {
+//                String courseSource = td.text().trim();
+//                if (courseSource.length() <= 1) {
+//                    //null data
+//                    continue;
+//                }
+//
+//                if (Pattern.matches(pattern, courseSource)) {
+//                    //node number
+//                    try {
+//                        node = Integer.decode(courseSource.substring(1, courseSource.length() - 1));
+//                    } catch (Exception e) {
+//                        node = 0;
+//                        e.printStackTrace();
+//                    }
+//                    continue;
+//                }
+//
+//                if (inArray(other, courseSource)) {
+//                    //other data
+//                    continue;
+//                }
+//                courses.addAll(ParseCourse.parseTextInfo(courseSource, node));
+//            }
+//        }
 
         return courses;
     }
