@@ -60,18 +60,18 @@ public class ImptPresenter implements ImptContract.Presenter {
         }
 
         mImptView.showImpting();
-//        HttpUtils.newInstance().toImpt(mSchoolUrl,xh, year, term, new HttpCallback<String>() {
-//            @Override
-//            public void onSuccess(String s) {
-//                parseCoursesHtmlToDb(s, year + "-" + term);
-//            }
-//
-//            @Override
-//            public void onFail(String errMsg) {
-//                mImptView.hideImpting();
-//                mImptView.showErrToast(errMsg, true);
-//            }
-//        });
+        HttpUtils.newInstance().toImpt(mSchoolUrl,xh, new HttpCallback<String>() {
+            @Override
+            public void onSuccess(String s) {
+                parseCoursesHtmlToDb(s, year + "-" + term);
+            }
+
+            @Override
+            public void onFail(String errMsg) {
+                mImptView.hideImpting();
+                mImptView.showErrToast(errMsg, true);
+            }
+        });
     }
 
     @Override

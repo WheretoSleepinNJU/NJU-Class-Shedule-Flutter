@@ -27,7 +27,7 @@ public class ShowTermDialog {
         void onPositive(DialogInterface dialog, int which);
     }
 
-    public void showSelectTimeTermDialog(Context context, String[] times, final TimeTermCallback callback) {
+    public void showSelectTimeTermDialog(Context context, String[] times, String[] terms, final TimeTermCallback callback) {
         if (times.length == 0) {
             return;
         }
@@ -58,12 +58,27 @@ public class ShowTermDialog {
             }
         });
 
-        RadioGroup termRg = dialogView.findViewById(R.id.rg_term);
+        final RadioGroup termRg = dialogView.findViewById(R.id.rg_term);
+
+        i = 1;
+        for (String term : terms) {
+            AppCompatRadioButton tempButton = new AppCompatRadioButton(context);
+            tempButton.setTextColor(ColorUtil.getColor(context, R.attr.colorPrimary));
+            tempButton.setText(term);
+            tempButton.setId(i);
+            termRg.addView(tempButton, LinearLayout.LayoutParams.FILL_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            i++;
+        }
+
+        termRg.invalidate();
+
         termRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                AppCompatRadioButton arb = group.findViewById(checkedId);
-                callback.onTermChanged(arb.getTag().toString());
+                AppCompatRadioButton arb2 = group.findViewById(checkedId);
+                System.out.println("6:" + arb2);
+                callback.onTermChanged(arb2.getText().toString());
             }
         });
 
@@ -71,6 +86,20 @@ public class ShowTermDialog {
         if (at != null) at.setChecked(true);
         at = (AppCompatRadioButton) termRg.getChildAt(0);
         if (at != null) at.setChecked(true);
+
+//        RadioGroup termRg = dialogView.findViewById(R.id.rg_term);
+//        termRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(RadioGroup group, int checkedId) {
+//                AppCompatRadioButton arb = group.findViewById(checkedId);
+//                callback.onTermChanged(arb.getTag().toString());
+//            }
+//        });
+//
+//        AppCompatRadioButton at = (AppCompatRadioButton) rg.getChildAt(0);
+//        if (at != null) at.setChecked(true);
+//        at = (AppCompatRadioButton) termRg.getChildAt(0);
+//        if (at != null) at.setChecked(true);
 
 
         DialogHelper helper = new DialogHelper();

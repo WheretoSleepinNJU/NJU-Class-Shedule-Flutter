@@ -222,18 +222,28 @@ public class Course implements Comparable<Course>,Serializable {
         }
 
         try {
-            int lastNode = nodes[0];
+            int lastNode = 0;
             int tempNode = 0;
 
-            addNode(lastNode);
+            //addNode(lastNode);
             for (int i = 1; i < nodes.length; i++) {
+//                tempNode = nodes[i];
+//                if (tempNode - lastNode != 1) {
+//                    LogUtil.d(this, "setNodes(String[] nodes) { --> incontinuity" + lastNode + "-" + tempNode);
+//                    return;
+//                }
+//                addNode(tempNode);
+//                lastNode = tempNode;
+                lastNode = nodes[i-1];
                 tempNode = nodes[i];
-                if (tempNode - lastNode != 1) {
+                if(tempNode < lastNode){
                     LogUtil.d(this, "setNodes(String[] nodes) { --> incontinuity" + lastNode + "-" + tempNode);
                     return;
                 }
-                addNode(tempNode);
-                lastNode = tempNode;
+                for(int j = lastNode; j <= tempNode; j++){
+                    addNode(j);
+                }
+                i++;
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -59,7 +59,8 @@ public class ImptActivity extends BaseActivity implements
         Intent intent = getIntent();
         String schoolUrl = intent.getStringExtra(Constant.INTENT_SCHOOL_URL);
         if (TextUtils.isEmpty(schoolUrl)) {
-            schoolUrl = Url.URL_GZU_HOST;
+//            schoolUrl = Url.URL_GZU_HOST;
+            schoolUrl = Url.URL_NJU_HOST;
         }
 //        schoolUrl = schoolUrl.replace(Url.default2,"");
        return schoolUrl;
@@ -159,7 +160,9 @@ public class ImptActivity extends BaseActivity implements
     @Override
     public void showCourseTimeDialog(CourseTime ct) {
         new ShowTermDialog().showSelectTimeTermDialog(this,
-                ct.years.toArray(new String[0]), new ShowTermDialog.TimeTermCallback() {
+                ct.years.toArray(new String[0]),
+                ct.terms.toArray(new String[0]),
+                new ShowTermDialog.TimeTermCallback() {
                     @Override
                     public void onTimeChanged(String time) {
                         selectedTime = time;

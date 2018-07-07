@@ -39,26 +39,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <android.support.v7.widget.AppCompatRadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:tag="1"
-                android:text="第1学期"
-                android:textColor="?android:attr/colorPrimaryDark"/>
+            <!--<android.support.v7.widget.AppCompatRadioButton-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:tag="1"-->
+                <!--android:text="第1学期"-->
+                <!--android:textColor="?android:attr/colorPrimaryDark"/>-->
 
-            <android.support.v7.widget.AppCompatRadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:tag="2"
-                android:text="第2学期"
-                android:textColor="?android:attr/colorPrimaryDark"/>
+            <!--<android.support.v7.widget.AppCompatRadioButton-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:tag="2"-->
+                <!--android:text="第2学期"-->
+                <!--android:textColor="?android:attr/colorPrimaryDark"/>-->
 
-            <android.support.v7.widget.AppCompatRadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:tag="3"
-                android:text="第3学期"
-                android:textColor="?android:attr/colorPrimaryDark"/>
+            <!--<android.support.v7.widget.AppCompatRadioButton-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:tag="3"-->
+                <!--android:text="第3学期"-->
+                <!--android:textColor="?android:attr/colorPrimaryDark"/>-->
         </RadioGroup>
     </LinearLayout>
 </ScrollView>
