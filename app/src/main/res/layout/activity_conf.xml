@@ -11,7 +11,7 @@
         style="@style/CategoryStyle"
         android:text="@string/conf_interface" />
 
-    <com.mnnyang.gzuclassschedule.custom.settting.SettingItemNormal
+    <com.idealclover.njuclassschedule.custom.settting.SettingItemNormal
         android:id="@+id/sin_background_iamge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

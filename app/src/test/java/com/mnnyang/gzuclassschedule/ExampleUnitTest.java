@@ -1,4 +1,4 @@
-package com.mnnyang.gzuclassschedule;
+package com.idealclover.njuclassschedule;
 
 import org.junit.Test;
 

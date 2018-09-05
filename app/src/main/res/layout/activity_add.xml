@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context="com.mnnyang.gzuclassschedule.add.AddActivity">
+    tools:context="com.idealclover.njuclassschedule.add.AddActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -56,7 +56,7 @@
                 android:orientation="vertical"
                 android:padding="8dp">
 
-                <com.mnnyang.gzuclassschedule.custom.EditTextLayout
+                <com.idealclover.njuclassschedule.custom.EditTextLayout
                     android:id="@+id/etl_classroom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -70,7 +70,7 @@
                     android:layout_height="1px"
                     android:background="#20000000" />
 
-                <com.mnnyang.gzuclassschedule.custom.EditTextLayout
+                <com.idealclover.njuclassschedule.custom.EditTextLayout
                     android:id="@+id/etl_teacher"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -84,7 +84,7 @@
                     android:layout_height="1px"
                     android:background="#20000000" />
 
-                <com.mnnyang.gzuclassschedule.custom.EditTextLayout
+                <com.idealclover.njuclassschedule.custom.EditTextLayout
                     android:id="@+id/etl_week_range"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

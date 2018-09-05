@@ -40,37 +40,37 @@
             android:layout_marginTop="8dp"
             android:gravity="center">
 
-            <com.mnnyang.gzuclassschedule.custom.ColorImageView
+            <com.idealclover.njuclassschedule.custom.ColorImageView
                 android:layout_width="0dp"
                 android:layout_height="24dp"
                 android:layout_weight="1"
                 app:bgcolor="@color/red1"/>
 
-            <com.mnnyang.gzuclassschedule.custom.ColorImageView
+            <com.idealclover.njuclassschedule.custom.ColorImageView
                 android:layout_width="0dp"
                 android:layout_height="24dp"
                 android:layout_weight="1"
                 app:bgcolor="@color/blue2"/>
 
-            <com.mnnyang.gzuclassschedule.custom.ColorImageView
+            <com.idealclover.njuclassschedule.custom.ColorImageView
                 android:layout_width="0dp"
                 android:layout_height="24dp"
                 android:layout_weight="1"
                 app:bgcolor="@color/green3"/>
 
-            <com.mnnyang.gzuclassschedule.custom.ColorImageView
+            <com.idealclover.njuclassschedule.custom.ColorImageView
                 android:layout_width="0dp"
                 android:layout_height="24dp"
                 android:layout_weight="1"
                 app:bgcolor="@color/orange4"/>
 
-            <com.mnnyang.gzuclassschedule.custom.ColorImageView
+            <com.idealclover.njuclassschedule.custom.ColorImageView
                 android:layout_width="0dp"
                 android:layout_height="24dp"
                 android:layout_weight="1"
                 app:bgcolor="@color/red5"/>
 
-            <com.mnnyang.gzuclassschedule.custom.ColorImageView
+            <com.idealclover.njuclassschedule.custom.ColorImageView
                 android:layout_width="0dp"
                 android:layout_height="24dp"
                 android:layout_weight="1"

@@ -1,4 +1,4 @@
-package com.mnnyang.gzuclassschedule;
+package com.idealclover.njuclassschedule;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.mnnyang.gzuclassschedule", appContext.getPackageName());
+        assertEquals("com.idealclover.njuclassschedule", appContext.getPackageName());
     }
 }
