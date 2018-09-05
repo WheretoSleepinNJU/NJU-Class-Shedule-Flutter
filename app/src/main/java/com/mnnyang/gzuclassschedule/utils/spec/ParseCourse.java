@@ -28,9 +28,7 @@ public class ParseCourse {
     private static final String pattern = "第.*节";
     private static final String[] other = {"时间", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六",
             "星期日", "早晨", "上午", "下午", "晚上"};
-    //private static final Pattern pattern1 = Pattern.compile("第\\d{1,2}.*节");
     private static final Pattern pattern1 = Pattern.compile("第\\d{1,2}-\\d{1,2}节");
-//    private static final Pattern pattern2 = Pattern.compile("\\{第\\d{1,2}[-]*\\d*周");
     private static final Pattern pattern2 = Pattern.compile("\\d{1,2}-\\d{1,2}周");
 
     public static String parseViewStateCode(String html) {
@@ -52,9 +50,6 @@ public class ParseCourse {
      * @return 解析失敗返回空
      */
     public static CourseTime parseTime(String html) {
-        //        String SELECTED = "selected";
-//        String OPTION = "option";
-
         Document doc = org.jsoup.Jsoup.parse(html);
         CourseTime courseTime = new CourseTime();
 
@@ -72,31 +67,6 @@ public class ParseCourse {
             courseTime.selectYear = year;
             courseTime.selectTerm = term;
         }
-
-//        Elements options = selects.get(0).getElementsByTag(OPTION)
-//        Elements selects = doc.getElementsByTag("select");
-////        if (selects == null || selects.size() < 2) {
-////            LogUtil.e(ParseCourse.class, "select < 2 ");
-////            return null;
-////        };
-//
-//        for (Element o : options) {
-//            String year = o.text().trim();
-//            courseTime.years.add(year);
-//            if (o.attr(SELECTED).equals(SELECTED)) {
-//                courseTime.selectYear = year;
-//            }
-//        }
-//
-//        options = selects.get(1).getElementsByTag(OPTION);
-//        for (Element o : options) {
-//            String term = o.text().trim();
-//            courseTime.terms.add(term);
-//            if (o.attr(SELECTED).equals(SELECTED)) {
-//                courseTime.selectTerm = term;
-//            }
-//        }
-
         return courseTime;
     }
 
@@ -108,175 +78,75 @@ public class ParseCourse {
 
         Document doc = org.jsoup.Jsoup.parse(html);
 
-//        Element table1 = doc.getElementById("Table1");
-//        Elements trs = table1.getElementsByTag("tr");
-
         Elements table1 = doc.select("tr.TABLE_TR_01");
-        Elements table2 = doc.select("tr.TABLE_TR_02");
-
-
+        table1.addAll(doc.select("tr.TABLE_TR_02"));
         ArrayList<Course> courses = new ArrayList<>();
 
         int node = 0;
         for(Element tr: table1){
-            Course course = new Course();
-
-            course.setName(tr.child(2).text());
-            //course.setSource(source);
-
-            String timeAndPlace = tr.child(5).text();
-            parseTimeAndClassroom(course, timeAndPlace, node);
-
-            course.setTeacher(tr.child(4).text());
-
-            //course.setClassRoom(split[3 + i * 4]);
-            courses.add(course);
+            ArrayList<Course> temp = new ArrayList<>();
+            String timeAndPlace = tr.child(5).html();
+            timeAndPlace = timeAndPlace.replaceAll("<br>", "\n");
+            parseTimeAndClassroom(temp, timeAndPlace, node);
+            for(Course course: temp) {
+                course.setName(tr.child(2).text());
+                course.setTeacher(tr.child(4).text());
+            }
+            courses.addAll(temp);
         }
-
-        for(Element tr: table2){
-            Course course = new Course();
-
-            course.setName(tr.child(2).text());
-            //course.setSource(source);
-
-            String timeAndPlace = tr.child(5).text();
-            parseTimeAndClassroom(course, timeAndPlace, node);
-
-            course.setTeacher(tr.child(4).text());
-
-            //course.setClassRoom(split[3 + i * 4]);
-            courses.add(course);
-        }
-//        for (Element tr : trs) {
-//            Elements tds = tr.getElementsByTag("td");
-//            for (Element td : tds) {
-//                String courseSource = td.text().trim();
-//                if (courseSource.length() <= 1) {
-//                    //null data
-//                    continue;
-//                }
-//
-//                if (Pattern.matches(pattern, courseSource)) {
-//                    //node number
-//                    try {
-//                        node = Integer.decode(courseSource.substring(1, courseSource.length() - 1));
-//                    } catch (Exception e) {
-//                        node = 0;
-//                        e.printStackTrace();
-//                    }
-//                    continue;
-//                }
-//
-//                if (inArray(other, courseSource)) {
-//                    //other data
-//                    continue;
-//                }
-//                courses.addAll(ParseCourse.parseTextInfo(courseSource, node));
-//            }
-//        }
-
         return courses;
     }
 
-//    private static ArrayList<Course> parseTextInfo(String source, int node) {
-//
-//        ArrayList<Course> courses = new ArrayList<>();
-//        String[] split = source.split(" ");
-//        if (split.length / 4 > 0 && split.length % 4 == 0) {
-//            for (int i = 0; i < split.length / 4; i++) {
-//                Course course = new Course();
-//                courses.add(course);
-//
-//                course.setSource(source);
-//                course.setName(split[i * 4]);
-//                String time = split[1 + i * 4];
-//                parseTime(course, time, node);
-//                course.setTeacher(split[2 + i * 4]);
-//                course.setClassRoom(split[3 + i * 4]);
-//            }
-//
-//        } else if (split.length > 2) {
-//            Course course = new Course();
-//            courses.add(course);
-//
-//            course.setSource(source);
-//            course.setName(split[0]);
-//            String time = split[1];
-//            parseTime(course, time, node);
-//            course.setTeacher(split[2]);
-//            if (split.length > 3) {
-//                course.setClassRoom(split[3]);
-//            }
-//        } else {
-//            //TODO other type
-//            Course course = new Course();
-//            courses.add(course);
-//            course.setSource(source);
-//            course.setName(source);
-//
-//            Log.e("ParseCourse", "parseTextInfo omit:" + source);
-//        }
-//
-//        return courses;
-//    }
-
-    /**
-     * 周一第1,2节{第2-16周|双周}
-     *  {第1-15周|2节/单周}
-     *
-     * TODO 周一第1,2节{第1-15周|2节/周} //次格式未解决 数据不足
-     */
-    private static void parseTimeAndClassroom(Course course, String time, int htmlNode) {
-        //week
-        if (time.charAt(0) == '周') {
-            String weekStr = time.substring(0, 2);
-            int week = getIntWeek(weekStr);
-            course.setWeek(week);
-        }
-
-        //单双周
-        if (time.contains("|单周")) {
-            course.setWeekType(Course.WEEK_SINGLE);
-        } else if (time.contains("|双周")) {
-            course.setWeekType(Course.WEEK_DOUBLE);
-        }
-
-        //节数
-        Matcher matcher = pattern1.matcher(time);
-
-        if (matcher.find()) {
-            String nodeInfo = matcher.group(0);
-            //String[] nodes = nodeInfo.substring(1, nodeInfo.length() - 1).split(",");
-            String[] nodes = nodeInfo.substring(1, nodeInfo.length() - 1).split("-");
-            /*  for (String node : nodes) {
-                System.out.print(node);
-            }*/
-            course.setNodes(nodes);
-        } else if (htmlNode != 0) {
-            course.addNode(htmlNode);
-        }else{
-            //周一第1,2节{第1-15周|2节/周}
-            //TODO 上传无法解析的数据
-        }
-
-        //周数
-        matcher = pattern2.matcher(time);
-        if (matcher.find()) {
-            String weekInfo = matcher.group(0);//第2-16周
-            if (weekInfo.length() < 2) {
-                return;
+    private static void parseTimeAndClassroom(ArrayList<Course> courses, String time, int htmlNode) {
+        String infos [] = time.split("\n");
+        for(String info: infos){
+            Course course = new Course();
+            String str [] = info.split(" ");
+            //week
+            if (info.charAt(0) == '周') {
+                String weekStr = info.substring(0, 2);
+                int week = getIntWeek(weekStr);
+                course.setWeek(week);
             }
-            //String[] weeks = weekInfo.substring(2, weekInfo.length() - 1).split("-");
-            String[] weeks = weekInfo.substring(0, weekInfo.length() - 1).split("-");
+            //单双周
+            if (info.contains("|单周")) {
+                course.setWeekType(Course.WEEK_SINGLE);
+            } else if (info.contains("|双周")) {
+                course.setWeekType(Course.WEEK_DOUBLE);
+            }
+            //节数
+            Matcher matcher = pattern1.matcher(info);
+            if (matcher.find()) {
+                String nodeInfo = matcher.group(0);
+                String[] nodes = nodeInfo.substring(1, nodeInfo.length() - 1).split("-");
+                course.setNodes(nodes);
+            } else if (htmlNode != 0) {
+                course.addNode(htmlNode);
+            }else{
+                //周一第1,2节{第1-15周|2节/周}
+                //TODO 上传无法解析的数据
+            }
+            //周数
+            matcher = pattern2.matcher(info);
+            if (matcher.find()) {
+                String weekInfo = matcher.group(0);//第2-16周
+                if (weekInfo.length() < 2) {
+                    return;
+                }
+                String[] weeks = weekInfo.substring(0, weekInfo.length() - 1).split("-");
 
-            if (weeks.length > 0) {
-                int startWeek = Integer.decode(weeks[0]);
-                course.setStartWeek(startWeek);
+                if (weeks.length > 0) {
+                    int startWeek = Integer.decode(weeks[0]);
+                    course.setStartWeek(startWeek);
+                }
+                if (weeks.length > 1) {
+                    int endWeek = Integer.decode(weeks[1]);
+                    course.setEndWeek(endWeek);
+                }
             }
-            if (weeks.length > 1) {
-                int endWeek = Integer.decode(weeks[1]);
-                course.setEndWeek(endWeek);
-            }
+            //地点
+            course.setClassRoom(str[str.length - 1]);
+            courses.add(course);
         }
     }
 
@@ -290,14 +160,5 @@ public class ParseCourse {
             }
         }
         return 0;
-    }
-
-    private static boolean inArray(String[] arr, String targetValue) {
-        for (String s : arr) {
-            if (s.equals(targetValue))
-                return true;
-        }
-        return false;
-
     }
 }
