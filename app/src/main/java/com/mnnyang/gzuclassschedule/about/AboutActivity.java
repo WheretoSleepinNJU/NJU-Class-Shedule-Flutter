@@ -21,6 +21,7 @@ import com.zhy.http.okhttp.request.OkHttpRequest;
 
 /**
  * Created by xxyangyoulin on 2018/3/13.
+ * Changed by idealclover on 18-09-06
  */
 
 public class AboutActivity extends BaseActivity implements AboutContract.View {
@@ -63,7 +64,7 @@ public class AboutActivity extends BaseActivity implements AboutContract.View {
         tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri uri = Uri.parse(getString(R.string.github_gzuclassschedule));
+                Uri uri = Uri.parse(getString(R.string.github_njuclassschedule));
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);
             }

@@ -36,8 +36,8 @@ public class CoursesPsc {
         public static final String COLUMN_NAME_WEEK = "week";
         public static final String COLUMN_NAME_START_WEEK = "start_week";
         public static final String COLUMN_NAME_END_WEEK = "end_week";
-
         public static final String COLUMN_NAME_WEEK_TYPE = "week_type";
+
         public static final String COLUMN_NAME_TEACHER = "teacher";
         public static final String COLUMN_NAME_SOURCE = "source";
 

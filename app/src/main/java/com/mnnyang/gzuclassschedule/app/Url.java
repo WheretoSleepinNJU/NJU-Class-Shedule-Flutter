@@ -14,7 +14,7 @@ public class Url {
     public static final String URL_NJU_HOST = "http://elite.nju.edu.cn/jiaowu/";
 
 
-    public static final String URL_CHECK_UPDATE_APP = "https://raw.githubusercontent.com/mnnyang/GzuClassSchedule/master/check.json";
+    public static final String URL_CHECK_UPDATE_APP = "https://raw.githubusercontent.com/idealclover/NJU-Class-Shedule-Android/master/check.json";
 
 
     //public static final String CheckCode = "CheckCode.aspx";

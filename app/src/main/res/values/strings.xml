@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">MD课表</string>
+    <string name="app_name">南哪课表</string>
     <string name="app_version">0</string>
 
-    <string name="qq_number">776310072</string>
+    <string name="qq_number">1455169173</string>
 
     <string name="user_add">手动添加</string>
     <string name="import_gzu">导入正方课表</string>
@@ -56,7 +56,7 @@
     <string name="about">关于</string>
 
     <string name="github_lib">org.jsoup:jsoup:1.10.3\nio.reactivex:rxjava:1.1.3\nio.reactivex:rxandroid:1.0.1\ncom.google.code.gson:gson:2.8.2\ncom.zhy:okhttputils:2.6.2\nwangjie/wheelview</string>
-    <string name="github_gzuclassschedule">https://github.com/mnnyang/GzuClassSchedule</string>
+    <string name="github_njuclassschedule">https://github.com/idealclover/NJU-Class-Shedule-Android</string>
 
 
     <string name="check_update">检查更新</string>

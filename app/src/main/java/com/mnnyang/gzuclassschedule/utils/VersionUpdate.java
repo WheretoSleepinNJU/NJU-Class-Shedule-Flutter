@@ -18,6 +18,7 @@ import okhttp3.Call;
 
 /**
  * Created by mnnyang on 17-11-7.
+ * Changed by idealclover on 18-09-06
  */
 
 public class VersionUpdate {
@@ -79,7 +80,8 @@ public class VersionUpdate {
     }
 
     public static  void goToMarket(Context context) {
-        String packageName ="com.mnnyang.gzuclassschedule";
+//        String packageName ="com.mnnyang.gzuclassschedule";
+        String packageName ="com.idealclover.njuclassschedule";
         Uri uri = Uri.parse("market://details?id=" + packageName);
         Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
         try {
