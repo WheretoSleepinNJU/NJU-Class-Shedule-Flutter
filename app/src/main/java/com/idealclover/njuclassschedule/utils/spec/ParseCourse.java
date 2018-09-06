@@ -19,7 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * GZU课程解析
+ * NJU课程解析
  * Created by mnnyang on 17-10-19.
  * Changed by idealclover on 18-07-07
  */

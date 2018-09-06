@@ -9,13 +9,13 @@
         android:title="@string/edit_class_schedule">
         <Preference
             android:layout="@layout/preference_item"
-            android:summary="手动添加课程表数据"
+            android:summary="@string/user_add_summary"
             android:title="@string/user_add"/>
 
         <Preference
             android:layout="@layout/preference_item"
-            android:summary="登录贵州大学教务系统导入课程表"
-            android:title="@string/import_gzu"/>
+            android:summary="@string/import_nju_description"
+            android:title="@string/import_nju"/>
 
         <Preference
             android:layout="@layout/preference_item"

@@ -56,7 +56,7 @@ public class SettingFragment extends PreferenceFragment implements SettingContra
         if (title.equals(getString(R.string.user_add))) {
             gotoAddActivity();
             return true;
-        } else if (title.equals(getString(R.string.import_gzu))) {
+        } else if (title.equals(getString(R.string.import_nju))) {
             gotoImptActivity();
             return true;
         } else if (title.equals(getString(R.string.kb_manage))) {

@@ -39,12 +39,12 @@
                 android:background="@color/divider" />
 
             <com.idealclover.njuclassschedule.custom.settting.SettingItemNormal
-                android:id="@+id/sin_import_gzu"
+                android:id="@+id/sin_import_nju"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:item_title="@string/import_gzu"
+                app:item_title="@string/import_nju"
                 app:showSwitch="false"
-                app:summary="@string/import_gzu_description" />
+                app:summary="@string/import_nju_description" />
 
             <View
                 android:layout_width="match_parent"

@@ -38,7 +38,7 @@ import static com.idealclover.njuclassschedule.app.Constant.themeNameArray;
 public class SettingActivity extends BaseActivity implements SettingContract.View,
         SettingItemNormal.SettingOnClickListener {
     private SettingItemNormal sinUserAdd;
-    private SettingItemNormal sinImportGzu;
+    private SettingItemNormal sinImportNju;
     private SettingItemNormal sinKbManage;
 
     private SettingItemNormal sinHideFab;
@@ -66,7 +66,7 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
         layoutTheme = findViewById(R.id.layout_theme);
 
         sinUserAdd = findViewById(R.id.sin_user_add);
-        sinImportGzu = findViewById(R.id.sin_import_gzu);
+        sinImportNju = findViewById(R.id.sin_import_nju);
         sinKbManage = findViewById(R.id.sin_kb_manage);
 
         sinHideFab = findViewById(R.id.sin_hide_fab);
@@ -75,7 +75,7 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
         sinAbout = findViewById(R.id.sin_about);
 
         sinUserAdd.setSettingOnClickListener(this);
-        sinImportGzu.setSettingOnClickListener(this);
+        sinImportNju.setSettingOnClickListener(this);
         sinKbManage.setSettingOnClickListener(this);
 
         sinHideFab.setSettingOnClickListener(this);
@@ -110,7 +110,7 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
             case R.id.sin_user_add:
                 gotoAddActivity();
                 break;
-            case R.id.sin_import_gzu:
+            case R.id.sin_import_nju:
                 importCourseTable();
                 break;
 
@@ -223,8 +223,6 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
     }
 
     private void importCourseTable() {
-
-
         gotoActivity(SchoolActivity.class);
     }
 

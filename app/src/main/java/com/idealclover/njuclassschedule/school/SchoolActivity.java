@@ -34,20 +34,16 @@ public class SchoolActivity extends BaseActivity implements SchoolContract.View,
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_school);
-
         initBackToolbar(getString(R.string.school));
-
         initView();
-
         mPresenter = new SchoolPresenter(this);
+//        selectedNJU();
     }
 
     private void initView() {
-        TextView tvGzu = findViewById(R.id.tv_gzu);
         TextView tvNJU = findViewById(R.id.tv_nju);
         TextView tvOtherSchool = findViewById(R.id.tv_other);
         tvOtherSchool.setOnClickListener(this);
-        tvGzu.setOnClickListener(this);
         tvNJU.setOnClickListener(this);
     }
 
@@ -59,7 +55,6 @@ public class SchoolActivity extends BaseActivity implements SchoolContract.View,
     @Override
     public void showInputDialog() {
         mDialogHelper = new DialogHelper();
-//        dialogHelper.
         View view = LayoutInflater.from(this).inflate(
                 R.layout.layout_input_course_table_name, null);
 
@@ -125,9 +120,6 @@ public class SchoolActivity extends BaseActivity implements SchoolContract.View,
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.tv_gzu:
-                selectedGzu();
-                break;
             case R.id.tv_nju:
                 selectedNJU();
                 break;
@@ -151,10 +143,6 @@ public class SchoolActivity extends BaseActivity implements SchoolContract.View,
 
     private void selectedOther() {
         showInputDialog();
-    }
-
-    private void selectedGzu() {
-        mPresenter.testUrl(Url.URL_GZU_HOST);
     }
 
     private void selectedNJU() {

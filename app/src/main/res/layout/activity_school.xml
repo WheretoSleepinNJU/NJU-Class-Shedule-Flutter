@@ -7,17 +7,6 @@
     <include layout="@layout/title_toolbar" />
 
     <TextView
-        android:id="@+id/tv_gzu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
-        android:padding="@dimen/margin_16dp"
-        android:text="@string/gzu"
-        android:textSize="20sp" />
-
-    <TextView
         android:id="@+id/tv_nju"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

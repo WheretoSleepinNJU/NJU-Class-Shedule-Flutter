@@ -59,7 +59,7 @@ public class ImptActivity extends BaseActivity implements
         Intent intent = getIntent();
         String schoolUrl = intent.getStringExtra(Constant.INTENT_SCHOOL_URL);
         if (TextUtils.isEmpty(schoolUrl)) {
-//            schoolUrl = Url.URL_GZU_HOST;
+//            schoolUrl = Url.URL_NJU_HOST;
             schoolUrl = Url.URL_NJU_HOST;
         }
 //        schoolUrl = schoolUrl.replace(Url.default2,"");
