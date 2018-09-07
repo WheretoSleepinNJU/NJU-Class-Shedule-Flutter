@@ -96,7 +96,8 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
         sinHideFab.setChecked(PreferenceManager
                 .getDefaultSharedPreferences(getBaseContext())
                 .getBoolean(getString(R.string.app_preference_hide_fab),
-                        true));
+                        false));
+//                        true));
 
         VersionUpdate vu = new VersionUpdate();
         String versionName = vu.getLocalVersionName(app.mContext);
@@ -111,7 +112,8 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
                 gotoAddActivity();
                 break;
             case R.id.sin_import_nju:
-                importCourseTable();
+                gotoImpActivity();
+//                importCourseTable();
                 break;
 
             case R.id.sin_kb_manage:
@@ -222,8 +224,12 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
         return super.onOptionsItemSelected(item);
     }
 
-    private void importCourseTable() {
-        gotoActivity(SchoolActivity.class);
+//    private void importCourseTable() {
+//        gotoActivity(SchoolActivity.class);
+//    }
+
+    private void gotoImpActivity() {
+        gotoActivity(ImptActivity.class);
     }
 
     private void gotoConfActivity() {

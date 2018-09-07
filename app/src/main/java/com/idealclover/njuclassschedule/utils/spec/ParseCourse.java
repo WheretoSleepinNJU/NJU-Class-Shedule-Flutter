@@ -2,7 +2,6 @@ package com.idealclover.njuclassschedule.utils.spec;
 
 import android.util.Log;
 
-
 import com.idealclover.njuclassschedule.app.Constant;
 import com.idealclover.njuclassschedule.app.Url;
 import com.idealclover.njuclassschedule.data.bean.Course;
@@ -61,9 +60,9 @@ public class ParseCourse {
 
         for(Element x: elements){
             String year = x.text().substring(0, 9);
-            String term = x.text().substring(12, 13);
+            String term = "第" +  x.text().substring(12, 13) + "学期";
             courseTime.years.add(year);
-            courseTime.terms.add(term);
+            courseTime.terms.add(term );
             courseTime.selectYear = year;
             courseTime.selectTerm = term;
         }
