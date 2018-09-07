@@ -10,14 +10,14 @@
 ## 支持功能
 
 
-1. 支持手动添加、导入课程表；
+1. 支持手动添加、从南哪教务处导入课程表；
 2. **暂不打算**为其他学校做适配，并希望针对南京大学教务系统做更多深化优化；
 3. 使用MVP模式。~~作者翠翠他又不是计科软院的所以~~还有较多需要改进的地方，持续开发中；
 4. 如有bug欢迎提issue，欢迎PR！
 
 ## 截图预览
 
-<img src="https://github.com/idealclover/NJU-Class-Shedule-Android/raw/master/img/Screenshot_2018-04-09-18-34-33-470_com.mnnyang.gz.png" width="260" height="auto"><img src="https://github.com/idealclover/NJU-Class-Shedule-Android/raw/master/img/Screenshot_2018-04-09-18-34-39-425_com.mnnyang.gz.png" width="260" height="auto"><img src="https://github.com/idealclover/NJU-Class-Shedule-Android/raw/master/img/Screenshot_2018-04-09-18-44-47-384_com.mnnyang.gz.png" width="260" height="auto">
+<img src="https://github.com/idealclover/NJU-Class-Shedule-Android/raw/master/img/Screenshot1.png" width="260" height="auto"><img src="https://github.com/idealclover/NJU-Class-Shedule-Android/raw/master/img/Screenshot2.png" width="260" height="auto"><img src="https://github.com/idealclover/NJU-Class-Shedule-Android/raw/master/img/Screenshot3.png" width="260" height="auto">
 
 ## 使用到的开源库
 
