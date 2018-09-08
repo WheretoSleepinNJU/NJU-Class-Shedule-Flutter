@@ -107,12 +107,6 @@ public class ParseCourse {
                 int week = getIntWeek(weekStr);
                 course.setWeek(week);
             }
-            //单双周
-            if (info.contains("|单周")) {
-                course.setWeekType(Course.WEEK_SINGLE);
-            } else if (info.contains("|双周")) {
-                course.setWeekType(Course.WEEK_DOUBLE);
-            }
             //节数
             Matcher matcher = pattern1.matcher(info);
             if (matcher.find()) {
@@ -124,6 +118,16 @@ public class ParseCourse {
             }else{
                 //周一第1,2节{第1-15周|2节/周}
                 //TODO 上传无法解析的数据
+            }
+            //单双周
+            if (info.contains("单周")) {
+                course.setWeekType(Course.WEEK_SINGLE);
+                course.setStartWeek(1);
+                course.setEndWeek(17);
+            } else if (info.contains("双周")) {
+                course.setWeekType(Course.WEEK_DOUBLE);
+                course.setStartWeek(1);
+                course.setEndWeek(17);
             }
             //周数
             matcher = pattern2.matcher(info);
