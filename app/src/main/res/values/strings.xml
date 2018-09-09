@@ -39,7 +39,7 @@
     <string name="select_week_count">选择周数</string>
     <string name="feedback">反馈</string>
     <string name="please_wait_a_moment">请稍等…</string>
-    <string name="qq_not_installed">抱歉，您没有安装QQ！</string>
+    <string name="qq_not_installed">抱歉，您没有安装QQ/TIM！</string>
     <string name="string_course_time_2"> %1$s&#160;&#160;%2$d 节</string>
     <string name="string_week_range">第%1$d-%2$d 周</string>
     <string name="show_noon_course">显示中午课程</string>
@@ -75,7 +75,7 @@
     <string name="kb_manage_description">增加或删除课表数据</string>
     <string name="more_pref">更多选择</string>
     <string name="more_pref_summary">自定义其他参数</string>
-    <string name="feedback_summary">通过QQ反馈意见</string>
+    <string name="feedback_summary">通过QQ/TIM反馈意见</string>
     <string name="checking_for_updates">检查更新中…</string>
     <string name="already_the_latest_version">已是最新版本</string>
     <string name="access_err">抱歉，访问出错</string>

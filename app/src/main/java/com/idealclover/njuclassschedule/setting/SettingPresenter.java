@@ -57,8 +57,7 @@ public class SettingPresenter implements SettingContract.Presenter {
             return;
         }
 
-        String url1 = "mqqwpa://im/chat?chat_type=wpa&uin=" +
-                app.mContext.getString(R.string.qq_number);
+        String url1 = "mqqwpa://im/chat?chat_type=wpa&uin=" + app.mContext.getString(R.string.qq_number);
         Intent i1 = new Intent(Intent.ACTION_VIEW, Uri.parse(url1));
 
         i1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -75,6 +74,9 @@ public class SettingPresenter implements SettingContract.Presenter {
             for (int i = 0; i < pinfo.size(); i++) {
                 String pn = pinfo.get(i).packageName;
                 if (pn.equals("com.tencent.mobileqq")) {
+                    return true;
+                }
+                if (pn.equals("com.tencent.tim")){
                     return true;
                 }
             }

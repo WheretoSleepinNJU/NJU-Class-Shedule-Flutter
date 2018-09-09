@@ -158,6 +158,9 @@ public class SettingFragment extends PreferenceFragment implements SettingContra
                 if (pn.equals("com.tencent.mobileqq")) {
                     return true;
                 }
+                if (pn.equals("com.tencent.tim")){
+                    return true;
+                }
             }
         }
         return false;
