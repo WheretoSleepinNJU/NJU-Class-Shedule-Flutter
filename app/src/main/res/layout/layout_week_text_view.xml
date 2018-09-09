@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackgroundBorderless"
+    android:background="?android:attr/colorPrimary"
     android:clickable="true"
     android:focusable="true"
     android:gravity="center"
@@ -15,3 +15,5 @@
     tools:text="第1周"
     android:textColor="#ffffff"
     android:textSize="16sp"/>
+
+    <!--android:background="?attr/selectableItemBackgroundBorderless"-->

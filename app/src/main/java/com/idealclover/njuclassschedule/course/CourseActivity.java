@@ -350,7 +350,6 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         final HorizontalScrollView popupView = new HorizontalScrollView(getBaseContext());
         LinearLayout linearLayout = new LinearLayout(getBaseContext());
         linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-        linearLayout.setBackgroundColor(Color.BLACK);
 
         for (int i = 1; i <= 25; i++) {
             TextView tv = (TextView) LayoutInflater.from(getBaseContext())
