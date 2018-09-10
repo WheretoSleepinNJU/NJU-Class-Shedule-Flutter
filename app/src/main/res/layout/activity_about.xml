@@ -115,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:layout_marginTop="16dp"
-                android:text="感谢小百合工作室\n谨以此APP送给我的女朋友子枨"
+                android:text="感谢小百合工作室\n感谢 @ns 协助开发\n感谢各位提供反馈的NJUers\n谨以此APP送给我的女朋友子枨"
                 android:textColor="@color/secondary_text"/>
 
         </LinearLayout>

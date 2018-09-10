@@ -11,7 +11,7 @@ public class Url {
      * 南京大学正方教务管理系统
      */
     public static final String URL_NJU_HOST = "http://elite.nju.edu.cn/jiaowu/";
-    public static final String URL_CHECK_UPDATE_APP = "https://raw.githubusercontent.com/idealclover/NJU-Class-Shedule-Android/master/check.json";
+    public static final String URL_CHECK_UPDATE_APP = "https://raw.githubusercontent.com/idealclover/NJU-Class-Shedule-Android/dev/check.json";
     public static final String CheckCode = "ValidateCode.jsp";
     public static final String ClassInfo = "student/teachinginfo/courseList.do?method=currentTermCourse";
     public static final String LoginUrl = "login.do";
