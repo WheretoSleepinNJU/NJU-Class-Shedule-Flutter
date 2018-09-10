@@ -6,7 +6,9 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context="com.idealclover.njuclassschedule.add.AddActivity">
+    tools:context="com.idealclover.njuclassschedule.add.AddActivity"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -56,7 +58,7 @@
                 android:orientation="vertical"
                 android:padding="8dp">
 
-                <com.idealclover.njuclassschedule.custom.EditTextLayout
+                <com.idealclover.njuclassschedule.custom.AutoCompleteTextViewLayout
                     android:id="@+id/etl_classroom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
