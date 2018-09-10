@@ -6,7 +6,12 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context="com.idealclover.njuclassschedule.add.AddActivity">
+    tools:context="com.idealclover.njuclassschedule.add.AddActivity"
+
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+    <!--以上两行是为了使edittext在进入activity时不自动获取焦点，这样软键盘就不会自动弹出来了
+         by ns 18/9/10-->
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
