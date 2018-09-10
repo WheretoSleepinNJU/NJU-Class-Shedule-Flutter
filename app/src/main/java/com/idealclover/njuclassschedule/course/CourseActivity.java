@@ -14,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -227,9 +228,11 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         //获取开始时间
         String beginMillis = Preferences.getString(getString(
                 R.string.app_preference_start_week_begin_millis), "");
+        Log.d( "CourseActivity","beginMills="+beginMillis);
 
         //获取当前时间
         long currentMillis = Calendar.getInstance().getTimeInMillis();
+        Log.d( "CourseActivity","currentMills="+currentMillis);
 
         //存在开始时间
         if (!TextUtils.isEmpty(beginMillis)) {
