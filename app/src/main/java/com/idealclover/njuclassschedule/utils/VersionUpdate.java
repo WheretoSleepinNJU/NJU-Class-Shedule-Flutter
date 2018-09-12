@@ -79,10 +79,11 @@ public class VersionUpdate {
         return localVersion;
     }
 
-    public static  void goToMarket(Context context) {
+    public static  void goToMarket(Context context, String link) {
 //        String packageName ="com.idealclover.njuclassschedule";
         String packageName ="com.idealclover.njuclassschedule";
-        Uri uri = Uri.parse("market://details?id=" + packageName);
+//        Uri uri = Uri.parse("market://details?id=" + packageName);
+        Uri uri = Uri.parse(link);
         Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
         try {
             context.startActivity(goToMarket);

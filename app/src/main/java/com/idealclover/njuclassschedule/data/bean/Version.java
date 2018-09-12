@@ -10,11 +10,13 @@ public class Version {
      * version : 1
      * code : 1.0
      * msg : update info
+     * link : download link
      */
 
     private int version;
     private String code;
     private String msg;
+    private String link;
 
     public int getVersion() {
         return version;
@@ -40,6 +42,15 @@ public class Version {
 
     public Version setMsg(String msg) {
         this.msg = msg;
+        return this;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public Version setLink(String link) {
+        this.link = link;
         return this;
     }
 }

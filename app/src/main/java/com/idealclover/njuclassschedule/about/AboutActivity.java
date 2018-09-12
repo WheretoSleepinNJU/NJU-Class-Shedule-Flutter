@@ -104,13 +104,13 @@ public class AboutActivity extends BaseActivity implements AboutContract.View {
 
     @Override
     public void showUpdateVersionInfo(Version version) {
-
+        final String link = version.getLink();
         DialogHelper dialogHelper = new DialogHelper();
         dialogHelper.showNormalDialog(this, getString(R.string.now_version), version.getMsg(), new DialogListener() {
             @Override
             public void onPositive(DialogInterface dialog, int which) {
                 super.onPositive(dialog, which);
-                VersionUpdate.goToMarket(getBaseContext());
+                VersionUpdate.goToMarket(getBaseContext(), link);
             }
         });
     }
