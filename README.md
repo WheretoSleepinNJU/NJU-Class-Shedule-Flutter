@@ -21,16 +21,13 @@
 
 ## 使用到的开源库
 
-[io.reactivex:rxjava:1.1.3](https://github.com/ReactiveX/RxJava)
+* [io.reactivex:rxjava:1.1.3](https://github.com/ReactiveX/RxJava)
+* [io.reactivex:rxandroid:1.0.1](https://github.com/ReactiveX/RxAndroid)
+* [com.google.code.gson:gson:2.8.2](https://github.com/google/gson)
+* [com.zhy:okhttputils:2.6.2](https://github.com/hongyangAndroid/okhttputils)
+* [wangjie/wheelview](https://github.com/wangjiegulu/WheelView)
+* [didikee:AndroidDonate:0.1.0](https://github.com/didikee/AndroidDonate)
+* html parse: [org.jsoup:jsoup:1.10.3](https://jsoup.org/download)
+* commit messages: [carloscuesta/gitmoji](https://github.com/carloscuesta/gitmoji/)
 
-[io.reactivex:rxandroid:1.0.1](https://github.com/ReactiveX/RxAndroid)
-
-[com.google.code.gson:gson:2.8.2](https://github.com/google/gson)
-
-[com.zhy:okhttputils:2.6.2](https://github.com/hongyangAndroid/okhttputils)
-
-[wangjie/wheelview](https://github.com/wangjiegulu/WheelView)
-
-html parse: [org.jsoup:jsoup:1.10.3](https://jsoup.org/download)
-
-commit messages: [carloscuesta/gitmoji](https://github.com/carloscuesta/gitmoji/)
+## 捐赠名单

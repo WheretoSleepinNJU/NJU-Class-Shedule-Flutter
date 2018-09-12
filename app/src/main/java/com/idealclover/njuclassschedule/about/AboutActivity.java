@@ -35,6 +35,8 @@ public class AboutActivity extends BaseActivity implements AboutContract.View {
 
         initBackToolbar(getString(R.string.about));
         initGithubTextView();
+        initDonateListTextView();
+        initBlogTextView();
         initVersionName();
         initCheckUpdate();
 
@@ -71,6 +73,29 @@ public class AboutActivity extends BaseActivity implements AboutContract.View {
         });
     }
 
+    private void initDonateListTextView() {
+        TextView tv = findViewById(R.id.tv_donate);
+        tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri uri = Uri.parse(getString(R.string.donate_njuclassschedule));
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void initBlogTextView() {
+        TextView tv = findViewById(R.id.tv_blog);
+        tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri uri = Uri.parse(getString(R.string.blog_url));
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }
+        });
+    }
 
     @Override
     public void showNotice(String notice) {
