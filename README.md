@@ -17,9 +17,7 @@
 
 ## 截图预览
 
-![](https://github.com/idealclover/NJU-Class-Shedule-Android/raw/master/img/Screenshot1.png)
-![](https://github.com/idealclover/NJU-Class-Shedule-Android/raw/master/img/Screenshot2.png)
-![](https://github.com/idealclover/NJU-Class-Shedule-Android/raw/master/img/Screenshot3.png)
+<img src="https://github.com/idealclover/NJU-Class-Shedule-Android/raw/master/img/Screenshot1.png" width="260" height="auto"><img src="https://github.com/idealclover/NJU-Class-Shedule-Android/raw/master/img/Screenshot2.png" width="260" height="auto"><img src="https://github.com/idealclover/NJU-Class-Shedule-Android/raw/master/img/Screenshot3.png" width="260" height="auto">
 
 ## 使用到的开源库
 
