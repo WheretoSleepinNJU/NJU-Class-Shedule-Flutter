@@ -24,9 +24,6 @@ import java.util.regex.Pattern;
  */
 
 public class ParseCourse {
-    private static final String pattern = "第.*节";
-    private static final String[] other = {"时间", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六",
-            "星期日", "早晨", "上午", "下午", "晚上"};
     private static final Pattern pattern1 = Pattern.compile("第\\d{1,2}-\\d{1,2}节");
     private static final Pattern pattern2 = Pattern.compile("\\d{1,2}-\\d{1,2}周");
     private static final Pattern pattern3 = Pattern.compile("第\\d{1,2}周");
@@ -87,6 +84,10 @@ public class ParseCourse {
             ArrayList<Course> temp = new ArrayList<>();
             String timeAndPlace = tr.child(5).html();
             timeAndPlace = timeAndPlace.replaceAll("<br>", "\n");
+            // Deal with the case that the time and place is empty
+            if(timeAndPlace.isEmpty()){
+                continue;
+            }
             parseTimeAndClassroom(temp, timeAndPlace, node);
             for(Course course: temp) {
                 course.setName(tr.child(2).text());
@@ -102,25 +103,20 @@ public class ParseCourse {
         for(String info: infos){
             Course course = new Course();
             String str [] = info.split(" ");
-            //week
+            //week pattern "周一"
             if (info.charAt(0) == '周') {
                 String weekStr = info.substring(0, 2);
                 int week = getIntWeek(weekStr);
                 course.setWeek(week);
             }
-            //节数
+            //节数 pattern "3-5节"
             Matcher matcher = pattern1.matcher(info);
             if (matcher.find()) {
                 String nodeInfo = matcher.group(0);
                 String[] nodes = nodeInfo.substring(1, nodeInfo.length() - 1).split("-");
                 course.setNodes(nodes);
-            } else if (htmlNode != 0) {
-                course.addNode(htmlNode);
-            }else{
-                //周一第1,2节{第1-15周|2节/周}
-                //TODO 上传无法解析的数据
             }
-            //单双周
+            //单双周 pattern "单周" "双周"
             if (info.contains("单周")) {
                 course.setWeekType(Course.WEEK_SINGLE);
                 course.setStartWeek(1);
@@ -130,7 +126,7 @@ public class ParseCourse {
                 course.setStartWeek(1);
                 course.setEndWeek(17);
             }
-            //周数
+            //周数 pattern "1-17周"
             matcher = pattern2.matcher(info);
             if (matcher.find()) {
                 String weekInfo = matcher.group(0);//第2-16周
