@@ -188,6 +188,13 @@
                 android:background="@color/divider" />
 
             <com.idealclover.njuclassschedule.custom.settting.SettingItemNormal
+                android:id="@+id/sin_donate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:item_title="@string/donate"
+                app:summary="@string/donate_summary" />
+
+            <com.idealclover.njuclassschedule.custom.settting.SettingItemNormal
                 android:id="@+id/sin_about"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

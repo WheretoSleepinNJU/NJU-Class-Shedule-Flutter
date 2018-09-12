@@ -31,6 +31,7 @@ import com.idealclover.njuclassschedule.utils.Preferences;
 import com.idealclover.njuclassschedule.utils.ScreenUtils;
 import com.idealclover.njuclassschedule.utils.ToastUtils;
 import com.idealclover.njuclassschedule.utils.VersionUpdate;
+import com.idealclover.njuclassschedule.utils.AlipayDonate;
 
 import static com.idealclover.njuclassschedule.app.Constant.themeColorArray;
 import static com.idealclover.njuclassschedule.app.Constant.themeNameArray;
@@ -44,6 +45,7 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
     private SettingItemNormal sinHideFab;
     private SettingItemNormal sinMorePref;
     private SettingItemNormal sinFeedback;
+    private SettingItemNormal sinDonate;
     private SettingItemNormal sinAbout;
     private SettingPresenter mPresenter;
     private HorizontalScrollView hsvTheme;
@@ -72,6 +74,7 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
         sinHideFab = findViewById(R.id.sin_hide_fab);
         sinMorePref = findViewById(R.id.sin_more_pref);
         sinFeedback = findViewById(R.id.sin_feedback);
+        sinDonate = findViewById(R.id.sin_donate);
         sinAbout = findViewById(R.id.sin_about);
 
         sinUserAdd.setSettingOnClickListener(this);
@@ -81,6 +84,7 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
         sinHideFab.setSettingOnClickListener(this);
         sinMorePref.setSettingOnClickListener(this);
         sinFeedback.setSettingOnClickListener(this);
+        sinDonate.setSettingOnClickListener(this);
         sinAbout.setSettingOnClickListener(this);
 
         layoutTheme.setOnClickListener(new View.OnClickListener() {
@@ -133,7 +137,9 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
             case R.id.sin_about:
                 gotoAboutActivity();
                 break;
-
+            case R.id.sin_donate:
+                gotoDonateActivity();
+                break;
             case R.id.hsv_theme:
                 showThemeDialog();
             default:
@@ -238,6 +244,15 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
 
     private void gotoAboutActivity() {
         gotoActivity(AboutActivity.class);
+    }
+
+    private void gotoDonateActivity() {
+        boolean hasInstalledAlipayClient = AlipayDonate.hasInstalledAlipayClient(this);
+        if (!hasInstalledAlipayClient) {
+            ToastUtils.show(getString(R.string.alipay_not_installed));
+        } else{
+            AlipayDonate.startAlipayClient(this, getString(R.string.pay_code));
+        }
     }
 
     private void gotoMgActivity() {

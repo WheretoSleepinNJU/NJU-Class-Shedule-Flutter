@@ -58,8 +58,13 @@
 
         <Preference
             android:layout="@layout/preference_item"
-            android:summary="QQ反馈问题"
+            android:summary="@string/feedback_summary"
             android:title="@string/feedback"/>
+
+        <Preference
+            android:layout="@layout/preference_item"
+            android:summary="@string/donate_summary"
+            android:title="@string/donate"/>
 
         <Preference
             android:layout="@layout/preference_item"
