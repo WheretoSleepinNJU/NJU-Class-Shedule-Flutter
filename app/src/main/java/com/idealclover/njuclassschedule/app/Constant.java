@@ -5,7 +5,7 @@ import com.idealclover.njuclassschedule.R;
  */
 
 public class Constant {
-    public static final String INTENT_UPDATE = "com.mnnyang.update";
+    public static final String INTENT_UPDATE = "com.idealclover.update";
     public static final String INTENT_UPDATE_TYPE = "intent_update_type";
     public static final int INTENT_UPDATE_TYPE_OTHER = 2;
     public static final int INTENT_UPDATE_TYPE_COURSE = 1;
@@ -20,35 +20,41 @@ public class Constant {
     public static String XH = "xh";
 
     public static int[] themeColorArray = {
+            R.color.accent_light_blue,
             R.color.primary_green,
             R.color.primary_red,
-            R.color.accent_light_blue,
             R.color.primary_pink,
             R.color.primary_purple,
             R.color.primary_purple_de,
             R.color.primary_indigo,
             R.color.primary_lime,
-            R.color.primary_blue_grey};
+            R.color.primary_blue_grey,
+            R.color.primary_light_brown
+    };
 
     public static int[] themeArray = {
+            R.style.light_blueTheme,
             R.style.greenTheme,
             R.style.RedTheme,
-            R.style.light_blueTheme,
             R.style.pinkTheme,
             R.style.purpleTheme,
             R.style.purple_deTheme,
             R.style.indigoTheme,
             R.style.limeTheme,
-            R.style.blue_greyTheme,};
+            R.style.blue_greyTheme,
+            R.style.light_brownTheme
+    };
 
     public static String[] themeNameArray = {
+            "知乎蓝",
             "原谅绿",
             "姨妈红",
-            "知乎蓝",
             "新初粉",
             "基佬紫",
             "同志紫",
             "上天蓝",
             "鸡蛋色",
-            "低调灰",};
+            "低调灰",
+            "冷淡棕"
+    };
 }

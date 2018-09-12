@@ -38,6 +38,10 @@
     <color name="primary_blue_grey">#607D8B</color>
     <color name="accent_blue_grey">#9E9E9E</color>
 
+    <color name="primary_dark_brown">#A2998A</color>
+    <color name="primary_light_brown">#B6B2A7</color>
+    <color name="accent_light_brown">#C8B8A9</color>
+
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#757575</color>
     <color name="divider">#50BDBDBD</color>
