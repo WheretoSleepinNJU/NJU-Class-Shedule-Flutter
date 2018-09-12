@@ -20,7 +20,8 @@
     <string name="app_preference_noon_node">noon_node</string>
     <string name="app_preference_show_noon">show_noon</string>
     <!--<string name="app_preference_current_sd_name">current_sd_name</string>-->
-    <string name="app_preference_theme">theme</string>
+    <!--<string name="app_preference_theme">theme</string>-->
+    <string name="app_preference_theme">0</string>
     <string name="app_preference_bg_iamge_path">bg_image_path</string>
     <string name="app_preference_bg_enabled">bg_enabled</string>
     <string name="app_preference_current_cs_name_id">current_sd_name_id</string>

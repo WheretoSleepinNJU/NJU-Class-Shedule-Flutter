@@ -98,62 +98,56 @@
                     <com.idealclover.njuclassschedule.custom.ColorImageView
                         android:layout_width="@dimen/margin_24dp"
                         android:layout_height="@dimen/margin_24dp"
-                        app:bgcolor="@color/primary_green" />
+                        app:bgcolor="@color/secondary_nanjing_blue" />
 
                     <com.idealclover.njuclassschedule.custom.ColorImageView
                         android:layout_width="@dimen/margin_24dp"
                         android:layout_height="@dimen/margin_24dp"
                         android:layout_marginLeft="@dimen/margin_24dp"
-                        app:bgcolor="@color/primary_red" />
+                        app:bgcolor="@color/secondary_forgive_green" />
 
                     <com.idealclover.njuclassschedule.custom.ColorImageView
                         android:layout_width="@dimen/margin_24dp"
                         android:layout_height="@dimen/margin_24dp"
                         android:layout_marginLeft="@dimen/margin_24dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
-                        app:bgcolor="@color/primary_light_blue" />
+                        app:bgcolor="@color/secondary_ms_blue" />
 
                     <com.idealclover.njuclassschedule.custom.ColorImageView
                         android:layout_width="@dimen/margin_24dp"
                         android:layout_height="@dimen/margin_24dp"
                         android:layout_marginLeft="@dimen/margin_24dp"
-                        app:bgcolor="@color/primary_pink" />
+                        app:bgcolor="@color/secondary_nju_purple" />
 
                     <com.idealclover.njuclassschedule.custom.ColorImageView
                         android:layout_width="@dimen/margin_24dp"
                         android:layout_height="@dimen/margin_24dp"
                         android:layout_marginLeft="@dimen/margin_24dp"
-                        app:bgcolor="@color/primary_purple" />
+                        app:bgcolor="@color/secondary_tomato_red" />
 
                     <com.idealclover.njuclassschedule.custom.ColorImageView
                         android:layout_width="@dimen/margin_24dp"
                         android:layout_height="@dimen/margin_24dp"
                         android:layout_marginLeft="@dimen/margin_24dp"
-                        app:bgcolor="@color/primary_purple_de" />
+                        app:bgcolor="@color/secondary_bubble_pink" />
 
                     <com.idealclover.njuclassschedule.custom.ColorImageView
                         android:layout_width="@dimen/margin_24dp"
                         android:layout_height="@dimen/margin_24dp"
                         android:layout_marginLeft="@dimen/margin_24dp"
-                        app:bgcolor="@color/primary_dark_light_blue" />
-
-                    <!--<com.idealclover.njuclassschedule.custom.ColorImageView-->
-                        <!--android:layout_width="@dimen/margin_24dp"-->
-                        <!--android:layout_height="@dimen/margin_24dp"-->
-                        <!--android:layout_marginLeft="@dimen/margin_24dp"-->
-                        <!--app:bgcolor="@color/color_jiu" />-->
+                        app:bgcolor="@color/secondary_lake_green" />
 
                     <com.idealclover.njuclassschedule.custom.ColorImageView
                         android:layout_width="@dimen/margin_24dp"
                         android:layout_height="@dimen/margin_24dp"
                         android:layout_marginLeft="@dimen/margin_24dp"
-                        app:bgcolor="@color/primary_lime" />
+                        app:bgcolor="@color/secondary_iris_purple" />
 
                     <com.idealclover.njuclassschedule.custom.ColorImageView
                         android:layout_width="@dimen/margin_24dp"
                         android:layout_height="@dimen/margin_24dp"
                         android:layout_marginLeft="@dimen/margin_24dp"
-                        app:bgcolor="@color/primary_blue_grey" />
+                        app:bgcolor="@color/secondary_pine_blue" />
                 </LinearLayout>
             </HorizontalScrollView>
 

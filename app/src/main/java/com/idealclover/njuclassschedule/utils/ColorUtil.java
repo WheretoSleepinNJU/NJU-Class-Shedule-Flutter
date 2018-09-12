@@ -19,7 +19,7 @@ public class ColorUtil {
 
         int[] attribute = new int[]{colorAttr};
         TypedArray array = context.obtainStyledAttributes(typedValue.resourceId, attribute);
-        int color = array.getColor(0, context.getResources().getColor(R.color.primary_blue_grey));
+        int color = array.getColor(0, context.getResources().getColor(R.color.primary_nanjing_blue));
         array.recycle();
 
         return color;

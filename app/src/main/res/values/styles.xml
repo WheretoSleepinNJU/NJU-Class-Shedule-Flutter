@@ -5,65 +5,120 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="RedTheme" parent="AppTheme">
-        <item name="colorPrimaryDark">@color/primary_dark_red</item>
-        <item name="colorPrimary">@color/primary_red</item>
-        <item name="colorAccent">@color/accent_red</item>
+    <style name="nanjingBlueTheme" parent="AppTheme">
+        <item name="colorPrimaryDark">@color/primary_nanjing_blue</item>
+        <item name="colorPrimary">@color/secondary_nanjing_blue</item>
+        <item name="colorAccent">@color/accent_nanjing_blue</item>
     </style>
 
-    <style name="purpleTheme" parent="AppTheme">
-        <item name="colorPrimaryDark">@color/primary_dark_purple</item>
-        <item name="colorPrimary">@color/primary_purple</item>
-        <item name="colorAccent">@color/accent_purple</item>
+
+    <style name="forgiveGreenTheme" parent="AppTheme">
+        <item name="colorPrimaryDark">@color/primary_forgive_green</item>
+        <item name="colorPrimary">@color/secondary_forgive_green</item>
+        <item name="colorAccent">@color/accent_forgive_green</item>
     </style>
 
-    <style name="purple_deTheme" parent="AppTheme">
-        <item name="colorPrimaryDark">@color/primary_dark_purple_de</item>
-        <item name="colorPrimary">@color/primary_purple_de</item>
-        <item name="colorAccent">@color/accent_purple_de</item>
+    <style name="MSBlueTheme" parent="AppTheme">
+        <item name="colorPrimaryDark">@color/primary_ms_blue</item>
+        <item name="colorPrimary">@color/secondary_ms_blue</item>
+        <item name="colorAccent">@color/accent_ms_blue</item>
     </style>
 
-    <style name="pinkTheme" parent="AppTheme">
-        <item name="colorPrimaryDark">@color/primary_dark_pink</item>
-        <item name="colorPrimary">@color/primary_pink</item>
-        <item name="colorAccent">@color/accent_pink</item>
+    <style name="NJUPurpleTheme" parent="AppTheme">
+        <item name="colorPrimaryDark">@color/primary_nju_purple</item>
+        <item name="colorPrimary">@color/secondary_nju_purple</item>
+        <item name="colorAccent">@color/accent_nju_purple</item>
     </style>
 
-    <style name="indigoTheme" parent="AppTheme">
-        <item name="colorPrimaryDark">@color/primary_dark_indigo</item>
-        <item name="colorPrimary">@color/primary_indigo</item>
-        <item name="colorAccent">@color/accent_indigo</item>
+    <style name="tomatoRedTheme" parent="AppTheme">
+        <item name="colorPrimaryDark">@color/primary_tomato_red</item>
+        <item name="colorPrimary">@color/secondary_tomato_red</item>
+        <item name="colorAccent">@color/accent_tomato_red</item>
     </style>
 
-    <style name="light_blueTheme" parent="AppTheme">
-        <item name="colorPrimaryDark">@color/primary_dark_light_blue</item>
-        <item name="colorPrimary">@color/primary_light_blue</item>
-        <item name="colorAccent">@color/accent_light_blue</item>
+    <style name="bubblePinkTheme" parent="AppTheme">
+        <item name="colorPrimaryDark">@color/primary_bubble_pink</item>
+        <item name="colorPrimary">@color/secondary_bubble_pink</item>
+        <item name="colorAccent">@color/accent_bubble_pink</item>
     </style>
 
-    <style name="greenTheme" parent="AppTheme">
-        <item name="colorPrimaryDark">@color/primary_dark_green</item>
-        <item name="colorPrimary">@color/primary_green</item>
-        <item name="colorAccent">@color/accent_green</item>
+    <style name="lakeGreenTheme" parent="AppTheme">
+        <item name="colorPrimaryDark">@color/primary_lake_green</item>
+        <item name="colorPrimary">@color/secondary_lake_green</item>
+        <item name="colorAccent">@color/accent_lake_green</item>
     </style>
 
-    <style name="limeTheme" parent="AppTheme">
-        <item name="colorPrimaryDark">@color/primary_dark_lime</item>
-        <item name="colorPrimary">@color/primary_lime</item>
-        <item name="colorAccent">@color/accent_lime</item>
+    <style name="irisPurpleTheme" parent="AppTheme">
+        <item name="colorPrimaryDark">@color/primary_iris_purple</item>
+        <item name="colorPrimary">@color/secondary_iris_purple</item>
+        <item name="colorAccent">@color/accent_iris_purple</item>
     </style>
 
-    <style name="blue_greyTheme" parent="AppTheme">
-        <item name="colorPrimaryDark">@color/primary_dark_blue_grey</item>
-        <item name="colorPrimary">@color/primary_blue_grey</item>
-        <item name="colorAccent">@color/accent_blue_grey</item>
+    <style name="pineBlueTheme" parent="AppTheme">
+        <item name="colorPrimaryDark">@color/primary_pine_blue</item>
+        <item name="colorPrimary">@color/secondary_pine_blue</item>
+        <item name="colorAccent">@color/accent_pine_blue</item>
     </style>
 
-    <style name="light_brownTheme" parent="AppTheme">
-        <item name="colorPrimaryDark">@color/primary_dark_brown</item>
-        <item name="colorPrimary">@color/primary_light_brown</item>
-        <item name="colorAccent">@color/accent_light_brown</item>
-    </style>
+    <!--<style name="" parent="AppTheme">-->
+        <!--<item name="colorPrimaryDark">@color/</item>-->
+        <!--<item name="colorPrimary">@color/</item>-->
+        <!--<item name="colorAccent">@color/</item>-->
+    <!--</style>-->
+
+    <!--<style name="purpleTheme" parent="AppTheme">-->
+        <!--<item name="colorPrimaryDark">@color/primary_dark_purple</item>-->
+        <!--<item name="colorPrimary">@color/primary_purple</item>-->
+        <!--<item name="colorAccent">@color/accent_purple</item>-->
+    <!--</style>-->
+
+    <!--<style name="purple_deTheme" parent="AppTheme">-->
+        <!--<item name="colorPrimaryDark">@color/primary_dark_purple_de</item>-->
+        <!--<item name="colorPrimary">@color/primary_purple_de</item>-->
+        <!--<item name="colorAccent">@color/accent_purple_de</item>-->
+    <!--</style>-->
+
+    <!--<style name="pinkTheme" parent="AppTheme">-->
+        <!--<item name="colorPrimaryDark">@color/primary_dark_pink</item>-->
+        <!--<item name="colorPrimary">@color/primary_pink</item>-->
+        <!--<item name="colorAccent">@color/accent_pink</item>-->
+    <!--</style>-->
+
+    <!--<style name="indigoTheme" parent="AppTheme">-->
+        <!--<item name="colorPrimaryDark">@color/primary_dark_indigo</item>-->
+        <!--<item name="colorPrimary">@color/primary_indigo</item>-->
+        <!--<item name="colorAccent">@color/accent_indigo</item>-->
+    <!--</style>-->
+
+    <!--<style name="light_blueTheme" parent="AppTheme">-->
+        <!--<item name="colorPrimaryDark">@color/primary_dark_light_blue</item>-->
+        <!--<item name="colorPrimary">@color/primary_light_blue</item>-->
+        <!--<item name="colorAccent">@color/accent_light_blue</item>-->
+    <!--</style>-->
+
+    <!--<style name="greenTheme" parent="AppTheme">-->
+        <!--<item name="colorPrimaryDark">@color/primary_dark_green</item>-->
+        <!--<item name="colorPrimary">@color/primary_green</item>-->
+        <!--<item name="colorAccent">@color/accent_green</item>-->
+    <!--</style>-->
+
+    <!--<style name="limeTheme" parent="AppTheme">-->
+        <!--<item name="colorPrimaryDark">@color/primary_dark_lime</item>-->
+        <!--<item name="colorPrimary">@color/primary_lime</item>-->
+        <!--<item name="colorAccent">@color/accent_lime</item>-->
+    <!--</style>-->
+
+    <!--<style name="blue_greyTheme" parent="AppTheme">-->
+        <!--<item name="colorPrimaryDark">@color/primary_dark_blue_grey</item>-->
+        <!--<item name="colorPrimary">@color/primary_blue_grey</item>-->
+        <!--<item name="colorAccent">@color/accent_blue_grey</item>-->
+    <!--</style>-->
+
+    <!--<style name="light_brownTheme" parent="AppTheme">-->
+        <!--<item name="colorPrimaryDark">@color/primary_dark_brown</item>-->
+        <!--<item name="colorPrimary">@color/primary_light_brown</item>-->
+        <!--<item name="colorAccent">@color/accent_light_brown</item>-->
+    <!--</style>-->
 
     <style name="animDown" parent="@android:style/Animation">
         <item name="android:windowEnterAnimation">@anim/top_in</item>
