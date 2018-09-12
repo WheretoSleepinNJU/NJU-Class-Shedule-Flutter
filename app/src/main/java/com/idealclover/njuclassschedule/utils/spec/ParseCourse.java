@@ -29,6 +29,7 @@ public class ParseCourse {
             "星期日", "早晨", "上午", "下午", "晚上"};
     private static final Pattern pattern1 = Pattern.compile("第\\d{1,2}-\\d{1,2}节");
     private static final Pattern pattern2 = Pattern.compile("\\d{1,2}-\\d{1,2}周");
+    private static final Pattern pattern3 = Pattern.compile("第\\d{1,2}周");
 
     public static String parseViewStateCode(String html) {
         String code = "";
@@ -146,6 +147,33 @@ public class ParseCourse {
                     int endWeek = Integer.decode(weeks[1]);
                     course.setEndWeek(endWeek);
                 }
+            }
+            //TMD的坑爹教务系统 针对“第2周 第4周 第6周”的特殊修改
+            matcher = pattern3.matcher(info);
+            if (matcher.find()) {
+                String startweek = matcher.group(0);//第2周
+                startweek = startweek.substring(1, startweek.length() - 1); //提取
+                int startWeek = Integer.decode(startweek);
+                String endweek = matcher.group(0);
+                int classes = 0;
+
+                while(matcher.find()){
+                    endweek = matcher.group(0);
+                    classes ++;
+                }
+
+                endweek = endweek.substring(1, endweek.length() - 1); //提取
+                int endWeek = Integer.decode(endweek);
+
+                if(endWeek - startWeek == classes * 2){
+                    if(startWeek % 2 == 1){
+                        course.setWeekType(Course.WEEK_SINGLE);
+                    }else{
+                        course.setWeekType(Course.WEEK_DOUBLE);
+                    }
+                }
+                course.setStartWeek(startWeek);
+                course.setEndWeek(endWeek);
             }
             //地点
             course.setClassRoom(str[str.length - 1]);
