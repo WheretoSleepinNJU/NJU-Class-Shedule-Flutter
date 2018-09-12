@@ -17,7 +17,9 @@
 
 ## 截图预览
 
-<img src="https://github.com/idealclover/NJU-Class-Shedule-Android/raw/master/img/Screenshot1.png" width="260" height="auto"><img src="https://github.com/idealclover/NJU-Class-Shedule-Android/raw/master/img/Screenshot2.png" width="260" height="auto"><img src="https://github.com/idealclover/NJU-Class-Shedule-Android/raw/master/img/Screenshot3.png" width="260" height="auto">
+![](https://github.com/idealclover/NJU-Class-Shedule-Android/raw/master/img/Screenshot1.png)
+![](https://github.com/idealclover/NJU-Class-Shedule-Android/raw/master/img/Screenshot2.png)
+![](https://github.com/idealclover/NJU-Class-Shedule-Android/raw/master/img/Screenshot3.png)
 
 ## 使用到的开源库
 
@@ -30,4 +32,9 @@
 * html parse: [org.jsoup:jsoup:1.10.3](https://jsoup.org/download)
 * commit messages: [carloscuesta/gitmoji](https://github.com/carloscuesta/gitmoji/)
 
-## 捐赠名单
+## 投喂名单
+
+| 投喂者     | 投喂金额 | 投喂时间   | 投喂方式 |
+| ---------- | -------- | ---------- | -------- |
+| DJ         | 0.10     | 2018.09.12 | 支付宝   |
+| 你随便输吧 | 15.00    | 2018.09.12 | 支付宝   |
