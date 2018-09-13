@@ -51,7 +51,7 @@ public class AboutPresenter implements AboutContract.Presenter {
             @Override
             public void onFail(String errMsg) {
                 LogUtil.e(this, errMsg);
-                ToastUtils.show(app.mContext.getString(R.string.access_err));
+                ToastUtils.show(app.mContext.getString(R.string.access_update_err));
             }
         });
     }

@@ -88,6 +88,7 @@
     <string name="checking_for_updates">检查更新中…</string>
     <string name="already_the_latest_version">已是最新版本</string>
     <string name="access_err">抱歉，访问出错</string>
+    <string name="access_update_err">检查更新失败</string>
     <string name="confirm_to_delete">确定删除?</string>
     <string name="edit_course">编辑课程</string>
     <string name="delete">删 除</string>

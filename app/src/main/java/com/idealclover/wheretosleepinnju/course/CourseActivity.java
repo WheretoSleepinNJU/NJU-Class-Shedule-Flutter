@@ -1,5 +1,6 @@
 package com.idealclover.wheretosleepinnju.course;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -37,6 +38,7 @@ import com.idealclover.wheretosleepinnju.custom.course.CourseView;
 import com.idealclover.wheretosleepinnju.data.bean.Course;
 import com.idealclover.wheretosleepinnju.data.db.CourseDbDao;
 import com.idealclover.wheretosleepinnju.setting.SettingActivity;
+import com.idealclover.wheretosleepinnju.utils.CheckUpdateUtil;
 import com.idealclover.wheretosleepinnju.utils.DialogHelper;
 import com.idealclover.wheretosleepinnju.utils.DialogListener;
 import com.idealclover.wheretosleepinnju.utils.LogUtil;
@@ -81,6 +83,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         mPresenter = new CoursePresenter(this);
 
         updateView();
+        checkUpdate(this);
     }
 
     private void initBackground() {
@@ -395,6 +398,11 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     private void fab(View v) {
         Intent intent = new Intent(CourseActivity.this, AddActivity.class);
         startActivity(intent);
+    }
+
+    private void checkUpdate(Activity activity) {
+        CheckUpdateUtil checkUpdateUtil = new CheckUpdateUtil();
+        checkUpdateUtil.checkUpdate(this);
     }
 
     @Override

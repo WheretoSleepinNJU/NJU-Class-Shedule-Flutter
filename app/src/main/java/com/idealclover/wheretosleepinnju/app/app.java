@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.idealclover.wheretosleepinnju.utils.CheckUpdateUtil;
 import com.idealclover.wheretosleepinnju.utils.Preferences;
 import com.idealclover.wheretosleepinnju.utils.ScreenUtils;
 import com.idealclover.wheretosleepinnju.utils.ToastUtils;
@@ -78,5 +79,6 @@ public class app extends Application {
         ToastUtils.init(mContext);
         Preferences.init(mContext);
         ScreenUtils.init(mContext);
+        CheckUpdateUtil.init(mContext);
     }
 }
