@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.idealclover.njuclassschedule.course.CourseActivity">
+    tools:context="com.idealclover.wheretosleepinnju.course.CourseActivity">
 
     <include layout="@layout/title_toolbar" />
 
@@ -17,7 +17,7 @@
         android:alpha="0.8"
         android:scaleType="centerCrop" />
 
-    <com.idealclover.njuclassschedule.custom.course.CourseView
+    <com.idealclover.wheretosleepinnju.custom.course.CourseView
         android:id="@+id/course_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

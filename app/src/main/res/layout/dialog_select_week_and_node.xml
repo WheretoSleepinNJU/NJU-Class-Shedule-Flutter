@@ -5,12 +5,12 @@
               android:gravity="center_vertical"
               android:orientation="horizontal">
 
-    <com.idealclover.njuclassschedule.custom.WheelView
+    <com.idealclover.wheretosleepinnju.custom.WheelView
         android:id="@+id/wv_week"
         android:layout_width="wrap_content"
         android:layout_height="140dp"/>
 
-    <com.idealclover.njuclassschedule.custom.WheelView
+    <com.idealclover.wheretosleepinnju.custom.WheelView
         android:id="@+id/wv_start_node"
         android:layout_width="wrap_content"
         android:layout_height="140dp"
@@ -21,7 +21,7 @@
         android:layout_height="2dp"
         android:background="?android:attr/colorPrimary"/>
 
-    <com.idealclover.njuclassschedule.custom.WheelView
+    <com.idealclover.wheretosleepinnju.custom.WheelView
         android:id="@+id/wv_end_node"
         android:layout_width="wrap_content"
         android:layout_height="140dp"

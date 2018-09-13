@@ -1,42 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="primary_dark_red">#D32F2F</color>
-    <color name="primary_red">#F44336</color>
-    <color name="accent_red">#FF5252</color>
+    <color name="primary_nanjing_blue">#0087F1</color>
+    <color name="secondary_nanjing_blue">#0095F9</color>
+    <color name="accent_nanjing_blue">#1BA4F9</color>
 
-    <color name="primary_dark_purple">#7B1FA2</color>
-    <color name="primary_purple">#9C27B0</color>
-    <color name="accent_purple">#E040FB</color>
+    <color name="primary_forgive_green">#388E3C</color>
+    <color name="secondary_forgive_green">#4CAF50</color>
+    <color name="accent_forgive_green">#8BC34A</color>
 
-    <color name="primary_dark_purple_de">#512DA8</color>
-    <color name="primary_purple_de">#673AB7</color>
-    <color name="accent_purple_de">#7C4DFF</color>
+    <color name="primary_ms_blue">#002060</color>
+    <color name="secondary_ms_blue">#002B82</color>
+    <color name="accent_ms_blue">#203B90</color>
 
-    <color name="primary_dark_pink">#C2185B</color>
-    <color name="primary_pink">#E91E63</color>
-    <color name="accent_pink">#FF4081</color>
+    <color name="primary_nju_purple">#661C58</color>
+    <color name="secondary_nju_purple">#872574</color>
+    <color name="accent_nju_purple">#9A4C8D</color>
 
-    <color name="primary_dark_indigo">#303F9F</color>
-    <color name="primary_indigo">#3F51B5</color>
-    <color name="accent_indigo">#536DFE</color>
+    <color name="primary_tomato_red">#A92F29</color>
+    <color name="secondary_tomato_red">#C52830</color>
+    <color name="accent_tomato_red">#D9434A</color>
 
-    <color name="primary_dark_light_blue">#0288D1</color>
-    <color name="primary_light_blue">#03A9F4</color>
-    <color name="accent_light_blue">#03A9F4</color>
+    <color name="primary_bubble_pink">#B08687</color>
+    <color name="secondary_bubble_pink">#DDA3B2</color>
+    <color name="accent_bubble_pink">#EAC8D1</color>
 
-    <color name="primary_dark_green">#388E3C</color>
-    <color name="primary_green">#4CAF50</color>
-    <color name="accent_green">#8BC34A</color>
+    <color name="primary_lake_green">#26637E</color>
+    <color name="secondary_lake_green">#2D7D93</color>
+    <color name="accent_lake_green">#23A2AF</color>
+
+    <color name="primary_iris_purple">#7D83B9</color>
+    <color name="secondary_iris_purple">#919FC5</color>
+    <color name="accent_iris_purple">#A6B4CA</color>
+
+    <color name="primary_pine_blue">#3C5A64</color>
+    <color name="secondary_pine_blue">#638190</color>
+    <color name="accent_pine_blue">#9E9E9E</color>
+
+    <!--<color name="primary_"></color>-->
+    <!--<color name="secondary_"></color>-->
+    <!--<color name="accent_"></color>-->
+
+    <!--<color name="primary_dark_red">#D32F2F</color>-->
+    <!--<color name="primary_red">#F44336</color>-->
+    <!--<color name="accent_red">#FF5252</color>-->
+
+    <!--<color name="primary_dark_purple">#7B1FA2</color>-->
+    <!--<color name="primary_purple">#9C27B0</color>-->
+    <!--<color name="accent_purple">#E040FB</color>-->
+
+    <!--<color name="primary_dark_purple_de">#512DA8</color>-->
+    <!--<color name="primary_purple_de">#673AB7</color>-->
+    <!--<color name="accent_purple_de">#7C4DFF</color>-->
+
+    <!--<color name="primary_dark_pink">#C2185B</color>-->
+    <!--<color name="primary_pink">#E91E63</color>-->
+    <!--<color name="accent_pink">#FF4081</color>-->
+
+    <!--<color name="primary_dark_indigo">#303F9F</color>-->
+    <!--<color name="primary_indigo">#3F51B5</color>-->
+    <!--<color name="accent_indigo">#536DFE</color>-->
+
+    <!--<color name="primary_dark_light_blue">#0288D1</color>-->
+    <!--<color name="primary_light_blue">#03A9F4</color>-->
+    <!--<color name="accent_light_blue">#03A9F4</color>-->
+
+    <!--<color name="primary_dark_green">#388E3C</color>-->
+    <!--<color name="primary_green">#4CAF50</color>-->
+    <!--<color name="accent_green">#8BC34A</color>-->
 
 
-    <color name="primary_dark_lime">#AFB42B</color>
-    <color name="primary_lime">#CDDC39</color>
-    <color name="accent_lime">#CDDC39</color>
+    <!--<color name="primary_dark_lime">#AFB42B</color>-->
+    <!--<color name="primary_lime">#CDDC39</color>-->
+    <!--<color name="accent_lime">#CDDC39</color>-->
 
-    <color name="primary_dark_blue_grey">#455A64</color>
-    <color name="primary_blue_grey">#607D8B</color>
-    <color name="accent_blue_grey">#9E9E9E</color>
+    <!--<color name="primary_dark_blue_grey">#455A64</color>-->
+    <!--<color name="primary_blue_grey">#607D8B</color>-->
+    <!--<color name="accent_blue_grey">#9E9E9E</color>-->
+
+    <!--<color name="primary_dark_brown">#A2998A</color>-->
+    <!--<color name="primary_light_brown">#B6B2A7</color>-->
+    <!--<color name="accent_light_brown">#C8B8A9</color>-->
 
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#757575</color>

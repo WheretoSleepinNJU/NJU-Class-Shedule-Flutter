@@ -115,7 +115,40 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:layout_marginTop="16dp"
-                android:text="感谢小百合工作室\n谨以此APP送给我的女朋友子枨"
+                android:text="友情链接"
+                android:textColor="@color/secondary_text"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#ffffff"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/tv_donate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="@string/donate_list"
+                    android:textColor="@color/primary_text"/>
+
+                <TextView
+                    android:id="@+id/tv_blog"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="@string/blog"
+                    android:textColor="@color/primary_text"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="16dp"
+                android:text="感谢小百合工作室\n感谢 @ns 协助开发\n感谢 @无忌 提供配色方案\n感谢各位提供反馈的NJUers\n谨以此APP送给我的女朋友子枨"
                 android:textColor="@color/secondary_text"/>
 
         </LinearLayout>

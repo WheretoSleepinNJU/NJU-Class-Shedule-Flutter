@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.idealclover.njuclassschedule.setting.SettingActivity">
+    tools:context="com.idealclover.wheretosleepinnju.setting.SettingActivity">
 
     <include layout="@layout/title_toolbar" />
 
@@ -24,7 +24,7 @@
                 android:text="@string/edit_class_schedule" />
 
             <!--edit menu-->
-            <com.idealclover.njuclassschedule.custom.settting.SettingItemNormal
+            <com.idealclover.wheretosleepinnju.custom.settting.SettingItemNormal
                 android:id="@+id/sin_user_add"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
                 android:layout_height="@dimen/margin_1dp"
                 android:background="@color/divider" />
 
-            <com.idealclover.njuclassschedule.custom.settting.SettingItemNormal
+            <com.idealclover.wheretosleepinnju.custom.settting.SettingItemNormal
                 android:id="@+id/sin_import_nju"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
                 android:layout_height="@dimen/margin_1dp"
                 android:background="@color/divider" />
 
-            <com.idealclover.njuclassschedule.custom.settting.SettingItemNormal
+            <com.idealclover.wheretosleepinnju.custom.settting.SettingItemNormal
                 android:id="@+id/sin_kb_manage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
                 style="@style/CategoryStyle"
                 android:text="@string/text_preference" />
 
-            <com.idealclover.njuclassschedule.custom.settting.SettingItemNormal
+            <com.idealclover.wheretosleepinnju.custom.settting.SettingItemNormal
                 android:id="@+id/sin_hide_fab"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -95,65 +95,59 @@
                     android:orientation="horizontal">
 
                     <!--TODO 替换-->
-                    <com.idealclover.njuclassschedule.custom.ColorImageView
+                    <com.idealclover.wheretosleepinnju.custom.ColorImageView
                         android:layout_width="@dimen/margin_24dp"
                         android:layout_height="@dimen/margin_24dp"
-                        app:bgcolor="@color/primary_green" />
+                        app:bgcolor="@color/secondary_nanjing_blue" />
 
-                    <com.idealclover.njuclassschedule.custom.ColorImageView
+                    <com.idealclover.wheretosleepinnju.custom.ColorImageView
                         android:layout_width="@dimen/margin_24dp"
                         android:layout_height="@dimen/margin_24dp"
                         android:layout_marginLeft="@dimen/margin_24dp"
-                        app:bgcolor="@color/primary_red" />
+                        app:bgcolor="@color/secondary_forgive_green" />
 
-                    <com.idealclover.njuclassschedule.custom.ColorImageView
+                    <com.idealclover.wheretosleepinnju.custom.ColorImageView
                         android:layout_width="@dimen/margin_24dp"
                         android:layout_height="@dimen/margin_24dp"
                         android:layout_marginLeft="@dimen/margin_24dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
-                        app:bgcolor="@color/primary_light_blue" />
+                        app:bgcolor="@color/secondary_ms_blue" />
 
-                    <com.idealclover.njuclassschedule.custom.ColorImageView
+                    <com.idealclover.wheretosleepinnju.custom.ColorImageView
                         android:layout_width="@dimen/margin_24dp"
                         android:layout_height="@dimen/margin_24dp"
                         android:layout_marginLeft="@dimen/margin_24dp"
-                        app:bgcolor="@color/primary_pink" />
+                        app:bgcolor="@color/secondary_nju_purple" />
 
-                    <com.idealclover.njuclassschedule.custom.ColorImageView
+                    <com.idealclover.wheretosleepinnju.custom.ColorImageView
                         android:layout_width="@dimen/margin_24dp"
                         android:layout_height="@dimen/margin_24dp"
                         android:layout_marginLeft="@dimen/margin_24dp"
-                        app:bgcolor="@color/primary_purple" />
+                        app:bgcolor="@color/secondary_tomato_red" />
 
-                    <com.idealclover.njuclassschedule.custom.ColorImageView
+                    <com.idealclover.wheretosleepinnju.custom.ColorImageView
                         android:layout_width="@dimen/margin_24dp"
                         android:layout_height="@dimen/margin_24dp"
                         android:layout_marginLeft="@dimen/margin_24dp"
-                        app:bgcolor="@color/primary_purple_de" />
+                        app:bgcolor="@color/secondary_bubble_pink" />
 
-                    <com.idealclover.njuclassschedule.custom.ColorImageView
+                    <com.idealclover.wheretosleepinnju.custom.ColorImageView
                         android:layout_width="@dimen/margin_24dp"
                         android:layout_height="@dimen/margin_24dp"
                         android:layout_marginLeft="@dimen/margin_24dp"
-                        app:bgcolor="@color/primary_dark_light_blue" />
+                        app:bgcolor="@color/secondary_lake_green" />
 
-                    <!--<com.idealclover.njuclassschedule.custom.ColorImageView-->
-                        <!--android:layout_width="@dimen/margin_24dp"-->
-                        <!--android:layout_height="@dimen/margin_24dp"-->
-                        <!--android:layout_marginLeft="@dimen/margin_24dp"-->
-                        <!--app:bgcolor="@color/color_jiu" />-->
-
-                    <com.idealclover.njuclassschedule.custom.ColorImageView
+                    <com.idealclover.wheretosleepinnju.custom.ColorImageView
                         android:layout_width="@dimen/margin_24dp"
                         android:layout_height="@dimen/margin_24dp"
                         android:layout_marginLeft="@dimen/margin_24dp"
-                        app:bgcolor="@color/primary_lime" />
+                        app:bgcolor="@color/secondary_iris_purple" />
 
-                    <com.idealclover.njuclassschedule.custom.ColorImageView
+                    <com.idealclover.wheretosleepinnju.custom.ColorImageView
                         android:layout_width="@dimen/margin_24dp"
                         android:layout_height="@dimen/margin_24dp"
                         android:layout_marginLeft="@dimen/margin_24dp"
-                        app:bgcolor="@color/primary_blue_grey" />
+                        app:bgcolor="@color/secondary_pine_blue" />
                 </LinearLayout>
             </HorizontalScrollView>
 
@@ -162,7 +156,7 @@
                 android:layout_height="@dimen/margin_1dp"
                 android:background="@color/divider" />
 
-            <com.idealclover.njuclassschedule.custom.settting.SettingItemNormal
+            <com.idealclover.wheretosleepinnju.custom.settting.SettingItemNormal
                 android:id="@+id/sin_more_pref"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -175,7 +169,7 @@
                 style="@style/CategoryStyle"
                 android:text="@string/other" />
 
-            <com.idealclover.njuclassschedule.custom.settting.SettingItemNormal
+            <com.idealclover.wheretosleepinnju.custom.settting.SettingItemNormal
                 android:id="@+id/sin_feedback"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -187,7 +181,14 @@
                 android:layout_height="@dimen/margin_1dp"
                 android:background="@color/divider" />
 
-            <com.idealclover.njuclassschedule.custom.settting.SettingItemNormal
+            <com.idealclover.wheretosleepinnju.custom.settting.SettingItemNormal
+                android:id="@+id/sin_donate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:item_title="@string/donate"
+                app:summary="@string/donate_summary" />
+
+            <com.idealclover.wheretosleepinnju.custom.settting.SettingItemNormal
                 android:id="@+id/sin_about"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
