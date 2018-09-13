@@ -1,4 +1,4 @@
-package com.idealclover.njuclassschedule;
+package com.idealclover.wheretosleepinnju;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
