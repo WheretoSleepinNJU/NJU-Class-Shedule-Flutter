@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.idealclover.njuclassschedule", appContext.getPackageName());
+        assertEquals("com.idealclover.wheretosleepinnju", appContext.getPackageName());
     }
 }
