@@ -188,6 +188,11 @@
                 app:item_title="@string/donate"
                 app:summary="@string/donate_summary" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/margin_1dp"
+                android:background="@color/divider" />
+
             <com.idealclover.wheretosleepinnju.custom.settting.SettingItemNormal
                 android:id="@+id/sin_about"
                 android:layout_width="match_parent"
