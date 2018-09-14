@@ -2,6 +2,7 @@ package com.idealclover.wheretosleepinnju.utils.spec;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.support.v7.widget.AppCompatButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RadioGroup;
@@ -179,6 +180,18 @@ public class PopupWindowDialog {
                 }
             }
         });
+
+        //根据weektype更新被选中的Button
+        switch(mWeekType){
+            case 0:
+                rgWeekType.check(R.id.arb_all);
+                break;
+            case 1:
+                rgWeekType.check(R.id.arb_single);
+                break;
+            case 2:
+                rgWeekType.check(R.id.arb_double);
+        }
 
         rgWeekType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
