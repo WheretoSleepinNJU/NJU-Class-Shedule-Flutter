@@ -1,4 +1,4 @@
-package com.idealclover.njuclassschedule.custom;
+package com.idealclover.wheretosleepinnju.custom;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -14,7 +14,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 
-import com.idealclover.njuclassschedule.R;
+import com.idealclover.wheretosleepinnju.R;
+
 
 /**
  * Created by mnnyang on 17-11-5.

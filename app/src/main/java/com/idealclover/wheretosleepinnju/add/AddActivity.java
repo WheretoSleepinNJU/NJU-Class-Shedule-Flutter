@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 
-<<<<<<< HEAD:app/src/main/java/com/idealclover/wheretosleepinnju/add/AddActivity.java
 import com.idealclover.wheretosleepinnju.BaseActivity;
 import com.idealclover.wheretosleepinnju.R;
 import com.idealclover.wheretosleepinnju.app.Constant;
@@ -22,28 +21,14 @@ import com.idealclover.wheretosleepinnju.utils.DialogListener;
 import com.idealclover.wheretosleepinnju.utils.LogUtil;
 import com.idealclover.wheretosleepinnju.utils.Preferences;
 import com.idealclover.wheretosleepinnju.utils.spec.PopupWindowDialog;
-=======
-import com.idealclover.njuclassschedule.BaseActivity;
-import com.idealclover.njuclassschedule.R;
-import com.idealclover.njuclassschedule.app.Constant;
-import com.idealclover.njuclassschedule.custom.EditTextLayout;
-import com.idealclover.njuclassschedule.custom.AutoCompleteTextViewLayout;
 
-import com.idealclover.njuclassschedule.data.bean.Course;
-import com.idealclover.njuclassschedule.data.db.CourseDbDao;
-import com.idealclover.njuclassschedule.utils.DialogHelper;
-import com.idealclover.njuclassschedule.utils.DialogListener;
-import com.idealclover.njuclassschedule.utils.LogUtil;
-import com.idealclover.njuclassschedule.utils.Preferences;
-import com.idealclover.njuclassschedule.utils.spec.PopupWindowDialog;
->>>>>>> dev:app/src/main/java/com/idealclover/njuclassschedule/add/AddActivity.java
 
 public class AddActivity extends BaseActivity implements AddContract.View, View.OnClickListener {
 
     private AddContract.Presenter mPresenter;
 
     private EditText mEtName;
-    private AutoCompleteTextViewLayout mAtCompTVClassroom;
+    private com.idealclover.wheretosleepinnju.custom.AutoCompleteTextViewLayout mAtCompTVClassroom;
     private EditTextLayout mEtlTeacher;
     private EditTextLayout mEtlTime;
     private EditTextLayout mEtlWeekRange;
@@ -266,6 +251,7 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
     public void showAddFail(String msg) {
         toast(msg);
     }
+    
 
     @Override
     public void onAddSucceed(Course course) {
