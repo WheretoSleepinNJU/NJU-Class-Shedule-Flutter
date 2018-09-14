@@ -6,12 +6,18 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
+<<<<<<< HEAD
     tools:context="com.idealclover.wheretosleepinnju.add.AddActivity"
 
     android:focusable="true"
     android:focusableInTouchMode="true">
     <!--以上两行是为了使edittext在进入activity时不自动获取焦点，这样软键盘就不会自动弹出来了
          by ns 18/9/10-->
+=======
+    tools:context="com.idealclover.njuclassschedule.add.AddActivity"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+>>>>>>> dev
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -61,7 +67,11 @@
                 android:orientation="vertical"
                 android:padding="8dp">
 
+<<<<<<< HEAD
                 <com.idealclover.wheretosleepinnju.custom.EditTextLayout
+=======
+                <com.idealclover.njuclassschedule.custom.AutoCompleteTextViewLayout
+>>>>>>> dev
                     android:id="@+id/etl_classroom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
