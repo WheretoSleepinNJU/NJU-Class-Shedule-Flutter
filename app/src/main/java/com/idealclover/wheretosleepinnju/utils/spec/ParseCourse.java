@@ -152,20 +152,25 @@ public class ParseCourse {
                 int startWeek = Integer.decode(startweek);
                 String endweek = matcher.group(0);
                 int classes = 0;
+                int endWeek;
 
-                while(matcher.find()){
-                    endweek = matcher.group(0);
-                    classes ++;
-                }
+                if(!matcher.find()){
+                    //“从第3周开始 单周
+                    endWeek = 17;
+                }else {
+                    while (matcher.find()) {
+                        endweek = matcher.group(0);
+                        classes++;
+                    }
+                    endweek = endweek.substring(1, endweek.length() - 1); //提取
+                    endWeek = Integer.decode(endweek);
 
-                endweek = endweek.substring(1, endweek.length() - 1); //提取
-                int endWeek = Integer.decode(endweek);
-
-                if(endWeek - startWeek == classes * 2){
-                    if(startWeek % 2 == 1){
-                        course.setWeekType(Course.WEEK_SINGLE);
-                    }else{
-                        course.setWeekType(Course.WEEK_DOUBLE);
+                    if (endWeek - startWeek == classes * 2) {
+                        if (startWeek % 2 == 1) {
+                            course.setWeekType(Course.WEEK_SINGLE);
+                        } else {
+                            course.setWeekType(Course.WEEK_DOUBLE);
+                        }
                     }
                 }
                 course.setStartWeek(startWeek);
