@@ -61,7 +61,7 @@
                 android:orientation="vertical"
                 android:padding="8dp">
 
-                <com.idealclover.njuclassschedule.custom.AutoCompleteTextViewLayout
+                <com.idealclover.wheretosleepinnju.custom.AutoCompleteTextViewLayout
                     android:id="@+id/etl_classroom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

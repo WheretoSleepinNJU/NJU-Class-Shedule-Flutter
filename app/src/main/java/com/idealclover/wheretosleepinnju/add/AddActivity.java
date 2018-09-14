@@ -251,7 +251,7 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
     public void showAddFail(String msg) {
         toast(msg);
     }
-    
+
 
     @Override
     public void onAddSucceed(Course course) {
