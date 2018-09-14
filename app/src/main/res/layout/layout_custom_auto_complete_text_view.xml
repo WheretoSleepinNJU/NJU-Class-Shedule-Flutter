@@ -22,7 +22,7 @@
         android:textColor="@color/primary_text"
         android:textSize="16sp"
         android:completionThreshold="1"
-        tools:hint="学号"/>
+        tools:hint="学号" />
 
     <ImageView
         android:id="@+id/iv_clear"

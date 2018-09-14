@@ -109,10 +109,16 @@
     <string name="can_not_be_empty">不能为空</string>
 
     <string-array name="classrooms">
-        <item>仙I-</item>
-        <item>仙II-</item>
+        <item>仙Ⅰ-</item>
+        <item>仙Ⅱ-</item>
         <item>逸A-</item>
         <item>逸B-</item>
         <item>逸C-</item>
+        <item>基础实验楼甲</item>
+        <item>基础实验楼乙</item>
+        <item>基础实验楼丙</item>
+        <item>实验楼甲</item>
+        <item>实验楼乙</item>
+        <item>实验楼丙</item>
     </string-array>
 </resources>

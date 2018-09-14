@@ -13,6 +13,7 @@ import android.widget.EditText;
 import com.idealclover.wheretosleepinnju.BaseActivity;
 import com.idealclover.wheretosleepinnju.R;
 import com.idealclover.wheretosleepinnju.app.Constant;
+import com.idealclover.wheretosleepinnju.custom.AutoCompleteTextViewLayout;
 import com.idealclover.wheretosleepinnju.custom.EditTextLayout;
 import com.idealclover.wheretosleepinnju.data.bean.Course;
 import com.idealclover.wheretosleepinnju.data.db.CourseDbDao;
@@ -28,7 +29,7 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
     private AddContract.Presenter mPresenter;
 
     private EditText mEtName;
-    private com.idealclover.wheretosleepinnju.custom.AutoCompleteTextViewLayout mAtCompTVClassroom;
+    private AutoCompleteTextViewLayout mAtCompTVClassroom;
     private EditTextLayout mEtlTeacher;
     private EditTextLayout mEtlTime;
     private EditTextLayout mEtlWeekRange;
@@ -102,6 +103,7 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
         String[] classrooms=getResources().getStringArray(R.array.classrooms);
         ArrayAdapter<String> adapter=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,classrooms);
         mAtCompTVClassroom.setAdapter(adapter);
+        mAtCompTVClassroom.setDropDownVerticalOffset(2);
 
         mEtlTeacher = findViewById(R.id.etl_teacher);
         mEtlTime = findViewById(R.id.etl_time);

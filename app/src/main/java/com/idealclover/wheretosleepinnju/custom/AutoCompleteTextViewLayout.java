@@ -146,4 +146,8 @@ public class AutoCompleteTextViewLayout extends LinearLayout {
             }
         });
     }
+
+    public void setDropDownVerticalOffset(int offset){
+        mAtCompTtView.setDropDownVerticalOffset(offset);
+    }
 }
