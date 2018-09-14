@@ -7,8 +7,8 @@ android {
         applicationId "com.idealclover.wheretosleepinnju"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 1
-        versionName "0.1.4"
+        versionCode 3
+        versionName "0.2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
