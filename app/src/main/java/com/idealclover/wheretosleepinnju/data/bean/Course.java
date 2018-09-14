@@ -214,7 +214,7 @@ public class Course implements Comparable<Course>,Serializable {
 
     /**
      * 设置课程节数
-     * 必须生序排列
+     * 必须升序排列
      */
     public void setNodes(int[] nodes) {
         if (nodes.length == 0) {

@@ -101,10 +101,24 @@
 
     <string name="bg_enabled">已启用背景</string>
     <string name="bg_disabled">已禁用背景</string>
-    <string name="select_iamge_succeed">设置背景成功</string>
+    <string name="select_image_succeed">设置背景成功</string>
     <string name="nju">南京大学</string>
     <string name="other_school">其他高校</string>
     <string name="school">学校</string>
     <string name="please_input_school_url">请输入教务管理系统网址</string>
     <string name="can_not_be_empty">不能为空</string>
+
+    <string-array name="classrooms">
+        <item>仙Ⅰ-</item>
+        <item>仙Ⅱ-</item>
+        <item>逸A-</item>
+        <item>逸B-</item>
+        <item>逸C-</item>
+        <item>基础实验楼甲</item>
+        <item>基础实验楼乙</item>
+        <item>基础实验楼丙</item>
+        <item>实验楼甲</item>
+        <item>实验楼乙</item>
+        <item>实验楼丙</item>
+    </string-array>
 </resources>
