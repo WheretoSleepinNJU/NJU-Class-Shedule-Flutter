@@ -59,7 +59,7 @@ public class ShowDetailDialog {
         tvNode.setText(nodeInfo);
 
         tvTitle.setText(course.getName());
-        tvClassroom.setText(course.getClassRoom());
+        tvClassroom.setText(adaptClassroomStr(course.getClassRoom()));
         tvTeacher.setText(course.getTeacher());
 
         tvWeekRange.setText(course.getStartWeek() + "-" + course.getEndWeek() + "周");
@@ -125,5 +125,20 @@ public class ShowDetailDialog {
         if (mPopupWindow != null) {
             mPopupWindow.dismiss();
         }
+    }
+
+    private String adaptClassroomStr(String oriClassroom){
+        int len=0;
+        String halfWidth="[\u0020-\u007e]";//半角字符为ASCII码32-126的字符
+        StringBuffer sb=new StringBuffer(oriClassroom);
+        for(int i=0;i<sb.length();i++){
+            if(!sb.substring(i,i+1).matches(halfWidth))
+                len+=2;
+            else
+                len++;
+            if(len>20)
+                return sb.substring(0,i-2)+"...";
+        }
+        return oriClassroom;
     }
 }
