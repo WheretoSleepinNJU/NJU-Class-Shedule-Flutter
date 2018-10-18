@@ -148,7 +148,7 @@ public class ConfActivity extends BaseActivity implements ConfContract.View, Set
                                 sourceFilePath);
                         //
                         notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_OTHER);
-                        toast(getString(R.string.select_iamge_succeed));
+                        toast(getString(R.string.select_image_succeed));
                     } else {
                         toast(getString(R.string.select_image_failed));
                     }

@@ -19,10 +19,11 @@ public class Course implements Comparable<Course>,Serializable {
     private int courseId;
     //所有周
     public static final int WEEK_ALL = 0;
-    //双周
-    public static final int WEEK_DOUBLE = 1;
     //单周
-    public static final int WEEK_SINGLE = 2;
+    public static final int WEEK_SINGLE = 1;
+    //双周
+    public static final int WEEK_DOUBLE = 2;
+
 
     public static final int NODE_NOON = -1;
 
@@ -214,7 +215,7 @@ public class Course implements Comparable<Course>,Serializable {
 
     /**
      * 设置课程节数
-     * 必须生序排列
+     * 必须升序排列
      */
     public void setNodes(int[] nodes) {
         if (nodes.length == 0) {

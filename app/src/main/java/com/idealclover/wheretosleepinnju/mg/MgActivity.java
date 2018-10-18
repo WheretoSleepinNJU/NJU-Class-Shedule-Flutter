@@ -72,7 +72,7 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
             @Override
             public void onEditClick(View view, int csNameId,
                                     RecyclerBaseAdapter.ViewHolder holder) {
-                toast(csNameId + "");
+//                toast(csNameId + "");
                 editDialog(csNameId);
             }
 
