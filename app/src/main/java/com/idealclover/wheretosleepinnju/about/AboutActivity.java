@@ -17,7 +17,7 @@ import com.idealclover.wheretosleepinnju.utils.DialogHelper;
 import com.idealclover.wheretosleepinnju.utils.DialogListener;
 import com.idealclover.wheretosleepinnju.utils.ToastUtils;
 import com.idealclover.wheretosleepinnju.utils.VersionUpdate;
-import com.zhy.http.okhttp.request.OkHttpRequest;
+
 
 /**
  * Created by xxyangyoulin on 2018/3/13.

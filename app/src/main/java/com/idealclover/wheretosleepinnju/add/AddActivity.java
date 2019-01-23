@@ -6,12 +6,14 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.idealclover.wheretosleepinnju.BaseActivity;
 import com.idealclover.wheretosleepinnju.R;
 import com.idealclover.wheretosleepinnju.app.Constant;
+import com.idealclover.wheretosleepinnju.custom.AutoCompleteTextViewLayout;
 import com.idealclover.wheretosleepinnju.custom.EditTextLayout;
 import com.idealclover.wheretosleepinnju.data.bean.Course;
 import com.idealclover.wheretosleepinnju.data.db.CourseDbDao;
@@ -21,12 +23,13 @@ import com.idealclover.wheretosleepinnju.utils.LogUtil;
 import com.idealclover.wheretosleepinnju.utils.Preferences;
 import com.idealclover.wheretosleepinnju.utils.spec.PopupWindowDialog;
 
+
 public class AddActivity extends BaseActivity implements AddContract.View, View.OnClickListener {
 
     private AddContract.Presenter mPresenter;
 
     private EditText mEtName;
-    private EditTextLayout mEtlClassroom;
+    private AutoCompleteTextViewLayout mAtCompTVClassroom;
     private EditTextLayout mEtlTeacher;
     private EditTextLayout mEtlTime;
     private EditTextLayout mEtlWeekRange;
@@ -75,7 +78,7 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
             LogUtil.i(TAG, "id====" + mCourseId);
 
             mEtName.setText(course.getName());
-            mEtlClassroom.setText(course.getClassRoom());
+            mAtCompTVClassroom.setText(course.getClassRoom());
             mEtlTeacher.setText(course.getTeacher());
 
             mSelectedWeek = course.getWeek();
@@ -96,7 +99,12 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
 
     private void initView() {
         mEtName = findViewById(R.id.et_course_name);
-        mEtlClassroom = findViewById(R.id.etl_classroom);
+        mAtCompTVClassroom =  findViewById(R.id.etl_classroom);
+        String[] classrooms=getResources().getStringArray(R.array.classrooms);
+        ArrayAdapter<String> adapter=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,classrooms);
+        mAtCompTVClassroom.setAdapter(adapter);
+        mAtCompTVClassroom.setDropDownVerticalOffset(2);
+
         mEtlTeacher = findViewById(R.id.etl_teacher);
         mEtlTime = findViewById(R.id.etl_time);
         mEtlWeekRange = findViewById(R.id.etl_week_range);
@@ -142,7 +150,7 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
         course.setName(mEtName.getText().toString().trim())
                 .setCsName(csName)
                 .setCsNameId(currentCsNameId)
-                .setClassRoom(mEtlClassroom.getText().trim())
+                .setClassRoom(mAtCompTVClassroom.getText().trim())
                 .setTeacher(mEtlTeacher.getText().trim())
 
                 .setStartWeek(mSelectedStartWeek)
@@ -245,6 +253,7 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
     public void showAddFail(String msg) {
         toast(msg);
     }
+
 
     @Override
     public void onAddSucceed(Course course) {
