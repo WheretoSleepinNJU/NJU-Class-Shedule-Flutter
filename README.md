@@ -2,6 +2,10 @@
 
 -----
 
+**⚠️项目重构中,新版本在路上  ~~慢慢等着吧咕咕咕~~ 敬请期待**
+
+谢谢大家的支持与鼓励ww 欢迎各种意义上的帮助
+
 **为NJUer的Android平台 Material design 课程表**
 **基于[星星课表(mnnyang/ClassSchedule)](https://github.com/mnnyang/ClassSchedule)之上进行设计与重构**
 
