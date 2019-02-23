@@ -68,7 +68,7 @@
 
         <Preference
             android:layout="@layout/preference_item"
-            android:summary="@string/app_version"
+            android:summary="@string/app_LTS"
             android:title="@string/about"/>
 
     </PreferenceCategory>

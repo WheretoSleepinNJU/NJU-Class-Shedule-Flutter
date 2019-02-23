@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.idealclover.wheretosleepinnju.custom.EditTextLayout
+            <com.lilystudio.wheretosleepinnju.custom.EditTextLayout
                 android:id="@+id/etl_xh"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
                 android:layout_height="1px"
                 android:background="#20000000" />
 
-            <com.idealclover.wheretosleepinnju.custom.EditTextLayout
+            <com.lilystudio.wheretosleepinnju.custom.EditTextLayout
                 android:id="@+id/etl_pwd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -84,7 +84,7 @@
                 android:orientation="horizontal">
 
 
-                <com.idealclover.wheretosleepinnju.custom.EditTextLayout
+                <com.lilystudio.wheretosleepinnju.custom.EditTextLayout
                     android:id="@+id/etl_captcha"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
