@@ -62,3 +62,7 @@
 
 #glide
 -dontwarn com.bumptech.glide.**
+
+#bugly
+-dontwarn com.tencent.bugly.**
+-keep public class com.tencent.bugly.**{*;}

@@ -1,6 +1,5 @@
 package com.lilystudio.wheretosleepinnju.about;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,12 +10,7 @@ import android.widget.TextView;
 
 import com.lilystudio.wheretosleepinnju.BaseActivity;
 import com.lilystudio.wheretosleepinnju.R;
-import com.lilystudio.wheretosleepinnju.app.app;
-import com.lilystudio.wheretosleepinnju.data.bean.Version;
-import com.lilystudio.wheretosleepinnju.utils.DialogHelper;
-import com.lilystudio.wheretosleepinnju.utils.DialogListener;
 import com.lilystudio.wheretosleepinnju.utils.ToastUtils;
-import com.lilystudio.wheretosleepinnju.utils.VersionUpdate;
 
 
 /**
@@ -45,10 +39,7 @@ public class AboutActivity extends BaseActivity implements AboutContract.View {
 
     private void initVersionName() {
         TextView tvVersionName = findViewById(R.id.tv_version);
-
-        VersionUpdate vu = new VersionUpdate();
-        String versionName = vu.getLocalVersionName(app.mContext);
-        tvVersionName.setText(versionName);
+        tvVersionName.setText(R.string.app_LTS);
     }
 
     private void initCheckUpdate() {
@@ -100,19 +91,6 @@ public class AboutActivity extends BaseActivity implements AboutContract.View {
     @Override
     public void showNotice(String notice) {
         ToastUtils.show(notice);
-    }
-
-    @Override
-    public void showUpdateVersionInfo(Version version) {
-        final String link = version.getLink();
-        DialogHelper dialogHelper = new DialogHelper();
-        dialogHelper.showNormalDialog(this, getString(R.string.now_version), version.getMsg(), new DialogListener() {
-            @Override
-            public void onPositive(DialogInterface dialog, int which) {
-                super.onPositive(dialog, which);
-                VersionUpdate.goToMarket(getBaseContext(), link);
-            }
-        });
     }
 
     @Override

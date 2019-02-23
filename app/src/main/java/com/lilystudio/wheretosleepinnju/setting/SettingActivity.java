@@ -29,7 +29,6 @@ import com.lilystudio.wheretosleepinnju.utils.DialogListener;
 import com.lilystudio.wheretosleepinnju.utils.Preferences;
 import com.lilystudio.wheretosleepinnju.utils.ScreenUtils;
 import com.lilystudio.wheretosleepinnju.utils.ToastUtils;
-import com.lilystudio.wheretosleepinnju.utils.VersionUpdate;
 import com.lilystudio.wheretosleepinnju.utils.AlipayDonate;
 
 import static com.lilystudio.wheretosleepinnju.app.Constant.themeColorArray;
@@ -101,10 +100,6 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
                 .getBoolean(getString(R.string.app_preference_hide_fab),
                         false));
 //                        true));
-
-        VersionUpdate vu = new VersionUpdate();
-        String versionName = vu.getLocalVersionName(app.mContext);
-        sinAbout.setSummary(versionName);
     }
 
     @Override

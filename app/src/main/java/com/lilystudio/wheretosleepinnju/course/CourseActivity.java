@@ -37,7 +37,6 @@ import com.lilystudio.wheretosleepinnju.custom.course.CourseView;
 import com.lilystudio.wheretosleepinnju.data.bean.Course;
 import com.lilystudio.wheretosleepinnju.data.db.CourseDbDao;
 import com.lilystudio.wheretosleepinnju.setting.SettingActivity;
-import com.lilystudio.wheretosleepinnju.utils.CheckUpdateUtil;
 import com.lilystudio.wheretosleepinnju.utils.DialogHelper;
 import com.lilystudio.wheretosleepinnju.utils.DialogListener;
 import com.lilystudio.wheretosleepinnju.utils.LogUtil;
@@ -82,7 +81,6 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         mPresenter = new CoursePresenter(this);
 
         updateView();
-        checkUpdate(this);
     }
 
     private void initBackground() {
@@ -397,11 +395,6 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     private void fab(View v) {
         Intent intent = new Intent(CourseActivity.this, AddActivity.class);
         startActivity(intent);
-    }
-
-    private void checkUpdate(Activity activity) {
-        CheckUpdateUtil checkUpdateUtil = new CheckUpdateUtil();
-        checkUpdateUtil.checkUpdate(this);
     }
 
     @Override

@@ -5,7 +5,7 @@ import com.lilystudio.wheretosleepinnju.R;
  */
 
 public class Constant {
-    public static final String INTENT_UPDATE = "com.idealclover.update";
+    public static final String INTENT_UPDATE = "com.lilystudio.update";
     public static final String INTENT_UPDATE_TYPE = "intent_update_type";
     public static final int INTENT_UPDATE_TYPE_OTHER = 2;
     public static final int INTENT_UPDATE_TYPE_COURSE = 1;
