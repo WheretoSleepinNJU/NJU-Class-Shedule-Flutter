@@ -14,7 +14,7 @@
     tools:showIn="@layout/activity_add">
 
 
-    <com.idealclover.wheretosleepinnju.custom.EditTextLayout
+    <com.lilystudio.wheretosleepinnju.custom.EditTextLayout
         android:id="@+id/etl_time"
         app:hintColor="@color/color_gary_40"
         android:layout_width="match_parent"
