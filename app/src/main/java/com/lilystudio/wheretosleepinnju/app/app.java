@@ -5,10 +5,12 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.lilystudio.wheretosleepinnju.R;
 import com.lilystudio.wheretosleepinnju.utils.CheckUpdateUtil;
 import com.lilystudio.wheretosleepinnju.utils.Preferences;
 import com.lilystudio.wheretosleepinnju.utils.ScreenUtils;
 import com.lilystudio.wheretosleepinnju.utils.ToastUtils;
+import com.tencent.bugly.Bugly;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.cookie.CookieJarImpl;
 import com.zhy.http.okhttp.cookie.store.MemoryCookieStore;
@@ -36,6 +38,7 @@ public class app extends Application {
         super.onCreate();
         mContext = getApplicationContext();
         mHandler = new Handler(Looper.getMainLooper());
+//        Bugly.init(getApplicationContext(), getString(R.string.bugly_appid), false);
         initOkHttp();
         initUtils();
     }
