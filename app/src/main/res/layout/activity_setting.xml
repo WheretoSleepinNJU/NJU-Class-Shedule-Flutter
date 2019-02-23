@@ -198,7 +198,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:item_title="@string/about"
-                app:summary="@string/app_version" />
+                app:summary="@string/app_LTS" />
 
             <View
                 android:layout_width="match_parent"

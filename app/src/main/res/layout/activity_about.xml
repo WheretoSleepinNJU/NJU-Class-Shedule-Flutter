@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                tools:text="@string/app_version"
+                tools:text="@string/app_LTS"
                 android:textColor="@color/secondary_text"
                 android:textSize="12sp"/>
 

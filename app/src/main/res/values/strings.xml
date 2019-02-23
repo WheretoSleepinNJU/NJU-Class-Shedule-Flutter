@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">南哪课表</string>
-    <string name="app_version">0.2.0</string>
+    <string name="app_version">0.2.1</string>
+    <string name="app_LTS">0.2.1 (LTS)</string>
 
     <string name="qq_number">1455169173</string>
     <string name="pay_code">FKX00710CQCHIHK4B9CA31</string>
@@ -64,7 +65,7 @@
     <string name="donate_njuclassschedule">https://github.com/idealclover/NJU-Class-Shedule-Android/blob/master/README.md</string>
 
     <string name="blog">傻翠的个人博客（欢迎来玩）</string>
-    <string name="blog_url">https://www.idealclover.top</string>
+    <string name="blog_url">https://idealclover.top</string>
 
     <string name="check_update">检查更新</string>
     <string name="update_succeed">更新成功</string>
