@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">南哪课表</string>
-    <string name="app_version">0.2.1</string>
-    <string name="app_LTS">0.2.1 (LTS)</string>
+    <string name="app_version">0.2.2</string>
+    <string name="app_LTS">0.2.2 (LTS)</string>
 
     <string name="qq_number">1455169173</string>
     <string name="pay_code">FKX00710CQCHIHK4B9CA31</string>
