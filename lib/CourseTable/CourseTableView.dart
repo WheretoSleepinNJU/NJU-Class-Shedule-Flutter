@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+//import '../Utils/Strings.dart';
+import '../Utils/Color.dart';
 
 class CourseTableView extends StatefulWidget {
   @override
@@ -13,8 +15,8 @@ class CourseTableViewState extends State<CourseTableView> {
   void _initDefaultSize() {}
 
   var classes = [
-    {'weekday': 3, 'start': 5, 'step': 2, 'name': 'QAQ'},
-    {'weekday': 4, 'start': 2, 'step': 3, 'name': 'QWQ'},
+    {'weekday': 3, 'start': 5, 'step': 2, 'name': 'QAQ', 'color': '#8AD297'},
+    {'weekday': 4, 'start': 2, 'step': 3, 'name': 'QWQ', 'color': '#F9A883'},
   ];
 
   @override
@@ -51,12 +53,23 @@ class CourseTableViewState extends State<CourseTableView> {
           child: Text((i + 1).toString())),
     );
 
-    var qwq = classes[0]['start'];
+    /* FIXME: Draw Dashed Line: Padding Due to Flutter */
+//    List<Widget> _classes = new List.generate(
+//      _mShowClass,
+//          (int i) => new Container(
+//          margin: EdgeInsets.only(top: (i + 1) * _mClassTitleHeight),
+//          width: _mWeekTitleWidth * _mShowWeek,
+//          height: 1.5,
+//          color: Colors.black,
+//    ));
 
+    /**
+     * Draw Classes
+     */
     List<Widget> _classes = new List.generate(
         classes.length,
         (int i) => new Container(
-            color: Colors.deepPurpleAccent,
+            color: HexColor(classes[i]['color']),
             margin: EdgeInsets.only(
                 top: (classes[i]['start'] as int) * _mClassTitleHeight,
                 left: (classes[i]['weekday'] as int) * _mWeekTitleWidth),
@@ -64,23 +77,20 @@ class CourseTableViewState extends State<CourseTableView> {
             width: _mWeekTitleWidth,
             child: Text(classes[i]['name'])
         ));
-    _classes.insert(
-        0,
-        Positioned.fill(
-          child: Container(color: Colors.grey),
-        ));
 
-//    _classes.add(new Container(
-//        color: Colors.deepPurpleAccent,
-//        margin: EdgeInsets.only(
-//            top: 5 * _mClassTitleHeight, left: 3 * _mWeekTitleWidth),
-//        height: _mClassTitleHeight,
-//        width: _mWeekTitleWidth,
-//        child: Text(' qwqwqwqw')));
+
+    /**
+     * Draw Background
+     */
+//    _classes.insert(
+//        0,
+//        Positioned.fill(
+//          child: Container(color: Colors.white),
+//        ));
 
     return Scaffold(
         appBar: AppBar(
-          title: Text('hello world'),
+          title: Text('NJU'),
         ),
         body: LayoutBuilder(builder:
             (BuildContext context, BoxConstraints viewportConstraints) {
