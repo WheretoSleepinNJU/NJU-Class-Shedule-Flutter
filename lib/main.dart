@@ -1,6 +1,7 @@
 // This sample shows adding an action to an [AppBar] that opens a shopping cart.
 
 import 'package:flutter/material.dart';
+import 'CourseTable/CourseTableView.dart';
 
 void main() => runApp(MyApp());
 
@@ -23,19 +24,20 @@ class MyStatelessWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Hello World'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.shopping_cart),
-            tooltip: 'Open shopping cart',
-            onPressed: () {
-              // ...
-            },
-          ),
-        ],
-      ),
-    );
+//    return Scaffold(
+//      appBar: AppBar(
+//        title: Text('Hello World'),
+//        actions: <Widget>[
+//          IconButton(
+//            icon: Icon(Icons.shopping_cart),
+//            tooltip: 'Open shopping cart',
+//            onPressed: () {
+//              // ...
+//            },
+//          ),
+//        ],
+//      ),
+//    );
+    return CourseTableView();
   }
 }
