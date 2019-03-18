@@ -6,25 +6,31 @@ class CourseTableView extends StatefulWidget {
 }
 
 class CourseTableViewState extends State<CourseTableView> {
-  double _mWeekHeight = 40;
-  double _mWeekhWidth;
-  double _mClassTitleWidth = 20;
-
   List<String> _WEEK = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
   int _mShowWeek = 7;
   int _mShowClass = 13;
 
   void _initDefaultSize() {}
 
+  var classes = [
+    {'weekday': 3, 'start': 5, 'step': 2, 'name': 'QAQ'},
+    {'weekday': 4, 'start': 2, 'step': 3, 'name': 'QWQ'},
+  ];
+
   @override
   Widget build(BuildContext context) {
+    double _mScreenWidth = MediaQuery.of(context).size.width;
+    double _mClassTitleWidth = 20;
+    double _mClassTitleHeight = 50;
+    double _mWeekTitleHeight = 30;
+    double _mWeekTitleWidth = (_mScreenWidth - _mClassTitleWidth) / _mShowWeek;
+
     List<Widget> _weekTitle = new List.generate(
         _mShowWeek,
         (int i) => new Expanded(
               child: Container(
                 color: Colors.deepPurpleAccent,
-//        margin: EdgeInsets.all(10.0),
-                height: _mClassTitleWidth,
+                height: _mWeekTitleHeight,
                 child: Text(_WEEK[i]),
                 padding: EdgeInsets.all(10.0),
               ),
@@ -39,86 +45,62 @@ class CourseTableViewState extends State<CourseTableView> {
       _mShowClass,
       (int i) => new Container(
           color: Colors.deepPurpleAccent,
-//          margin: EdgeInsets.all(10.0),
-          height: _mWeekHeight,
+          margin: EdgeInsets.only(top: i * _mClassTitleHeight),
+          height: _mClassTitleHeight,
           width: _mClassTitleWidth,
           child: Text((i + 1).toString())),
     );
 
-    List<Widget> _classes = new List();
-    _classes.add(new Container(
-        color: Colors.deepPurpleAccent,
-        padding: const EdgeInsets.only(left: 60, top: 20),
-//          margin: EdgeInsets.all(10.0),
-        height: _mWeekHeight,
-        width: 80,
-        child: Text('QAQ')));
+    var qwq = classes[0]['start'];
 
-    _classes.add(new Container(
-        color: Colors.deepPurpleAccent,
-        padding: const EdgeInsets.only(left: 200, top: 0),
-//          margin: EdgeInsets.all(10.0),
-        height: 0,
-        width: 80,
-        child: Text('QAQ')));
+    List<Widget> _classes = new List.generate(
+        classes.length,
+        (int i) => new Container(
+            color: Colors.deepPurpleAccent,
+            margin: EdgeInsets.only(
+                top: (classes[i]['start'] as int) * _mClassTitleHeight,
+                left: (classes[i]['weekday'] as int) * _mWeekTitleWidth),
+            height: (classes[i]['step'] as int) * _mClassTitleHeight,
+            width: _mWeekTitleWidth,
+            child: Text(classes[i]['name'])
+        ));
+    _classes.insert(
+        0,
+        Positioned.fill(
+          child: Container(color: Colors.grey),
+        ));
 
-//    List<Widget> _day(int i) {
-//      List<Widget> rst = new List.generate(
-//          _mShowClass,
-//              (int i) =>
-//          new Container(
-//              padding: EdgeInsets.all(10.0),
-//              height: 48,
-//              child: Text((i + 1).toString())));
-//      rst.insert(
-//          0,
-//          Container(
-//            color: Colors.deepPurpleAccent,
-////              margin: EdgeInsets.all(10.0),
-//            height: 20,
-//            child: Text(_WEEK[i]), padding: EdgeInsets.all(10.0),));
-//      return rst;
-//    }
-//
-//    List<Widget> _week = new List.generate(_mShowWeek, (int i) =>
-//    new Expanded(
-//        child: Column(
-//          children: _day(i),
-//        ),
-//        flex: 2);
-//    );
+//    _classes.add(new Container(
+//        color: Colors.deepPurpleAccent,
+//        margin: EdgeInsets.only(
+//            top: 5 * _mClassTitleHeight, left: 3 * _mWeekTitleWidth),
+//        height: _mClassTitleHeight,
+//        width: _mWeekTitleWidth,
+//        child: Text(' qwqwqwqw')));
 
     return Scaffold(
         appBar: AppBar(
           title: Text('hello world'),
         ),
-        body: SingleChildScrollView(
-            child: Column(children: <Widget>[
-          Row(children: _weekTitle),
-          Row(children: [
-            Column(children: _classTitle),
-            Container(
-//                width: 8000,
-                alignment: new FractionalOffset(1.0, 0.0),
-                padding: const EdgeInsets.only(left: 0, top: 0),
-                child: Stack(
-//                    alignment: new FractionalOffset(1.0, 0.0),
-                    children: _classes
-//                    children: <Widget>[
-//                      Positioned.fill(
-//                        child: Container(color: Colors.grey, child: Text('foo')),
-//                      )
-//                    ]
-//                children: <Widget>[
-//                  Positioned(
-//                    left:0,
-//                    top: 0,
-//                    child: _classes[0]
-//                  )
-//                ],
-                    ))
-          ])
-        ]))
-    );
+        body: LayoutBuilder(builder:
+            (BuildContext context, BoxConstraints viewportConstraints) {
+          return SingleChildScrollView(
+              child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                Container(child: Row(children: _weekTitle)),
+                Row(children: [
+                  Container(
+                      height: _mClassTitleHeight * 13,
+                      width: _mClassTitleWidth,
+                      child: Stack(children: _classTitle)),
+                  Container(
+                      height: _mClassTitleHeight * 13,
+                      width: _mScreenWidth - _mClassTitleWidth,
+                      child: Stack(children: _classes))
+                ])
+              ]));
+        }));
   }
 }
