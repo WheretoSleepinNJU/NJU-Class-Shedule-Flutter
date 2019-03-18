@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-//import '../Utils/Strings.dart';
+import '../Utils/Strings.dart';
 import '../Utils/Color.dart';
 
 class CourseTableView extends StatefulWidget {
@@ -90,7 +90,7 @@ class CourseTableViewState extends State<CourseTableView> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text('NJU'),
+          title: Text(Strings.app_name),
         ),
         body: LayoutBuilder(builder:
             (BuildContext context, BoxConstraints viewportConstraints) {
