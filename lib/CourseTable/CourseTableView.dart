@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../Utils/Strings.dart';
-import '../Utils/Color.dart';
+import '../Settings/SettingsView.dart';
+import '../Resources/Strings.dart';
+import '../Resources/Color.dart';
 
 class CourseTableView extends StatefulWidget {
   @override
@@ -90,7 +91,34 @@ class CourseTableViewState extends State<CourseTableView> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text(Strings.app_name),
+          centerTitle: true,
+          title: Column(children: [
+            Text(
+              Strings.app_name,
+            ),
+            GestureDetector(
+              child: Text(
+                  Strings.subtitle_pre + Strings.subtitle_suf,
+                  style: TextStyle(fontSize: 16)
+              ),
+              onTap: () {
+//                Navigator.of(context).pop();
+                Navigator.of(context).push(MaterialPageRoute(
+                builder: (BuildContext context) => SettingsView()));
+//                print("tapped subtitle");
+              },
+            )
+          ]),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.more_vert),
+              onPressed: (){
+//                Navigator.of(context).pop();
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => SettingsView()));
+              },
+            )
+          ]
         ),
         body: LayoutBuilder(builder:
             (BuildContext context, BoxConstraints viewportConstraints) {
