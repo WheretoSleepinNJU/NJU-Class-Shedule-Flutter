@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import '../Resources/Strings.dart';
 import 'ImportPresenter.dart';
-import 'dart:typed_data';
-
 
 class ImportView extends StatefulWidget {
   ImportView() : super();
@@ -21,7 +19,7 @@ class _ImportViewState extends State<ImportView> {
   final FocusNode usrTextFieldNode = FocusNode();
   final FocusNode pwdTextFieldNode = FocusNode();
   final FocusNode captchaTextFieldNode = FocusNode();
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,36 +47,35 @@ class _ImportViewState extends State<ImportView> {
                   hintText: '密码',
                 ),
                 obscureText: true,
-              onEditingComplete: () =>
-                  FocusScope.of(context).requestFocus(captchaTextFieldNode),
+                onEditingComplete: () =>
+                    FocusScope.of(context).requestFocus(captchaTextFieldNode),
               ),
 //              Row(
 //                children: <Widget>[
-                  TextField(
-                    controller: _captchaController,
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.only(top: 10.0),
-                      icon: Icon(Icons.lock),
-                      hintText: '验证码',
-                    ),
+              TextField(
+                controller: _captchaController,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.only(top: 10.0),
+                  icon: Icon(Icons.lock),
+                  hintText: '验证码',
+                ),
 //              onEditingComplete: () =>
 //                  FocusScope.of(context).requestFocus(cidTextFieldNode),
-                  ),
+              ),
 //                  Image.network(
 //                    'http://elite.nju.edu.cn/jiaowu/ValidateCode.jsp',
 //                  ),
-                    FutureBuilder(
-                      future: _presenter.getCaptcha(),
+              FutureBuilder(
+                  future: _presenter.getCaptcha(),
 //                      builder: (BuildContext context, AsyncSnapshot<Uint8List> image){
-                      builder: (BuildContext context, AsyncSnapshot<Image> image){
+                  builder: (BuildContext context, AsyncSnapshot<Image> image) {
 //                        return Image.memory(image);
-                        if (image.hasData) {
-                          return image.data;
-                        } else {
-                          return new Container();
-                        }
-                      }
-                    ),
+                    if (image.hasData) {
+                      return image.data;
+                    } else {
+                      return new Container();
+                    }
+                  }),
 //                ],
 //              ),
               RaisedButton(
