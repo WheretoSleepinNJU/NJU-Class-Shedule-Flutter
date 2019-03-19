@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../Resources/Strings.dart';
 import 'ImportPresenter.dart';
+import 'dart:typed_data';
+
 
 class ImportView extends StatefulWidget {
   ImportView() : super();
@@ -62,9 +64,21 @@ class _ImportViewState extends State<ImportView> {
 //              onEditingComplete: () =>
 //                  FocusScope.of(context).requestFocus(cidTextFieldNode),
                   ),
-                  Image.network(
-                    'http://elite.nju.edu.cn/jiaowu/ValidateCode.jsp',
-                  ),
+//                  Image.network(
+//                    'http://elite.nju.edu.cn/jiaowu/ValidateCode.jsp',
+//                  ),
+                    FutureBuilder(
+                      future: _presenter.getCaptcha(),
+//                      builder: (BuildContext context, AsyncSnapshot<Uint8List> image){
+                      builder: (BuildContext context, AsyncSnapshot<Image> image){
+//                        return Image.memory(image);
+                        if (image.hasData) {
+                          return image.data;
+                        } else {
+                          return new Container();
+                        }
+                      }
+                    ),
 //                ],
 //              ),
               RaisedButton(
