@@ -1,7 +1,7 @@
 // This sample shows adding an action to an [AppBar] that opens a shopping cart.
 
 import 'package:flutter/material.dart';
-import 'CourseTable/CourseTableView.dart';
+import 'Pages/CourseTable/CourseTableView.dart';
 
 void main() => runApp(MyApp());
 

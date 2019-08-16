@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../Resources/Strings.dart';
+import '../../Resources/Strings.dart';
 import 'ImportPresenter.dart';
 
 class ImportView extends StatefulWidget {
   ImportView() : super();
-  final String title = 'Import';
+  final String title = 'Pages.Import';
 
   @override
   _ImportViewState createState() => _ImportViewState();
@@ -69,6 +69,7 @@ class _ImportViewState extends State<ImportView> {
                   future: _presenter.getCaptcha(),
 //                      builder: (BuildContext context, AsyncSnapshot<Uint8List> image){
                   builder: (BuildContext context, AsyncSnapshot<Image> image) {
+                    print("QAQ");
 //                        return Image.memory(image);
                     if (image.hasData) {
                       return image.data;

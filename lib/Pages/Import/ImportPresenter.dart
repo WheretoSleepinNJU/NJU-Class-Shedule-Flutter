@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import '../Resources/Url.dart';
-import '../Utils/Http.dart';
+import '../../Resources/Url.dart';
+import '../../Utils/Http.dart';
 
 class ImportPresenter {
   HttpUtil httpUtil = new HttpUtil();
 
   Future<Image> getCaptcha() async {
     String response = await httpUtil.getWithCookie(Url.URL_NJU_HOST);
-    List Cookies = httpUtil.getCookies();
-    print(Cookies);
+    print(response);
+    List cookies = httpUtil.getCookies();
+    print(cookies);
     return Image.network('http://elite.nju.edu.cn/jiaowu/ValidateCode.jsp',
-        headers: {"Cookie": Cookies.toString()});
+        headers: {"Cookie": cookies.toString()});
   }
 
   login(String usr, String pwd, String captcha) {
