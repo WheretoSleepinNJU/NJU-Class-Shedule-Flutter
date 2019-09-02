@@ -45,7 +45,7 @@ class CourseTableProvider {
   Future<CourseTable> insert(CourseTable courseTable) async {
     await open();
     courseTable.id = await db.insert(tableName, courseTable.toMap());
-    await close();
+//    await close();
     return courseTable;
   }
 
@@ -58,7 +58,7 @@ class CourseTableProvider {
     if (maps.length > 0) {
       return CourseTable.fromMap(maps.first);
     }
-    await close();
+//    await close();
     return null;
   }
 
@@ -66,14 +66,14 @@ class CourseTableProvider {
     await open();
     List<Map> rst = await db.query(tableName,
         columns: [columnId, columnName]);
-    await close();
+//    await close();
     return rst.toList();
   }
 
   Future<int> delete(int id) async {
     await open();
     int rst = await db.delete(tableName, where: '$columnId = ?', whereArgs: [id]);
-    await close();
+//    await close();
     return rst;
   }
 
@@ -81,7 +81,7 @@ class CourseTableProvider {
     await open();
     int rst = await db.update(tableName, courseTable.toMap(),
         where: '$columnId = ?', whereArgs: [courseTable.id]);
-    await close();
+//    await close();
     return rst;
   }
 }

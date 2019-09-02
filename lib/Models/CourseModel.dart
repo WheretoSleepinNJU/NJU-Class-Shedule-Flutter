@@ -106,7 +106,7 @@ class CourseProvider {
   Future<Course> insert(Course course) async {
     await open();
     course.id = await db.insert(tableName, course.toMap());
-    await close();
+//    await close();
     return course;
   }
 
@@ -116,7 +116,7 @@ class CourseProvider {
         columns: [columnId, columnName],
         where: '$columnId = ?',
         whereArgs: [id]);
-    await close();
+//    await close();
     if (maps.length > 0) {
       return Course.fromMap(maps.first);
     }
@@ -129,7 +129,7 @@ class CourseProvider {
 //        columns: [columnId, columnName],
         where: '$columnTableId = ?',
         whereArgs: [tableId]);
-    await close();
+//    await close();
     return rst.toList();
   }
 
@@ -137,7 +137,7 @@ class CourseProvider {
     await open();
     int rst =
         await db.delete(tableName, where: '$columnId = ?', whereArgs: [id]);
-    await close();
+//    await close();
     return rst;
   }
 
@@ -145,7 +145,7 @@ class CourseProvider {
     await open();
     int rst = await db.update(tableName, course.toMap(),
         where: '$columnId = ?', whereArgs: [course.id]);
-    await close();
+//    await close();
     return rst;
   }
 }

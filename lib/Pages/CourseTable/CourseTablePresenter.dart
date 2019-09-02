@@ -4,10 +4,10 @@ import '../../Models/CourseModel.dart';
 class CourseTablePresenter {
   CourseProvider courseProvider = new CourseProvider();
 
-  Future<List<Map>> getClasses() async {
+  Future<List<Map>> getClasses(int tableId) async {
 
     //TODO
-    List tmp = await courseProvider.getAllCourses(0);
+    List tmp = await courseProvider.getAllCourses(tableId);
     return tmp;
 //    return [
 //      {'weekday': 3, 'start': 5, 'step': 2, 'name': tmp[0]['name'], 'color': '#8AD297'},
@@ -32,5 +32,8 @@ class CourseTablePresenter {
         .insert(new Course(0, "微积分", "[1,2,3,4,5,6,7]", 3, 5, 2, 0, '#8AD297', classroom: 'QAQ'));
     await courseProvider
         .insert(new Course(0, "线性代数", "[1,2,3,4,5,6,7]", 4, 2, 3, 0, '#F9A883', classroom: 'QAQ'));
+    await courseProvider.insert(new Course(
+        1, "并不是线性代数", "[1,2,3,4,5,6,7]", 4, 2, 3, 0, '#F9A883',
+        classroom: 'QAQ'));
   }
 }
