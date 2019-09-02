@@ -44,16 +44,15 @@ class _ManageTableViewState extends State<ManageTableView> {
             },
           )
         ]),
-        body:
-        SingleChildScrollView(child:
-        ScopedModelDescendant<MainStateModel>(
-            builder: (context, child, model) {
-              getData(model);
-              return Column(
-                  children: ListTile.divideTiles(
+        body: SingleChildScrollView(child:
+            ScopedModelDescendant<MainStateModel>(
+                builder: (context, child, model) {
+          getData(model);
+          return Column(
+              children: ListTile.divideTiles(
                       context: context, tiles: courseTableWidgetList)
-                      .toList());
-            })));
+                  .toList());
+        })));
 //        SingleChildScrollView(
 //            child: Column(
 //                children: ListTile.divideTiles(
@@ -64,6 +63,7 @@ class _ManageTableViewState extends State<ManageTableView> {
 //  _onSelected(int index) async {
   _onSelected(MainStateModel model, int index) async {
     setState(() => _selectedIndex = index);
+    print(index);
     model.changeclassTable(index);
 //    SharedPreferences prefs = await SharedPreferences.getInstance();
 //    await prefs.setInt('tableId', index);
@@ -127,10 +127,15 @@ class _ManageTableViewState extends State<ManageTableView> {
           tmp.length,
           (int i) => Container(
               color: _selectedIndex != null && _selectedIndex == i
-                  ? Colors.grey
+                  ? Theme.of(context).primaryColor
                   : Colors.white,
               child: ListTile(
-                title: Text(tmp[i]['name']),
+                title: Text(tmp[i]['name'],
+                    style: TextStyle(
+                      color: _selectedIndex != null && _selectedIndex == i
+                          ? Colors.white
+                          : Colors.black,
+                    )),
                 onTap: () {
                   _onSelected(model, i);
                 },

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../Settings/SettingsView.dart';
 import '../../Components/Separator.dart';
 import '../../Resources/Strings.dart';
-import '../../Resources/Color.dart';
+import '../../Utils/ColorUtil.dart';
 import './CourseTablePresenter.dart';
 import '../../Models/Db/DbHelper.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -20,6 +20,7 @@ class CourseTableViewState extends State<CourseTableView> {
 
   CourseTablePresenter courseTablePresenter = new CourseTablePresenter();
   List<Map> classes = [];
+  bool weekSelectorVisibility = false;
 
   @override
   void initState() {
@@ -44,6 +45,34 @@ class CourseTableViewState extends State<CourseTableView> {
     });
   }
 
+  showClassDialog(Map course, BuildContext context) {
+    return showDialog<String>(
+      context: context,
+      // dialog is dismissible with a tap on the barrier
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(course[DbHelper.COURSE_COLUMN_NAME]),
+          content: new Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(course[DbHelper.COURSE_COLUMN_CLASS_ROOM]),
+              Text(course[DbHelper.COURSE_COLUMN_TEACHER] ?? ''),
+            ],
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(Strings.ok),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double _mScreenWidth = MediaQuery.of(context).size.width;
@@ -56,8 +85,8 @@ class CourseTableViewState extends State<CourseTableView> {
         model: MainStateModel(),
         child: ScopedModelDescendant<MainStateModel>(
             builder: (context, child, model) {
-              setClassData(model);
-              List<Widget> _weekTitle = new List.generate(
+          setClassData(model);
+          List<Widget> _weekTitle = new List.generate(
               _mShowWeek,
               (int i) => new Expanded(
                     child: Container(
@@ -110,15 +139,18 @@ class CourseTableViewState extends State<CourseTableView> {
               classes.length,
               (int i) => new Container(
                     margin: EdgeInsets.only(
-                        top: (classes[i][DbHelper.COURSE_COLUMN_START_TIME]
-                                as int) *
+                        top: ((classes[i][DbHelper.COURSE_COLUMN_START_TIME]
+                                    as int) -
+                                1) *
                             _mClassTitleHeight,
-                        left: (classes[i][DbHelper.COURSE_COLUMN_WEEK_TIME]
-                                as int) *
+                        left: ((classes[i][DbHelper.COURSE_COLUMN_WEEK_TIME]
+                                    as int) -
+                                1) *
                             _mWeekTitleWidth),
-                    height:
-                        (classes[i][DbHelper.COURSE_COLUMN_TIME_COUNT] as int) *
-                            _mClassTitleHeight,
+                    height: ((classes[i][DbHelper.COURSE_COLUMN_TIME_COUNT]
+                                as int) +
+                            1) *
+                        _mClassTitleHeight,
                     width: _mWeekTitleWidth,
                     child: Ink(
                       decoration: BoxDecoration(
@@ -129,8 +161,12 @@ class CourseTableViewState extends State<CourseTableView> {
                       ),
                       child: InkWell(
                         borderRadius: BorderRadius.all(Radius.circular(5)),
-                        onTap: () {},
-                        child: Text(classes[i][DbHelper.COURSE_COLUMN_NAME],
+//                        onTap: () => print(classes[i][DbHelper.COURSE_COLUMN_NAME]),
+                        onTap: () => showClassDialog(classes[i], context),
+                        child: Text(
+                            classes[i][DbHelper.COURSE_COLUMN_NAME] +
+                                '@' +
+                                classes[i][DbHelper.COURSE_COLUMN_CLASS_ROOM],
                             style: TextStyle(color: Colors.white)),
                       ),
                     ),
@@ -148,21 +184,25 @@ class CourseTableViewState extends State<CourseTableView> {
           return Scaffold(
               appBar: AppBar(
                   centerTitle: true,
-                  title: Column(children: [
-                    Text(
-                      Strings.app_name,
-                    ),
-                    // TODO: 点击副标题选择周数
-                    GestureDetector(
-                      child: Text(Strings.subtitle_pre + Strings.subtitle_suf,
-                          style: TextStyle(fontSize: 16)),
-                      onTap: () {
+                  title: Column(
+//                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          Strings.app_name,
+                        ),
+                        // TODO: 点击副标题选择周数
+                        GestureDetector(
+                          child: Text(
+                              Strings.subtitle_pre + Strings.subtitle_suf,
+                              style: TextStyle(fontSize: 16)),
+                          onTap: () {
+                            weekSelectorVisibility = !weekSelectorVisibility;
 //                Navigator.of(context).pop();
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (BuildContext context) => SettingsView()));
-                      },
-                    )
-                  ]),
+//                        Navigator.of(context).push(MaterialPageRoute(
+//                            builder: (BuildContext context) => SettingsView()));
+                          },
+                        )
+                      ]),
                   actions: <Widget>[
                     IconButton(
                       icon: Icon(Icons.lightbulb_outline),
@@ -180,6 +220,23 @@ class CourseTableViewState extends State<CourseTableView> {
                         mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
+                      Visibility(
+                          visible: weekSelectorVisibility,
+                          child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              physics: ClampingScrollPhysics(),
+                              child: Row(
+                                  children: List.generate(
+                                      25,
+                                      (int i) => new Container(
+                                          color: Theme.of(context).primaryColor,
+                                          padding: EdgeInsets.only(left: 5, top: 10, right: 5, bottom: 10),
+                                          child: Text(
+                                            '第' + (i + 1).toString() + '周',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15),
+                                          )))))),
                       Container(child: Row(children: _weekTitle)),
                       Row(children: [
                         Container(
@@ -191,7 +248,8 @@ class CourseTableViewState extends State<CourseTableView> {
                             width: _mScreenWidth - _mClassTitleWidth,
                             //TODO: fix bug in stack
                             child: Stack(
-                                children: _divider + _classes,
+//                                children: _divider + _classes,
+                                children: _classes,
                                 overflow: Overflow.visible))
 //                      child: Stack(children: _classes))
                       ])

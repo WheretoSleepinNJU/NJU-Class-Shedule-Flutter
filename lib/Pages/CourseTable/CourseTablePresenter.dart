@@ -31,7 +31,7 @@ class CourseTablePresenter {
     await courseProvider
         .insert(new Course(0, "微积分", "[1,2,3,4,5,6,7]", 3, 5, 2, 0, '#8AD297', classroom: 'QAQ'));
     await courseProvider
-        .insert(new Course(0, "线性代数", "[1,2,3,4,5,6,7]", 4, 2, 3, 0, '#F9A883', classroom: 'QAQ'));
+        .insert(new Course(0, "线性代数", "[1,2,3,4,5,6,7]", 4, 2, 3, 0, '#F9A883', classroom: '仙林校区不知道哪个教室'));
     await courseProvider.insert(new Course(
         1, "并不是线性代数", "[1,2,3,4,5,6,7]", 4, 2, 3, 0, '#F9A883',
         classroom: 'QAQ'));

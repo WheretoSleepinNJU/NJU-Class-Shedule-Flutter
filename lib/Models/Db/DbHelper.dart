@@ -14,7 +14,7 @@ class DbHelper {
   static final String COURSE_COLUMN_ID = 'id';
   static final String COURSE_COLUMN_NAME = 'name';
   static final String COURSE_COLUMN_COURSETABLEID = 'tableid';
-  static final String COLUMN_NAME_CLASS_ROOM = "classroom";
+  static final String COURSE_COLUMN_CLASS_ROOM = "classroom";
   static final String COURSE_COLUMN_CLASS_NUMBER = "class_number";
   static final String COURSE_COLUMN_TEACHER = "teacher";
   static final String COURSE_COLUMN_TEST_TIME = "test_time";
@@ -40,7 +40,7 @@ class DbHelper {
           //TODO: REMOVE THIS LINE
 //          COURSE_COLUMN_NAME + TEXT_TYPE +
           COURSE_COLUMN_NAME + TEXT_TYPE + COMMA_SEP +
-          COLUMN_NAME_CLASS_ROOM + TEXT_TYPE + COMMA_SEP +
+          COURSE_COLUMN_CLASS_ROOM + TEXT_TYPE + COMMA_SEP +
           COURSE_COLUMN_CLASS_NUMBER + TEXT_TYPE + COMMA_SEP +
           COURSE_COLUMN_TEACHER + TEXT_TYPE + COMMA_SEP +
           COURSE_COLUMN_TEST_TIME + TEXT_TYPE + COMMA_SEP +

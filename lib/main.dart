@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'Pages/CourseTable/CourseTableView.dart';
-import 'Utils/Consts/Themes.dart';
+import 'package:wheretosleepinnju/Resources/Themes.dart';
 import 'Utils/States/MainState.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
