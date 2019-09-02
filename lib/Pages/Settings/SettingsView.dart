@@ -5,6 +5,8 @@ import '../../Resources/Strings.dart';
 import '../ManageTable/ManageTableView.dart';
 import '../Import/ImportView.dart';
 import '../About/AboutView.dart';
+import 'package:scoped_model/scoped_model.dart';
+import '../../Utils/States/MainState.dart';
 
 class SettingsView extends StatefulWidget {
   SettingsView() : super();
@@ -15,7 +17,6 @@ class SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<SettingsView> {
-
   String version = '';
 
   @override
@@ -26,7 +27,6 @@ class _SettingsViewState extends State<SettingsView> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
@@ -52,11 +52,18 @@ class _SettingsViewState extends State<SettingsView> {
                       builder: (BuildContext context) => ManageTableView()));
                 },
               ),
+              ScopedModelDescendant<MainStateModel>(
+                  builder: (context, child, model) {
+                return ListTile(
+                  title: Text(Strings.change_theme_title),
+//                    subtitle: Text(Strings.donate_subtitle),
+                  onTap: () => model.changeTheme(2),
+                );
+              }),
               ListTile(
-                title: Text(Strings.donate_title),
-                subtitle: Text(Strings.donate_subtitle),
-                onTap:  _launchURL
-              ),
+                  title: Text(Strings.donate_title),
+                  subtitle: Text(Strings.donate_subtitle),
+                  onTap: _launchURL),
               ListTile(
                 title: Text(Strings.about_title),
                 subtitle: Text(version),
@@ -79,7 +86,8 @@ class _SettingsViewState extends State<SettingsView> {
 
   _launchURL() async {
 //    const url = 'intent://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=https%3A%2F%2Fqr.alipay.com%2FFKX00710CQCHIHK4B9CA31%3F_s%3Dweb-other&_t=1472443966571#Intent;scheme=alipayqr;package=com.eg.android.AlipayGphone;end';
-    const url = 'alipayqr://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=https://qr.alipay.com/FKX00710CQCHIHK4B9CA31';
+    const url =
+        'alipayqr://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=https://qr.alipay.com/FKX00710CQCHIHK4B9CA31';
     if (await canLaunch(url)) {
       await launch(url);
     } else {

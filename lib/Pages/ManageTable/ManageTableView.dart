@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import '../../Resources/Strings.dart';
 import '../Import/ImportView.dart';
 import '../../Models/CourseTableModel.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:scoped_model/scoped_model.dart';
+import '../../Utils/States/MainState.dart';
 
 class ManageTableView extends StatefulWidget {
   ManageTableView() : super();
@@ -14,13 +17,14 @@ class ManageTableView extends StatefulWidget {
 class _ManageTableViewState extends State<ManageTableView> {
   CourseTableProvider courseTableProvider = new CourseTableProvider();
   List<Widget> courseTableWidgetList = [Container()];
+  int _selectedIndex = 0;
   String text = '';
 
   @override
   void initState() {
     super.initState();
 //    insertData();
-    getData();
+//    getData();
   }
 
   @override
@@ -35,17 +39,35 @@ class _ManageTableViewState extends State<ManageTableView> {
 //                      builder: (BuildContext context) => SettingsView()));
               String str = await _addTableDialog(context);
               if (str != '')
-                await courseTableProvider
-                    .insert(new CourseTable(str));
-              getData();
+                await courseTableProvider.insert(new CourseTable(str));
+//              getData();
             },
           )
         ]),
-        body: SingleChildScrollView(
-            child: Column(
-                children: ListTile.divideTiles(
-                        context: context, tiles: courseTableWidgetList)
-                    .toList())));
+        body:
+        SingleChildScrollView(child:
+        ScopedModelDescendant<MainStateModel>(
+            builder: (context, child, model) {
+              getData(model);
+              return Column(
+                  children: ListTile.divideTiles(
+                      context: context, tiles: courseTableWidgetList)
+                      .toList());
+            })));
+//        SingleChildScrollView(
+//            child: Column(
+//                children: ListTile.divideTiles(
+//                        context: context, tiles: courseTableWidgetList)
+//                    .toList())));
+  }
+
+//  _onSelected(int index) async {
+  _onSelected(MainStateModel model, int index) async {
+    setState(() => _selectedIndex = index);
+    model.changeclassTable(index);
+//    SharedPreferences prefs = await SharedPreferences.getInstance();
+//    await prefs.setInt('tableId', index);
+//    Navigator.of(context).pop();
   }
 
   Future<String> _addTableDialog(BuildContext context) async {
@@ -96,18 +118,23 @@ class _ManageTableViewState extends State<ManageTableView> {
 //    await courseTableProvider.close();
 //  }
 
-  void getData() async {
+  void getData(MainStateModel model) async {
     List tmp = await courseTableProvider.getAllCourseTable();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _selectedIndex = prefs.getInt('tableId') ?? 0;
     setState(() {
       courseTableWidgetList = List.generate(
           tmp.length,
-          (int i) => ListTile(
+          (int i) => Container(
+              color: _selectedIndex != null && _selectedIndex == i
+                  ? Colors.grey
+                  : Colors.white,
+              child: ListTile(
                 title: Text(tmp[i]['name']),
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => ImportView()));
+                  _onSelected(model, i);
                 },
-              ));
+              )));
     });
   }
 }
