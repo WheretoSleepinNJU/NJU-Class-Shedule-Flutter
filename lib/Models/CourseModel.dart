@@ -1,6 +1,4 @@
-import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import '../Resources/Constant.dart';
 import './Db/DbHelper.dart';
 
 final String tableName = DbHelper.COURSE_TABLE_NAME;
@@ -54,14 +52,12 @@ class Course {
       columnId: id,
       columnName: name,
       columnTableId: tableId,
-
       columnWeeks: weeks,
       columnWeekTime: weekTime,
       columnStartTime: startTime,
       columnTimeCount: timeCount,
       columnImportType: importType,
       columnColor: color,
-
       columnClassroom: classroom,
       columnClassNumber: classNumber,
       columnTeacher: teacher,

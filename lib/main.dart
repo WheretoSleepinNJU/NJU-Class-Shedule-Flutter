@@ -1,33 +1,28 @@
-// This sample shows adding an action to an [AppBar] that opens a shopping cart.
-
 import 'package:flutter/material.dart';
-import 'Pages/CourseTable/CourseTableView.dart';
-import 'package:wheretosleepinnju/Resources/Themes.dart';
-import 'Utils/States/MainState.dart';
-import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:scoped_model/scoped_model.dart';
+import 'Pages/CourseTable/CourseTableView.dart';
+import 'Utils/States/MainState.dart';
+import 'Resources/Themes.dart';
 
-void main() async{
+void main() async {
   int themeIndex = await getTheme();
-//  runApp(MyApp());
   runApp(MyApp(themeIndex));
+//  runApp(MyApp());
 }
-
 
 Future<int> getTheme() async {
   SharedPreferences sp = await SharedPreferences.getInstance();
   int themeIndex = sp.getInt("themeIndex");
-  if(themeIndex != null) {
+  if (themeIndex != null) {
     return themeIndex;
   }
   return 0;
 }
 
-
-
 class MyApp extends StatefulWidget {
-
   final int themeIndex;
+
   MyApp(this.themeIndex);
 
   @override
@@ -35,11 +30,9 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   void initState() {
     super.initState();
-//    Application.eventBus = new EventBus();
   }
 
   @override
@@ -49,15 +42,17 @@ class _MyAppState extends State<MyApp> {
         child: ScopedModelDescendant<MainStateModel>(
           builder: (context, child, model) {
             print("rebuild");
-            return  MaterialApp(
-              theme: ThemeData(
-                  primaryColor: themeList[model.themeIndex != null ? model.themeIndex : widget.themeIndex]
-              ),
+            return MaterialApp(
+              theme:
+              themeDataList[model.themeIndex != null? model.themeIndex: widget.themeIndex],
+//              ThemeData(
+//                  primaryColor: themeList[model.themeIndex != null
+//                      ? model.themeIndex
+//                      : widget.themeIndex]),
               home: CourseTableView(),
             );
           },
-        )
-    );
+        ));
   }
 }
 

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../Resources/Strings.dart';
-import '../Import/ImportView.dart';
-import '../../Models/CourseTableModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:scoped_model/scoped_model.dart';
+import '../../Resources/Strings.dart';
+import '../../Models/CourseTableModel.dart';
 import '../../Utils/States/MainState.dart';
 
 class ManageTableView extends StatefulWidget {
@@ -34,13 +33,9 @@ class _ManageTableViewState extends State<ManageTableView> {
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () async {
-//                Navigator.of(context).pop();
-//                  Navigator.of(context).push(MaterialPageRoute(
-//                      builder: (BuildContext context) => SettingsView()));
               String str = await _addTableDialog(context);
               if (str != '')
                 await courseTableProvider.insert(new CourseTable(str));
-//              getData();
             },
           )
         ]),
@@ -53,21 +48,12 @@ class _ManageTableViewState extends State<ManageTableView> {
                       context: context, tiles: courseTableWidgetList)
                   .toList());
         })));
-//        SingleChildScrollView(
-//            child: Column(
-//                children: ListTile.divideTiles(
-//                        context: context, tiles: courseTableWidgetList)
-//                    .toList())));
   }
 
-//  _onSelected(int index) async {
   _onSelected(MainStateModel model, int index) async {
     setState(() => _selectedIndex = index);
-    print(index);
+//    print(index);
     model.changeclassTable(index);
-//    SharedPreferences prefs = await SharedPreferences.getInstance();
-//    await prefs.setInt('tableId', index);
-//    Navigator.of(context).pop();
   }
 
   Future<String> _addTableDialog(BuildContext context) async {
@@ -103,20 +89,6 @@ class _ManageTableViewState extends State<ManageTableView> {
       },
     );
   }
-
-//  void insertData() async {
-//    await courseTableProvider.open();
-//    await courseTableProvider
-//        .insert(new CourseTable.fromMap({"name": "flutter大全0"}));
-//    await courseTableProvider
-//        .insert(new CourseTable.fromMap({"name": "flutter大全1"}));
-//    await courseTableProvider
-//        .insert(new CourseTable.fromMap({"name": "flutter大全2"}));
-//    await courseTableProvider
-//        .insert(new CourseTable.fromMap({"name": "flutter大全3"}));
-//    //切记用完就close
-//    await courseTableProvider.close();
-//  }
 
   void getData(MainStateModel model) async {
     List tmp = await courseTableProvider.getAllCourseTable();

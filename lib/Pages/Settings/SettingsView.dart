@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info/package_info.dart';
-import '../../Resources/Strings.dart';
+import 'package:scoped_model/scoped_model.dart';
 import '../ManageTable/ManageTableView.dart';
 import '../Import/ImportView.dart';
 import '../About/AboutView.dart';
-import 'package:scoped_model/scoped_model.dart';
 import '../../Utils/States/MainState.dart';
-import 'package:wheretosleepinnju/Resources/Themes.dart';
+import '../../Resources/Strings.dart';
+import '../../Resources/Themes.dart';
+import '../../Resources/Url.dart';
 
 class SettingsView extends StatefulWidget {
   SettingsView() : super();
@@ -19,6 +20,7 @@ class SettingsView extends StatefulWidget {
 
 class _SettingsViewState extends State<SettingsView> {
   String version = '';
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -29,6 +31,7 @@ class _SettingsViewState extends State<SettingsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           title: Text(widget.title),
         ),
@@ -60,14 +63,14 @@ class _SettingsViewState extends State<SettingsView> {
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: List.generate(
-                            themeList.length,
+                            themeDataList.length,
                             (int i) => new Container(
                                 width: 30,
                                 height: 30,
                                 margin: EdgeInsets.only(
                                     left: 15, top: 10, bottom: 10),
                                 decoration: new BoxDecoration(
-                                  color: themeList[i],
+                                  color: themeDataList[i].primaryColor,
                                   shape: BoxShape.circle,
                                 ),
                                 child: InkResponse(
@@ -77,11 +80,25 @@ class _SettingsViewState extends State<SettingsView> {
               ListTile(
                   title: Text(Strings.report_title),
                   subtitle: Text(Strings.report_subtitle),
-                  onTap: () => _launchURL('https://jq.qq.com/?_wv=1027&k=5PNwtkh')),
+                  onTap: () async {
+                    bool status = await _launchURL(Url.QQ_GROUP_URL);
+                    if (!status)
+                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                        content: Text("打开失败，可能是未安装 TIM/QQ"),
+                        backgroundColor: Theme.of(context).primaryColor,
+                      ));
+                  }),
               ListTile(
                   title: Text(Strings.donate_title),
                   subtitle: Text(Strings.donate_subtitle),
-                  onTap: () => _launchURL('https://jq.qq.com/?_wv=1027&k=5PNwtkh')),
+                  onTap: () async {
+                    bool status = await _launchURL(Url.ALIPAY_URL);
+                    if (!status)
+                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                        content: Text("打开失败，可能是未安装支付宝"),
+                        backgroundColor: Theme.of(context).primaryColor,
+                      ));
+                  }),
               ListTile(
                 title: Text(Strings.about_title),
                 subtitle: Text(version),
@@ -102,14 +119,12 @@ class _SettingsViewState extends State<SettingsView> {
     });
   }
 
-  _launchURL(String url) async {
-//    const url = 'intent://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=https%3A%2F%2Fqr.alipay.com%2FFKX00710CQCHIHK4B9CA31%3F_s%3Dweb-other&_t=1472443966571#Intent;scheme=alipayqr;package=com.eg.android.AlipayGphone;end';
-//    const url =
-//        'alipayqr://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=https://qr.alipay.com/FKX00710CQCHIHK4B9CA31';
+  Future<bool> _launchURL(String url) async {
     if (await canLaunch(url)) {
       await launch(url);
+      return true;
     } else {
-      throw 'Could not launch $url';
+      return false;
     }
   }
 }

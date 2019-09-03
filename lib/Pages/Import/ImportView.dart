@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../Resources/Strings.dart';
+import '../../Resources/Constant.dart';
 import 'ImportPresenter.dart';
+import 'dart:math';
 
 class ImportView extends StatefulWidget {
   ImportView() : super();
@@ -19,6 +20,8 @@ class _ImportViewState extends State<ImportView> {
   final FocusNode usrTextFieldNode = FocusNode();
   final FocusNode pwdTextFieldNode = FocusNode();
   final FocusNode captchaTextFieldNode = FocusNode();
+
+  double randomNumForCaptcha = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -66,20 +69,23 @@ class _ImportViewState extends State<ImportView> {
 //                  Image.network(
 //                    'http://elite.nju.edu.cn/jiaowu/ValidateCode.jsp',
 //                  ),
-            FutureBuilder(
-                future: _presenter.getCaptcha(),
+            InkWell(
+              child: FutureBuilder(
+                  future: _presenter.getCaptcha(randomNumForCaptcha),
 //                      builder: (BuildContext context, AsyncSnapshot<Uint8List> image){
-                builder: (BuildContext context, AsyncSnapshot<Image> image) {
+                  builder: (BuildContext context, AsyncSnapshot<Image> image) {
 //                    print("QAQ");
 //                        return Image.memory(image);
-                  if (image.hasData) {
-                    return image.data;
-                  } else {
-                    return new Container();
-                  }
-                }),
-//                ],
-//              ),
+                    if (image.hasData) {
+                      return image.data;
+                    } else {
+                      return new Container();
+                    }
+                  }),
+              onTap: () => setState(() {
+                randomNumForCaptcha = Random().nextDouble();
+              }),
+            ),
             Container(
               width: double.infinity,
               margin: EdgeInsets.all(10),
@@ -89,15 +95,42 @@ class _ImportViewState extends State<ImportView> {
                   textColor: Colors.white,
                   onPressed: () async {
 //                  save();
-                    await _presenter.login(
+                    int status = await _presenter.login(
                         _usrController.value.text.toString(),
                         _pwdController.value.text.toString(),
                         _captchaController.value.text.toString());
-                    await _presenter.getClasses();
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text("数据存储成功"),
-                      backgroundColor: Theme.of(context).primaryColor,
-                    ));
+                    if (status == Constant.PASSWORD_ERROR) {
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                        content: Text("密码错误 = =||"),
+                        backgroundColor: Theme.of(context).primaryColor,
+                      ));
+                      setState(() {
+                        _pwdController.clear();
+                        randomNumForCaptcha = Random().nextDouble();
+                      });
+                    } else if (status == Constant.CAPTCHA_ERROR) {
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                        content: Text("验证码错误 > <"),
+                        backgroundColor: Theme.of(context).primaryColor,
+                      ));
+                      setState(() {
+                        randomNumForCaptcha = Random().nextDouble();
+                      });
+                    } else if (status == Constant.LOGIN_CORRECT) {
+                      await _presenter.getClasses(context);
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                        content: Text("数据存储成功 >v<"),
+                        backgroundColor: Theme.of(context).primaryColor,
+                      ));
+                    } else {
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                        content: Text("出现异常，建议提交反馈"),
+                        backgroundColor: Theme.of(context).primaryColor,
+                      ));
+                      setState(() {
+                        randomNumForCaptcha = Random().nextDouble();
+                      });
+                    }
                   }),
             )
           ]);

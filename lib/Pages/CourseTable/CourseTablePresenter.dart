@@ -1,30 +1,21 @@
-import 'package:flutter/material.dart';
 import '../../Models/CourseModel.dart';
+import '../../Models/ScheduleModel.dart';
 
 class CourseTablePresenter {
   CourseProvider courseProvider = new CourseProvider();
+  List<Course> activeCourses = [];
+  List<Course> hideCourses = [];
 
-  Future<List<Map>> getClasses(int tableId) async {
-
-    //TODO
-    List tmp = await courseProvider.getAllCourses(tableId);
-    return tmp;
-//    return [
-//      {'weekday': 3, 'start': 5, 'step': 2, 'name': tmp[0]['name'], 'color': '#8AD297'},
-//      {'weekday': 4, 'start': 2, 'step': 3, 'name': 'QWQ', 'color': '#F9A883'},
-////    {'weekday': 4, 'start': 3, 'step': 3, 'name': 'QWQ', 'color': '#8AD297'},
-//    ];
-//    setState(() {
-//      courseTableWidgetList = List.generate(
-//          tmp.length,
-//              (int i) => ListTile(
-//            title: Text(tmp[i]['name']),
-//            onTap: () {
-//              Navigator.of(context).push(MaterialPageRoute(
-//                  builder: (BuildContext context) => ImportView()));
-//            },
-//          ));
-//    });
+  refreshClasses(int tableId, int nowWeek) async {
+    //TODO：finish classes to shedule
+    List<Map> allCoursesMap = await courseProvider.getAllCourses(tableId);
+    List<Course> allCourses = [];
+    for(Map courseMap in allCoursesMap){
+      allCourses.add(new Course.fromMap(courseMap));
+    }
+    ScheduleModel scheduleModel = new ScheduleModel(allCourses, nowWeek);
+    activeCourses = scheduleModel.activeCourses;
+    hideCourses = scheduleModel.hideCourses;
   }
 
   Future insertMockData() async {

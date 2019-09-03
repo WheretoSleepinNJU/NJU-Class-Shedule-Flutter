@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
-import '../../Resources/Strings.dart';
 
 class AboutView extends StatefulWidget {
   AboutView() : super();
