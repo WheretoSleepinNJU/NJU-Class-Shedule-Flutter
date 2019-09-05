@@ -5,6 +5,7 @@ import 'package:scoped_model/scoped_model.dart';
 import '../ManageTable/ManageTableView.dart';
 import '../Import/ImportView.dart';
 import '../About/AboutView.dart';
+import '../Add/Add.dart';
 import '../../Utils/States/MainState.dart';
 import '../../Resources/Strings.dart';
 import '../../Resources/Themes.dart';
@@ -45,7 +46,7 @@ class _SettingsViewState extends State<SettingsView> {
                 subtitle: Text(Strings.import_manually_subtitle),
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => ImportView()));
+                      builder: (BuildContext context) => AddView()));
                 },
               ),
               ListTile(

@@ -96,6 +96,43 @@ class CourseTableViewState extends State<CourseTableView> {
     );
   }
 
+  showDeleteDialog(Course course, BuildContext context, int id){
+    print(course.toMap().toString());
+    return showDialog<String>(
+      context: context,
+      // dialog is dismissible with a tap on the barrier
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('删除课程'),
+          content:
+//          new Column(
+//            mainAxisSize: MainAxisSize.min,
+//            crossAxisAlignment: CrossAxisAlignment.start,
+//            children: <Widget>[
+//              Row(children: [
+                Text("确定删除课程【"+course.name+"】吗？"),
+//              ]),],),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(Strings.ok),
+              onPressed: () {
+                CourseProvider courseProvider = new CourseProvider();
+                courseProvider.delete(course.id);
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text(Strings.cancel),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double _mScreenWidth = MediaQuery.of(context).size.width;
@@ -175,7 +212,7 @@ class CourseTableViewState extends State<CourseTableView> {
                           ),
                           child: InkWell(
                             borderRadius: BorderRadius.all(Radius.circular(5)),
-//                        onTap: () => print(classes[i][DbHelper.COURSE_COLUMN_NAME]),
+                            onLongPress: () => showDeleteDialog(hideClasses[i], context, i),
                             onTap: () =>
                                 showClassDialog(hideClasses[i], context),
                             child: Text(
@@ -206,7 +243,7 @@ class CourseTableViewState extends State<CourseTableView> {
                           ),
                           child: InkWell(
                             borderRadius: BorderRadius.all(Radius.circular(5)),
-//                        onTap: () => print(classes[i][DbHelper.COURSE_COLUMN_NAME]),
+                            onLongPress: () => showDeleteDialog(activeClasses[i], context, i),
                             onTap: () =>
                                 showClassDialog(activeClasses[i], context),
                             child: Text(
