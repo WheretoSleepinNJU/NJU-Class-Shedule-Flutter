@@ -19,51 +19,91 @@ import '../Utils/ColorUtil.dart';
 //  Colors.grey,
 //  Colors.blueGrey
 //];
+//
+//final List<ThemeData> themeDataList = [
+//  ThemeData(
+//    primaryColor: HexColor('#0087F1'),
+//    secondaryHeaderColor: HexColor('#0095F9'),
+//    accentColor: HexColor('#1BA4F9')
+//  ),
+//  ThemeData(
+//      primaryColor: HexColor('#388E3C'),
+//      secondaryHeaderColor: HexColor('#4CAF50'),
+//      accentColor: HexColor('#8BC34A')
+//  ),
+//  ThemeData(
+//      primaryColor: HexColor('#002060'),
+//      secondaryHeaderColor: HexColor('#002B82'),
+//      accentColor: HexColor('#203B90')
+//  ),
+//  ThemeData(
+//      primaryColor: HexColor('#661C58'),
+//      secondaryHeaderColor: HexColor('#872574'),
+//      accentColor: HexColor('#9A4C8D')
+//  ),
+//  ThemeData(
+//      primaryColor: HexColor('#A92F29'),
+//      secondaryHeaderColor: HexColor('#C52830'),
+//      accentColor: HexColor('#D9434A')
+//  ),
+//  ThemeData(
+//      primaryColor: HexColor('#DDA3B2'),
+//      secondaryHeaderColor: HexColor('#BB7F90'),
+//      accentColor: HexColor('#EAC8D1'),
+//      primaryColorBrightness: Brightness.dark
+//  ),
+//  ThemeData(
+//    primaryColor: HexColor('#26637E'),
+//    secondaryHeaderColor: HexColor('#2D7D93'),
+//    accentColor: HexColor('#23A2AF'),
+//  ),
+//  ThemeData(
+//    primaryColor: HexColor('#7D83B9'),
+//    secondaryHeaderColor: HexColor('#919FC5'),
+//    accentColor: HexColor('#A6B4CA'),
+//  ),
+//  ThemeData(
+//    primaryColor: HexColor('#3C5A64'),
+//    secondaryHeaderColor: HexColor('#638190'),
+//    accentColor: HexColor('#9E9E9E'),
+//  ),
+//];
 
 final List<ThemeData> themeDataList = [
   ThemeData(
-    primaryColor: HexColor('#0087F1'),
-    secondaryHeaderColor: HexColor('#0095F9'),
-    accentColor: HexColor('#1BA4F9')
-  ),
+      primaryColor: HexColor('#0095F9'),
+      accentColor: HexColor('#1BA4F9'),
+      primaryColorBrightness: Brightness.dark),
   ThemeData(
-      primaryColor: HexColor('#388E3C'),
-      secondaryHeaderColor: HexColor('#4CAF50'),
-      accentColor: HexColor('#8BC34A')
-  ),
+      primaryColor: HexColor('#4CAF50'),
+      accentColor: HexColor('#8BC34A'),
+      primaryColorBrightness: Brightness.dark),
   ThemeData(
-      primaryColor: HexColor('#002060'),
-      secondaryHeaderColor: HexColor('#002B82'),
-      accentColor: HexColor('#203B90')
-  ),
+      primaryColor: HexColor('#002B82'),
+      accentColor: HexColor('#203B90'),
+      primaryColorBrightness: Brightness.dark),
   ThemeData(
-      primaryColor: HexColor('#661C58'),
-      secondaryHeaderColor: HexColor('#872574'),
-      accentColor: HexColor('#9A4C8D')
-  ),
+      primaryColor: HexColor('#872574'),
+      accentColor: HexColor('#9A4C8D'),
+      primaryColorBrightness: Brightness.dark),
   ThemeData(
-      primaryColor: HexColor('#A92F29'),
-      secondaryHeaderColor: HexColor('#C52830'),
-      accentColor: HexColor('#D9434A')
-  ),
+      primaryColor: HexColor('#C52830'),
+      accentColor: HexColor('#D9434A'),
+      primaryColorBrightness: Brightness.dark),
   ThemeData(
-      primaryColor: HexColor('#BB7F90'),
-      secondaryHeaderColor: HexColor('#DDA3B2'),
+      primaryColor: HexColor('#DDA3B2'),
       accentColor: HexColor('#EAC8D1'),
-  ),
+      primaryColorBrightness: Brightness.dark),
   ThemeData(
-    primaryColor: HexColor('#26637E'),
-    secondaryHeaderColor: HexColor('#2D7D93'),
-    accentColor: HexColor('#23A2AF'),
-  ),
+      primaryColor: HexColor('#2D7D93'),
+      accentColor: HexColor('#23A2AF'),
+      primaryColorBrightness: Brightness.dark),
   ThemeData(
-    primaryColor: HexColor('#7D83B9'),
-    secondaryHeaderColor: HexColor('#919FC5'),
-    accentColor: HexColor('#A6B4CA'),
-  ),
+      primaryColor: HexColor('#919FC5'),
+      accentColor: HexColor('#A6B4CA'),
+      primaryColorBrightness: Brightness.dark),
   ThemeData(
-    primaryColor: HexColor('#3C5A64'),
-    secondaryHeaderColor: HexColor('#638190'),
-    accentColor: HexColor('#9E9E9E'),
-  ),
+      primaryColor: HexColor('#638190'),
+      accentColor: HexColor('#9E9E9E'),
+      primaryColorBrightness: Brightness.dark),
 ];

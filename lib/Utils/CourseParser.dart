@@ -90,7 +90,7 @@ class CourseParser {
             classroom: classRoom,
             teacher: e.children[4].innerHtml,
             testLocation: e.children[10].innerHtml ?? '');
-        print(course.toMap().toString());
+//        print(course.toMap().toString());
 
         rst.add(course);
       }

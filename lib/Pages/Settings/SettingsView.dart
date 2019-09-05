@@ -41,6 +41,14 @@ class _SettingsViewState extends State<SettingsView> {
                 child: Column(
                     children: ListTile.divideTiles(context: context, tiles: [
               ListTile(
+                title: Text(Strings.import_manually_title),
+                subtitle: Text(Strings.import_manually_subtitle),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => ImportView()));
+                },
+              ),
+              ListTile(
                 title: Text(Strings.import_from_NJU_title),
                 subtitle: Text(Strings.import_from_NJU_subtitle),
                 onTap: () {
