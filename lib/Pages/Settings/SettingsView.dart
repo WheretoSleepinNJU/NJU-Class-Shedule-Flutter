@@ -90,7 +90,7 @@ class _SettingsViewState extends State<SettingsView> {
                   title: Text(Strings.report_title),
                   subtitle: Text(Strings.report_subtitle),
                   onTap: () async {
-                    bool status = await _launchURL(Url.QQ_GROUP_URL);
+                    bool status = await _launchURL(Url.QQ_GROUP_APPLE_URL);
                     if (!status)
                       _scaffoldKey.currentState.showSnackBar(SnackBar(
                         content: Text("打开失败，可能是未安装 TIM/QQ"),
