@@ -72,7 +72,12 @@ class CourseTableViewState extends State<CourseTableView> {
               Row(children: [
                 Icon(Icons.calendar_today,
                     color: Theme.of(context).primaryColor),
-                Text(course.weekTime.toString()),
+                Text(Constant.WEEK_WITH_BIAS[course.weekTime] + course.startTime.toString() + '-' + (course.startTime+course.timeCount).toString() + '节'),
+              ]),
+              Row(children: [
+                Icon(Icons.calendar_today,
+                    color: Theme.of(context).primaryColor),
+                Text(course.weeks),
               ]),
               Row(children: [
                 Icon(Icons.account_circle,

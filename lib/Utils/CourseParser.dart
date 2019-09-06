@@ -114,8 +114,8 @@ class CourseParser {
   }
 
   int _getIntWeek(String chinaWeek) {
-    for (int i = 0; i < Constant.WEEK.length; i++) {
-      if (Constant.WEEK[i] == chinaWeek) {
+    for (int i = 0; i < Constant.WEEK_WITH_BIAS.length; i++) {
+      if (Constant.WEEK_WITH_BIAS[i] == chinaWeek) {
         return i;
       }
     }
