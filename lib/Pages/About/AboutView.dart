@@ -30,13 +30,22 @@ class _AboutViewState extends State<AboutView> {
             body: SingleChildScrollView(
                 child: new Column(children: <Widget>[
               new Container(
-                child: new Image.network(
-                  'https://raw.githubusercontent.com/idealclover/NJU-Class-Shedule-Android/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png',
-                ),
+                child:
+//                new Image.network(
+//                  'https://raw.githubusercontent.com/idealclover/NJU-Class-Shedule-Android/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png',
+//                ),
+                Image.asset("assets/icon.png"),
                 padding: const EdgeInsets.all(10.0),
                 alignment: Alignment.center,
                 width: 150,
               ),
+//              new DecoratedBox(
+//                decoration: new BoxDecoration(
+//                  image: new DecorationImage(
+//                    image: new AssetImage('assets/icon.png'),
+//                  ),
+//                ),
+//              ),
               new Container(
                 child: Text('南哪课表'),
               ),
