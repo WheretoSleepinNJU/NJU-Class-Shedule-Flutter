@@ -42,7 +42,9 @@ class CourseParser {
 
       for (String info in infos) {
         if (info == '') continue;
-        print(info);
+        //TODO: 自由时间
+        if (info.contains('自由时间')) continue;
+//        print(info);
 
         // Get WeekTime
         List<String> strs = info.split(' ');
@@ -73,9 +75,9 @@ class CourseParser {
             weekSeries = _getWeekSeries(startWeek, endWeek);
         } else {
           List weekResult = patten3.allMatches(info).toList();
-          if(weekResult.isEmpty) throw '课程周数解析失败';
+          if (weekResult.isEmpty) throw '课程周数解析失败';
           List<int> weekList = [];
-          for(var match in weekResult){
+          for (var match in weekResult) {
             weekList.add(int.parse(match.group(1)));
           }
           weekSeries = weekList.toString();

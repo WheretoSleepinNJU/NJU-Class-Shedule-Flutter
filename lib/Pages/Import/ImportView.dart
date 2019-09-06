@@ -117,7 +117,11 @@ class _ImportViewState extends State<ImportView> {
                         randomNumForCaptcha = Random().nextDouble();
                       });
                     } else if (status == Constant.LOGIN_CORRECT) {
-                      await _presenter.getClasses(context);
+                      bool isSuccess = await _presenter.getClasses(context);
+                      if(!isSuccess) Scaffold.of(context).showSnackBar(SnackBar(
+                        content: Text('课程解析失败 = =|| 可将课表反馈至翠翠'),
+                        backgroundColor: Theme.of(context).primaryColor,
+                      ));
                       Scaffold.of(context).showSnackBar(SnackBar(
                         content: Text("数据存储成功 >v<"),
                         backgroundColor: Theme.of(context).primaryColor,

@@ -39,14 +39,19 @@ class ImportPresenter {
 //    });
   }
 
-  getClasses(BuildContext context) async {
+   Future<bool> getClasses(BuildContext context) async {
     String url = Url.URL_NJU_HOST + Url.ClassInfo;
     String response = await httpUtil.get(url);
 //    print(response);
     CourseParser cp = new CourseParser(response);
     String courseTableName = cp.parseCourseName();
     int rst = await cp.addCourseTable(courseTableName, context);
-    await cp.parseCourse(rst);
+    try{
+      await cp.parseCourse(rst);
+      return true;
+    } catch(e) {
+      return false;
+    }
 //    print(rst);
 //    Future<String> response = httpUtil.get(url);
 //    response.then((String response) {
