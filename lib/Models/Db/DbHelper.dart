@@ -27,6 +27,7 @@ class DbHelper {
   static final String COURSE_COLUMN_TIME_COUNT = "time_count";
   static final String COURSE_COLUMN_IMPORT_TYPE = "import_type";
   static final String COURSE_COLUMN_COLOR = "color";
+  static final String COURSE_COLUMN_COURSE_ID = "course_id";
 
   static final String COURSETABLE_TABLE_NAME = "CourseTable";
   static final String COURSETABLE_COLUMN_ID = 'id';
@@ -54,7 +55,8 @@ class DbHelper {
           COURSE_COLUMN_TIME_COUNT + INTEGER_TYPE + COMMA_SEP +
 
           COURSE_COLUMN_IMPORT_TYPE + INTEGER_TYPE + COMMA_SEP +
-          COURSE_COLUMN_COLOR + TEXT_TYPE +
+          COURSE_COLUMN_COLOR + TEXT_TYPE + COMMA_SEP +
+          COURSE_COLUMN_COURSE_ID + INTEGER_TYPE +
 //
 //          COLUMN_NAME_WEEK + INTEGER_TYPE + COMMA_SEP +
 //          COLUMN_NAME_START_WEEK + INTEGER_TYPE + COMMA_SEP +

@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
+import '../Resources/Colors.dart';
 import './Db/DbHelper.dart';
 
 final String tableName = DbHelper.COURSE_TABLE_NAME;
@@ -17,6 +20,7 @@ final String columnStartTime = DbHelper.COURSE_COLUMN_START_TIME;
 final String columnTimeCount = DbHelper.COURSE_COLUMN_TIME_COUNT;
 final String columnImportType = DbHelper.COURSE_COLUMN_IMPORT_TYPE;
 final String columnColor = DbHelper.COURSE_COLUMN_COLOR;
+final String columnCourseId = DbHelper.COURSE_COLUMN_COURSE_ID;
 
 class Course {
   int id;
@@ -36,6 +40,7 @@ class Course {
   int timeCount;
   int importType;
   String color;
+  int courseId;
 
   Course(this.tableId, this.name, this.weeks, this.weekTime, this.startTime,
       this.timeCount, this.importType, this.color,
@@ -45,7 +50,8 @@ class Course {
       this.teacher,
       this.testTime,
       this.testLocation,
-      this.link});
+      this.link,
+      this.courseId});
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
@@ -63,7 +69,8 @@ class Course {
       columnTeacher: teacher,
       columnTestTime: testTime,
       columnTestLocation: testLocation,
-      columnLink: link
+      columnLink: link,
+      columnCourseId: courseId
     };
     return map;
   }
@@ -86,6 +93,13 @@ class Course {
     timeCount = map[columnTimeCount];
     importType = map[columnImportType];
     color = map[columnColor];
+    courseId = map[columnCourseId];
+  }
+
+  String getColor(List colorPool) {
+    // TODO: uncomment this before publish
+    if(this.color != null) return this.color;
+    return colorList[colorPool[this.courseId % colorPool.length] as int];
   }
 }
 
@@ -101,6 +115,8 @@ class CourseProvider {
 
   Future<Course> insert(Course course) async {
     await open();
+    if (course.courseId == null) course.courseId = await getCourseId(course);
+//    print(course.toMap());
     course.id = await db.insert(tableName, course.toMap());
 //    await close();
     return course;
@@ -143,5 +159,20 @@ class CourseProvider {
         where: '$columnId = ?', whereArgs: [course.id]);
 //    await close();
     return rst;
+  }
+
+  //获取课程 courseid，如果存在已有课程则为已有课程，否则指定新id
+  Future<int> getCourseId(Course course) async {
+    List<Map> rst = await db
+        .query(tableName, where: '$columnName = ? and $columnTableId = ?', whereArgs: [course.name, course.tableId]);
+    if(!rst.isEmpty) return rst[0]['$columnCourseId'];
+    var maxId =
+        await db.rawQuery('SELECT MAX($columnCourseId) FROM $tableName');
+    List maxIdList = maxId.toList();
+    if (maxIdList == null || maxIdList.isEmpty)
+      return 0;
+    else{
+      return maxIdList[0]['MAX($columnCourseId)'] + 1;
+    }
   }
 }

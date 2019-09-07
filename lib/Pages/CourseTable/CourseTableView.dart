@@ -19,6 +19,7 @@ class CourseTableViewState extends State<CourseTableView> {
   int _mShowWeek = 7;
   int _mShowClass = 13;
   String hideColor = '#cccccc';
+  List colorPool;
 
   CourseTablePresenter courseTablePresenter = new CourseTablePresenter();
   List<Course> activeClasses = [];
@@ -37,10 +38,12 @@ class CourseTableViewState extends State<CourseTableView> {
     int index = await model.getClassTable();
     int tmpNowWeek = await model.getWeek();
     await courseTablePresenter.refreshClasses(index, tmpNowWeek);
+    List tmpColorPool = await ColorPool.getColorPool();
     setState(() {
       activeClasses = courseTablePresenter.activeCourses;
       hideClasses = courseTablePresenter.hideCourses;
       nowWeek = tmpNowWeek;
+      colorPool = tmpColorPool;
     });
   }
 
@@ -102,7 +105,7 @@ class CourseTableViewState extends State<CourseTableView> {
   }
 
   showDeleteDialog(Course course, BuildContext context, int id){
-    print(course.toMap().toString());
+//    print(course.toMap().toString());
     return showDialog<String>(
       context: context,
       // dialog is dismissible with a tap on the barrier
@@ -243,7 +246,7 @@ class CourseTableViewState extends State<CourseTableView> {
                         width: _mWeekTitleWidth,
                         child: Ink(
                           decoration: BoxDecoration(
-                            color: HexColor(activeClasses[i].color),
+                            color: HexColor(activeClasses[i].getColor(colorPool)),
                             borderRadius: BorderRadius.all(Radius.circular(5)),
                           ),
                           child: InkWell(

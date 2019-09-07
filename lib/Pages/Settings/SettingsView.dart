@@ -7,6 +7,7 @@ import '../Import/ImportView.dart';
 import '../About/AboutView.dart';
 import '../Add/Add.dart';
 import '../../Utils/States/MainState.dart';
+import '../../Utils/ColorUtil.dart';
 import '../../Resources/Strings.dart';
 import '../../Resources/Themes.dart';
 import '../../Resources/Url.dart';
@@ -86,6 +87,17 @@ class _SettingsViewState extends State<SettingsView> {
                                   onTap: () => model.changeTheme(i),
                                 )))));
               }),
+              ListTile(
+                title: Text(Strings.shuffle_color_pool_title),
+                subtitle: Text(Strings.shuffle_color_pool_subtitle),
+                onTap: () {
+                  ColorPool.shuffleColorPool();
+                  _scaffoldKey.currentState.showSnackBar(SnackBar(
+                    content: Text("重置颜色池成功 >v<"),
+                    backgroundColor: Theme.of(context).primaryColor,
+                  ));
+                },
+              ),
               ListTile(
                   title: Text(Strings.report_title),
                   subtitle: Text(Strings.report_subtitle),

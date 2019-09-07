@@ -46,12 +46,13 @@ class ImportPresenter {
     CourseParser cp = new CourseParser(response);
     String courseTableName = cp.parseCourseName();
     int rst = await cp.addCourseTable(courseTableName, context);
-    try{
+    // For developer: if you want to debug, you should comment this try
+//    try{
       await cp.parseCourse(rst);
       return true;
-    } catch(e) {
-      return false;
-    }
+//    } catch(e) {
+//      return false;
+//    }
 //    print(rst);
 //    Future<String> response = httpUtil.get(url);
 //    response.then((String response) {
