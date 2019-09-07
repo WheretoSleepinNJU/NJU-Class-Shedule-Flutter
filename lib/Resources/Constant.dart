@@ -9,4 +9,7 @@ class Constant {
 
   static final int ADD_MANUALLY = 0;
   static final int ADD_BY_IMPORT = 1;
+
+  static final int DEFAULT_WEEK_START = 1;
+  static final int DEFAULT_WEEK_END = 17;
 }

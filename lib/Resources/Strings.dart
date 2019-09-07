@@ -20,4 +20,6 @@ class Strings {
   static final String add_table_title = "请输入课程表名称";
   static final String ok = "确认";
   static final String cancel = "取消";
+
+  static final String default_class_table = "默认课表";
 }

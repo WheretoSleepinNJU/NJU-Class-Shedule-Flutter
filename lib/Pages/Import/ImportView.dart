@@ -63,19 +63,12 @@ class _ImportViewState extends State<ImportView> {
                 icon: Icon(Icons.code, color: Theme.of(context).primaryColor),
                 hintText: '验证码',
               ),
-//              onEditingComplete: () =>
-//                  FocusScope.of(context).requestFocus(cidTextFieldNode),
             ),
-//                  Image.network(
-//                    'http://elite.nju.edu.cn/jiaowu/ValidateCode.jsp',
-//                  ),
             InkWell(
               child: FutureBuilder(
                   future: _presenter.getCaptcha(randomNumForCaptcha),
 //                      builder: (BuildContext context, AsyncSnapshot<Uint8List> image){
                   builder: (BuildContext context, AsyncSnapshot<Image> image) {
-//                    print("QAQ");
-//                        return Image.memory(image);
                     if (image.hasData) {
                       return image.data;
                     } else {

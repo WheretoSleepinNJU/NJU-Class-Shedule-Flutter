@@ -43,6 +43,7 @@ class CourseParser {
       for (String info in infos) {
         if (info == '') continue;
         //TODO: 自由时间
+        // "自由时间 2-17周 详见主页通知"
         if (info.contains('自由时间')) continue;
 //        print(info);
 
@@ -74,13 +75,22 @@ class CourseParser {
           else
             weekSeries = _getWeekSeries(startWeek, endWeek);
         } else {
+          // 有些课程会在特定的周数上
+          // "周一 第7-8节 第3周 第5周 第7周 第9周 仙二-207"
           List weekResult = patten3.allMatches(info).toList();
-          if (weekResult.isEmpty) throw '课程周数解析失败';
           List<int> weekList = [];
           for (var match in weekResult) {
             weekList.add(int.parse(match.group(1)));
           }
           weekSeries = weekList.toString();
+          if (weekResult.isEmpty)
+            // 有些课程只有单周/双周显示，无周数，故会出现找不到周数的情况
+            // "周二 第3-4节 单周 逸B-101"
+            if (info.contains('单周'))
+              weekSeries = _getSingleWeekSeries(Constant.DEFAULT_WEEK_START, Constant.DEFAULT_WEEK_END);
+            else if (info.contains('双周'))
+              weekSeries = _getDoubleWeekSeries(Constant.DEFAULT_WEEK_START, Constant.DEFAULT_WEEK_END);
+            else throw '课程周数解析失败';
         }
 
         // Get ClassRoom
@@ -131,12 +141,14 @@ class CourseParser {
   }
 
   String _getSingleWeekSeries(int start, int end) {
+    if (start % 2 == 0) start++;
     List<int> list = [for (int i = start; i <= end; i += 2) i];
 //    print (list.toString());
     return list.toString();
   }
 
   String _getDoubleWeekSeries(int start, int end) {
+    if (start % 2 == 1) start++;
     List<int> list = [for (int i = start; i <= end; i += 2) i];
 //    print (list.toString());
     return list.toString();
