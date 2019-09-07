@@ -21,4 +21,6 @@ abstract class WeekStateModel extends Model {
     }
     return 1;
   }
+
+
 }

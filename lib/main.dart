@@ -7,7 +7,7 @@ import 'Resources/Themes.dart';
 
 void main() async {
   //Initialize the app config.
-  int themeIndex = await Initialize();
+  int themeIndex = await InitUtil.Initialize();
   runApp(MyApp(themeIndex));
 }
 

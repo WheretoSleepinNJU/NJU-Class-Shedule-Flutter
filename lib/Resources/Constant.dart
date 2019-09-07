@@ -12,4 +12,7 @@ class Constant {
 
   static final int DEFAULT_WEEK_START = 1;
   static final int DEFAULT_WEEK_END = 17;
+
+  static final String SEMESTER_START_MONDAY = '2019-09-02';
+  static final int MAX_WEEKS = 20;
 }
