@@ -38,7 +38,7 @@ class CourseParser {
 //      print(source);
 
       // Get Color
-      String color = HexColor.getRandomColor();
+//      String color = HexColor.getRandomColor();
 
       for (String info in infos) {
         if (info == '') continue;
@@ -98,7 +98,8 @@ class CourseParser {
 //        print(classRoom);
 
         Course course = new Course(tableId, e.children[2].innerHtml, weekSeries,
-            weekTime, startTime, timeCount, 1, color,
+            weekTime, startTime, timeCount, 1,
+//            color: color,
             classroom: classRoom,
             teacher: e.children[4].innerHtml,
             testLocation: e.children[10].innerHtml ?? '');

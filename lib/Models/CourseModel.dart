@@ -43,7 +43,7 @@ class Course {
   int courseId;
 
   Course(this.tableId, this.name, this.weeks, this.weekTime, this.startTime,
-      this.timeCount, this.importType, this.color,
+      this.timeCount, this.importType,
       {this.id,
       this.classroom,
       this.classNumber,
@@ -51,6 +51,7 @@ class Course {
       this.testTime,
       this.testLocation,
       this.link,
+      this.color,
       this.courseId});
 
   Map<String, dynamic> toMap() {
@@ -98,7 +99,7 @@ class Course {
 
   String getColor(List colorPool) {
     // TODO: uncomment this before publish
-    if(this.color != null) return this.color;
+//    if(this.color != null) return this.color;
     return colorList[colorPool[this.courseId % colorPool.length] as int];
   }
 }
@@ -163,15 +164,19 @@ class CourseProvider {
 
   //获取课程 courseid，如果存在已有课程则为已有课程，否则指定新id
   Future<int> getCourseId(Course course) async {
-    List<Map> rst = await db
-        .query(tableName, where: '$columnName = ? and $columnTableId = ?', whereArgs: [course.name, course.tableId]);
-    if(!rst.isEmpty) return rst[0]['$columnCourseId'];
+    List<Map> rst = await db.query(tableName,
+        where: '$columnName = ? and $columnTableId = ?',
+        whereArgs: [course.name, course.tableId]);
+    if (!rst.isEmpty) return rst[0]['$columnCourseId'];
     var maxId =
         await db.rawQuery('SELECT MAX($columnCourseId) FROM $tableName');
     List maxIdList = maxId.toList();
-    if (maxIdList == null || maxIdList.isEmpty)
+    print(maxIdList);
+    if (maxIdList == null ||
+        maxIdList.isEmpty ||
+        maxIdList[0]['MAX($columnCourseId)'] == null)
       return 0;
-    else{
+    else {
       return maxIdList[0]['MAX($columnCourseId)'] + 1;
     }
   }
