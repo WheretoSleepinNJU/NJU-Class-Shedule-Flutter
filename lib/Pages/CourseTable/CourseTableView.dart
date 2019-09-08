@@ -227,7 +227,7 @@ class CourseTableViewState extends State<CourseTableView> {
                                 '[非本周]' +
                                     hideClasses[i].name +
                                     '@' +
-                                    hideClasses[i].classroom,
+                                    (hideClasses[i].classroom??'未知地点'),
                                 style: TextStyle(color: Colors.white)),
                           ),
                         ),
@@ -257,7 +257,7 @@ class CourseTableViewState extends State<CourseTableView> {
                             child: Text(
                                 activeClasses[i].name +
                                     '@' +
-                                    activeClasses[i].classroom,
+                                    (activeClasses[i].classroom??'未知地点'),
                                 style: TextStyle(color: Colors.white)),
                           ),
                         ),
