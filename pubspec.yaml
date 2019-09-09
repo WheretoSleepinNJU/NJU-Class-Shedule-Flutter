@@ -7,7 +7,7 @@ description: A new Flutter project.
 # Both the version and the builder number may be overridden in flutter
 # build by specifying --build-name and --build-number, respectively.
 # Read more about versioning at semver.org.
-version: 1.0.4+1
+version: 1.1.2+2
 
 environment:
   sdk: ">=2.1.0-dev.68.0 <3.0.0"
@@ -21,10 +21,15 @@ dependencies:
   shared_preferences: ^0.5.3+4
   cupertino_icons: ^0.1.2
   package_info: ^0.4.0+6
+#  flutter_bugly: ^0.2.6
   url_launcher: ^5.1.2
   scoped_model: ^1.0.1
   sqflite: ^1.1.6
   intl: ^0.16.0
+  flutter_bugly:
+    git:
+      url: git://github.com/crazecoder/flutter_bugly.git
+      ref: dev
   html:
     git:
       url: git://github.com/chen-zeyu/html.git
