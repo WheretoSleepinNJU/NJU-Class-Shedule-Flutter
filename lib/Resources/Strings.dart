@@ -12,6 +12,8 @@ class Strings {
   static final String change_theme_title = "修改主题";
   static final String shuffle_color_pool_title = "重置课程颜色";
   static final String shuffle_color_pool_subtitle = "重置课程颜色池";
+  static final String change_week_title = "修改当前周";
+  static final String change_week_subtitle = "当前周数：";
   static final String report_title = "反馈";
   static final String report_subtitle = "加入用户群一起愉快地玩耍吧！";
   static final String donate_title = "投喂";

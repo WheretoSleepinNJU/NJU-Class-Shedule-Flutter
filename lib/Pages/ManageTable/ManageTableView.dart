@@ -79,6 +79,12 @@ class _ManageTableViewState extends State<ManageTableView> {
           ),
           actions: <Widget>[
             FlatButton(
+              child: Text(Strings.cancel),
+              onPressed: () {
+                Navigator.of(context).pop('');
+              },
+            ),
+            FlatButton(
               child: Text(Strings.ok),
               onPressed: () {
                 Navigator.of(context).pop(tableName);

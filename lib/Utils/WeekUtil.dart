@@ -37,6 +37,11 @@ class WeekUtil{
     if(weekBias != 0) await _setWeek(thisMondayString, weekBias);
   }
 
+  static setNowWeek(int weekNum) async{
+    String monday = _getMonday();
+    await _initWeek(monday, weekNum);
+  }
+
   static String _getMonday() {
     int monday = 1;
     DateTime now = new DateTime.now();

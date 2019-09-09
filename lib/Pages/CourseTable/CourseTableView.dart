@@ -65,29 +65,34 @@ class CourseTableViewState extends State<CourseTableView> {
             children: <Widget>[
               Row(children: [
                 Icon(Icons.location_on, color: Theme.of(context).primaryColor),
-                Text(course.classroom),
+                Flexible(child: Text(course.classroom)),
               ]),
               Row(children: [
                 Icon(Icons.account_circle,
                     color: Theme.of(context).primaryColor),
-                Text(course.teacher ?? ''),
+                Flexible(child: Text(course.teacher ?? '')),
+              ]),
+              Row(children: [
+                Icon(Icons.access_time, color: Theme.of(context).primaryColor),
+                Flexible(
+                    child: Text(Constant.WEEK_WITH_BIAS[course.weekTime] +
+                        course.startTime.toString() +
+                        '-' +
+                        (course.startTime + course.timeCount).toString() +
+                        '节')),
               ]),
               Row(children: [
                 Icon(Icons.calendar_today,
                     color: Theme.of(context).primaryColor),
-                Text(Constant.WEEK_WITH_BIAS[course.weekTime] + course.startTime.toString() + '-' + (course.startTime+course.timeCount).toString() + '节'),
+                Flexible(child: Text(course.weeks)),
               ]),
               Row(children: [
-                Icon(Icons.calendar_today,
+                Icon(Icons.android,
                     color: Theme.of(context).primaryColor),
-                Text(course.weeks),
-              ]),
-              Row(children: [
-                Icon(Icons.account_circle,
-                    color: Theme.of(context).primaryColor),
-                Text(course.importType == Constant.ADD_BY_IMPORT
-                    ? '自动导入'
-                    : '手动导入'),
+                Flexible(
+                    child: Text(course.importType == Constant.ADD_BY_IMPORT
+                        ? '自动导入'
+                        : '手动导入')),
               ]),
             ],
           ),
@@ -104,7 +109,7 @@ class CourseTableViewState extends State<CourseTableView> {
     );
   }
 
-  showDeleteDialog(Course course, BuildContext context, int id){
+  showDeleteDialog(Course course, BuildContext context, int id) {
 //    print(course.toMap().toString());
     return showDialog<String>(
       context: context,
@@ -118,20 +123,20 @@ class CourseTableViewState extends State<CourseTableView> {
 //            crossAxisAlignment: CrossAxisAlignment.start,
 //            children: <Widget>[
 //              Row(children: [
-                Text("确定删除课程【"+course.name+"】吗？"),
+              Text("确定删除课程【" + course.name + "】吗？"),
 //              ]),],),
           actions: <Widget>[
+            FlatButton(
+              child: Text(Strings.cancel),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
             FlatButton(
               child: Text(Strings.ok),
               onPressed: () {
                 CourseProvider courseProvider = new CourseProvider();
                 courseProvider.delete(course.id);
-                Navigator.of(context).pop();
-              },
-            ),
-            FlatButton(
-              child: Text(Strings.cancel),
-              onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
@@ -220,14 +225,15 @@ class CourseTableViewState extends State<CourseTableView> {
                           ),
                           child: InkWell(
                             borderRadius: BorderRadius.all(Radius.circular(5)),
-                            onLongPress: () => showDeleteDialog(hideClasses[i], context, i),
+                            onLongPress: () =>
+                                showDeleteDialog(hideClasses[i], context, i),
                             onTap: () =>
                                 showClassDialog(hideClasses[i], context),
                             child: Text(
                                 '[非本周]' +
                                     hideClasses[i].name +
                                     '@' +
-                                    (hideClasses[i].classroom??'未知地点'),
+                                    (hideClasses[i].classroom ?? '未知地点'),
                                 style: TextStyle(color: Colors.white)),
                           ),
                         ),
@@ -246,18 +252,20 @@ class CourseTableViewState extends State<CourseTableView> {
                         width: _mWeekTitleWidth,
                         child: Ink(
                           decoration: BoxDecoration(
-                            color: HexColor(activeClasses[i].getColor(colorPool)),
+                            color:
+                                HexColor(activeClasses[i].getColor(colorPool)),
                             borderRadius: BorderRadius.all(Radius.circular(5)),
                           ),
                           child: InkWell(
                             borderRadius: BorderRadius.all(Radius.circular(5)),
-                            onLongPress: () => showDeleteDialog(activeClasses[i], context, i),
+                            onLongPress: () =>
+                                showDeleteDialog(activeClasses[i], context, i),
                             onTap: () =>
                                 showClassDialog(activeClasses[i], context),
                             child: Text(
                                 activeClasses[i].name +
                                     '@' +
-                                    (activeClasses[i].classroom??'未知地点'),
+                                    (activeClasses[i].classroom ?? '未知地点'),
                                 style: TextStyle(color: Colors.white)),
                           ),
                         ),
