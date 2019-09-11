@@ -58,7 +58,7 @@ class _AboutViewState extends State<AboutView> {
               generateTitle('开发者'),
               generateContent(
                   '博客：https://idealclover.top\nEmail：idealclover@163.com'),
-                  generateTitle('感谢小百合工作室\n感谢 @ns @lgt 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n感谢各位提供反馈的NJUers\n谨以此APP送给子枨 谢谢'),
+                  generateTitle('感谢小百合工作室\n感谢 @ns @lgt 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n感谢各位提供反馈的NJUers\n谨以此APP送给子枨\n谢谢 祝幸福'),
             ])))
 //    )
         ;

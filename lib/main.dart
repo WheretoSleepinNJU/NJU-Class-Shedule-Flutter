@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'Pages/CourseTable/CourseTableView.dart';
 import 'package:flutter_bugly/flutter_bugly.dart';
+//import 'Pages/CourseTable/CourseTableView.dart';
+import 'Pages/MainView.dart';
+import 'Resources/Themes.dart';
 import 'Utils/States/MainState.dart';
 import 'Utils/InitUtil.dart';
-import 'Resources/Themes.dart';
 
 void main() async {
   //Initialize the app config.
@@ -33,6 +34,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
+
   @override
   Widget build(BuildContext context) {
     return ScopedModel<MainStateModel>(
@@ -43,7 +45,7 @@ class _MyAppState extends State<MyApp> {
             return MaterialApp(
               theme:
               themeDataList[model.themeIndex != null? model.themeIndex: widget.themeIndex],
-              home: CourseTableView(),
+              home: MainView(),
             );
           },
         ));

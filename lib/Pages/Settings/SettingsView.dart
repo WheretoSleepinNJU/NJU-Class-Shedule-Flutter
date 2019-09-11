@@ -45,7 +45,8 @@ class _SettingsViewState extends State<SettingsView> {
         appBar: AppBar(
           title: Text(widget.title),
         ),
-        body: Column(
+        body: SingleChildScrollView(
+            child: Column(
           children: <Widget>[
             SingleChildScrollView(
                 child: Column(
@@ -151,7 +152,6 @@ class _SettingsViewState extends State<SettingsView> {
                                 await changeWeek(changedWeek);
 //                                Navigator.of(context).pop();
                               }),
-
                         ],
                       );
                     },
@@ -190,7 +190,7 @@ class _SettingsViewState extends State<SettingsView> {
               )
             ]).toList())),
           ],
-        ));
+        )));
   }
 
   void getVersion() async {
@@ -208,7 +208,7 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   void changeWeek(int changedWeek) async {
-    if(changedWeek == nowWeek - 1){
+    if (changedWeek == nowWeek - 1) {
       _scaffoldKey.currentState.showSnackBar(SnackBar(
         content: Text("当前周未修改 >v<"),
         backgroundColor: Theme.of(context).primaryColor,
