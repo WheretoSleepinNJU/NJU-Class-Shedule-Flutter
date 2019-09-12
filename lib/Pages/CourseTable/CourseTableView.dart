@@ -1,3 +1,4 @@
+import '../../generated/i18n.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:wheretosleepinnju/Resources/Colors.dart';
@@ -5,7 +6,6 @@ import './CourseTablePresenter.dart';
 import '../Settings/SettingsView.dart';
 import '../../Components/Separator.dart';
 import '../../Resources/Config.dart';
-import '../../Resources/Strings.dart';
 import '../../Resources/Constant.dart';
 import '../../Utils/ColorUtil.dart';
 import '../../Utils/States/MainState.dart';
@@ -17,7 +17,6 @@ class CourseTableView extends StatefulWidget {
 }
 
 class CourseTableViewState extends State<CourseTableView> {
-  List<String> _WEEK = ["一", "二", "三", "四", "五", "六", "日"];
   int _mShowWeek = 7;
   int _mShowClass = Config.MAX_CLASSES;
   String hideColor = HIDE_CLASS_COLOR;
@@ -89,18 +88,17 @@ class CourseTableViewState extends State<CourseTableView> {
                 Flexible(child: Text(course.weeks)),
               ]),
               Row(children: [
-                Icon(Icons.android,
-                    color: Theme.of(context).primaryColor),
+                Icon(Icons.android, color: Theme.of(context).primaryColor),
                 Flexible(
                     child: Text(course.importType == Constant.ADD_BY_IMPORT
-                        ? '自动导入'
-                        : '手动导入')),
+                        ? S.of(context).import_auto
+                        : S.of(context).import_manually)),
               ]),
             ],
           ),
           actions: <Widget>[
             FlatButton(
-              child: Text(Strings.ok),
+              child: Text(S.of(context).ok),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -118,24 +116,17 @@ class CourseTableViewState extends State<CourseTableView> {
       // dialog is dismissible with a tap on the barrier
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('删除课程'),
-          content:
-//          new Column(
-//            mainAxisSize: MainAxisSize.min,
-//            crossAxisAlignment: CrossAxisAlignment.start,
-//            children: <Widget>[
-//              Row(children: [
-              Text("确定删除课程【" + course.name + "】吗？"),
-//              ]),],),
+          title: Text(S.of(context).delete_class_dialog_title),
+          content: Text(S.of(context).delete_class_dialog_content(course.name)),
           actions: <Widget>[
             FlatButton(
-              child: Text(Strings.cancel),
+              child: Text(S.of(context).cancel),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             FlatButton(
-              child: Text(Strings.ok),
+              child: Text(S.of(context).ok),
               onPressed: () {
                 CourseProvider courseProvider = new CourseProvider();
                 courseProvider.delete(course.id);
@@ -168,7 +159,8 @@ class CourseTableViewState extends State<CourseTableView> {
 //                color: Colors.deepPurpleAccent,
                       height: _mWeekTitleHeight,
                       child: Center(
-                          child: Text(_WEEK[i], textAlign: TextAlign.center)),
+                          child: Text(Constant.WEEK_WITHOUT_BIAS_WITHOUT_PRE[i],
+                              textAlign: TextAlign.center)),
                       padding: EdgeInsets.all(0.0),
                     ),
                   ));
@@ -232,10 +224,11 @@ class CourseTableViewState extends State<CourseTableView> {
                             onTap: () =>
                                 showClassDialog(hideClasses[i], context),
                             child: Text(
-                                '[非本周]' +
+                                S.of(context).not_this_week +
                                     hideClasses[i].name +
-                                    '@' +
-                                    (hideClasses[i].classroom ?? '未知地点'),
+                                    S.of(context).at +
+                                    (hideClasses[i].classroom ??
+                                        S.of(context).unknown_place),
                                 style: TextStyle(color: Colors.white)),
                           ),
                         ),
@@ -266,8 +259,9 @@ class CourseTableViewState extends State<CourseTableView> {
                                 showClassDialog(activeClasses[i], context),
                             child: Text(
                                 activeClasses[i].name +
-                                    '@' +
-                                    (activeClasses[i].classroom ?? '未知地点'),
+                                    S.of(context).at +
+                                    (activeClasses[i].classroom ??
+                                        S.of(context).unknown_place),
                                 style: TextStyle(color: Colors.white)),
                           ),
                         ),
@@ -280,14 +274,11 @@ class CourseTableViewState extends State<CourseTableView> {
 //                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          Strings.app_name,
+                          S.of(context).app_name,
                         ),
                         // TODO: 点击副标题选择周数
                         GestureDetector(
-                          child: Text(
-                              Strings.subtitle_pre +
-                                  nowWeek.toString() +
-                                  Strings.subtitle_suf,
+                          child: Text(S.of(context).week(nowWeek.toString()),
                               style: TextStyle(fontSize: 16)),
                           onTap: () {
                             weekSelectorVisibility = !weekSelectorVisibility;
@@ -340,9 +331,9 @@ class CourseTableViewState extends State<CourseTableView> {
                                                 onTap: () =>
                                                     model.changeWeek(i + 1),
                                                 child: Text(
-                                                  '第' +
-                                                      (i + 1).toString() +
-                                                      '周',
+                                                  S
+                                                      .of(context)
+                                                      .week((i + 1).toString()),
                                                   style: TextStyle(
                                                       color: Colors.white,
                                                       fontSize: 15),

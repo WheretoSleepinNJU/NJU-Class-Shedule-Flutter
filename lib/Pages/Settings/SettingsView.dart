@@ -1,4 +1,5 @@
 import 'dart:io';
+import '../../generated/i18n.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,14 +15,12 @@ import '../../Utils/States/MainState.dart';
 import '../../Utils/ColorUtil.dart';
 import '../../Utils/WeekUtil.dart';
 import '../../Components/Toast.dart';
-import '../../Resources/Strings.dart';
 import '../../Resources/Config.dart';
 import '../../Resources/Themes.dart';
 import '../../Resources/Url.dart';
 
 class SettingsView extends StatefulWidget {
   SettingsView() : super();
-  final String title = '设置';
 
   @override
   _SettingsViewState createState() => _SettingsViewState();
@@ -46,7 +45,7 @@ class _SettingsViewState extends State<SettingsView> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text(widget.title),
+          title: Text(S.of(context).settings_title),
         ),
         body: SingleChildScrollView(
             child: Column(
@@ -55,24 +54,24 @@ class _SettingsViewState extends State<SettingsView> {
                 child: Column(
                     children: ListTile.divideTiles(context: context, tiles: [
               ListTile(
-                title: Text(Strings.import_manually_title),
-                subtitle: Text(Strings.import_manually_subtitle),
+                title: Text(S.of(context).import_manually_title),
+                subtitle: Text(S.of(context).import_manually_subtitle),
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) => AddView()));
                 },
               ),
               ListTile(
-                title: Text(Strings.import_from_NJU_title),
-                subtitle: Text(Strings.import_from_NJU_subtitle),
+                title: Text(S.of(context).import_from_NJU_title),
+                subtitle: Text(S.of(context).import_from_NJU_subtitle),
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) => ImportView()));
                 },
               ),
               ListTile(
-                title: Text(Strings.manage_table_title),
-                subtitle: Text(Strings.manage_table_subtitle),
+                title: Text(S.of(context).manage_table_title),
+                subtitle: Text(S.of(context).manage_table_subtitle),
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) => ManageTableView()));
@@ -100,25 +99,25 @@ class _SettingsViewState extends State<SettingsView> {
                                 )))));
               }),
               ListTile(
-                title: Text(Strings.shuffle_color_pool_title),
-                subtitle: Text(Strings.shuffle_color_pool_subtitle),
+                title: Text(S.of(context).shuffle_color_pool_title),
+                subtitle: Text(S.of(context).shuffle_color_pool_subtitle),
                 onTap: () {
                   ColorPool.shuffleColorPool();
-                  Toast.showToast(Strings.shuffle_color_pool_success_toast, context);
+                  Toast.showToast(S.of(context).shuffle_color_pool_success_toast, context);
                   Navigator.of(context).pop();
                 },
               ),
               ListTile(
-                title: Text(Strings.change_week_title),
+                title: Text(S.of(context).change_week_title),
                 subtitle:
-                    Text(Strings.change_week_subtitle + nowWeek.toString()),
+                    Text(S.of(context).change_week_subtitle + nowWeek.toString()),
                 onTap: () async {
                   await showDialog<String>(
                     context: context,
                     builder: (BuildContext context) {
                       int changedWeek = nowWeek - 1;
                       return AlertDialog(
-                        title: Text(Strings.change_week_title),
+                        title: Text(S.of(context).change_week_title),
                         content: Container(
                             height: 32,
                             child: CupertinoPicker(
@@ -135,20 +134,20 @@ class _SettingsViewState extends State<SettingsView> {
                                     Config.MAX_WEEKS, (int index) {
                                   return new Center(
                                     child: new Text(
-                                      '第' + '${index + 1}' + '周',
+                                      S.of(context).week((index + 1).toString()),
                                       style: TextStyle(fontSize: 16),
                                     ),
                                   );
                                 }))),
                         actions: <Widget>[
                           FlatButton(
-                            child: Text(Strings.cancel),
+                            child: Text(S.of(context).cancel),
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
                           ),
                           FlatButton(
-                              child: Text(Strings.ok),
+                              child: Text(S.of(context).ok),
                               onPressed: () async {
                                 await changeWeek(changedWeek);
                               }),
@@ -159,8 +158,8 @@ class _SettingsViewState extends State<SettingsView> {
                 },
               ),
               ListTile(
-                title: Text(Strings.report_title),
-                subtitle: Text(Strings.report_subtitle),
+                title: Text(S.of(context).report_title),
+                subtitle: Text(S.of(context).report_subtitle),
                 onTap: () async {
                   bool status = false;
                   if (Platform.isIOS)
@@ -179,8 +178,8 @@ class _SettingsViewState extends State<SettingsView> {
                 },
               ),
               ListTile(
-                  title: Text(Strings.donate_title),
-                  subtitle: Text(Strings.donate_subtitle),
+                  title: Text(S.of(context).donate_title),
+                  subtitle: Text(S.of(context).donate_subtitle),
                   onTap: () async {
                     bool status = false;
                     if (Platform.isIOS)
@@ -190,7 +189,7 @@ class _SettingsViewState extends State<SettingsView> {
                     if (!status) Toast.showToast("打开失败，可能是未安装支付宝", context);
                   }),
               ListTile(
-                title: Text(Strings.about_title),
+                title: Text(S.of(context).about_title),
                 subtitle: Text(version),
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(

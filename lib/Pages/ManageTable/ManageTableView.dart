@@ -1,13 +1,12 @@
+import '../../generated/i18n.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:scoped_model/scoped_model.dart';
-import '../../Resources/Strings.dart';
 import '../../Models/CourseTableModel.dart';
 import '../../Utils/States/MainState.dart';
 
 class ManageTableView extends StatefulWidget {
   ManageTableView() : super();
-  final String title = '课表管理';
 
   @override
   _ManageTableViewState createState() => _ManageTableViewState();
@@ -29,16 +28,18 @@ class _ManageTableViewState extends State<ManageTableView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(widget.title), actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () async {
-              String str = await _addTableDialog(context);
-              if (str != '')
-                await courseTableProvider.insert(new CourseTable(str));
-            },
-          )
-        ]),
+        appBar: AppBar(
+            title: Text(S.of(context).class_table_manage_title),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () async {
+                  String str = await _addTableDialog(context);
+                  if (str != '')
+                    await courseTableProvider.insert(new CourseTable(str));
+                },
+              )
+            ]),
         body: SingleChildScrollView(child:
             ScopedModelDescendant<MainStateModel>(
                 builder: (context, child, model) {
@@ -64,7 +65,7 @@ class _ManageTableViewState extends State<ManageTableView> {
       // dialog is dismissible with a tap on the barrier
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(Strings.add_table_title),
+          title: Text(S.of(context).add_class_table_dialog_title),
           content: new Row(
             children: <Widget>[
               new Expanded(
@@ -79,13 +80,13 @@ class _ManageTableViewState extends State<ManageTableView> {
           ),
           actions: <Widget>[
             FlatButton(
-              child: Text(Strings.cancel),
+              child: Text(S.of(context).cancel),
               onPressed: () {
                 Navigator.of(context).pop('');
               },
             ),
             FlatButton(
-              child: Text(Strings.ok),
+              child: Text(S.of(context).ok),
               onPressed: () {
                 Navigator.of(context).pop(tableName);
               },

@@ -1,8 +1,9 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:scoped_model/scoped_model.dart';
+import 'generated/i18n.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_bugly/flutter_bugly.dart';
-//import 'Pages/CourseTable/CourseTableView.dart';
+import 'package:scoped_model/scoped_model.dart';
+import 'package:flutter/material.dart';
 import 'Pages/MainView.dart';
 import 'Resources/Themes.dart';
 import 'Utils/States/MainState.dart';
@@ -13,17 +14,16 @@ void main() async {
   //Initialize the app config.
   int themeIndex = await InitUtil.Initialize();
 //  runApp(MyApp(themeIndex));
-  if(Platform.isAndroid || Platform.isIOS){
+  if (Platform.isAndroid || Platform.isIOS) {
     //使用flutter异常上报
-    FlutterBugly.postCatchedException((){
+    FlutterBugly.postCatchedException(() {
       runApp(MyApp(themeIndex));
     });
-    FlutterBugly.init(androidAppId: "b98f2b6d2f",iOSAppId: "92cf429ccb");
-  } else{
+    FlutterBugly.init(androidAppId: "b98f2b6d2f", iOSAppId: "92cf429ccb");
+  } else {
     runApp(MyApp(themeIndex));
   }
 }
-
 
 class MyApp extends StatefulWidget {
   final int themeIndex;
@@ -40,7 +40,6 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return ScopedModel<MainStateModel>(
@@ -49,12 +48,20 @@ class _MyAppState extends State<MyApp> {
           builder: (context, child, model) {
             print("rebuild");
             return MaterialApp(
-              theme:
-              themeDataList[model.themeIndex != null? model.themeIndex: widget.themeIndex],
+              onGenerateTitle: (BuildContext context) => S.of(context).app_name,
+              localizationsDelegates: const [
+                S.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate
+              ],
+              supportedLocales: S.delegate.supportedLocales,
+              title: '南哪课表',
+              theme: themeDataList[model.themeIndex != null
+                  ? model.themeIndex
+                  : widget.themeIndex],
               home: MainView(),
             );
           },
         ));
   }
 }
-

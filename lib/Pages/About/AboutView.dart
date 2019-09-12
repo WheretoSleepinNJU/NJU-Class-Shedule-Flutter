@@ -32,7 +32,7 @@ class _AboutViewState extends State<AboutView> {
                 child: new Column(children: <Widget>[
               new Container(
                 child:
-                    Image.asset("assets/icon.png"),
+                    Image.asset("res/icon.png"),
                 padding: const EdgeInsets.all(10.0),
                 alignment: Alignment.center,
                 width: 150,

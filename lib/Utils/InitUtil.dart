@@ -1,6 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Models/CourseTableModel.dart';
-import '../Resources/Strings.dart';
+import '../Resources/Config.dart';
 import '../Utils/ColorUtil.dart';
 import '../Utils/WeekUtil.dart';
 
@@ -26,6 +26,6 @@ class InitUtil {
     CourseTableProvider courseTableProvider = new CourseTableProvider();
     List c = await courseTableProvider.getAllCourseTable();
     if (c.isEmpty) courseTableProvider.insert(
-        new CourseTable(Strings.default_class_table));
+        new CourseTable(Config.default_class_table));
   }
 }

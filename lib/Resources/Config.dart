@@ -5,6 +5,8 @@ class Config{
 
   static final String SEMESTER_START_MONDAY = '2019-09-02';
 
+  static final String default_class_table = "默认课表";
+
   static final String ANDROID_GROUP = '569300290';
   static final String IOS_GROUP = '493247215';
 }

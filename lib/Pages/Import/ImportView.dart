@@ -1,3 +1,4 @@
+import '../../generated/i18n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import '../../Resources/Constant.dart';
@@ -7,7 +8,6 @@ import 'dart:math';
 
 class ImportView extends StatefulWidget {
   ImportView() : super();
-  final String title = '导入课程表';
 
   @override
   _ImportViewState createState() => _ImportViewState();
@@ -64,7 +64,7 @@ class _ImportViewState extends State<ImportView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(widget.title),
+          title: Text(S.of(context).import_title),
         ),
         body: Builder(builder: (BuildContext context) {
           return Container(
@@ -76,7 +76,7 @@ class _ImportViewState extends State<ImportView> {
                   decoration: InputDecoration(
                     icon: Icon(Icons.account_circle,
                         color: Theme.of(context).primaryColor),
-                    hintText: '用户名',
+                    hintText: S.of(context).username,
                   ),
                   onEditingComplete: () =>
                       FocusScope.of(context).requestFocus(pwdTextFieldNode),
@@ -86,7 +86,7 @@ class _ImportViewState extends State<ImportView> {
                   decoration: InputDecoration(
                     icon:
                         Icon(Icons.lock, color: Theme.of(context).primaryColor),
-                    hintText: '密码',
+                    hintText: S.of(context).password,
                   ),
                   obscureText: true,
                   onEditingComplete: () =>
@@ -99,7 +99,7 @@ class _ImportViewState extends State<ImportView> {
                     decoration: InputDecoration(
                       icon: Icon(Icons.code,
                           color: Theme.of(context).primaryColor),
-                      hintText: '验证码',
+                      hintText: S.of(context).captcha,
                     ),
                   )),
                   Container(
@@ -124,7 +124,7 @@ class _ImportViewState extends State<ImportView> {
                       padding: EdgeInsets.all(5),
                       child: InkWell(
                         child: Text(
-                          '点击刷新',
+                          S.of(context).tap_to_refresh,
                           style:
                               TextStyle(color: Theme.of(context).primaryColor),
                         ),
@@ -144,14 +144,14 @@ class _ImportViewState extends State<ImportView> {
                         });
                       },
                     ),
-                    Text('记住密码'),
+                    Text(S.of(context).remember_password),
                   ],
                 ),
                 Container(
                   width: double.infinity,
                   child: FlatButton(
                       color: Theme.of(context).primaryColor,
-                      child: Text('导入'),
+                      child: Text(S.of(context).import),
                       textColor: Colors.white,
                       onPressed: () async {
                         // 这里没必要同步，异步处理即可
@@ -164,13 +164,15 @@ class _ImportViewState extends State<ImportView> {
                             _pwdController.value.text.toString(),
                             _captchaController.value.text.toString());
                         if (status == Constant.PASSWORD_ERROR) {
-                          Toast.showToast("密码错误 = =||", context);
+                          Toast.showToast(
+                              S.of(context).password_error_toast, context);
                           setState(() {
                             _pwdController.clear();
                             randomNumForCaptcha = Random().nextDouble();
                           });
                         } else if (status == Constant.CAPTCHA_ERROR) {
-                          Toast.showToast("验证码错误 > <", context);
+                          Toast.showToast(
+                              S.of(context).captcha_error_toast, context);
 
                           setState(() {
                             randomNumForCaptcha = Random().nextDouble();
@@ -179,11 +181,13 @@ class _ImportViewState extends State<ImportView> {
                           bool isSuccess = await _presenter.getClasses(context);
                           if (!isSuccess)
                             Toast.showToast(
-                                "课程解析失败 = =|| 可将课表反馈至翠翠", context);
-                          Toast.showToast("数据存储成功 >v<", context);
+                                S.of(context).class_parse_error_toast, context);
+                          Toast.showToast(
+                              S.of(context).class_parse_toast_success, context);
                           Navigator.of(context).pop();
                         } else {
-                          Toast.showToast("出现异常，建议提交反馈", context);
+                          Toast.showToast(
+                              S.of(context).class_parse_toast_fail, context);
                           setState(() {
                             randomNumForCaptcha = Random().nextDouble();
                           });

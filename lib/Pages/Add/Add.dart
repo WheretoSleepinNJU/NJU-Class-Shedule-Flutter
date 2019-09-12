@@ -1,15 +1,14 @@
+import '../../generated/i18n.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../Resources/Constant.dart';
 import '../../Resources/Config.dart';
-import '../../Resources/Strings.dart';
 import '../../Models/CourseModel.dart';
 import '../../Utils/States/MainState.dart';
 import '../../Components/Toast.dart';
 
 class AddView extends StatefulWidget {
   AddView() : super();
-  final String title = '添加课程';
 
   @override
   _AddViewState createState() => _AddViewState();
@@ -41,7 +40,7 @@ class _AddViewState extends State<AddView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(widget.title),
+          title: Text(S.of(context).add_manually_title),
         ),
         body: Builder(builder: (BuildContext context) {
           return Container(
@@ -56,8 +55,10 @@ class _AddViewState extends State<AddView> {
                   decoration: InputDecoration(
                       icon: Icon(Icons.book,
                           color: Theme.of(context).primaryColor),
-                      hintText: '课程名称',
-                      errorText: _classNameIsValid ? null : '请输入课程名称'),
+                      hintText: S.of(context).class_name,
+                      errorText: _classNameIsValid
+                          ? null
+                          : S.of(context).class_name_empty),
                   onEditingComplete: () =>
                       FocusScope.of(context).requestFocus(teacherTextFieldNode),
                 ),
@@ -69,7 +70,7 @@ class _AddViewState extends State<AddView> {
                   decoration: InputDecoration(
                     icon: Icon(Icons.account_circle,
                         color: Theme.of(context).primaryColor),
-                    hintText: '上课老师',
+                    hintText: S.of(context).class_teacher,
                   ),
                   onEditingComplete: () => FocusScope.of(context)
                       .requestFocus(classroomTextFieldNode),
@@ -88,11 +89,9 @@ class _AddViewState extends State<AddView> {
                   InkWell(
                       child: Text(
                         Constant.WEEK_WITHOUT_BIAS[_node['weekTime']] +
-                            ' 第' +
-                            (_node['startTime'] + 1).toString() +
-                            '-' +
-                            (_node['endTime'] + 1).toString() +
-                            '节' +
+                            S.of(context).class_duration(
+                                (_node['startTime'] + 1).toString(),
+                                (_node['endTime'] + 1).toString()) +
                             ' ' +
                             (_node['classroom']) +
                             ' ' +
@@ -108,7 +107,9 @@ class _AddViewState extends State<AddView> {
                             // dialog is dismissible with a tap on the barrier
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                title: Text("选择上课时间"),
+                                title: Text(S
+                                    .of(context)
+                                    .choose_class_time_dialog_title),
                                 content: Container(
                                   child: new Column(
                                     mainAxisSize: MainAxisSize.min,
@@ -121,7 +122,7 @@ class _AddViewState extends State<AddView> {
                                           icon: Icon(Icons.code,
                                               color: Theme.of(context)
                                                   .primaryColor),
-                                          hintText: '上课地点',
+                                          hintText: S.of(context).class_room,
                                         ),
                                         onChanged: (String text) {
                                           _node['classroom'] = text;
@@ -196,9 +197,11 @@ class _AddViewState extends State<AddView> {
                                                         (int index) {
                                                       return new Center(
                                                         child: new Text(
-                                                          '第' +
-                                                              '${index + 1}' +
-                                                              '节',
+                                                          S
+                                                              .of(context)
+                                                              .class_single(
+                                                                  (index + 1)
+                                                                      .toString()),
                                                           style: TextStyle(
                                                               fontSize: 16),
                                                         ),
@@ -207,7 +210,9 @@ class _AddViewState extends State<AddView> {
                                               ),
                                               Flexible(
                                                 flex: 1,
-                                                child: Center(child: Text('-')),
+                                                child: Center(
+                                                    child:
+                                                        Text(S.of(context).to)),
                                               ),
                                               Flexible(
                                                   flex: 2,
@@ -234,10 +239,11 @@ class _AddViewState extends State<AddView> {
                                                           (int index) {
                                                         return new Center(
                                                           child: new Text(
-                                                            '第' +
-//                                                            '${index + _node['startTime'] + 1}' +
-                                                                '${index + 1}' +
-                                                                '节',
+                                                            S
+                                                                .of(context)
+                                                                .class_single(
+                                                                    (index + 1)
+                                                                        .toString()),
                                                             style: TextStyle(
                                                                 fontSize: 16),
                                                           ),
@@ -313,9 +319,9 @@ class _AddViewState extends State<AddView> {
                                                         (int index) {
                                                       return new Center(
                                                         child: new Text(
-                                                          '第' +
-                                                              '${index + 1}' +
-                                                              '周',
+                                                          S.of(context).week(
+                                                              (index + 1)
+                                                                  .toString()),
                                                           style: TextStyle(
                                                               fontSize: 16),
                                                         ),
@@ -324,7 +330,9 @@ class _AddViewState extends State<AddView> {
                                               ),
                                               Flexible(
                                                 flex: 1,
-                                                child: Center(child: Text('-')),
+                                                child: Center(
+                                                    child:
+                                                        Text(S.of(context).to)),
                                               ),
                                               Flexible(
                                                   flex: 2,
@@ -351,10 +359,9 @@ class _AddViewState extends State<AddView> {
                                                           (int index) {
                                                         return new Center(
                                                           child: new Text(
-                                                            '第' +
-//                                                                '${index + _node['startTime'] + 1}' +
-                                                                '${index + 1}' +
-                                                                '周',
+                                                            S.of(context).week(
+                                                                (index + 1)
+                                                                    .toString()),
                                                             style: TextStyle(
                                                                 fontSize: 16),
                                                           ),
@@ -367,7 +374,7 @@ class _AddViewState extends State<AddView> {
                                 ),
                                 actions: <Widget>[
                                   FlatButton(
-                                    child: Text(Strings.ok),
+                                    child: Text(S.of(context).ok),
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                     },
@@ -384,7 +391,7 @@ class _AddViewState extends State<AddView> {
                     width: double.infinity,
                     child: FlatButton(
                         color: Theme.of(context).primaryColor,
-                        child: Text('导入'),
+                        child: Text(S.of(context).add_class),
                         textColor: Colors.white,
                         onPressed: () async {
                           if (_nameController.text == '') {
@@ -398,11 +405,15 @@ class _AddViewState extends State<AddView> {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: Text('课程节数不合法'),
-                                    content: Text('课程结束节数应大于起始节数'),
+                                    title: Text(S
+                                        .of(context)
+                                        .class_num_invalid_dialog_title),
+                                    content: Text(S
+                                        .of(context)
+                                        .class_num_invalid_dialog_content),
                                     actions: <Widget>[
                                       FlatButton(
-                                        child: Text(Strings.ok),
+                                        child: Text(S.of(context).ok),
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                         },
@@ -417,11 +428,15 @@ class _AddViewState extends State<AddView> {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: Text('课程周数不合法'),
-                                    content: Text('课程结束周数应大于起始周数'),
+                                    title: Text(S
+                                        .of(context)
+                                        .week_num_invalid_dialog_title),
+                                    content: Text(S
+                                        .of(context)
+                                        .week_num_invalid_dialog_content),
                                     actions: <Widget>[
                                       FlatButton(
-                                        child: Text(Strings.ok),
+                                        child: Text(S.of(context).ok),
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                         },
@@ -453,7 +468,9 @@ class _AddViewState extends State<AddView> {
                           CourseProvider courseProvider = new CourseProvider();
                           course = await courseProvider.insert(course);
                           if (course.id != null)
-                            Toast.showToast("添加成功！>v<", context);
+                            Toast.showToast(
+                                S.of(context).add_manually_success_toast,
+                                context);
                           print(course.toMap());
                           Navigator.of(context).pop();
                         }))
