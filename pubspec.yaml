@@ -21,20 +21,20 @@ dependencies:
   shared_preferences: ^0.5.3+4
   cupertino_icons: ^0.1.2
   package_info: ^0.4.0+6
-#  flutter_bugly: ^0.2.6
+  flutter_bugly: ^0.2.6
   url_launcher: ^5.1.2
   scoped_model: ^1.0.1
   sqflite: ^1.1.6
   intl: ^0.16.0
-  flutter_bugly:
-    git:
-      url: git://github.com/crazecoder/flutter_bugly.git
-      ref: dev
+  #  flutter_bugly:
+  #    git:
+  #      url: git://github.com/crazecoder/flutter_bugly.git
+  #      ref: dev
   html:
     git:
       url: git://github.com/chen-zeyu/html.git
       ref: patch-pola
-#  html: ^0.14.0+2
+  #  html: ^0.14.0+2
   dio: ^2.1.0
 
 dev_dependencies:
