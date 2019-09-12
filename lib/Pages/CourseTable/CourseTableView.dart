@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:wheretosleepinnju/Resources/Colors.dart';
 import './CourseTablePresenter.dart';
 import '../Settings/SettingsView.dart';
 import '../../Components/Separator.dart';
+import '../../Resources/Config.dart';
 import '../../Resources/Strings.dart';
 import '../../Resources/Constant.dart';
 import '../../Utils/ColorUtil.dart';
@@ -17,8 +19,8 @@ class CourseTableView extends StatefulWidget {
 class CourseTableViewState extends State<CourseTableView> {
   List<String> _WEEK = ["一", "二", "三", "四", "五", "六", "日"];
   int _mShowWeek = 7;
-  int _mShowClass = 13;
-  String hideColor = '#cccccc';
+  int _mShowClass = Config.MAX_CLASSES;
+  String hideColor = HIDE_CLASS_COLOR;
   List colorPool;
 
   CourseTablePresenter courseTablePresenter = new CourseTablePresenter();
@@ -325,7 +327,7 @@ class CourseTableViewState extends State<CourseTableView> {
                                 physics: ClampingScrollPhysics(),
                                 child: Row(
                                     children: List.generate(
-                                        25,
+                                        Config.MAX_WEEKS,
                                         (int i) => new Container(
                                             color:
                                                 Theme.of(context).primaryColor,

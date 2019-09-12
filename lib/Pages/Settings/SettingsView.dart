@@ -13,7 +13,7 @@ import '../Add/Add.dart';
 import '../../Utils/States/MainState.dart';
 import '../../Utils/ColorUtil.dart';
 import '../../Utils/WeekUtil.dart';
-import '../../Utils/ToastUtil.dart';
+import '../../Components/Toast.dart';
 import '../../Resources/Strings.dart';
 import '../../Resources/Config.dart';
 import '../../Resources/Themes.dart';
@@ -104,7 +104,7 @@ class _SettingsViewState extends State<SettingsView> {
                 subtitle: Text(Strings.shuffle_color_pool_subtitle),
                 onTap: () {
                   ColorPool.shuffleColorPool();
-                  ToastUtil.showToast("重置颜色池成功 >v<", context);
+                  Toast.showToast(Strings.shuffle_color_pool_success_toast, context);
                   Navigator.of(context).pop();
                 },
               ),
@@ -168,14 +168,14 @@ class _SettingsViewState extends State<SettingsView> {
                   else if (Platform.isAndroid)
                     status = await _launchURL(Url.QQ_GROUP_ANDROID_URL);
                   if (!status)
-                    ToastUtil.showToast("打开失败，可能是未安装 TIM/QQ", context);
+                    Toast.showToast("打开失败，可能是未安装 TIM/QQ", context);
                 },
                 onLongPress: () async {
                   if (Platform.isIOS)
                     await Clipboard.setData(new ClipboardData(text: Config.IOS_GROUP));
                   else if (Platform.isAndroid)
                     await Clipboard.setData(new ClipboardData(text: Config.ANDROID_GROUP));
-                  ToastUtil.showToast("已复制群号到剪贴板", context);
+                  Toast.showToast("已复制群号到剪贴板", context);
                 },
               ),
               ListTile(
@@ -187,7 +187,7 @@ class _SettingsViewState extends State<SettingsView> {
                       status = await _launchURL(Url.ALIPAY_URL_APPLE);
                     else if (Platform.isAndroid)
                       status = await _launchURL(Url.ALIPAY_URL_ANDROID);
-                    if (!status) ToastUtil.showToast("打开失败，可能是未安装支付宝", context);
+                    if (!status) Toast.showToast("打开失败，可能是未安装支付宝", context);
                   }),
               ListTile(
                 title: Text(Strings.about_title),
@@ -218,11 +218,11 @@ class _SettingsViewState extends State<SettingsView> {
 
   void changeWeek(int changedWeek) async {
     if (changedWeek == nowWeek - 1) {
-      ToastUtil.showToast("当前周未修改 >v<", context);
+      Toast.showToast("当前周未修改 >v<", context);
       Navigator.of(context).pop();
     } else {
       await WeekUtil.setNowWeek(changedWeek + 1);
-      ToastUtil.showToast("修改当前周成功 >v<", context);
+      Toast.showToast("修改当前周成功 >v<", context);
       Navigator.of(context).pop();
     }
   }

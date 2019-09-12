@@ -5,7 +5,7 @@ import '../../Resources/Config.dart';
 import '../../Resources/Strings.dart';
 import '../../Models/CourseModel.dart';
 import '../../Utils/States/MainState.dart';
-import '../../Utils/ToastUtil.dart';
+import '../../Components/Toast.dart';
 
 class AddView extends StatefulWidget {
   AddView() : super();
@@ -453,7 +453,7 @@ class _AddViewState extends State<AddView> {
                           CourseProvider courseProvider = new CourseProvider();
                           course = await courseProvider.insert(course);
                           if (course.id != null)
-                            ToastUtil.showToast("添加成功！>v<", context);
+                            Toast.showToast("添加成功！>v<", context);
                           print(course.toMap());
                           Navigator.of(context).pop();
                         }))

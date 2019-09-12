@@ -1,6 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
-import '../Resources/Constant.dart';
+import '../Resources/Config.dart';
 
 class WeekUtil{
 
@@ -17,9 +17,9 @@ class WeekUtil{
 
       // 如果在本学期内，则按本学期学期开始更新周数
       // 如果字符串已经过期，则重置当前周数为第一周
-      if(thisMonday.difference(DateTime.parse(Constant.SEMESTER_START_MONDAY)).inDays ~/ 7 < Constant.MAX_WEEKS){
-        await _initWeek(Constant.SEMESTER_START_MONDAY, 1);
-        lastMondayString =Constant.SEMESTER_START_MONDAY;
+      if(thisMonday.difference(DateTime.parse(Config.SEMESTER_START_MONDAY)).inDays ~/ 7 < Config.MAX_WEEKS){
+        await _initWeek(Config.SEMESTER_START_MONDAY, 1);
+        lastMondayString =Config.SEMESTER_START_MONDAY;
       }else{
         await _initWeek(thisMondayString, 1);
         return;

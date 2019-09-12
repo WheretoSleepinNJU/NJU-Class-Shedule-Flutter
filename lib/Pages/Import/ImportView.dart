@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import '../../Resources/Constant.dart';
-import '../../Utils/ToastUtil.dart';
+import '../../Components/Toast.dart';
 import 'ImportPresenter.dart';
 import 'dart:math';
 
@@ -164,13 +164,13 @@ class _ImportViewState extends State<ImportView> {
                             _pwdController.value.text.toString(),
                             _captchaController.value.text.toString());
                         if (status == Constant.PASSWORD_ERROR) {
-                          ToastUtil.showToast("密码错误 = =||", context);
+                          Toast.showToast("密码错误 = =||", context);
                           setState(() {
                             _pwdController.clear();
                             randomNumForCaptcha = Random().nextDouble();
                           });
                         } else if (status == Constant.CAPTCHA_ERROR) {
-                          ToastUtil.showToast("验证码错误 > <", context);
+                          Toast.showToast("验证码错误 > <", context);
 
                           setState(() {
                             randomNumForCaptcha = Random().nextDouble();
@@ -178,12 +178,12 @@ class _ImportViewState extends State<ImportView> {
                         } else if (status == Constant.LOGIN_CORRECT) {
                           bool isSuccess = await _presenter.getClasses(context);
                           if (!isSuccess)
-                            ToastUtil.showToast(
+                            Toast.showToast(
                                 "课程解析失败 = =|| 可将课表反馈至翠翠", context);
-                          ToastUtil.showToast("数据存储成功 >v<", context);
+                          Toast.showToast("数据存储成功 >v<", context);
                           Navigator.of(context).pop();
                         } else {
-                          ToastUtil.showToast("出现异常，建议提交反馈", context);
+                          Toast.showToast("出现异常，建议提交反馈", context);
                           setState(() {
                             randomNumForCaptcha = Random().nextDouble();
                           });

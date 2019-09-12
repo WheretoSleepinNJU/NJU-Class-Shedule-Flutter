@@ -26,4 +26,6 @@ class Strings {
   static final String cancel = "取消";
 
   static final String default_class_table = "默认课表";
+
+  static final String shuffle_color_pool_success_toast = "重置颜色池成功 >v<";
 }
