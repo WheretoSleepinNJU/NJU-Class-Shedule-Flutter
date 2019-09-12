@@ -5,7 +5,6 @@ import '../Utils/States/MainState.dart';
 import '../Models/CourseTableModel.dart';
 import '../Models/CourseModel.dart';
 import '../Resources/Constant.dart';
-import '../Utils/ColorUtil.dart';
 
 class CourseParser {
   final RegExp patten1 = new RegExp(r"第(\d{1,2})-(\d{1,2})节");

@@ -1,6 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import '../../Resources/Constant.dart';
+import '../../Utils/ToastUtil.dart';
 import 'ImportPresenter.dart';
 import 'dart:math';
 
@@ -96,7 +97,6 @@ class _ImportViewState extends State<ImportView> {
                       child: TextField(
                     controller: _captchaController,
                     decoration: InputDecoration(
-//                  icon: Icon(Icons.beenhere, color: Theme.of(context).primaryColor),
                       icon: Icon(Icons.code,
                           color: Theme.of(context).primaryColor),
                       hintText: '验证码',
@@ -107,7 +107,6 @@ class _ImportViewState extends State<ImportView> {
                     child: InkWell(
                       child: FutureBuilder(
                           future: _presenter.getCaptcha(randomNumForCaptcha),
-//                      builder: (BuildContext context, AsyncSnapshot<Uint8List> image){
                           builder: (BuildContext context,
                               AsyncSnapshot<Image> image) {
                             if (image.hasData) {
@@ -165,38 +164,26 @@ class _ImportViewState extends State<ImportView> {
                             _pwdController.value.text.toString(),
                             _captchaController.value.text.toString());
                         if (status == Constant.PASSWORD_ERROR) {
-                          Scaffold.of(context).showSnackBar(SnackBar(
-                            content: Text("密码错误 = =||"),
-                            backgroundColor: Theme.of(context).primaryColor,
-                          ));
+                          ToastUtil.showToast("密码错误 = =||", context);
                           setState(() {
                             _pwdController.clear();
                             randomNumForCaptcha = Random().nextDouble();
                           });
                         } else if (status == Constant.CAPTCHA_ERROR) {
-                          Scaffold.of(context).showSnackBar(SnackBar(
-                            content: Text("验证码错误 > <"),
-                            backgroundColor: Theme.of(context).primaryColor,
-                          ));
+                          ToastUtil.showToast("验证码错误 > <", context);
+
                           setState(() {
                             randomNumForCaptcha = Random().nextDouble();
                           });
                         } else if (status == Constant.LOGIN_CORRECT) {
                           bool isSuccess = await _presenter.getClasses(context);
                           if (!isSuccess)
-                            Scaffold.of(context).showSnackBar(SnackBar(
-                              content: Text('课程解析失败 = =|| 可将课表反馈至翠翠'),
-                              backgroundColor: Theme.of(context).primaryColor,
-                            ));
-                          Scaffold.of(context).showSnackBar(SnackBar(
-                            content: Text("数据存储成功 >v<"),
-                            backgroundColor: Theme.of(context).primaryColor,
-                          ));
+                            ToastUtil.showToast(
+                                "课程解析失败 = =|| 可将课表反馈至翠翠", context);
+                          ToastUtil.showToast("数据存储成功 >v<", context);
+                          Navigator.of(context).pop();
                         } else {
-                          Scaffold.of(context).showSnackBar(SnackBar(
-                            content: Text("出现异常，建议提交反馈"),
-                            backgroundColor: Theme.of(context).primaryColor,
-                          ));
+                          ToastUtil.showToast("出现异常，建议提交反馈", context);
                           setState(() {
                             randomNumForCaptcha = Random().nextDouble();
                           });

@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
@@ -11,6 +13,7 @@ import '../Add/Add.dart';
 import '../../Utils/States/MainState.dart';
 import '../../Utils/ColorUtil.dart';
 import '../../Utils/WeekUtil.dart';
+import '../../Utils/ToastUtil.dart';
 import '../../Resources/Strings.dart';
 import '../../Resources/Config.dart';
 import '../../Resources/Themes.dart';
@@ -101,10 +104,8 @@ class _SettingsViewState extends State<SettingsView> {
                 subtitle: Text(Strings.shuffle_color_pool_subtitle),
                 onTap: () {
                   ColorPool.shuffleColorPool();
-                  _scaffoldKey.currentState.showSnackBar(SnackBar(
-                    content: Text("重置颜色池成功 >v<"),
-                    backgroundColor: Theme.of(context).primaryColor,
-                  ));
+                  ToastUtil.showToast("重置颜色池成功 >v<", context);
+                  Navigator.of(context).pop();
                 },
               ),
               ListTile(
@@ -150,7 +151,6 @@ class _SettingsViewState extends State<SettingsView> {
                               child: Text(Strings.ok),
                               onPressed: () async {
                                 await changeWeek(changedWeek);
-//                                Navigator.of(context).pop();
                               }),
                         ],
                       );
@@ -159,26 +159,35 @@ class _SettingsViewState extends State<SettingsView> {
                 },
               ),
               ListTile(
-                  title: Text(Strings.report_title),
-                  subtitle: Text(Strings.report_subtitle),
-                  onTap: () async {
-                    bool status = await _launchURL(Url.QQ_GROUP_APPLE_URL);
-                    if (!status)
-                      _scaffoldKey.currentState.showSnackBar(SnackBar(
-                        content: Text("打开失败，可能是未安装 TIM/QQ"),
-                        backgroundColor: Theme.of(context).primaryColor,
-                      ));
-                  }),
+                title: Text(Strings.report_title),
+                subtitle: Text(Strings.report_subtitle),
+                onTap: () async {
+                  bool status = false;
+                  if (Platform.isIOS)
+                    status = await _launchURL(Url.QQ_GROUP_APPLE_URL);
+                  else if (Platform.isAndroid)
+                    status = await _launchURL(Url.QQ_GROUP_ANDROID_URL);
+                  if (!status)
+                    ToastUtil.showToast("打开失败，可能是未安装 TIM/QQ", context);
+                },
+                onLongPress: () async {
+                  if (Platform.isIOS)
+                    await Clipboard.setData(new ClipboardData(text: Config.IOS_GROUP));
+                  else if (Platform.isAndroid)
+                    await Clipboard.setData(new ClipboardData(text: Config.ANDROID_GROUP));
+                  ToastUtil.showToast("已复制群号到剪贴板", context);
+                },
+              ),
               ListTile(
                   title: Text(Strings.donate_title),
                   subtitle: Text(Strings.donate_subtitle),
                   onTap: () async {
-                    bool status = await _launchURL(Url.ALIPAY_URL);
-                    if (!status)
-                      _scaffoldKey.currentState.showSnackBar(SnackBar(
-                        content: Text("打开失败，可能是未安装支付宝"),
-                        backgroundColor: Theme.of(context).primaryColor,
-                      ));
+                    bool status = false;
+                    if (Platform.isIOS)
+                      status = await _launchURL(Url.ALIPAY_URL_APPLE);
+                    else if (Platform.isAndroid)
+                      status = await _launchURL(Url.ALIPAY_URL_ANDROID);
+                    if (!status) ToastUtil.showToast("打开失败，可能是未安装支付宝", context);
                   }),
               ListTile(
                 title: Text(Strings.about_title),
@@ -209,17 +218,11 @@ class _SettingsViewState extends State<SettingsView> {
 
   void changeWeek(int changedWeek) async {
     if (changedWeek == nowWeek - 1) {
-      _scaffoldKey.currentState.showSnackBar(SnackBar(
-        content: Text("当前周未修改 >v<"),
-        backgroundColor: Theme.of(context).primaryColor,
-      ));
+      ToastUtil.showToast("当前周未修改 >v<", context);
       Navigator.of(context).pop();
     } else {
       await WeekUtil.setNowWeek(changedWeek + 1);
-      _scaffoldKey.currentState.showSnackBar(SnackBar(
-        content: Text("修改当前周成功 >v<"),
-        backgroundColor: Theme.of(context).primaryColor,
-      ));
+      ToastUtil.showToast("修改当前周成功 >v<", context);
       Navigator.of(context).pop();
     }
   }

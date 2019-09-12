@@ -5,6 +5,7 @@ import '../../Resources/Config.dart';
 import '../../Resources/Strings.dart';
 import '../../Models/CourseModel.dart';
 import '../../Utils/States/MainState.dart';
+import '../../Utils/ToastUtil.dart';
 
 class AddView extends StatefulWidget {
   AddView() : super();
@@ -449,34 +450,10 @@ class _AddViewState extends State<AddView> {
                               teacher: _teacherController.text == ''
                                   ? null
                                   : _teacherController.text);
-//                      if (_classroomController.text == '') {
-//                        course = new Course(
-//                            tableId,
-//                            _nameController.text,
-//                            '[1, 2, 3]',
-//                            _node['weekTime'] + 1,
-//                            _node['startTime'] + 1,
-//                            _node['endTime'] - _node['startTime'],
-//                            Constant.ADD_MANUALLY);
-//                      } else {
-//                        course = new Course(
-//                            tableId,
-//                            _nameController.text,
-//                            '[1, 2, 3]',
-//                            _node['weekTime'] + 1,
-//                            _node['startTime'] + 1,
-//                            _node['endTime'] - _node['startTIme'],
-//                            Constant.ADD_MANUALLY,
-////                            classroom: _classroomController.text);
-//                            classroom: _node['classroom']);
-//                      }
                           CourseProvider courseProvider = new CourseProvider();
                           course = await courseProvider.insert(course);
                           if (course.id != null)
-                            Scaffold.of(context).showSnackBar(SnackBar(
-                              content: Text('添加成功！>v<'),
-                              backgroundColor: Theme.of(context).primaryColor,
-                            ));
+                            ToastUtil.showToast("添加成功！>v<", context);
                           print(course.toMap());
                           Navigator.of(context).pop();
                         }))

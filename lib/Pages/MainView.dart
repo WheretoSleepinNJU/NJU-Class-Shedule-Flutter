@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_bugly/flutter_bugly.dart';
@@ -57,14 +58,7 @@ class MainView extends StatelessWidget {
                 FlatButton(
                     child: Text(Strings.ok),
                     onPressed: () async {
-//                      if (await canLaunch(info.apkUrl)) {
                         await launch(info.apkUrl);
-//                      } else {
-//                        Scaffold.of(context).showSnackBar(SnackBar(
-//                          content: Text("打开链接失败，都怪傻翠"),
-//                          backgroundColor: Theme.of(context).primaryColor,
-//                        ));
-//                      }
                     }),
               ],
             ));

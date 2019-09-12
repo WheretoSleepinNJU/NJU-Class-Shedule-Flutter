@@ -19,8 +19,6 @@ class UpdateDialog extends StatefulWidget {
 
 class UpdateDialogState extends State<UpdateDialog> {
 
-  GlobalKey<UpdateDialogState> _dialogKey = new GlobalKey();
-
   var _downloadProgress = 0.0;
 
   @override

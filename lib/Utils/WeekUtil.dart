@@ -1,11 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
-import '../Models/CourseTableModel.dart';
-import '../Resources/Colors.dart';
-import '../Resources/Strings.dart';
 import '../Resources/Constant.dart';
-import '../Utils/States/WeekState.dart';
-import '../Utils/ColorUtil.dart';
 
 class WeekUtil{
 

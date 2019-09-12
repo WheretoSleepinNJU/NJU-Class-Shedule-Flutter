@@ -15,7 +15,7 @@ class Strings {
   static final String change_week_title = "修改当前周";
   static final String change_week_subtitle = "当前周数：";
   static final String report_title = "反馈";
-  static final String report_subtitle = "加入用户群一起愉快地玩耍吧！";
+  static final String report_subtitle = "加入用户群一起愉快地玩耍吧！\n轻触直接加群，长按复制群号";
   static final String donate_title = "投喂";
   static final String donate_subtitle = "给傻翠买支棒棒糖吧！";
   static final String about_title = "关于";
