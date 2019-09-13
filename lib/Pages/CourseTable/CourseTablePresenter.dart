@@ -5,6 +5,7 @@ class CourseTablePresenter {
   CourseProvider courseProvider = new CourseProvider();
   List<Course> activeCourses = [];
   List<Course> hideCourses = [];
+  List<List<Course>> multiCourses = [];
 
   refreshClasses(int tableId, int nowWeek) async {
     //TODO：finish classes to shedule
@@ -16,6 +17,7 @@ class CourseTablePresenter {
     ScheduleModel scheduleModel = new ScheduleModel(allCourses, nowWeek);
     activeCourses = scheduleModel.activeCourses;
     hideCourses = scheduleModel.hideCourses;
+    multiCourses = scheduleModel.multiCourses;
   }
 
   Future insertMockData() async {

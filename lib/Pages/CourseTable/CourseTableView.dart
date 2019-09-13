@@ -1,12 +1,13 @@
 import '../../generated/i18n.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:wheretosleepinnju/Resources/Colors.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 import './CourseTablePresenter.dart';
 import '../Settings/SettingsView.dart';
 import '../../Components/Separator.dart';
-import '../../Resources/Config.dart';
 import '../../Resources/Constant.dart';
+import '../../Resources/Config.dart';
+import '../../Resources/Colors.dart';
 import '../../Utils/ColorUtil.dart';
 import '../../Utils/States/MainState.dart';
 import '../../Models/CourseModel.dart';
@@ -25,8 +26,10 @@ class CourseTableViewState extends State<CourseTableView> {
   CourseTablePresenter courseTablePresenter = new CourseTablePresenter();
   List<Course> activeClasses = [];
   List<Course> hideClasses = [];
+  List<List<Course>> multiCourses = [];
   bool weekSelectorVisibility = false;
   int nowWeek = 0;
+  List<Course> multiClassesDialog = [];
 
   @override
   void initState() {
@@ -43,6 +46,7 @@ class CourseTableViewState extends State<CourseTableView> {
     setState(() {
       activeClasses = courseTablePresenter.activeCourses;
       hideClasses = courseTablePresenter.hideCourses;
+      multiCourses = courseTablePresenter.multiCourses;
       nowWeek = tmpNowWeek;
       colorPool = tmpColorPool;
     });
@@ -55,57 +59,84 @@ class CourseTableViewState extends State<CourseTableView> {
 
   showClassDialog(Course course, BuildContext context) {
     return showDialog<String>(
-      context: context,
-      // dialog is dismissible with a tap on the barrier
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(course.name),
-          content: new Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(children: [
-                Icon(Icons.location_on, color: Theme.of(context).primaryColor),
-                Flexible(child: Text(course.classroom)),
-              ]),
-              Row(children: [
-                Icon(Icons.account_circle,
-                    color: Theme.of(context).primaryColor),
-                Flexible(child: Text(course.teacher ?? '')),
-              ]),
-              Row(children: [
-                Icon(Icons.access_time, color: Theme.of(context).primaryColor),
-                Flexible(
-                    child: Text(Constant.WEEK_WITH_BIAS[course.weekTime] +
-                        course.startTime.toString() +
-                        '-' +
-                        (course.startTime + course.timeCount).toString() +
-                        '节')),
-              ]),
-              Row(children: [
-                Icon(Icons.calendar_today,
-                    color: Theme.of(context).primaryColor),
-                Flexible(child: Text(course.weeks)),
-              ]),
-              Row(children: [
-                Icon(Icons.android, color: Theme.of(context).primaryColor),
-                Flexible(
-                    child: Text(course.importType == Constant.ADD_BY_IMPORT
-                        ? S.of(context).import_auto
-                        : S.of(context).import_manually)),
-              ]),
-            ],
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text(S.of(context).ok),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
+        context: context,
+        // dialog is dismissible with a tap on the barrier
+        builder: (BuildContext context) {
+          return classDialog(course, context, () {
+            Navigator.of(context).pop();
+          });
+        });
+  }
+
+  showMultiClassDialog(BuildContext context) {
+    if (multiClassesDialog.isEmpty) return Container();
+    return Swiper(
+      itemBuilder: (BuildContext context, int index) {
+        return classDialog(
+            multiClassesDialog[index],
+            context,
+            () => setState(() {
+                  multiClassesDialog = [];
+                }));
       },
+      itemCount: multiClassesDialog.length,
+      pagination: new SwiperPagination(
+          margin: new EdgeInsets.only(bottom: 100),
+          builder: new DotSwiperPaginationBuilder(
+              color: Colors.grey, activeColor: Theme.of(context).primaryColor)),
+      loop: false,
+      viewportFraction: 0.8,
+      scale: 0.9,
+    );
+  }
+
+  Widget classDialog(Course course, BuildContext context, onPressed) {
+    return AlertDialog(
+      title: Text(course.name),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(20.0))),
+//      backgroundColor: Theme.of(context).primaryColor,
+      content: new Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(children: [
+            Icon(Icons.location_on, color: Theme.of(context).primaryColor),
+            Flexible(child: Text(course.classroom)),
+          ]),
+          Row(children: [
+            Icon(Icons.account_circle, color: Theme.of(context).primaryColor),
+            Flexible(child: Text(course.teacher ?? '')),
+          ]),
+          Row(children: [
+            Icon(Icons.access_time, color: Theme.of(context).primaryColor),
+            Flexible(
+                child: Text(Constant.WEEK_WITH_BIAS[course.weekTime] +
+                    course.startTime.toString() +
+                    '-' +
+                    (course.startTime + course.timeCount).toString() +
+                    '节')),
+          ]),
+          Row(children: [
+            Icon(Icons.calendar_today, color: Theme.of(context).primaryColor),
+            Flexible(child: Text(course.weeks)),
+          ]),
+          Row(children: [
+            Icon(Icons.android, color: Theme.of(context).primaryColor),
+            Flexible(
+                child: Text(course.importType == Constant.ADD_BY_IMPORT
+                    ? S.of(context).import_auto
+                    : S.of(context).import_manually)),
+          ]),
+        ],
+      ),
+      actions: <Widget>[
+        FlatButton(
+          child: Text(S.of(context).ok),
+          textColor: Theme.of(context).primaryColor,
+          onPressed: onPressed,
+        ),
+      ],
     );
   }
 
@@ -113,11 +144,12 @@ class CourseTableViewState extends State<CourseTableView> {
 //    print(course.toMap().toString());
     return showDialog<String>(
       context: context,
-      // dialog is dismissible with a tap on the barrier
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(S.of(context).delete_class_dialog_title),
           content: Text(S.of(context).delete_class_dialog_content(course.name)),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0))),
           actions: <Widget>[
             FlatButton(
               child: Text(S.of(context).cancel),
@@ -142,7 +174,7 @@ class CourseTableViewState extends State<CourseTableView> {
   @override
   Widget build(BuildContext context) {
     double _mScreenWidth = MediaQuery.of(context).size.width;
-    double _mClassTitleWidth = 20;
+    double _mClassTitleWidth = 30;
     double _mClassTitleHeight = 50;
     double _mWeekTitleHeight = 30;
     double _mWeekTitleWidth = (_mScreenWidth - _mClassTitleWidth) / _mShowWeek;
@@ -156,7 +188,6 @@ class CourseTableViewState extends State<CourseTableView> {
               _mShowWeek,
               (int i) => new Expanded(
                     child: Container(
-//                color: Colors.deepPurpleAccent,
                       height: _mWeekTitleHeight,
                       child: Center(
                           child: Text(Constant.WEEK_WITHOUT_BIAS_WITHOUT_PRE[i],
@@ -174,7 +205,6 @@ class CourseTableViewState extends State<CourseTableView> {
           List<Widget> _classTitle = new List.generate(
             _mShowClass,
             (int i) => new Container(
-//          color: Colors.deepPurpleAccent,
                 margin: EdgeInsets.only(top: i * _mClassTitleHeight),
                 height: _mClassTitleHeight,
                 width: _mClassTitleWidth,
@@ -256,11 +286,46 @@ class CourseTableViewState extends State<CourseTableView> {
                             onLongPress: () =>
                                 showDeleteDialog(activeClasses[i], context, i),
                             onTap: () =>
+//                                setState((){multiClassesDialog = activeClasses;}),
                                 showClassDialog(activeClasses[i], context),
                             child: Text(
                                 activeClasses[i].name +
                                     S.of(context).at +
                                     (activeClasses[i].classroom ??
+                                        S.of(context).unknown_place),
+                                style: TextStyle(color: Colors.white)),
+                          ),
+                        ),
+                      )) +
+              new List.generate(
+                  multiCourses.length,
+                  (int i) => new Container(
+                        margin: EdgeInsets.only(
+                            top: (multiCourses[i][0].startTime - 1) *
+                                _mClassTitleHeight,
+                            left: (multiCourses[i][0].weekTime - 1) *
+                                _mWeekTitleWidth),
+                        padding: EdgeInsets.all(0.5),
+                        height: (multiCourses[i][0].timeCount + 1) *
+                            _mClassTitleHeight,
+                        width: _mWeekTitleWidth,
+                        child: Ink(
+                          decoration: BoxDecoration(
+                            color:
+                                HexColor(activeClasses[i].getColor(colorPool)),
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                          ),
+                          child: InkWell(
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                            onLongPress: () =>
+                                showDeleteDialog(multiCourses[i][0], context, i),
+                            onTap: () =>
+                                setState((){multiClassesDialog = multiCourses[0];}),
+//                                showClassDialog(activeClasses[i], context),
+                            child: Text(
+                                multiCourses[i][0].name +
+                                    S.of(context).at +
+                                    (multiCourses[i][0].classroom ??
                                         S.of(context).unknown_place),
                                 style: TextStyle(color: Colors.white)),
                           ),
@@ -353,7 +418,8 @@ class CourseTableViewState extends State<CourseTableView> {
 //                                  children: _classes,
                                   overflow: Overflow.visible))
                         ])
-                      ]))
+                      ])),
+                  showMultiClassDialog(context)
                 ]);
               }));
         }));
