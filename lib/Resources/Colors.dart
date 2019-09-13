@@ -15,4 +15,3 @@ final List<String> colorList = [
   '#E2C490',
 ];
 
-final String HIDE_CLASS_COLOR = '#cccccc';

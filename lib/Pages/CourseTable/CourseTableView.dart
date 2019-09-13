@@ -1,16 +1,16 @@
 import '../../generated/i18n.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
 import './CourseTablePresenter.dart';
 import '../Settings/SettingsView.dart';
 import '../../Components/Separator.dart';
-import '../../Resources/Constant.dart';
 import '../../Resources/Config.dart';
-import '../../Resources/Colors.dart';
-import '../../Utils/ColorUtil.dart';
 import '../../Utils/States/MainState.dart';
 import '../../Models/CourseModel.dart';
+
+//import 'Widgets/BackgroundImage.dart';
+import 'Widgets/WeekSelector.dart';
+import 'Widgets/WeekTitle.dart';
 
 class CourseTableView extends StatefulWidget {
   @override
@@ -18,410 +18,134 @@ class CourseTableView extends StatefulWidget {
 }
 
 class CourseTableViewState extends State<CourseTableView> {
-  int _mShowWeek = 7;
-  int _mShowClass = Config.MAX_CLASSES;
-  String hideColor = HIDE_CLASS_COLOR;
-  List colorPool;
-
   CourseTablePresenter courseTablePresenter = new CourseTablePresenter();
-  List<Course> activeClasses = [];
-  List<Course> hideClasses = [];
-  List<List<Course>> multiCourses = [];
+  int _maxShowClasses;
+  int _maxShowDays;
+  int _nowWeekNum;
+  double _screenWidth;
+  double _classTitleWidth;
+  double _classTitleHeight;
+  double _weekTitleHeight;
+  double _weekTitleWidth;
+
   bool weekSelectorVisibility = false;
-  int nowWeek = 0;
+
   List<Course> multiClassesDialog = [];
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  getData(MainStateModel model) async {
+  Future<List<Widget>> getData(BuildContext context) async {
 //    await courseTablePresenter.insertMockData();
-    int index = await model.getClassTable();
-    int tmpNowWeek = await model.getWeek();
-    await courseTablePresenter.refreshClasses(index, tmpNowWeek);
-    List tmpColorPool = await ColorPool.getColorPool();
-    setState(() {
-      activeClasses = courseTablePresenter.activeCourses;
-      hideClasses = courseTablePresenter.hideCourses;
-      multiCourses = courseTablePresenter.multiCourses;
-      nowWeek = tmpNowWeek;
-      colorPool = tmpColorPool;
-    });
-  }
 
-//
-//  getWeek(MainStateModel model) async {
-//    nowWeek = await model.getWeek();
-//  }
+    _maxShowClasses = Config.MAX_CLASSES;
+    _maxShowDays = 7;
+    int index = await ScopedModel.of<MainStateModel>(context).getClassTable();
+    _nowWeekNum = await ScopedModel.of<MainStateModel>(context).getWeek();
 
-  showClassDialog(Course course, BuildContext context) {
-    return showDialog<String>(
-        context: context,
-        // dialog is dismissible with a tap on the barrier
-        builder: (BuildContext context) {
-          return classDialog(course, context, () {
-            Navigator.of(context).pop();
-          });
-        });
-  }
+    await courseTablePresenter.refreshClasses(index, _nowWeekNum);
 
-  showMultiClassDialog(BuildContext context) {
-    if (multiClassesDialog.isEmpty) return Container();
-    return Swiper(
-      itemBuilder: (BuildContext context, int index) {
-        return classDialog(
-            multiClassesDialog[index],
-            context,
-            () => setState(() {
-                  multiClassesDialog = [];
-                }));
-      },
-      itemCount: multiClassesDialog.length,
-      pagination: new SwiperPagination(
-          margin: new EdgeInsets.only(bottom: 100),
-          builder: new DotSwiperPaginationBuilder(
-              color: Colors.grey, activeColor: Theme.of(context).primaryColor)),
-      loop: false,
-      viewportFraction: 0.8,
-      scale: 0.9,
-    );
-  }
+    _screenWidth = MediaQuery.of(context).size.width;
+    _classTitleWidth = 30;
+    _classTitleHeight = 50;
+    _weekTitleHeight = 30;
+    _weekTitleWidth = (_screenWidth - _classTitleWidth) / _maxShowDays;
 
-  Widget classDialog(Course course, BuildContext context, onPressed) {
-    return AlertDialog(
-      title: Text(course.name),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(20.0))),
-//      backgroundColor: Theme.of(context).primaryColor,
-      content: new Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Row(children: [
-            Icon(Icons.location_on, color: Theme.of(context).primaryColor),
-            Flexible(child: Text(course.classroom)),
-          ]),
-          Row(children: [
-            Icon(Icons.account_circle, color: Theme.of(context).primaryColor),
-            Flexible(child: Text(course.teacher ?? '')),
-          ]),
-          Row(children: [
-            Icon(Icons.access_time, color: Theme.of(context).primaryColor),
-            Flexible(
-                child: Text(Constant.WEEK_WITH_BIAS[course.weekTime] +
-                    course.startTime.toString() +
-                    '-' +
-                    (course.startTime + course.timeCount).toString() +
-                    '节')),
-          ]),
-          Row(children: [
-            Icon(Icons.calendar_today, color: Theme.of(context).primaryColor),
-            Flexible(child: Text(course.weeks)),
-          ]),
-          Row(children: [
-            Icon(Icons.android, color: Theme.of(context).primaryColor),
-            Flexible(
-                child: Text(course.importType == Constant.ADD_BY_IMPORT
-                    ? S.of(context).import_auto
-                    : S.of(context).import_manually)),
-          ]),
-        ],
-      ),
-      actions: <Widget>[
-        FlatButton(
-          child: Text(S.of(context).ok),
-          textColor: Theme.of(context).primaryColor,
-          onPressed: onPressed,
-        ),
-      ],
-    );
-  }
+    List<Widget> classWidgets = await courseTablePresenter.getClassesWidgetList(
+        context, _classTitleHeight, _weekTitleWidth);
 
-  showDeleteDialog(Course course, BuildContext context, int id) {
-//    print(course.toMap().toString());
-    return showDialog<String>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(S.of(context).delete_class_dialog_title),
-          content: Text(S.of(context).delete_class_dialog_content(course.name)),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20.0))),
-          actions: <Widget>[
-            FlatButton(
-              child: Text(S.of(context).cancel),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            FlatButton(
-              child: Text(S.of(context).ok),
-              onPressed: () {
-                CourseProvider courseProvider = new CourseProvider();
-                courseProvider.delete(course.id);
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+    return classWidgets;
   }
 
   @override
   Widget build(BuildContext context) {
-    double _mScreenWidth = MediaQuery.of(context).size.width;
-    double _mClassTitleWidth = 30;
-    double _mClassTitleHeight = 50;
-    double _mWeekTitleHeight = 30;
-    double _mWeekTitleWidth = (_mScreenWidth - _mClassTitleWidth) / _mShowWeek;
-
     return ScopedModel<MainStateModel>(
         model: MainStateModel(),
         child: ScopedModelDescendant<MainStateModel>(
             builder: (context, child, model) {
-          getData(model);
-          List<Widget> _weekTitle = new List.generate(
-              _mShowWeek,
-              (int i) => new Expanded(
-                    child: Container(
-                      height: _mWeekTitleHeight,
-                      child: Center(
-                          child: Text(Constant.WEEK_WITHOUT_BIAS_WITHOUT_PRE[i],
-                              textAlign: TextAlign.center)),
-                      padding: EdgeInsets.all(0.0),
-                    ),
-                  ));
+          print('CourseTableView refreshed.');
 
-          _weekTitle.insert(
-              0,
-              Container(
-                width: _mClassTitleWidth,
-              ));
+          return FutureBuilder<List<Widget>>(
+              future: getData(context),
+              builder:
+                  (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
+                if (!snapshot.hasData) {
+                  return Container();
+                } else {
+                  List<Widget> _classTitle = new List.generate(
+                    _maxShowClasses,
+                    (int i) => new Container(
+                        margin: EdgeInsets.only(top: i * _classTitleHeight),
+                        height: _classTitleHeight,
+                        width: _classTitleWidth,
+                        child: Center(
+                            child: Text((i + 1).toString(),
+                                textAlign: TextAlign.center))),
+                  );
 
-          List<Widget> _classTitle = new List.generate(
-            _mShowClass,
-            (int i) => new Container(
-                margin: EdgeInsets.only(top: i * _mClassTitleHeight),
-                height: _mClassTitleHeight,
-                width: _mClassTitleWidth,
-                child: Center(
-                    child:
-                        Text((i + 1).toString(), textAlign: TextAlign.center))),
-          );
+                  // TODO: fix bug in stack
+                  List<Widget> _divider = new List.generate(
+                      _maxShowClasses,
+                      (int i) => new Container(
+                            margin: EdgeInsets.only(
+                                top: (i + 1) * _classTitleHeight),
+                            width: _weekTitleWidth * _maxShowDays,
+                            child: Separator(color: Colors.grey),
+                          ));
 
-          //TODO: fix bug in stack
-          List<Widget> _divider = new List.generate(
-              _mShowClass,
-              (int i) => new Container(
-                    margin: EdgeInsets.only(top: (i + 1) * _mClassTitleHeight),
-                    width: _mWeekTitleWidth * _mShowWeek,
-                    child: Separator(color: Colors.grey),
-                  ));
-//          List<Widget> _divider = new List.generate(
-//              _mShowClass,
-//              (int i) => new Container(
-//                    margin: EdgeInsets.only(top: (i + 1) * _mClassTitleHeight),
-//                    width: _mWeekTitleWidth * _mShowWeek,
-//                    child: Divider(color: Colors.grey, height: 0),
-//                  ));
-
-          //Draw Classes: unused classes are on bottom
-          List<Widget> _classes = new List.generate(
-                  hideClasses.length,
-                  (int i) => new Container(
-                        margin: EdgeInsets.only(
-                            top: (hideClasses[i].startTime - 1) *
-                                _mClassTitleHeight,
-                            left: (hideClasses[i].weekTime - 1) *
-                                _mWeekTitleWidth),
-                        padding: EdgeInsets.all(0.5),
-                        height:
-                            (hideClasses[i].timeCount + 1) * _mClassTitleHeight,
-                        width: _mWeekTitleWidth,
-                        child: Ink(
-                          decoration: BoxDecoration(
-                            color: HexColor(hideColor),
-                            borderRadius: BorderRadius.all(Radius.circular(5)),
-                          ),
-                          child: InkWell(
-                            borderRadius: BorderRadius.all(Radius.circular(5)),
-                            onLongPress: () =>
-                                showDeleteDialog(hideClasses[i], context, i),
-                            onTap: () =>
-                                showClassDialog(hideClasses[i], context),
-                            child: Text(
-                                S.of(context).not_this_week +
-                                    hideClasses[i].name +
-                                    S.of(context).at +
-                                    (hideClasses[i].classroom ??
-                                        S.of(context).unknown_place),
-                                style: TextStyle(color: Colors.white)),
-                          ),
-                        ),
-                      )) +
-              new List.generate(
-                  activeClasses.length,
-                  (int i) => new Container(
-                        margin: EdgeInsets.only(
-                            top: (activeClasses[i].startTime - 1) *
-                                _mClassTitleHeight,
-                            left: (activeClasses[i].weekTime - 1) *
-                                _mWeekTitleWidth),
-                        padding: EdgeInsets.all(0.5),
-                        height: (activeClasses[i].timeCount + 1) *
-                            _mClassTitleHeight,
-                        width: _mWeekTitleWidth,
-                        child: Ink(
-                          decoration: BoxDecoration(
-                            color:
-                                HexColor(activeClasses[i].getColor(colorPool)),
-                            borderRadius: BorderRadius.all(Radius.circular(5)),
-                          ),
-                          child: InkWell(
-                            borderRadius: BorderRadius.all(Radius.circular(5)),
-                            onLongPress: () =>
-                                showDeleteDialog(activeClasses[i], context, i),
-                            onTap: () =>
-//                                setState((){multiClassesDialog = activeClasses;}),
-                                showClassDialog(activeClasses[i], context),
-                            child: Text(
-                                activeClasses[i].name +
-                                    S.of(context).at +
-                                    (activeClasses[i].classroom ??
-                                        S.of(context).unknown_place),
-                                style: TextStyle(color: Colors.white)),
-                          ),
-                        ),
-                      )) +
-              new List.generate(
-                  multiCourses.length,
-                  (int i) => new Container(
-                        margin: EdgeInsets.only(
-                            top: (multiCourses[i][0].startTime - 1) *
-                                _mClassTitleHeight,
-                            left: (multiCourses[i][0].weekTime - 1) *
-                                _mWeekTitleWidth),
-                        padding: EdgeInsets.all(0.5),
-                        height: (multiCourses[i][0].timeCount + 1) *
-                            _mClassTitleHeight,
-                        width: _mWeekTitleWidth,
-                        child: Ink(
-                          decoration: BoxDecoration(
-                            color:
-                                HexColor(activeClasses[i].getColor(colorPool)),
-                            borderRadius: BorderRadius.all(Radius.circular(5)),
-                          ),
-                          child: InkWell(
-                            borderRadius: BorderRadius.all(Radius.circular(5)),
-                            onLongPress: () =>
-                                showDeleteDialog(multiCourses[i][0], context, i),
-                            onTap: () =>
-                                setState((){multiClassesDialog = multiCourses[0];}),
-//                                showClassDialog(activeClasses[i], context),
-                            child: Text(
-                                multiCourses[i][0].name +
-                                    S.of(context).at +
-                                    (multiCourses[i][0].classroom ??
-                                        S.of(context).unknown_place),
-                                style: TextStyle(color: Colors.white)),
-                          ),
-                        ),
-                      ));
-
-          return Scaffold(
-              appBar: AppBar(
-                  centerTitle: true,
-                  title: Column(
-//                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          S.of(context).app_name,
-                        ),
-                        // TODO: 点击副标题选择周数
-                        GestureDetector(
-                          child: Text(S.of(context).week(nowWeek.toString()),
-                              style: TextStyle(fontSize: 16)),
-                          onTap: () {
-                            weekSelectorVisibility = !weekSelectorVisibility;
-                          },
-                        )
-                      ]),
-                  actions: <Widget>[
-                    IconButton(
-                      icon: Icon(Icons.lightbulb_outline),
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (BuildContext context) => SettingsView()));
-                      },
-                    )
-                  ]),
-              body: LayoutBuilder(builder:
-                  (BuildContext context, BoxConstraints viewportConstraints) {
-                //TODO: 背景图片
-                return Stack(children: [
-//                  Container(
-//                      decoration: BoxDecoration(
-//                      color: Colors.grey,
-////                      image: DecorationImage(
-////                        image: AssetImage("assets/images/bulb.jpg"),
-////                        fit: BoxFit.cover,
-////                      ),
-//                          )),
-                  SingleChildScrollView(
-                      child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: <Widget>[
-                        Visibility(
-                            visible: weekSelectorVisibility,
-                            child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                physics: ClampingScrollPhysics(),
-                                child: Row(
-                                    children: List.generate(
-                                        Config.MAX_WEEKS,
-                                        (int i) => new Container(
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            padding: EdgeInsets.only(
-                                                left: 5,
-                                                top: 10,
-                                                right: 5,
-                                                bottom: 10),
-                                            child: InkWell(
-                                                onTap: () =>
-                                                    model.changeWeek(i + 1),
-                                                child: Text(
-                                                  S
-                                                      .of(context)
-                                                      .week((i + 1).toString()),
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 15),
-                                                ))))))),
-                        Container(child: Row(children: _weekTitle)),
-                        Row(children: [
-                          Container(
-                              height: _mClassTitleHeight * _mShowClass,
-                              width: _mClassTitleWidth,
-                              child: Stack(children: _classTitle)),
-                          Container(
-                              height: _mClassTitleHeight * _mShowClass,
-                              width: _mScreenWidth - _mClassTitleWidth,
-                              //TODO: fix bug in stack
-                              child: Stack(
-                                  children: _divider + _classes,
-//                                  children: _classes,
-                                  overflow: Overflow.visible))
-                        ])
-                      ])),
-                  showMultiClassDialog(context)
-                ]);
-              }));
+                  return Scaffold(
+                      appBar: AppBar(
+                          centerTitle: true,
+                          title: Column(children: [
+                            Text(S.of(context).app_name),
+                            GestureDetector(
+                              child: Text(
+                                  S.of(context).week(_nowWeekNum.toString()),
+                                  style: TextStyle(fontSize: 16)),
+                              onTap: () => setState(() {
+                                weekSelectorVisibility =
+                                    !weekSelectorVisibility;
+                              }),
+                            )
+                          ]),
+                          actions: <Widget>[
+                            IconButton(
+                              icon: Icon(Icons.lightbulb_outline),
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        SettingsView()));
+                              },
+                            )
+                          ]),
+                      body:
+                      Stack(children: [
+                        // TODO: 背景图片
+//                        BackgroundImage(),
+                        SingleChildScrollView(
+                            child: Column(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: <Widget>[
+                              WeekSelector(model, weekSelectorVisibility),
+                              WeekTitle(_maxShowDays, _weekTitleHeight,
+                                  _classTitleWidth),
+                              Row(children: [
+                                Container(
+                                    height: _classTitleHeight * _maxShowClasses,
+                                    width: _classTitleWidth,
+                                    child: Stack(children: _classTitle)),
+                                Container(
+                                    height: _classTitleHeight * _maxShowClasses,
+                                    width: _screenWidth - _classTitleWidth,
+                                    // TODO: fix bug in stack
+                                    child: Stack(
+                                        children: _divider + snapshot.data,
+                                        overflow: Overflow.visible))
+                              ])
+                            ])),
+                      ])
+                  );
+                }
+              });
         }));
   }
 }

@@ -46,7 +46,7 @@ class _MyAppState extends State<MyApp> {
         model: MainStateModel(),
         child: ScopedModelDescendant<MainStateModel>(
           builder: (context, child, model) {
-            print("rebuild");
+            print("MainView rebuild.");
             return MaterialApp(
               onGenerateTitle: (BuildContext context) => S.of(context).app_name,
               localizationsDelegates: const [

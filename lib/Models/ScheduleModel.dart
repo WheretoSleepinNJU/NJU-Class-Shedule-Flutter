@@ -1,17 +1,21 @@
 import 'CourseModel.dart';
 import 'dart:convert';
 
-
 class ScheduleModel {
   List<Course> activeCourses = [];
   List<Course> hideCourses = [];
-  List<List<Course>> multiCourses = [
-    [
-      new Course(0, "微积分", "[1,2,3,4,5,6,7]", 1, 7, 2, 0, classroom: 'QAQ'),
-      new Course(0, "还是微积分", "[1,2,3,4,5,6,7]", 1, 7, 2, 0, classroom: 'QAQ'),
-      new Course(0, "又是微积分", "[1,2,3,4,5,6,7]", 1, 7, 2, 0, classroom: 'QAQ')
-    ]
-  ];
+  List<List<Course>> multiCourses = [];
+  //TODO: multiCourses
+//  [
+//    [
+//      new Course(0, "微积分", "[1,2,3,4,5,6,7]", 1, 7, 2, 0,
+//          color: '#8AD297', classroom: 'QAQ'),
+//      new Course(0, "还是微积分", "[1,2,3,4,5,6,7]", 1, 7, 2, 0,
+//          color: '#F9A883', classroom: 'QAQ'),
+//      new Course(0, "又是微积分", "[1,2,3,4,5,6,7]", 1, 7, 2, 0,
+//          color: '#F9A883', classroom: 'QAQ')
+//    ]
+//  ];
 
   ScheduleModel(List<Course> courses, int nowWeek) {
     for (Course course in courses) {

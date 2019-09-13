@@ -96,8 +96,7 @@ class Course {
   }
 
   String getColor(List colorPool) {
-    // TODO: uncomment this before publish
-//    if(this.color != null) return this.color;
+    if (this.color != null) return this.color;
     return colorList[colorPool[this.courseId % colorPool.length] as int];
   }
 }

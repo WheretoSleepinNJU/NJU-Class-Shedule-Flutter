@@ -7,6 +7,8 @@ class Config{
 
   static final String default_class_table = "默认课表";
 
+  static final String HIDE_CLASS_COLOR = '#cccccc';
+
   static final String ANDROID_GROUP = '569300290';
   static final String IOS_GROUP = '493247215';
 }
