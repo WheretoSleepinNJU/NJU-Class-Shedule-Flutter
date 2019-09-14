@@ -28,7 +28,6 @@ class _ImportViewState extends State<ImportView> {
 
   @override
   void initState() {
-    // TODO: 解耦
     super.initState();
     _getUserInfo();
   }
@@ -177,6 +176,9 @@ class _ImportViewState extends State<ImportView> {
                           setState(() {
                             randomNumForCaptcha = Random().nextDouble();
                           });
+                        } else if (status == Constant.USERNAME_ERROR) {
+                          Toast.showToast(
+                              S.of(context).username_error_toast, context);
                         } else if (status == Constant.LOGIN_CORRECT) {
                           bool isSuccess = await _presenter.getClasses(context);
                           if (!isSuccess)

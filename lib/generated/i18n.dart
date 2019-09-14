@@ -21,11 +21,14 @@ class S implements WidgetsLocalizations {
   @override
   TextDirection get textDirection => TextDirection.ltr;
 
+  String get QQ_copy_success_toast => "已复制群号到剪贴板";
+  String get QQ_open_fail_toast => "打开失败，可能是未安装 TIM/QQ";
   String get about_title => "关于";
   String get add_class => "添加课程";
   String get add_class_table_dialog_title => "请输入课程表名称";
   String get add_manually_success_toast => "添加成功！>v<";
   String get add_manually_title => "添加课程";
+  String get alipay_open_fail_toast => "打开失败，可能是未安装支付宝";
   String get app_name => "南哪课表";
   String get at => "@";
   String get cancel => "取消";
@@ -46,8 +49,12 @@ class S implements WidgetsLocalizations {
   String get class_table_manage_title => "课表管理";
   String get class_teacher => "上课老师";
   String get delete_class_dialog_title => "删除课程";
+  String get developer => "开发者 idealclover";
   String get donate_subtitle => "给傻翠买支棒棒糖吧！";
   String get donate_title => "投喂";
+  String get easter_egg => "感谢小百合工作室\n感谢 @ns @lgt 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n感谢 1A335 三位室友的鼎力相助\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光\n对了 谢谢 祝幸福";
+  String get flutter_lts => "(Flutter LTS)";
+  String get github_open_source => "GitHub 开源";
   String get import => "导入";
   String get import_auto => "自动导入";
   String get import_from_NJU_subtitle => "登录南京大学教务系统导入课程表";
@@ -56,10 +63,15 @@ class S implements WidgetsLocalizations {
   String get import_manually_subtitle => "手动添加课程表数据";
   String get import_manually_title => "手动添加";
   String get import_title => "导入课程表";
+  String get introduction => "博客：https://idealclover.top\nEmail：idealclover@163.com";
   String get manage_table_subtitle => "添加或删除课表数据";
   String get manage_table_title => "课表管理";
   String get not_this_week => "[非本周]";
+  String get nowweek_edited_success_toast => "修改当前周成功 >v<";
+  String get nowweek_not_edited_success_toast => "当前周未修改 >v<";
   String get ok => "确认";
+  String get open_source_library_content => "shared_preferences: ^0.5.3+4\npackage_info: ^0.4.0+6\nflutter_bugly: ^0.2.6\nurl_launcher: ^5.1.2\nscoped_model: ^1.0.1\nfluttertoast: ^3.1.3\nsqflite: ^1.1.6\nintl: ^0.16.0";
+  String get open_source_library_title => "所使用到的开源库";
   String get password => "密码";
   String get password_error_toast => "密码错误 = =||";
   String get remember_password => "记住密码";
@@ -73,6 +85,7 @@ class S implements WidgetsLocalizations {
   String get to => "-";
   String get unknown_place => "未知地点";
   String get username => "用户名";
+  String get username_error_toast => "用户名错误 TvT";
   String get week_num_invalid_dialog_content => "课程结束周数应大于起始周数";
   String get week_num_invalid_dialog_title => "课程周数不合法";
   String class_duration(String start, String end) => "第 $start - $end 节";
@@ -104,7 +117,11 @@ class $zh_CN extends S {
   @override
   String get donate_title => "投喂";
   @override
+  String get nowweek_edited_success_toast => "修改当前周成功 >v<";
+  @override
   String get password => "密码";
+  @override
+  String get username_error_toast => "用户名错误 TvT";
   @override
   String get change_week_subtitle => "当前周数：";
   @override
@@ -114,11 +131,17 @@ class $zh_CN extends S {
   @override
   String get class_num_invalid_dialog_content => "课程结束节数应大于起始节数";
   @override
+  String get open_source_library_content => "shared_preferences: ^0.5.3+4\npackage_info: ^0.4.0+6\nflutter_bugly: ^0.2.6\nurl_launcher: ^5.1.2\nscoped_model: ^1.0.1\nfluttertoast: ^3.1.3\nsqflite: ^1.1.6\nintl: ^0.16.0";
+  @override
   String get manage_table_title => "课表管理";
+  @override
+  String get easter_egg => "感谢小百合工作室\n感谢 @ns @lgt 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n感谢 1A335 三位室友的鼎力相助\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光\n对了 谢谢 祝幸福";
   @override
   String get class_parse_error_toast => "课程解析失败 = =|| 可将课表反馈至翠翠";
   @override
   String get shuffle_color_pool_subtitle => "重置课程颜色池";
+  @override
+  String get alipay_open_fail_toast => "打开失败，可能是未安装支付宝";
   @override
   String get add_class_table_dialog_title => "请输入课程表名称";
   @override
@@ -126,9 +149,13 @@ class $zh_CN extends S {
   @override
   String get captcha_error_toast => "验证码错误 > <";
   @override
+  String get open_source_library_title => "所使用到的开源库";
+  @override
   String get import_from_NJU_title => "导入南京大学课表";
   @override
   String get class_parse_toast_success => "数据存储成功 >v<";
+  @override
+  String get flutter_lts => "(Flutter LTS)";
   @override
   String get choose_class_time_dialog_title => "选择上课时间";
   @override
@@ -140,6 +167,10 @@ class $zh_CN extends S {
   @override
   String get password_error_toast => "密码错误 = =||";
   @override
+  String get QQ_open_fail_toast => "打开失败，可能是未安装 TIM/QQ";
+  @override
+  String get QQ_copy_success_toast => "已复制群号到剪贴板";
+  @override
   String get not_this_week => "[非本周]";
   @override
   String get change_week_title => "修改当前周";
@@ -150,6 +181,8 @@ class $zh_CN extends S {
   @override
   String get class_table_manage_title => "课表管理";
   @override
+  String get github_open_source => "GitHub 开源";
+  @override
   String get week_num_invalid_dialog_content => "课程结束周数应大于起始周数";
   @override
   String get add_class => "添加课程";
@@ -158,6 +191,8 @@ class $zh_CN extends S {
   @override
   String get week_num_invalid_dialog_title => "课程周数不合法";
   @override
+  String get nowweek_not_edited_success_toast => "当前周未修改 >v<";
+  @override
   String get class_teacher => "上课老师";
   @override
   String get class_name_empty => "请输入课程名称";
@@ -165,6 +200,8 @@ class $zh_CN extends S {
   String get ok => "确认";
   @override
   String get class_name => "课程名称";
+  @override
+  String get introduction => "博客：https://idealclover.top\nEmail：idealclover@163.com";
   @override
   String get import_from_NJU_subtitle => "登录南京大学教务系统导入课程表";
   @override
@@ -193,6 +230,8 @@ class $zh_CN extends S {
   String get class_room => "上课地点";
   @override
   String get about_title => "关于";
+  @override
+  String get developer => "开发者 idealclover";
   @override
   String get to => "-";
   @override

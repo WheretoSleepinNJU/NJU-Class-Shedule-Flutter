@@ -9,6 +9,7 @@ class Constant {
   static final int LOGIN_CORRECT = 0;
   static final int PASSWORD_ERROR = 1;
   static final int CAPTCHA_ERROR = 2;
+  static final int USERNAME_ERROR = 3;
 
   static final int ADD_MANUALLY = 0;
   static final int ADD_BY_IMPORT = 1;

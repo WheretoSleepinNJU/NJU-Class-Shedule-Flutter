@@ -35,5 +35,5 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-#    - res/example.jpg
+    - res/example.jpg
     - res/icon.png

@@ -8,7 +8,7 @@ import '../../Resources/Config.dart';
 import '../../Utils/States/MainState.dart';
 import '../../Models/CourseModel.dart';
 
-//import 'Widgets/BackgroundImage.dart';
+import 'Widgets/BackgroundImage.dart';
 import 'Widgets/WeekSelector.dart';
 import 'Widgets/WeekTitle.dart';
 
@@ -18,7 +18,7 @@ class CourseTableView extends StatefulWidget {
 }
 
 class CourseTableViewState extends State<CourseTableView> {
-  CourseTablePresenter courseTablePresenter = new CourseTablePresenter();
+  CourseTablePresenter _presenter = new CourseTablePresenter();
   int _maxShowClasses;
   int _maxShowDays;
   int _nowWeekNum;
@@ -32,7 +32,7 @@ class CourseTableViewState extends State<CourseTableView> {
 
   List<Course> multiClassesDialog = [];
 
-  Future<List<Widget>> getData(BuildContext context) async {
+  Future<List<Widget>> _getData(BuildContext context) async {
 //    await courseTablePresenter.insertMockData();
 
     _maxShowClasses = Config.MAX_CLASSES;
@@ -40,7 +40,7 @@ class CourseTableViewState extends State<CourseTableView> {
     int index = await ScopedModel.of<MainStateModel>(context).getClassTable();
     _nowWeekNum = await ScopedModel.of<MainStateModel>(context).getWeek();
 
-    await courseTablePresenter.refreshClasses(index, _nowWeekNum);
+    await _presenter.refreshClasses(index, _nowWeekNum);
 
     _screenWidth = MediaQuery.of(context).size.width;
     _classTitleWidth = 30;
@@ -48,7 +48,7 @@ class CourseTableViewState extends State<CourseTableView> {
     _weekTitleHeight = 30;
     _weekTitleWidth = (_screenWidth - _classTitleWidth) / _maxShowDays;
 
-    List<Widget> classWidgets = await courseTablePresenter.getClassesWidgetList(
+    List<Widget> classWidgets = await _presenter.getClassesWidgetList(
         context, _classTitleHeight, _weekTitleWidth);
 
     return classWidgets;
@@ -63,7 +63,7 @@ class CourseTableViewState extends State<CourseTableView> {
           print('CourseTableView refreshed.');
 
           return FutureBuilder<List<Widget>>(
-              future: getData(context),
+              future: _getData(context),
               builder:
                   (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
                 if (!snapshot.hasData) {

@@ -27,10 +27,11 @@ class ImportPresenter {
       'password': pwd,
       'ValidateCode': captcha,
     });
-//    print(response);
+    print(response);
     if (response.contains('验证码错误！') || response.contains('验证码已过期，请重新登录！'))
       return Constant.CAPTCHA_ERROR;
     else if (response.contains('密码错误！')) return Constant.PASSWORD_ERROR;
+    else if (response.contains('用户名错误！')) return Constant.USERNAME_ERROR;
     else return Constant.LOGIN_CORRECT;
 //    response.then((String response) {
 ////      print(response);

@@ -1,5 +1,6 @@
 {
   "app_name":"南哪课表",
+  "flutter_lts": "(Flutter LTS)",
 
   "at": "@",
   "to": "-",
@@ -33,6 +34,11 @@
   "about_title": "关于",
 
   "shuffle_color_pool_success_toast": "重置颜色池成功 >v<",
+  "nowweek_not_edited_success_toast": "当前周未修改 >v<",
+  "nowweek_edited_success_toast": "修改当前周成功 >v<",
+  "QQ_open_fail_toast": "打开失败，可能是未安装 TIM/QQ",
+  "QQ_copy_success_toast": "已复制群号到剪贴板",
+  "alipay_open_fail_toast": "打开失败，可能是未安装支付宝",
 
   "ok": "确认",
   "cancel": "取消",
@@ -59,10 +65,17 @@
   "import": "导入",
   "password_error_toast": "密码错误 = =||",
   "captcha_error_toast": "验证码错误 > <",
+  "username_error_toast": "用户名错误 TvT",
   "class_parse_error_toast": "课程解析失败 = =|| 可将课表反馈至翠翠",
   "class_parse_toast_success": "数据存储成功 >v<",
   "class_parse_toast_fail": "出现异常，建议提交反馈",
 
   "class_table_manage_title": "课表管理",
-  "add_class_table_dialog_title": "请输入课程表名称"
+  "add_class_table_dialog_title": "请输入课程表名称",
+  "github_open_source": "GitHub 开源",
+  "developer": "开发者 idealclover",
+  "introduction": "博客：https://idealclover.top\nEmail：idealclover@163.com",
+  "open_source_library_title": "所使用到的开源库",
+  "open_source_library_content": "shared_preferences: ^0.5.3+4\npackage_info: ^0.4.0+6\nflutter_bugly: ^0.2.6\nurl_launcher: ^5.1.2\nscoped_model: ^1.0.1\nfluttertoast: ^3.1.3\nsqflite: ^1.1.6\nintl: ^0.16.0",
+  "easter_egg": "感谢小百合工作室\n感谢 @ns @lgt 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n感谢 1A335 三位室友的鼎力相助\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光\n对了 谢谢 祝幸福"
 }

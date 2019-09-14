@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../../Models/CourseTableModel.dart';
 import '../../Utils/States/MainState.dart';
+import 'Widgets/AddDialog.dart';
 
 class ManageTableView extends StatefulWidget {
   ManageTableView() : super();
@@ -14,16 +15,7 @@ class ManageTableView extends StatefulWidget {
 
 class _ManageTableViewState extends State<ManageTableView> {
   CourseTableProvider courseTableProvider = new CourseTableProvider();
-  List<Widget> courseTableWidgetList = [Container()];
   int _selectedIndex = 0;
-  String text = '';
-
-  @override
-  void initState() {
-    super.initState();
-//    insertData();
-//    getData();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,85 +32,56 @@ class _ManageTableViewState extends State<ManageTableView> {
                 },
               )
             ]),
-        body: SingleChildScrollView(child:
-            ScopedModelDescendant<MainStateModel>(
-                builder: (context, child, model) {
-          getData(model);
-          return Column(
-              children: ListTile.divideTiles(
-                      context: context, tiles: courseTableWidgetList)
-                  .toList());
-        })));
-  }
-
-  _onSelected(MainStateModel model, int index) async {
-    setState(() => _selectedIndex = index);
-//    print(index);
-    model.changeclassTable(index);
+        body: SingleChildScrollView(
+            child: FutureBuilder<List<Widget>>(
+                future: _getData(context),
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<Widget>> snapshot) {
+                  if (!snapshot.hasData) {
+                    return Container();
+                  } else {
+                    return Column(
+                        children: ListTile.divideTiles(
+                                context: context, tiles: snapshot.data)
+                            .toList());
+                  }
+                })));
   }
 
   Future<String> _addTableDialog(BuildContext context) async {
-    String tableName = '';
-    return showDialog<String>(
+    String tableName = await showDialog<String>(
       context: context,
       barrierDismissible: false,
       // dialog is dismissible with a tap on the barrier
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(S.of(context).add_class_table_dialog_title),
-          content: new Row(
-            children: <Widget>[
-              new Expanded(
-                  child: new TextField(
-                autofocus: true,
-                decoration: new InputDecoration(),
-                onChanged: (value) {
-                  tableName = value;
-                },
-              ))
-            ],
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text(S.of(context).cancel),
-              onPressed: () {
-                Navigator.of(context).pop('');
-              },
-            ),
-            FlatButton(
-              child: Text(S.of(context).ok),
-              onPressed: () {
-                Navigator.of(context).pop(tableName);
-              },
-            ),
-          ],
-        );
+        return AddDialog();
       },
     );
+    return tableName;
   }
 
-  void getData(MainStateModel model) async {
-    List tmp = await courseTableProvider.getAllCourseTable();
+  Future<List<Widget>> _getData(BuildContext context) async {
+    List courses = await courseTableProvider.getAllCourseTable();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _selectedIndex = prefs.getInt('tableId') ?? 0;
-    setState(() {
-      courseTableWidgetList = List.generate(
-          tmp.length,
-          (int i) => Container(
-              color: _selectedIndex != null && _selectedIndex == i
-                  ? Theme.of(context).primaryColor
-                  : Colors.white,
-              child: ListTile(
-                title: Text(tmp[i]['name'],
-                    style: TextStyle(
-                      color: _selectedIndex != null && _selectedIndex == i
-                          ? Colors.white
-                          : Colors.black,
-                    )),
-                onTap: () {
-                  _onSelected(model, i);
-                },
-              )));
-    });
+    List <Widget> result = List.generate(
+        courses.length,
+        (int i) => Container(
+            color: _selectedIndex != null && _selectedIndex == i
+                ? Theme.of(context).primaryColor
+                : Colors.white,
+            child: ListTile(
+              title: Text(courses[i]['name'],
+                  style: TextStyle(
+                    color: _selectedIndex != null && _selectedIndex == i
+                        ? Colors.white
+                        : Colors.black,
+                  )),
+              onTap: () {
+                setState(() => _selectedIndex = i);
+                ScopedModel.of<MainStateModel>(context).changeclassTable(i);
+              },
+            )));
+    return result;
   }
 }

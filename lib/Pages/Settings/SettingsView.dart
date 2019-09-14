@@ -3,21 +3,19 @@ import '../../generated/i18n.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/rendering.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info/package_info.dart';
-import 'package:scoped_model/scoped_model.dart';
 import '../ManageTable/ManageTableView.dart';
 import '../Import/ImportView.dart';
 import '../About/AboutView.dart';
-import '../Add/Add.dart';
-import '../../Utils/States/MainState.dart';
+import '../AddCourse/AddCourseView.dart';
 import '../../Utils/ColorUtil.dart';
-import '../../Utils/WeekUtil.dart';
 import '../../Components/Toast.dart';
 import '../../Resources/Config.dart';
-import '../../Resources/Themes.dart';
 import '../../Resources/Url.dart';
+
+import 'Widgets/WeekChanger.dart';
+import 'Widgets/ThemeChanger.dart';
 
 class SettingsView extends StatefulWidget {
   SettingsView() : super();
@@ -27,23 +25,14 @@ class SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<SettingsView> {
-  String version = '';
-  int nowWeek = 1;
-
-//  int changedWeek = 1;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
-
   @override
   void initState() {
     super.initState();
-    getVersion();
   }
 
   @override
   Widget build(BuildContext context) {
-    getWeek(context);
     return Scaffold(
-        key: _scaffoldKey,
         appBar: AppBar(
           title: Text(S.of(context).settings_title),
         ),
@@ -77,86 +66,19 @@ class _SettingsViewState extends State<SettingsView> {
                       builder: (BuildContext context) => ManageTableView()));
                 },
               ),
-              ScopedModelDescendant<MainStateModel>(
-                  builder: (context, child, model) {
-                return SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: List.generate(
-                            themeDataList.length,
-                            (int i) => new Container(
-                                width: 30,
-                                height: 30,
-                                margin: EdgeInsets.only(
-                                    left: 15, top: 10, bottom: 10),
-                                decoration: new BoxDecoration(
-                                  color: themeDataList[i].primaryColor,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: InkResponse(
-                                  onTap: () => model.changeTheme(i),
-                                )))));
-              }),
+              // TODO: Refresh multi times when changing themes.
+              ThemeChanger(),
               ListTile(
                 title: Text(S.of(context).shuffle_color_pool_title),
                 subtitle: Text(S.of(context).shuffle_color_pool_subtitle),
                 onTap: () {
                   ColorPool.shuffleColorPool();
-                  Toast.showToast(S.of(context).shuffle_color_pool_success_toast, context);
+                  Toast.showToast(
+                      S.of(context).shuffle_color_pool_success_toast, context);
                   Navigator.of(context).pop();
                 },
               ),
-              ListTile(
-                title: Text(S.of(context).change_week_title),
-                subtitle:
-                    Text(S.of(context).change_week_subtitle + nowWeek.toString()),
-                onTap: () async {
-                  await showDialog<String>(
-                    context: context,
-                    builder: (BuildContext context) {
-                      int changedWeek = nowWeek - 1;
-                      return AlertDialog(
-                        title: Text(S.of(context).change_week_title),
-                        content: Container(
-                            height: 32,
-                            child: CupertinoPicker(
-                                scrollController:
-                                    new FixedExtentScrollController(
-                                  initialItem: nowWeek - 1,
-                                ),
-                                itemExtent: 32.0,
-                                backgroundColor: Colors.white,
-                                onSelectedItemChanged: (int index) {
-                                  changedWeek = index;
-                                },
-                                children: new List<Widget>.generate(
-                                    Config.MAX_WEEKS, (int index) {
-                                  return new Center(
-                                    child: new Text(
-                                      S.of(context).week((index + 1).toString()),
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  );
-                                }))),
-                        actions: <Widget>[
-                          FlatButton(
-                            child: Text(S.of(context).cancel),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          FlatButton(
-                              child: Text(S.of(context).ok),
-                              onPressed: () async {
-                                await changeWeek(changedWeek);
-                              }),
-                        ],
-                      );
-                    },
-                  );
-                },
-              ),
+              WeekChanger(),
               ListTile(
                 title: Text(S.of(context).report_title),
                 subtitle: Text(S.of(context).report_subtitle),
@@ -167,14 +89,16 @@ class _SettingsViewState extends State<SettingsView> {
                   else if (Platform.isAndroid)
                     status = await _launchURL(Url.QQ_GROUP_ANDROID_URL);
                   if (!status)
-                    Toast.showToast("打开失败，可能是未安装 TIM/QQ", context);
+                    Toast.showToast(S.of(context).QQ_open_fail_toast, context);
                 },
                 onLongPress: () async {
                   if (Platform.isIOS)
-                    await Clipboard.setData(new ClipboardData(text: Config.IOS_GROUP));
+                    await Clipboard.setData(
+                        new ClipboardData(text: Config.IOS_GROUP));
                   else if (Platform.isAndroid)
-                    await Clipboard.setData(new ClipboardData(text: Config.ANDROID_GROUP));
-                  Toast.showToast("已复制群号到剪贴板", context);
+                    await Clipboard.setData(
+                        new ClipboardData(text: Config.ANDROID_GROUP));
+                  Toast.showToast(S.of(context).QQ_copy_success_toast, context);
                 },
               ),
               ListTile(
@@ -186,11 +110,22 @@ class _SettingsViewState extends State<SettingsView> {
                       status = await _launchURL(Url.ALIPAY_URL_APPLE);
                     else if (Platform.isAndroid)
                       status = await _launchURL(Url.ALIPAY_URL_ANDROID);
-                    if (!status) Toast.showToast("打开失败，可能是未安装支付宝", context);
+                    if (!status)
+                      Toast.showToast(
+                          S.of(context).alipay_open_fail_toast, context);
                   }),
               ListTile(
                 title: Text(S.of(context).about_title),
-                subtitle: Text(version),
+                subtitle: FutureBuilder<String>(
+                    future: _getVersion(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<String> snapshot) {
+                      if (!snapshot.hasData) {
+                        return Container();
+                      } else {
+                        return Text(snapshot.data);
+                      }
+                    }),
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) => AboutView()));
@@ -201,29 +136,9 @@ class _SettingsViewState extends State<SettingsView> {
         )));
   }
 
-  void getVersion() async {
+  Future<String> _getVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    setState(() {
-      version = packageInfo.version + '(Flutter LTS)';
-    });
-  }
-
-  void getWeek(BuildContext context) async {
-    int tmp = await MainStateModel.of(context).getWeek();
-    setState(() {
-      nowWeek = tmp;
-    });
-  }
-
-  void changeWeek(int changedWeek) async {
-    if (changedWeek == nowWeek - 1) {
-      Toast.showToast("当前周未修改 >v<", context);
-      Navigator.of(context).pop();
-    } else {
-      await WeekUtil.setNowWeek(changedWeek + 1);
-      Toast.showToast("修改当前周成功 >v<", context);
-      Navigator.of(context).pop();
-    }
+    return packageInfo.version + S.of(context).flutter_lts;
   }
 
   Future<bool> _launchURL(String url) async {

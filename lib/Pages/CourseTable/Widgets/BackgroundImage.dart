@@ -5,13 +5,12 @@ class BackgroundImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-//      image: DecorationImage(
-//        colorFilter: new ColorFilter.mode(Colors.white.withOpacity(0.8), BlendMode.dstATop),
-//        image: AssetImage("res/example.jpg"),
-//        fit: BoxFit.cover,
-//      ),
-    )
-//    child: Center(child: Image.asset("res/icon.png")),
-    );
+      image: DecorationImage(
+        colorFilter: new ColorFilter.mode(
+            Colors.white.withOpacity(0.8), BlendMode.dstATop),
+        image: AssetImage("res/example.jpg"),
+        fit: BoxFit.cover,
+      ),
+    ));
   }
 }
