@@ -1,10 +1,15 @@
+import 'dart:io';
+import 'dart:async';
 import '../../generated/i18n.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 import '../../Models/CourseModel.dart';
 import '../../Models/ScheduleModel.dart';
 import '../../Resources/Config.dart';
+import '../../Resources/Url.dart';
 import '../../Utils/ColorUtil.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
+import '../../Components/Dialog.dart';
 
 import 'Widgets/CourseDetailDialog.dart';
 import 'Widgets/CourseDeleteDialog.dart';
@@ -64,6 +69,52 @@ class CourseTablePresenter {
                 width,
                 () => showMultiClassDialog(context, i),
                 () => showDeleteDialog(context, multiCourses[i][0])));
+  }
+
+  void showDonateDialog(BuildContext context) async {
+    Timer(Duration(seconds: Config.DONATE_DIALOG_DELAY_SECONDS), () {
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => SingleChildScrollView(
+                  child: mDialog(
+                S.of(context).welcome_title,
+                Text(S.of(context).welcome_content),
+                <Widget>[
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      FlatButton(
+                          textColor: Theme.of(context).primaryColor,
+                          child: Text(S.of(context).love_and_donate),
+                          onPressed: () async {
+                            if (Platform.isIOS)
+                              launch(Url.ALIPAY_URL_APPLE);
+                            else if (Platform.isAndroid)
+                              launch(Url.ALIPAY_URL_ANDROID);
+                            Navigator.of(context).pop();
+                          }),
+                      FlatButton(
+                          textColor: Theme.of(context).primaryColor,
+                          child: Text(S.of(context).bug_and_report),
+                          onPressed: () {
+                            if (Platform.isIOS)
+                              launch(Url.QQ_GROUP_APPLE_URL);
+                            else if (Platform.isAndroid)
+                              launch(Url.QQ_GROUP_ANDROID_URL);
+                            Navigator.of(context).pop();
+                          }),
+                      FlatButton(
+                          textColor: Colors.grey,
+                          child: Text(S.of(context).love_but_no_money),
+                          onPressed: () async {
+                            Navigator.of(context).pop();
+                          }),
+                    ],
+                  )
+                ],
+              )));
+    });
   }
 
   showClassDialog(BuildContext context, Course course) {

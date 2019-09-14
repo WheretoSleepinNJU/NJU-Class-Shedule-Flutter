@@ -53,9 +53,10 @@ class _SettingsViewState extends State<SettingsView> {
               ListTile(
                 title: Text(S.of(context).import_from_NJU_title),
                 subtitle: Text(S.of(context).import_from_NJU_subtitle),
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
+                onTap: () async{
+                  bool status = await Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) => ImportView()));
+                  if(status == true) Navigator.of(context).pop(status);
                 },
               ),
               ListTile(

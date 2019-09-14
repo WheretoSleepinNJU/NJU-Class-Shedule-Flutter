@@ -168,7 +168,7 @@ class CourseProvider {
     var maxId =
         await db.rawQuery('SELECT MAX($columnCourseId) FROM $tableName');
     List maxIdList = maxId.toList();
-    print(maxIdList);
+//    print(maxIdList);
     if (maxIdList == null ||
         maxIdList.isEmpty ||
         maxIdList[0]['MAX($columnCourseId)'] == null)

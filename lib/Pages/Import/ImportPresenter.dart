@@ -12,7 +12,7 @@ class ImportPresenter {
 //    print(response);
     await httpUtil.getWithCookie(Url.URL_NJU_HOST);
     List cookies = httpUtil.getCookies();
-    print(cookies);
+//    print(cookies);
     return Image.network(
         'http://elite.nju.edu.cn/jiaowu/ValidateCode.jsp?TimeCode=' +
             num.toString() +
@@ -27,7 +27,7 @@ class ImportPresenter {
       'password': pwd,
       'ValidateCode': captcha,
     });
-    print(response);
+//    print(response);
     if (response.contains('验证码错误！') || response.contains('验证码已过期，请重新登录！'))
       return Constant.CAPTCHA_ERROR;
     else if (response.contains('密码错误！')) return Constant.PASSWORD_ERROR;

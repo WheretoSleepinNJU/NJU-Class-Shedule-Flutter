@@ -11,4 +11,7 @@ class Config{
 
   static final String ANDROID_GROUP = '569300290';
   static final String IOS_GROUP = '493247215';
+
+  static final int DONATE_DIALOG_DELAY_SECONDS = 15;
+
 }

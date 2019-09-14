@@ -108,15 +108,17 @@ class CourseTableViewState extends State<CourseTableView> {
                           actions: <Widget>[
                             IconButton(
                               icon: Icon(Icons.lightbulb_outline),
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        SettingsView()));
+                              onPressed: () async {
+                                bool status = await Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            SettingsView()));
+                                if (status == true)
+                                  _presenter.showDonateDialog(context);
                               },
                             )
                           ]),
-                      body:
-                      Stack(children: [
+                      body: Stack(children: [
                         // TODO: 背景图片
 //                        BackgroundImage(),
                         SingleChildScrollView(
@@ -142,8 +144,7 @@ class CourseTableViewState extends State<CourseTableView> {
                                         overflow: Overflow.visible))
                               ])
                             ])),
-                      ])
-                  );
+                      ]));
                 }
               });
         }));

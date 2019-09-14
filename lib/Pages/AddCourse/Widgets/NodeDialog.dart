@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../Resources/Constant.dart';
 import '../../../Resources/Config.dart';
+import '../../../Components/Dialog.dart';
 
 class NodeDialog extends StatefulWidget {
   NodeDialog() : super();
@@ -21,11 +22,12 @@ class _NodeDialogState extends State<NodeDialog> {
     'endWeek': Config.MAX_WEEKS - 1,
     'weekType': Constant.FULL_WEEKS
   };
+
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(S.of(context).choose_class_time_dialog_title),
-      content: Container(
+    return mDialog(
+      S.of(context).choose_class_time_dialog_title,
+      Container(
         child: new Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -117,7 +119,7 @@ class _NodeDialogState extends State<NodeDialog> {
                             },
                             children:
                                 new List<Widget>.generate(Config.MAX_CLASSES,
-//                                                              - _node['startTime'],
+//                              - _node['startTime'],
                                     (int index) {
                               return new Center(
                                 child: new Text(
@@ -220,7 +222,7 @@ class _NodeDialogState extends State<NodeDialog> {
           ],
         ),
       ),
-      actions: <Widget>[
+      <Widget>[
         FlatButton(
           child: Text(S.of(context).ok),
           onPressed: () {

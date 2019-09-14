@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../Resources/Constant.dart';
 import '../../Resources/Config.dart';
 import '../../Components/Toast.dart';
+import '../../Components/Dialog.dart';
 import 'AddCoursePresenter.dart';
 
 import 'Widgets/NodeDialog.dart';
@@ -24,7 +25,6 @@ class _AddViewState extends State<AddView> {
   final FocusNode nameTextFieldNode = FocusNode();
   final FocusNode teacherTextFieldNode = FocusNode();
   bool _classNameIsValid = true;
-
 
   // TODO: add multi node in one Widget
   Map _node = {
@@ -129,14 +129,14 @@ class _AddViewState extends State<AddView> {
                             showDialog<String>(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text(S
+                                  return mDialog(
+                                    S
                                         .of(context)
-                                        .class_num_invalid_dialog_title),
-                                    content: Text(S
+                                        .class_num_invalid_dialog_title,
+                                    Text(S
                                         .of(context)
                                         .class_num_invalid_dialog_content),
-                                    actions: <Widget>[
+                                    <Widget>[
                                       FlatButton(
                                         child: Text(S.of(context).ok),
                                         onPressed: () {
@@ -152,14 +152,12 @@ class _AddViewState extends State<AddView> {
                             showDialog<String>(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text(S
-                                        .of(context)
-                                        .week_num_invalid_dialog_title),
-                                    content: Text(S
+                                  return mDialog(
+                                    S.of(context).week_num_invalid_dialog_title,
+                                    Text(S
                                         .of(context)
                                         .week_num_invalid_dialog_content),
-                                    actions: <Widget>[
+                                    <Widget>[
                                       FlatButton(
                                         child: Text(S.of(context).ok),
                                         onPressed: () {

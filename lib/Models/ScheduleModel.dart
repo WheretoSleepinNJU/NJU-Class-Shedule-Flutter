@@ -6,7 +6,7 @@ class ScheduleModel {
   List<Course> hideCourses = [];
   List<List<Course>> multiCourses = [];
   //TODO: multiCourses
-//  [
+//  List<List<Course>> multiCourses = [
 //    [
 //      new Course(0, "微积分", "[1,2,3,4,5,6,7]", 1, 7, 2, 0,
 //          color: '#8AD297', classroom: 'QAQ'),

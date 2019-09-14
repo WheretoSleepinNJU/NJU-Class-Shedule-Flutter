@@ -31,6 +31,7 @@ class S implements WidgetsLocalizations {
   String get alipay_open_fail_toast => "打开失败，可能是未安装支付宝";
   String get app_name => "南哪课表";
   String get at => "@";
+  String get bug_and_report => "似乎有bug，我要反馈";
   String get cancel => "取消";
   String get captcha => "验证码";
   String get captcha_error_toast => "验证码错误 > <";
@@ -64,6 +65,8 @@ class S implements WidgetsLocalizations {
   String get import_manually_title => "手动添加";
   String get import_title => "导入课程表";
   String get introduction => "博客：https://idealclover.top\nEmail：idealclover@163.com";
+  String get love_and_donate => "完美导入！投喂傻翠w";
+  String get love_but_no_money => "感谢制作，但我没钱";
   String get manage_table_subtitle => "添加或删除课表数据";
   String get manage_table_title => "课表管理";
   String get not_this_week => "[非本周]";
@@ -88,6 +91,8 @@ class S implements WidgetsLocalizations {
   String get username_error_toast => "用户名错误 TvT";
   String get week_num_invalid_dialog_content => "课程结束周数应大于起始周数";
   String get week_num_invalid_dialog_title => "课程周数不合法";
+  String get welcome_content => "Hi！我是项目作者傻翠～\n\n看起来你已经导入我南教务处成功啦！撒花撒花！\n\n建议大家还是和自己教务系统中的课表对一下～避免出现什么bug～如果有bug的话欢迎反馈给我！设置-反馈中有交流群的群号～\n\n坦率地讲，从安卓移植到全平台是一个痛苦的过程。之前的APP多少是建立在开源项目的基础上，而这个重构项目算是自己从零开始搭起来的。其中也做了不少取舍与妥协，还有可能出现之前所没有过的bug。这都是我所会预料到的，如果你不巧遇到了bug，也欢迎向我反馈。\n\n写这个项目是一个吃力不讨好的事。单是苹果的开发者账号就要688/年，更不用提为了开发iOS版而单独买的macbook。所以如果小伙伴想让这个项目持续下去的话，欢迎投喂傻翠。\n\n其实我大四已经没课了，也早不需要课表这种东西了，可能你们的支持是我继续下去的唯一动力吧ww\n\n放心，这个弹框每次导入只会弹出一次，所以不会影响你的正常使用。\n\n希望南哪课表可以陪伴学弟学妹们走过每一学期ww\n\n傻翠 2019.09.14";
+  String get welcome_title => "欢迎使用南哪课表！";
   String class_duration(String start, String end) => "第 $start - $end 节";
   String class_single(String num) => "第 $num 节";
   String delete_class_dialog_content(String className) => "确定删除课程【 $className 】吗？";
@@ -145,6 +150,10 @@ class $zh_CN extends S {
   @override
   String get add_class_table_dialog_title => "请输入课程表名称";
   @override
+  String get love_but_no_money => "感谢制作，但我没钱";
+  @override
+  String get welcome_content => "Hi！我是项目作者傻翠～\n\n看起来你已经导入我南教务处成功啦！撒花撒花！\n\n建议大家还是和自己教务系统中的课表对一下～避免出现什么bug～如果有bug的话欢迎反馈给我！设置-反馈中有交流群的群号～\n\n坦率地讲，从安卓移植到全平台是一个痛苦的过程。之前的APP多少是建立在开源项目的基础上，而这个重构项目算是自己从零开始搭起来的。其中也做了不少取舍与妥协，还有可能出现之前所没有过的bug。这都是我所会预料到的，如果你不巧遇到了bug，也欢迎向我反馈。\n\n写这个项目是一个吃力不讨好的事。单是苹果的开发者账号就要688/年，更不用提为了开发iOS版而单独买的macbook。所以如果小伙伴想让这个项目持续下去的话，欢迎投喂傻翠。\n\n其实我大四已经没课了，也早不需要课表这种东西了，可能你们的支持是我继续下去的唯一动力吧ww\n\n放心，这个弹框每次导入只会弹出一次，所以不会影响你的正常使用。\n\n希望南哪课表可以陪伴学弟学妹们走过每一学期ww\n\n傻翠 2019.09.14";
+  @override
   String get at => "@";
   @override
   String get captcha_error_toast => "验证码错误 > <";
@@ -176,6 +185,10 @@ class $zh_CN extends S {
   String get change_week_title => "修改当前周";
   @override
   String get unknown_place => "未知地点";
+  @override
+  String get bug_and_report => "似乎有bug，我要反馈";
+  @override
+  String get welcome_title => "欢迎使用南哪课表！";
   @override
   String get remember_password => "记住密码";
   @override
@@ -218,6 +231,8 @@ class $zh_CN extends S {
   String get import_title => "导入课程表";
   @override
   String get class_parse_toast_fail => "出现异常，建议提交反馈";
+  @override
+  String get love_and_donate => "完美导入！投喂傻翠w";
   @override
   String get class_num_invalid_dialog_title => "课程节数不合法";
   @override

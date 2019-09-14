@@ -2,6 +2,7 @@ import '../../../generated/i18n.dart';
 import 'package:flutter/material.dart';
 import '../../../Models/CourseModel.dart';
 import '../../../Resources/Constant.dart';
+import '../../../Components/Dialog.dart';
 
 class CourseDetailDialog extends StatelessWidget {
   final onPressed;
@@ -11,12 +12,9 @@ class CourseDetailDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(course.name),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(20.0))),
-//      backgroundColor: Theme.of(context).primaryColor,
-      content: new Column(
+    return mDialog(
+      course.name,
+      new Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -50,7 +48,7 @@ class CourseDetailDialog extends StatelessWidget {
           ]),
         ],
       ),
-      actions: <Widget>[
+      <Widget>[
         FlatButton(
           child: Text(S.of(context).ok),
           textColor: Theme.of(context).primaryColor,
