@@ -8,7 +8,7 @@ import '../../Resources/Config.dart';
 import '../../Utils/States/MainState.dart';
 import '../../Models/CourseModel.dart';
 
-import 'Widgets/BackgroundImage.dart';
+//import 'Widgets/BackgroundImage.dart';
 import 'Widgets/WeekSelector.dart';
 import 'Widgets/WeekTitle.dart';
 
@@ -49,7 +49,7 @@ class CourseTableViewState extends State<CourseTableView> {
     _weekTitleWidth = (_screenWidth - _classTitleWidth) / _maxShowDays;
 
     List<Widget> classWidgets = await _presenter.getClassesWidgetList(
-        context, _classTitleHeight, _weekTitleWidth);
+        context, _classTitleHeight, _weekTitleWidth, _nowWeekNum);
 
     return classWidgets;
   }
@@ -67,7 +67,7 @@ class CourseTableViewState extends State<CourseTableView> {
               builder:
                   (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
                 if (!snapshot.hasData) {
-                  return Container();
+                  return Container(color: Colors.white);
                 } else {
                   List<Widget> _classTitle = new List.generate(
                     _maxShowClasses,

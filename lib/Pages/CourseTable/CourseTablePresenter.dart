@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:async';
+import 'dart:convert';
 import '../../generated/i18n.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -28,27 +29,30 @@ class CourseTablePresenter {
       allCourses.add(new Course.fromMap(courseMap));
     }
     ScheduleModel scheduleModel = new ScheduleModel(allCourses, nowWeek);
+    scheduleModel.init();
+
     activeCourses = scheduleModel.activeCourses;
     hideCourses = scheduleModel.hideCourses;
     multiCourses = scheduleModel.multiCourses;
   }
 
   Future<List<Widget>> getClassesWidgetList(
-      BuildContext context, double height, double width) async {
+      BuildContext context, double height, double width, int nowWeek) async {
     List colorPool = await ColorPool.getColorPool();
-    return List.generate(
+    List result = List.generate(
             hideCourses.length,
             (int i) => CourseWidget(
                   hideCourses[i],
                   Config.HIDE_CLASS_COLOR,
                   height,
                   width,
-                  () => showClassDialog(context, hideCourses[i]),
+                  false,
+                  false,
+                  () => showClassDialog(context, hideCourses[i], false),
                   () => showDeleteDialog(
                     context,
                     hideCourses[i],
                   ),
-                  preText: S.of(context).not_this_week,
                 )) +
         List.generate(
             activeCourses.length,
@@ -57,7 +61,9 @@ class CourseTablePresenter {
                   activeCourses[i].getColor(colorPool),
                   height,
                   width,
-                  () => showClassDialog(context, activeCourses[i]),
+                  true,
+                  false,
+                  () => showClassDialog(context, activeCourses[i], true),
                   () => showDeleteDialog(context, activeCourses[i]),
                 )) +
         List.generate(
@@ -67,8 +73,11 @@ class CourseTablePresenter {
                 multiCourses[i][0].getColor(colorPool),
                 height,
                 width,
-                () => showMultiClassDialog(context, i),
+                isThisWeek(multiCourses[i][0], nowWeek),
+                true,
+                () => showMultiClassDialog(context, i, nowWeek),
                 () => showDeleteDialog(context, multiCourses[i][0])));
+    return result;
   }
 
   void showDonateDialog(BuildContext context) async {
@@ -117,24 +126,28 @@ class CourseTablePresenter {
     });
   }
 
-  showClassDialog(BuildContext context, Course course) {
+  showClassDialog(BuildContext context, Course course, bool isActive) {
     return showDialog<String>(
         context: context,
         builder: (BuildContext context) {
-          return CourseDetailDialog(course, () {
+          return CourseDetailDialog(course, isActive, () {
             Navigator.of(context).pop();
           });
         });
   }
 
-  showMultiClassDialog(BuildContext context, int i) {
+  showMultiClassDialog(BuildContext context, int i, int nowWeek) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
+          // 设计失误，其实应该把是不是当前周传进来的
+
           return Swiper(
             itemBuilder: (BuildContext context, int index) {
               return CourseDetailDialog(
-                  multiCourses[i][index], () => Navigator.of(context).pop());
+                  multiCourses[i][index],
+                  isThisWeek(multiCourses[i][index], nowWeek),
+                  () => Navigator.of(context).pop());
             },
             itemCount: multiCourses[i].length,
             pagination: new SwiperPagination(
@@ -156,6 +169,11 @@ class CourseTablePresenter {
         return CourseDeleteDialog(course);
       },
     );
+  }
+
+  bool isThisWeek(Course course, int nowWeek) {
+    List weeks = json.decode(course.weeks);
+    return weeks.contains(nowWeek);
   }
 
   //TEST: 测试用函数

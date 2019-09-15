@@ -1,4 +1,3 @@
-import '../../generated/i18n.dart';
 import 'package:flutter/material.dart';
 import '../../Utils/States/MainState.dart';
 import '../../Models/CourseModel.dart';
@@ -26,7 +25,6 @@ class AddCoursePresenter {
     }
     return true;
   }
-
 
   String _generateWeekSeries(int start, int end, int weekType) {
     if (weekType == Constant.FULL_WEEKS)

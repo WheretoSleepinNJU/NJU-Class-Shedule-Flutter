@@ -1,6 +1,7 @@
 import '../../../generated/i18n.dart';
 import 'package:flutter/material.dart';
 import '../../../Models/CourseModel.dart';
+import '../../../Resources/Config.dart';
 import '../../../Utils/ColorUtil.dart';
 
 class CourseWidget extends StatelessWidget {
@@ -8,13 +9,21 @@ class CourseWidget extends StatelessWidget {
   final String color;
   final double height;
   final double width;
-  final String preText;
+  final bool isActive;
+  final bool setFlag;
   final onTap;
   final onLongPress;
 
-  CourseWidget(this.course, this.color, this.height, this.width, this.onTap,
-      this.onLongPress,
-      {this.preText = null});
+  CourseWidget(
+    this.course,
+    this.color,
+    this.height,
+    this.width,
+    this.isActive,
+    this.setFlag,
+    this.onTap,
+    this.onLongPress,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +36,16 @@ class CourseWidget extends StatelessWidget {
       width: width,
       child: Container(
         decoration: BoxDecoration(
-          color: HexColor(color).withOpacity(0.9),
-          borderRadius: BorderRadius.all(Radius.circular(5)),
+          color: HexColor(isActive ? color : Config.HIDE_CLASS_COLOR)
+              .withOpacity(0.9),
+          // TODO: Needs to be improved
+          borderRadius: setFlag
+              ? BorderRadius.only(
+                  topLeft: Radius.circular(7),
+                  bottomLeft: Radius.circular(7),
+                  bottomRight: Radius.circular(7))
+              : BorderRadius.all(Radius.circular(7)),
+//          boxShadow: setFlag? [BoxShadow(color: HexColor(Config.HIDE_CLASS_COLOR), offset: Offset(2.0, 2.0))]:[]
         ),
         child: InkWell(
           borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -36,7 +53,7 @@ class CourseWidget extends StatelessWidget {
           onLongPress: onLongPress,
           onTap: onTap,
           child: Text(
-              (preText ?? '') +
+              (isActive ? '' : S.of(context).not_this_week) +
                   course.name +
                   S.of(context).at +
                   (course.classroom ?? S.of(context).unknown_place),

@@ -53,7 +53,7 @@ class S implements WidgetsLocalizations {
   String get developer => "开发者 idealclover";
   String get donate_subtitle => "给傻翠买支棒棒糖吧！";
   String get donate_title => "投喂";
-  String get easter_egg => "感谢小百合工作室\n感谢 @ns @lgt 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n感谢 1A335 三位室友的鼎力相助\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光\n对了 谢谢 祝幸福";
+  String get easter_egg => "感谢小百合工作室\n感谢 @ns @lgt 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n感谢 1A335 三位室友的鼎力相助\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光\n对了 如果那个人能看到的话 谢谢 祝幸福";
   String get flutter_lts => "(Flutter LTS)";
   String get github_open_source => "GitHub 开源";
   String get import => "导入";
@@ -140,7 +140,7 @@ class $zh_CN extends S {
   @override
   String get manage_table_title => "课表管理";
   @override
-  String get easter_egg => "感谢小百合工作室\n感谢 @ns @lgt 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n感谢 1A335 三位室友的鼎力相助\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光\n对了 谢谢 祝幸福";
+  String get easter_egg => "感谢小百合工作室\n感谢 @ns @lgt 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n感谢 1A335 三位室友的鼎力相助\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光\n对了 如果那个人能看到的话 谢谢 祝幸福";
   @override
   String get class_parse_error_toast => "课程解析失败 = =|| 可将课表反馈至翠翠";
   @override

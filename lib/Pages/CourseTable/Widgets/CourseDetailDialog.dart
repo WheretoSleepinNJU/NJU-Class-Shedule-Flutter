@@ -7,20 +7,22 @@ import '../../../Components/Dialog.dart';
 class CourseDetailDialog extends StatelessWidget {
   final onPressed;
   final Course course;
+  final bool isActive;
 
-  CourseDetailDialog(this.course, this.onPressed);
+  CourseDetailDialog(this.course, this.isActive, this.onPressed);
 
   @override
   Widget build(BuildContext context) {
     return mDialog(
-      course.name,
+      (isActive ? '' : S.of(context).not_this_week) + course.name,
       new Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Row(children: [
             Icon(Icons.location_on, color: Theme.of(context).primaryColor),
-            Flexible(child: Text(course.classroom)),
+            Flexible(
+                child: Text(course.classroom ?? S.of(context).unknown_place)),
           ]),
           Row(children: [
             Icon(Icons.account_circle, color: Theme.of(context).primaryColor),
