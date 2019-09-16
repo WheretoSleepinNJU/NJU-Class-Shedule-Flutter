@@ -9,7 +9,7 @@ import '../../Resources/Config.dart';
 import '../../Utils/States/MainState.dart';
 import '../../Models/CourseModel.dart';
 
-//import 'Widgets/BackgroundImage.dart';
+import 'Widgets/BackgroundImage.dart';
 import 'Widgets/WeekSelector.dart';
 import 'Widgets/ClassTitle.dart';
 import 'Widgets/WeekTitle.dart';
@@ -36,6 +36,7 @@ class CourseTableViewState extends State<CourseTableView> {
   double _classTitleHeight;
   double _weekTitleHeight;
   double _weekTitleWidth;
+  String _bgImgPath;
 
   bool weekSelectorVisibility = false;
 
@@ -51,7 +52,9 @@ class CourseTableViewState extends State<CourseTableView> {
     _isShowMonth = await ScopedModel.of<MainStateModel>(context).getShowMonth();
     _isShowDate = await ScopedModel.of<MainStateModel>(context).getShowDate();
     _isForceZoom = await ScopedModel.of<MainStateModel>(context).getForceZoom();
-    _isShowAddButton = await ScopedModel.of<MainStateModel>(context).getAddButton();
+    _isShowAddButton =
+        await ScopedModel.of<MainStateModel>(context).getAddButton();
+    _bgImgPath = await ScopedModel.of<MainStateModel>(context).getBgImgPath();
 
     _maxShowClasses = Config.MAX_CLASSES;
     _maxShowDays = _isShowWeekend ? 7 : 5;
@@ -134,7 +137,9 @@ class CourseTableViewState extends State<CourseTableView> {
                         ]),
                     body: Stack(children: [
                       // TODO: 背景图片
-//                        BackgroundImage(),
+                      _bgImgPath == null
+                          ? Container()
+                          : BackgroundImage(_bgImgPath),
                       SingleChildScrollView(
                           child: Column(
                               mainAxisSize: MainAxisSize.max,
@@ -163,9 +168,14 @@ class CourseTableViewState extends State<CourseTableView> {
                     floatingActionButton: _isShowAddButton
                         ? FloatingActionButton(
                             backgroundColor: Theme.of(context).primaryColor,
-                            onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => AddView())),
-                            child: Icon(Icons.add, color: Colors.white,),
+                            onPressed: () => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        AddView())),
+                            child: Icon(
+                              Icons.add,
+                              color: Colors.white,
+                            ),
                           )
                         : Container(),
                   );

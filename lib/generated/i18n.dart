@@ -24,6 +24,9 @@ class S implements WidgetsLocalizations {
   String get QQ_copy_success_toast => "已复制群号到剪贴板";
   String get QQ_open_fail_toast => "打开失败，可能是未安装 TIM/QQ";
   String get about_title => "关于";
+  String get add_backgound_picture_subtitle => "上传背景图片";
+  String get add_backgound_picture_success_toast => "更换背景图片成功ww";
+  String get add_backgound_picture_title => "上传背景图片";
   String get add_class => "添加课程";
   String get add_class_table_dialog_title => "请输入课程表名称";
   String get add_manually_success_toast => "添加成功！>v<";
@@ -49,6 +52,9 @@ class S implements WidgetsLocalizations {
   String get class_room => "上课地点";
   String get class_table_manage_title => "课表管理";
   String get class_teacher => "上课老师";
+  String get delete_backgound_picture_subtitle => "恢复默认白色背景";
+  String get delete_backgound_picture_success_toast => "已恢复默认背景ww";
+  String get delete_backgound_picture_title => "清除背景图片";
   String get delete_class_dialog_title => "删除课程";
   String get developer => "开发者 idealclover";
   String get donate_subtitle => "给傻翠买支棒棒糖吧！";
@@ -121,13 +127,15 @@ class $zh_CN extends S {
   @override
   String get report_subtitle => "加入用户群一起愉快地玩耍吧！\n轻触直接加群，长按复制群号";
   @override
-  String get if_show_classtime_title => "是否显示课程时间";
+  String get if_show_classtime_title => "显示课程时间";
   @override
   String get settings_title => "设置";
   @override
   String get delete_class_dialog_title => "删除课程";
   @override
   String get import_auto => "自动导入";
+  @override
+  String get delete_backgound_picture_title => "清除背景图片";
   @override
   String get donate_title => "投喂";
   @override
@@ -153,9 +161,13 @@ class $zh_CN extends S {
   @override
   String get class_parse_error_toast => "课程解析失败 = =|| 可将课表反馈至翠翠";
   @override
+  String get delete_backgound_picture_subtitle => "恢复默认白色背景";
+  @override
   String get shuffle_color_pool_subtitle => "重置课程颜色池";
   @override
   String get alipay_open_fail_toast => "打开失败，可能是未安装支付宝";
+  @override
+  String get add_backgound_picture_title => "上传背景图片";
   @override
   String get if_show_weekend_subtitle => "设置是否显示周六周日";
   @override
@@ -168,6 +180,8 @@ class $zh_CN extends S {
   String get at => "@";
   @override
   String get captcha_error_toast => "验证码错误 > <";
+  @override
+  String get delete_backgound_picture_success_toast => "已恢复默认背景ww";
   @override
   String get open_source_library_title => "所使用到的开源库";
   @override
@@ -215,6 +229,8 @@ class $zh_CN extends S {
   @override
   String get add_class => "添加课程";
   @override
+  String get add_backgound_picture_success_toast => "更换背景图片成功ww";
+  @override
   String get shuffle_color_pool_title => "重置课程颜色";
   @override
   String get week_num_invalid_dialog_title => "课程周数不合法";
@@ -261,7 +277,9 @@ class $zh_CN extends S {
   @override
   String get class_room => "上课地点";
   @override
-  String get if_show_weekend_title => "是否显示周末";
+  String get if_show_weekend_title => "显示周末";
+  @override
+  String get add_backgound_picture_subtitle => "上传背景图片";
   @override
   String get about_title => "关于";
   @override

@@ -8,6 +8,7 @@ abstract class ConfigStateModel extends Model {
   bool _showDate = false;
   bool _forceZoom = false;
   bool _addButton = false;
+  String _bgImgPath = null;
 
   void setShowWeekend(bool showWeekend) async {
     _showWeekend = showWeekend;
@@ -93,6 +94,7 @@ abstract class ConfigStateModel extends Model {
     }
     return _forceZoom;
   }
+
   void setAddButton(bool addButton) async {
     _addButton = addButton;
     notifyListeners();
@@ -108,5 +110,28 @@ abstract class ConfigStateModel extends Model {
       return addButton;
     }
     return _addButton;
+  }
+
+  void setBgImgPath(String bgImgPath) async {
+    _bgImgPath = bgImgPath;
+    notifyListeners();
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setString("bgImgPath", _bgImgPath);
+  }
+
+  Future<String> getBgImgPath() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    String bgImgPath = sp.getString("bgImgPath");
+    if (bgImgPath != null) {
+      _bgImgPath = bgImgPath;
+      return bgImgPath;
+    }
+    return _bgImgPath;
+  }
+
+  void removeBgImgPath() async {
+    notifyListeners();
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.remove("bgImgPath");
   }
 }

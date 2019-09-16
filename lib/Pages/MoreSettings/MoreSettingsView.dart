@@ -1,6 +1,12 @@
+import 'dart:io';
+import 'dart:math';
+import 'package:wheretosleepinnju/Utils/States/ConfigState.dart';
+
 import '../../generated/i18n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../../Utils/States/MainState.dart';
 import '../../Utils/ColorUtil.dart';
@@ -37,6 +43,62 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                 ColorPool.shuffleColorPool();
                 Toast.showToast(
                     S.of(context).shuffle_color_pool_success_toast, context);
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              },
+            ),
+            ListTile(
+              title: Text(S.of(context).add_backgound_picture_title),
+              subtitle: Text(S.of(context).add_backgound_picture_subtitle),
+              onTap: () async {
+                // using your method of getting an image
+                final File image =
+                    await ImagePicker.pickImage(source: ImageSource.gallery);
+
+                // delete old picture
+                String oldPath = await ScopedModel.of<MainStateModel>(context)
+                    .getBgImgPath();
+                if (oldPath != null) {
+                  File oldImg = File(oldPath);
+                  if (oldImg.existsSync()) {
+                    oldImg.deleteSync(recursive: true);
+                    print('Old image deleted.');
+                  }
+                }
+
+                // add new picture
+                int num = Random().nextInt(1000);
+                Directory directory = await getApplicationDocumentsDirectory();
+                final String path = directory.path;
+                String fileName = '$path/background_$num.jpg';
+                await image.copy(fileName);
+                await ScopedModel.of<MainStateModel>(context)
+                    .setBgImgPath(fileName);
+                print('New image added.');
+                Toast.showToast(
+                    S.of(context).add_backgound_picture_success_toast, context);
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              },
+            ),
+            ListTile(
+              title: Text(S.of(context).delete_backgound_picture_title),
+              subtitle: Text(S.of(context).delete_backgound_picture_subtitle),
+              onTap: () async {
+                // delete old picture
+                String oldPath = await ScopedModel.of<MainStateModel>(context)
+                    .getBgImgPath();
+                if (oldPath != null) {
+                  File oldImg = File(oldPath);
+                  if (oldImg.existsSync()) {
+                    oldImg.deleteSync(recursive: true);
+                    print('Old image deleted.');
+                  }
+                }
+                await ScopedModel.of<MainStateModel>(context).removeBgImgPath();
+                Toast.showToast(
+                    S.of(context).delete_backgound_picture_success_toast,
+                    context);
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },

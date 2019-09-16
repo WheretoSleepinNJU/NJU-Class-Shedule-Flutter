@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 class BackgroundImage extends StatelessWidget {
+  final String _bgImgPath;
+
+  BackgroundImage(this._bgImgPath);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -8,7 +12,7 @@ class BackgroundImage extends StatelessWidget {
       image: DecorationImage(
         colorFilter: new ColorFilter.mode(
             Colors.white.withOpacity(0.8), BlendMode.dstATop),
-        image: AssetImage("res/example.jpg"),
+        image: AssetImage(_bgImgPath),
         fit: BoxFit.cover,
       ),
     ));
