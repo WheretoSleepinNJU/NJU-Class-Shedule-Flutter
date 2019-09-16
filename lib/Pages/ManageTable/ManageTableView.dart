@@ -61,17 +61,17 @@ class _ManageTableViewState extends State<ManageTableView> {
   }
 
   Future<List<Widget>> _getData(BuildContext context) async {
-    List courses = await courseTableProvider.getAllCourseTable();
+    List courseTables = await courseTableProvider.getAllCourseTable();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _selectedIndex = prefs.getInt('tableId') ?? 0;
     List <Widget> result = List.generate(
-        courses.length,
+        courseTables.length,
         (int i) => Container(
             color: _selectedIndex != null && _selectedIndex == i
                 ? Theme.of(context).primaryColor
                 : Colors.white,
             child: ListTile(
-              title: Text(courses[i]['name'],
+              title: Text(courseTables[i]['name'],
                   style: TextStyle(
                     color: _selectedIndex != null && _selectedIndex == i
                         ? Colors.white

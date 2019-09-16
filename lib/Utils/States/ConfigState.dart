@@ -8,6 +8,7 @@ abstract class ConfigStateModel extends Model {
   bool _showDate = false;
   bool _forceZoom = false;
   bool _addButton = false;
+  bool _whiteMode = false;
   String _bgImgPath = null;
 
   void setShowWeekend(bool showWeekend) async {
@@ -110,6 +111,23 @@ abstract class ConfigStateModel extends Model {
       return addButton;
     }
     return _addButton;
+  }
+
+  void setWhiteMode(bool whiteMode) async {
+    _whiteMode = whiteMode;
+    notifyListeners();
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setBool("whiteMode", _whiteMode);
+  }
+
+  Future<bool> getWhiteMode() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    bool whiteMode = sp.getBool("whiteMode");
+    if (whiteMode != null) {
+      _whiteMode = whiteMode;
+      return whiteMode;
+    }
+    return _whiteMode;
   }
 
   void setBgImgPath(String bgImgPath) async {

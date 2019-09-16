@@ -10,6 +10,7 @@ import '../Import/ImportView.dart';
 import '../About/AboutView.dart';
 import '../AddCourse/AddCourseView.dart';
 import '../MoreSettings/MoreSettingsView.dart';
+import '../Share/ShareView.dart';
 import '../../Components/Toast.dart';
 import '../../Resources/Config.dart';
 import '../../Resources/Url.dart';
@@ -61,6 +62,14 @@ class _SettingsViewState extends State<SettingsView> {
                 },
               ),
               ListTile(
+                title: Text(S.of(context).import_or_export_title),
+                subtitle: Text(S.of(context).import_or_export_subtitle),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => ShareView()));
+                },
+              ),
+              ListTile(
                 title: Text(S.of(context).manage_table_title),
                 subtitle: Text(S.of(context).manage_table_subtitle),
                 onTap: () {
@@ -71,8 +80,8 @@ class _SettingsViewState extends State<SettingsView> {
               // TODO: Refresh multi times when changing themes.
               ThemeChanger(),
               ListTile(
-                title: Text('自定义选项'),
-                subtitle: Text('课表样式设置，高级设置与试验功能'),
+                title: Text(S.of(context).more_settings_title),
+                subtitle: Text(S.of(context).more_settings_subtitle),
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) => MoreSettingsView()));

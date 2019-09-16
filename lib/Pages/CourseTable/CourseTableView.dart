@@ -27,6 +27,7 @@ class CourseTableViewState extends State<CourseTableView> {
   bool _isShowDate;
   bool _isForceZoom;
   bool _isShowAddButton;
+  bool _isWhiteMode;
   int _maxShowClasses;
   int _maxShowDays;
   int _nowWeekNum;
@@ -54,6 +55,7 @@ class CourseTableViewState extends State<CourseTableView> {
     _isForceZoom = await ScopedModel.of<MainStateModel>(context).getForceZoom();
     _isShowAddButton =
         await ScopedModel.of<MainStateModel>(context).getAddButton();
+    _isWhiteMode = await ScopedModel.of<MainStateModel>(context).getWhiteMode();
     _bgImgPath = await ScopedModel.of<MainStateModel>(context).getBgImgPath();
 
     _maxShowClasses = Config.MAX_CLASSES;
@@ -146,15 +148,20 @@ class CourseTableViewState extends State<CourseTableView> {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: <Widget>[
                             WeekSelector(model, weekSelectorVisibility),
-                            WeekTitle(_maxShowDays, _weekTitleHeight,
-                                _classTitleWidth, _isShowMonth, _isShowDate),
+                            WeekTitle(
+                                _maxShowDays,
+                                _weekTitleHeight,
+                                _classTitleWidth,
+                                _isShowMonth,
+                                _isShowDate,
+                                _isWhiteMode),
                             Row(children: [
-                              ClassTitle(_maxShowClasses, _classTitleHeight,
-                                  _classTitleWidth, _isShowClassTime),
-//                                Container(
-//                                    height: _classTitleHeight * _maxShowClasses,
-//                                    width: _classTitleWidth,
-//                                    child: Column(children: _classTitle)),
+                              ClassTitle(
+                                  _maxShowClasses,
+                                  _classTitleHeight,
+                                  _classTitleWidth,
+                                  _isShowClassTime,
+                                  _isWhiteMode),
                               Container(
                                   height: _classTitleHeight * _maxShowClasses,
                                   width: _screenWidth - _classTitleWidth,

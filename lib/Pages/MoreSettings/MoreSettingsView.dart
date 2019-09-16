@@ -1,7 +1,5 @@
 import 'dart:io';
 import 'dart:math';
-import 'package:wheretosleepinnju/Utils/States/ConfigState.dart';
-
 import '../../generated/i18n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -104,8 +102,26 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
               },
             ),
             ListTile(
-                title: Text('隐藏添加按钮'),
-                subtitle: Text('隐藏主界面右下角添加按钮'),
+                title: Text(S.of(context).white_title_mode_title),
+                subtitle: Text(S.of(context).white_title_mode_subtitle),
+                trailing: FutureBuilder<bool>(
+                    future: _getWhiteMode(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                      if (!snapshot.hasData) {
+                        return Container(width: 0);
+                      } else {
+                        return Switch(
+                          value: snapshot.data,
+                          onChanged: (bool value) =>
+                              ScopedModel.of<MainStateModel>(context)
+                                  .setWhiteMode(value),
+                        );
+                      }
+                    })),
+            ListTile(
+                title: Text(S.of(context).hide_add_button_title),
+                subtitle: Text(S.of(context).hide_add_button_subtitle),
                 trailing: FutureBuilder<bool>(
                     future: _getAddButton(),
                     builder:
@@ -160,8 +176,8 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                   }),
             ),
             ListTile(
-              title: Text('显示月份'),
-              subtitle: Text('在课表的左上角显示当前月份'),
+              title: Text(S.of(context).show_month_title),
+              subtitle: Text(S.of(context).show_month_subtitle),
               trailing: FutureBuilder<bool>(
                   future: _getShowMonth(),
                   builder:
@@ -179,8 +195,8 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                   }),
             ),
             ListTile(
-              title: Text('显示日期'),
-              subtitle: Text('显示当前周的日期'),
+              title: Text(S.of(context).show_date_title),
+              subtitle: Text(S.of(context).show_date_subtitle),
               trailing: FutureBuilder<bool>(
                   future: _getShowDate(),
                   builder:
@@ -242,5 +258,9 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
 
   Future<bool> _getAddButton() async {
     return await ScopedModel.of<MainStateModel>(context).getAddButton();
+  }
+
+  Future<bool> _getWhiteMode() async {
+    return await ScopedModel.of<MainStateModel>(context).getWhiteMode();
   }
 }

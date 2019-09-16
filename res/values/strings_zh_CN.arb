@@ -4,6 +4,7 @@
 
   "at": "@",
   "to": "-",
+  "month": "月",
   "week": "第 $num 周",
   "class_single": "第 $num 节",
   "class_duration": "第 $start - $end 节",
@@ -20,6 +21,8 @@
   "import_manually_subtitle": "手动添加课程表数据",
   "import_from_NJU_title": "导入南京大学课表",
   "import_from_NJU_subtitle": "登录南京大学教务系统导入课程表",
+  "import_or_export_title": "导入/导出课表",
+  "import_or_export_subtitle": "使用南哪课表内置的导入/导出功能",
   "manage_table_title": "课表管理",
   "manage_table_subtitle": "添加或删除课表数据",
   "change_theme_title": "修改主题",
@@ -34,6 +37,15 @@
   "about_title": "关于",
 
   "more_settings_title": "自定义选项",
+  "more_settings_subtitle": "课表样式设置，高级设置与试验功能",
+  "white_title_mode_title": "白色标题模式",
+  "white_title_mode_subtitle": "如果背景图片是暗色的话",
+  "hide_add_button_title": "隐藏添加按钮",
+  "hide_add_button_subtitle": "隐藏主界面右下角添加按钮",
+  "show_month_title": "显示月份",
+  "show_month_subtitle": "在课表的左上角显示当前月份",
+  "show_date_title": "显示日期",
+  "show_date_subtitle": "显示当前周的日期",
   "if_show_weekend_title": "显示周末",
   "if_show_weekend_subtitle": "设置是否显示周六周日",
   "if_show_classtime_title": "显示课程时间",
@@ -46,6 +58,17 @@
   "delete_backgound_picture_subtitle": "恢复默认白色背景",
   "delete_backgound_picture_success_toast": "已恢复默认背景ww",
   "add_backgound_picture_success_toast": "更换背景图片成功ww",
+
+  "export_classtable_title": "导出当前课表",
+  "export_classtable_subtitle": "导出当前课表为二维码/链接\n使用公共服务 file.io",
+  "import_from_qrcode_title": "二维码导入课表",
+  "import_from_qrcode_subtitle": "从他人分享的二维码导入课表",
+  "importing_toast": "导入中 请稍后",
+  "qrcode_url_error_toast": "二维码无效，可能为链接过期",
+  "qrcode_name_error_toast": "读取课表名称失败，可能为链接错误",
+  "qrcode_read_error_toast": "读取课程表，可能是 bug",
+  "import_success_toast": "导入完成",
+  "export_title": "导出",
 
   "shuffle_color_pool_success_toast": "重置颜色池成功 >v<",
   "nowweek_not_edited_success_toast": "当前周未修改 >v<",
@@ -96,5 +119,5 @@
   "bug_and_report": "似乎有bug，我要反馈",
   "love_but_no_money": "感谢制作，但我没钱",
   "welcome_content": "Hi！我是项目作者傻翠～\n\n看起来你已经导入我南教务处成功啦！撒花撒花！\n\n建议大家还是和自己教务系统中的课表对一下～避免出现什么bug～如果有bug的话欢迎反馈给我！设置-反馈中有交流群的群号～\n\n坦率地讲，从安卓移植到全平台是一个痛苦的过程。之前的APP多少是建立在开源项目的基础上，而这个重构项目算是自己从零开始搭起来的。其中也做了不少取舍与妥协，还有可能出现之前所没有过的bug。这都是我所会预料到的，如果你不巧遇到了bug，也欢迎向我反馈。\n\n写这个项目是一个吃力不讨好的事。单是苹果的开发者账号就要688/年，更不用提为了开发iOS版而单独买的macbook。所以如果小伙伴想让这个项目持续下去的话，欢迎投喂傻翠。\n\n其实我大四已经没课了，也早不需要课表这种东西了，可能你们的支持是我继续下去的唯一动力吧ww\n\n放心，这个弹框每次导入只会弹出一次，所以不会影响你的正常使用。\n\n希望南哪课表可以陪伴学弟学妹们走过每一学期ww\n\n傻翠 2019.09.14",
-  "welcome_title": "欢迎使用南哪课表！",
+  "welcome_title": "欢迎使用南哪课表！"
 }

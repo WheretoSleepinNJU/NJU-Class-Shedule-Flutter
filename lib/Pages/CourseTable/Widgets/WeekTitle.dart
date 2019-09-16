@@ -1,3 +1,4 @@
+import '../../../generated/i18n.dart';
 import 'package:flutter/material.dart';
 import '../../../Resources/Constant.dart';
 import '../../../Utils/WeekUtil.dart';
@@ -8,9 +9,10 @@ class WeekTitle extends StatelessWidget {
   final double _classTitleWidth;
   final bool _isShowMonth;
   final bool _isShowDate;
+  final bool _isWhiteMode;
 
   WeekTitle(this._maxShowDays, this._weekTitleHeight, this._classTitleWidth,
-      this._isShowMonth, this._isShowDate);
+      this._isShowMonth, this._isShowDate, this._isWhiteMode);
 
   @override
   Widget build(BuildContext context) {
@@ -28,15 +30,26 @@ class WeekTitle extends StatelessWidget {
                           children: <Widget>[
                               Text(
                                 Constant.WEEK_WITHOUT_BIAS[i],
+                                style: TextStyle(
+                                    color: _isWhiteMode
+                                        ? Colors.white
+                                        : Colors.black),
                               ),
                               Text(
                                 _dayList[i],
-                                style: TextStyle(fontSize: 10),
+                                style: TextStyle(
+                                    fontSize: 10,
+                                    color: _isWhiteMode
+                                        ? Colors.white
+                                        : Colors.black),
                               )
                             ])
                       : Center(
                           child: Text(
                             Constant.WEEK_WITHOUT_BIAS_WITHOUT_PRE[i],
+                            style: TextStyle(
+                                color:
+                                    _isWhiteMode ? Colors.white : Colors.black),
                           ),
                         ),
                 ),
@@ -54,15 +67,30 @@ class WeekTitle extends StatelessWidget {
                       child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            Text(WeekUtil.getNowMonth().toString() + '月'),
+                            Text(
+                              WeekUtil.getNowMonth().toString() +
+                                  S.of(context).month,
+                              style: TextStyle(
+                                  color: _isWhiteMode
+                                      ? Colors.white
+                                      : Colors.black),
+                            ),
                             Text(
                               WeekUtil.getNowMonthName() + '.',
-                              style: TextStyle(fontSize: 10),
+                              style: TextStyle(
+                                  fontSize: 10,
+                                  color: _isWhiteMode
+                                      ? Colors.white
+                                      : Colors.black),
                             )
                           ]),
                     )
                   : Center(
-                      child: Text(WeekUtil.getNowMonth().toString() + '月'),
+                      child: Text(
+                        WeekUtil.getNowMonth().toString() + S.of(context).month,
+                        style: TextStyle(
+                            color: _isWhiteMode ? Colors.white : Colors.black),
+                      ),
                     ))
               : Container(width: _classTitleWidth),
         )

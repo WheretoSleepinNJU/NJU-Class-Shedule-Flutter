@@ -6,9 +6,10 @@ class ClassTitle extends StatelessWidget {
   final double _classTitleHeight;
   final double _classTitleWidth;
   final bool _isShowWeekTime;
+  final bool _isWhiteMode;
 
   ClassTitle(this._maxShowClasses, this._classTitleHeight,
-      this._classTitleWidth, this._isShowWeekTime);
+      this._classTitleWidth, this._isShowWeekTime, this._isWhiteMode);
 
   @override
   Widget build(BuildContext context) {
@@ -21,14 +22,25 @@ class ClassTitle extends StatelessWidget {
               child: _isShowWeekTime
                   ? Column(
                       children: <Widget>[
-                        Text((i + 1).toString(), textAlign: TextAlign.center),
+                        Text((i + 1).toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: _isWhiteMode
+                                    ? Colors.white
+                                    : Colors.black)),
                         Text(
                           Constant.CLASS_TIME[i],
-                          style: TextStyle(fontSize: 10),
+                          style: TextStyle(
+                              fontSize: 10,
+                              color:
+                                  _isWhiteMode ? Colors.white : Colors.black),
                         )
                       ],
                     )
-                  : Text((i + 1).toString(), textAlign: TextAlign.center))),
+                  : Text((i + 1).toString(),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: _isWhiteMode ? Colors.white : Colors.black)))),
     );
     return Container(child: Column(children: _classTitle));
   }
