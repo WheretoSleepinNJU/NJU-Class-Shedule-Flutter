@@ -9,7 +9,7 @@ import '../ManageTable/ManageTableView.dart';
 import '../Import/ImportView.dart';
 import '../About/AboutView.dart';
 import '../AddCourse/AddCourseView.dart';
-import '../../Utils/ColorUtil.dart';
+import '../MoreSettings/MoreSettingsView.dart';
 import '../../Components/Toast.dart';
 import '../../Resources/Config.dart';
 import '../../Resources/Url.dart';
@@ -53,10 +53,11 @@ class _SettingsViewState extends State<SettingsView> {
               ListTile(
                 title: Text(S.of(context).import_from_NJU_title),
                 subtitle: Text(S.of(context).import_from_NJU_subtitle),
-                onTap: () async{
-                  bool status = await Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => ImportView()));
-                  if(status == true) Navigator.of(context).pop(status);
+                onTap: () async {
+                  bool status = await Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => ImportView()));
+                  if (status == true) Navigator.of(context).pop(status);
                 },
               ),
               ListTile(
@@ -70,13 +71,11 @@ class _SettingsViewState extends State<SettingsView> {
               // TODO: Refresh multi times when changing themes.
               ThemeChanger(),
               ListTile(
-                title: Text(S.of(context).shuffle_color_pool_title),
-                subtitle: Text(S.of(context).shuffle_color_pool_subtitle),
+                title: Text('自定义选项'),
+                subtitle: Text('课表样式设置，高级设置与试验功能'),
                 onTap: () {
-                  ColorPool.shuffleColorPool();
-                  Toast.showToast(
-                      S.of(context).shuffle_color_pool_success_toast, context);
-                  Navigator.of(context).pop();
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => MoreSettingsView()));
                 },
               ),
               WeekChanger(),

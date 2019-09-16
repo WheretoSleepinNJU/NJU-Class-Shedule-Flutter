@@ -10,6 +10,7 @@ import '../../Models/CourseModel.dart';
 
 //import 'Widgets/BackgroundImage.dart';
 import 'Widgets/WeekSelector.dart';
+import 'Widgets/ClassTitle.dart';
 import 'Widgets/WeekTitle.dart';
 
 class CourseTableView extends StatefulWidget {
@@ -19,6 +20,10 @@ class CourseTableView extends StatefulWidget {
 
 class CourseTableViewState extends State<CourseTableView> {
   CourseTablePresenter _presenter = new CourseTablePresenter();
+  bool _isShowWeekend;
+  bool _isShowClassTime;
+  bool _isShowMonth;
+  bool _isShowDate;
   int _maxShowClasses;
   int _maxShowDays;
   int _nowWeekNum;
@@ -35,8 +40,15 @@ class CourseTableViewState extends State<CourseTableView> {
   Future<List<Widget>> _getData(BuildContext context) async {
 //    await courseTablePresenter.insertMockData();
 
+    _isShowWeekend =
+        await ScopedModel.of<MainStateModel>(context).getShowWeekend();
+    _isShowClassTime =
+        await ScopedModel.of<MainStateModel>(context).getShowClassTime();
+    _isShowMonth = await ScopedModel.of<MainStateModel>(context).getShowMonth();
+    _isShowDate = await ScopedModel.of<MainStateModel>(context).getShowDate();
+
     _maxShowClasses = Config.MAX_CLASSES;
-    _maxShowDays = 7;
+    _maxShowDays = _isShowWeekend ? 7 : 5;
     int index = await ScopedModel.of<MainStateModel>(context).getClassTable();
     _nowWeekNum = await ScopedModel.of<MainStateModel>(context).getWeek();
 
@@ -69,17 +81,6 @@ class CourseTableViewState extends State<CourseTableView> {
                 if (!snapshot.hasData) {
                   return Container(color: Colors.white);
                 } else {
-                  List<Widget> _classTitle = new List.generate(
-                    _maxShowClasses,
-                    (int i) => new Container(
-                        margin: EdgeInsets.only(top: i * _classTitleHeight),
-                        height: _classTitleHeight,
-                        width: _classTitleWidth,
-                        child: Center(
-                            child: Text((i + 1).toString(),
-                                textAlign: TextAlign.center))),
-                  );
-
                   // TODO: fix bug in stack
                   List<Widget> _divider = new List.generate(
                       _maxShowClasses,
@@ -129,12 +130,14 @@ class CourseTableViewState extends State<CourseTableView> {
                                 children: <Widget>[
                               WeekSelector(model, weekSelectorVisibility),
                               WeekTitle(_maxShowDays, _weekTitleHeight,
-                                  _classTitleWidth),
+                                  _classTitleWidth, _isShowMonth, _isShowDate),
                               Row(children: [
-                                Container(
-                                    height: _classTitleHeight * _maxShowClasses,
-                                    width: _classTitleWidth,
-                                    child: Stack(children: _classTitle)),
+                                ClassTitle(_maxShowClasses, _classTitleHeight,
+                                    _classTitleWidth, _isShowClassTime),
+//                                Container(
+//                                    height: _classTitleHeight * _maxShowClasses,
+//                                    width: _classTitleWidth,
+//                                    child: Column(children: _classTitle)),
                                 Container(
                                     height: _classTitleHeight * _maxShowClasses,
                                     width: _screenWidth - _classTitleWidth,

@@ -19,7 +19,7 @@ class WeekChanger extends StatelessWidget {
             return ListTile(
               title: Text(S.of(context).change_week_title),
               subtitle: Text(S.of(context).change_week_subtitle +
-                  snapshot.data.toString()),
+                  S.of(context).week(snapshot.data.toString())),
               onTap: () async {
                 await showDialog<String>(
                   context: context,

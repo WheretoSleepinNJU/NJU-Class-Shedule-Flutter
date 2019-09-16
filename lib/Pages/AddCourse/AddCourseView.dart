@@ -89,6 +89,7 @@ class _AddViewState extends State<AddView> {
                   InkWell(
                       child: Text(
                         Constant.WEEK_WITHOUT_BIAS[_node['weekTime']] +
+                            ' ' +
                             S.of(context).class_duration(
                                 (_node['startTime'] + 1).toString(),
                                 (_node['endTime'] + 1).toString()) +

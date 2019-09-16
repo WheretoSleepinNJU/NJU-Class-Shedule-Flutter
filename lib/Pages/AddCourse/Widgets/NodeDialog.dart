@@ -95,7 +95,7 @@ class _NodeDialogState extends State<NodeDialog> {
                                 S
                                     .of(context)
                                     .class_single((index + 1).toString()),
-                                style: TextStyle(fontSize: 16),
+                                style: TextStyle(fontSize: 13),
                               ),
                             );
                           })),
@@ -126,7 +126,7 @@ class _NodeDialogState extends State<NodeDialog> {
                                   S
                                       .of(context)
                                       .class_single((index + 1).toString()),
-                                  style: TextStyle(fontSize: 16),
+                                  style: TextStyle(fontSize: 13),
                                 ),
                               );
                             })))
@@ -184,7 +184,7 @@ class _NodeDialogState extends State<NodeDialog> {
                             return new Center(
                               child: new Text(
                                 S.of(context).week((index + 1).toString()),
-                                style: TextStyle(fontSize: 16),
+                                style: TextStyle(fontSize: 13),
                               ),
                             );
                           })),
@@ -213,7 +213,7 @@ class _NodeDialogState extends State<NodeDialog> {
                               return new Center(
                                 child: new Text(
                                   S.of(context).week((index + 1).toString()),
-                                  style: TextStyle(fontSize: 16),
+                                  style: TextStyle(fontSize: 13),
                                 ),
                               );
                             })))

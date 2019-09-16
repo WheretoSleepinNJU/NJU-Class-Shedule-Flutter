@@ -56,6 +56,10 @@ class S implements WidgetsLocalizations {
   String get easter_egg => "感谢小百合工作室\n感谢 @ns @lgt 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光\n对了 如果那个人能看到的话 谢谢 祝幸福";
   String get flutter_lts => "(Flutter LTS)";
   String get github_open_source => "GitHub 开源";
+  String get if_show_classtime_subtitle => "设置是否显示课程时间";
+  String get if_show_classtime_title => "是否显示课程时间";
+  String get if_show_weekend_subtitle => "设置是否显示周六周日";
+  String get if_show_weekend_title => "是否显示周末";
   String get import => "导入";
   String get import_auto => "自动导入";
   String get import_from_NJU_subtitle => "登录南京大学教务系统导入课程表";
@@ -69,6 +73,7 @@ class S implements WidgetsLocalizations {
   String get love_but_no_money => "感谢制作，但我没钱";
   String get manage_table_subtitle => "添加或删除课表数据";
   String get manage_table_title => "课表管理";
+  String get more_settings_title => "自定义选项";
   String get not_this_week => "[非本周]";
   String get nowweek_edited_success_toast => "修改当前周成功 >v<";
   String get nowweek_not_edited_success_toast => "当前周未修改 >v<";
@@ -114,6 +119,8 @@ class $zh_CN extends S {
   @override
   String get report_subtitle => "加入用户群一起愉快地玩耍吧！\n轻触直接加群，长按复制群号";
   @override
+  String get if_show_classtime_title => "是否显示课程时间";
+  @override
   String get settings_title => "设置";
   @override
   String get delete_class_dialog_title => "删除课程";
@@ -148,6 +155,8 @@ class $zh_CN extends S {
   @override
   String get alipay_open_fail_toast => "打开失败，可能是未安装支付宝";
   @override
+  String get if_show_weekend_subtitle => "设置是否显示周六周日";
+  @override
   String get add_class_table_dialog_title => "请输入课程表名称";
   @override
   String get love_but_no_money => "感谢制作，但我没钱";
@@ -161,6 +170,8 @@ class $zh_CN extends S {
   String get open_source_library_title => "所使用到的开源库";
   @override
   String get import_from_NJU_title => "导入南京大学课表";
+  @override
+  String get if_show_classtime_subtitle => "设置是否显示课程时间";
   @override
   String get class_parse_toast_success => "数据存储成功 >v<";
   @override
@@ -244,6 +255,8 @@ class $zh_CN extends S {
   @override
   String get class_room => "上课地点";
   @override
+  String get if_show_weekend_title => "是否显示周末";
+  @override
   String get about_title => "关于";
   @override
   String get developer => "开发者 idealclover";
@@ -251,6 +264,8 @@ class $zh_CN extends S {
   String get to => "-";
   @override
   String get import_manually_title => "手动添加";
+  @override
+  String get more_settings_title => "自定义选项";
   @override
   String get username => "用户名";
   @override
