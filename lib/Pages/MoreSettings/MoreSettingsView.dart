@@ -42,6 +42,24 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
               },
             ),
             ListTile(
+                title: Text('隐藏添加按钮'),
+                subtitle: Text('隐藏主界面右下角添加按钮'),
+                trailing: FutureBuilder<bool>(
+                    future: _getAddButton(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                      if (!snapshot.hasData) {
+                        return Container(width: 0);
+                      } else {
+                        return Switch(
+                          value: !snapshot.data,
+                          onChanged: (bool value) =>
+                              ScopedModel.of<MainStateModel>(context)
+                                  .setAddButton(!value),
+                        );
+                      }
+                    })),
+            ListTile(
               title: Text(S.of(context).if_show_weekend_title),
               subtitle: Text(S.of(context).if_show_weekend_subtitle),
               trailing: FutureBuilder<bool>(
@@ -117,6 +135,25 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                     }
                   }),
             ),
+            ListTile(
+              title: Text(S.of(context).force_zoom_title),
+              subtitle: Text(S.of(context).force_zoom_subtitle),
+              trailing: FutureBuilder<bool>(
+                  future: _getForceZoom(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                    if (!snapshot.hasData) {
+                      return Container(width: 0);
+                    } else {
+                      return Switch(
+                        value: snapshot.data,
+                        onChanged: (bool value) =>
+                            ScopedModel.of<MainStateModel>(context)
+                                .setForceZoom(value),
+                      );
+                    }
+                  }),
+            ),
           ]).toList()))
         ])));
   }
@@ -135,5 +172,13 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
 
   Future<bool> _getShowDate() async {
     return await ScopedModel.of<MainStateModel>(context).getShowDate();
+  }
+
+  Future<bool> _getForceZoom() async {
+    return await ScopedModel.of<MainStateModel>(context).getForceZoom();
+  }
+
+  Future<bool> _getAddButton() async {
+    return await ScopedModel.of<MainStateModel>(context).getAddButton();
   }
 }

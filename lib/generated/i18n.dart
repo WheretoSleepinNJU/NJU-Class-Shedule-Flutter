@@ -55,11 +55,13 @@ class S implements WidgetsLocalizations {
   String get donate_title => "投喂";
   String get easter_egg => "感谢小百合工作室\n感谢 @ns @lgt 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光\n对了 如果那个人能看到的话 谢谢 祝幸福";
   String get flutter_lts => "(Flutter LTS)";
+  String get force_zoom_subtitle => "强制缩放课程表为一页";
+  String get force_zoom_title => "强制缩放";
   String get github_open_source => "GitHub 开源";
   String get if_show_classtime_subtitle => "设置是否显示课程时间";
-  String get if_show_classtime_title => "是否显示课程时间";
+  String get if_show_classtime_title => "显示课程时间";
   String get if_show_weekend_subtitle => "设置是否显示周六周日";
-  String get if_show_weekend_title => "是否显示周末";
+  String get if_show_weekend_title => "显示周末";
   String get import => "导入";
   String get import_auto => "自动导入";
   String get import_from_NJU_subtitle => "登录南京大学教务系统导入课程表";
@@ -171,6 +173,8 @@ class $zh_CN extends S {
   @override
   String get import_from_NJU_title => "导入南京大学课表";
   @override
+  String get force_zoom_subtitle => "强制缩放课程表为一页";
+  @override
   String get if_show_classtime_subtitle => "设置是否显示课程时间";
   @override
   String get class_parse_toast_success => "数据存储成功 >v<";
@@ -236,6 +240,8 @@ class $zh_CN extends S {
   String get add_manually_title => "添加课程";
   @override
   String get change_theme_title => "修改主题";
+  @override
+  String get force_zoom_title => "强制缩放";
   @override
   String get add_manually_success_toast => "添加成功！>v<";
   @override

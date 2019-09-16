@@ -2,6 +2,7 @@ import '../../generated/i18n.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import './CourseTablePresenter.dart';
+import '../AddCourse/AddCourseView.dart';
 import '../Settings/SettingsView.dart';
 import '../../Components/Separator.dart';
 import '../../Resources/Config.dart';
@@ -24,10 +25,13 @@ class CourseTableViewState extends State<CourseTableView> {
   bool _isShowClassTime;
   bool _isShowMonth;
   bool _isShowDate;
+  bool _isForceZoom;
+  bool _isShowAddButton;
   int _maxShowClasses;
   int _maxShowDays;
   int _nowWeekNum;
   double _screenWidth;
+  double _screenHeight;
   double _classTitleWidth;
   double _classTitleHeight;
   double _weekTitleHeight;
@@ -46,6 +50,8 @@ class CourseTableViewState extends State<CourseTableView> {
         await ScopedModel.of<MainStateModel>(context).getShowClassTime();
     _isShowMonth = await ScopedModel.of<MainStateModel>(context).getShowMonth();
     _isShowDate = await ScopedModel.of<MainStateModel>(context).getShowDate();
+    _isForceZoom = await ScopedModel.of<MainStateModel>(context).getForceZoom();
+    _isShowAddButton = await ScopedModel.of<MainStateModel>(context).getAddButton();
 
     _maxShowClasses = Config.MAX_CLASSES;
     _maxShowDays = _isShowWeekend ? 7 : 5;
@@ -55,10 +61,18 @@ class CourseTableViewState extends State<CourseTableView> {
     await _presenter.refreshClasses(index, _nowWeekNum);
 
     _screenWidth = MediaQuery.of(context).size.width;
-    _classTitleWidth = 30;
-    _classTitleHeight = 50;
+    _screenHeight = MediaQuery.of(context).size.height;
     _weekTitleHeight = 30;
+    _classTitleWidth = 30;
     _weekTitleWidth = (_screenWidth - _classTitleWidth) / _maxShowDays;
+    if (_isForceZoom)
+      _classTitleHeight = (_screenHeight -
+              kToolbarHeight -
+              MediaQuery.of(context).padding.top -
+              (_isShowDate ? _weekTitleHeight * 1.2 : _weekTitleHeight)) /
+          _maxShowClasses;
+    else
+      _classTitleHeight = 50;
 
     List<Widget> classWidgets = await _presenter.getClassesWidgetList(
         context, _classTitleHeight, _weekTitleWidth, _nowWeekNum);
@@ -92,62 +106,69 @@ class CourseTableViewState extends State<CourseTableView> {
                           ));
 
                   return Scaffold(
-                      appBar: AppBar(
-                          centerTitle: true,
-                          title: Column(children: [
-                            Text(S.of(context).app_name),
-                            GestureDetector(
-                              child: Text(
-                                  S.of(context).week(_nowWeekNum.toString()),
-                                  style: TextStyle(fontSize: 16)),
-                              onTap: () => setState(() {
-                                weekSelectorVisibility =
-                                    !weekSelectorVisibility;
-                              }),
-                            )
-                          ]),
-                          actions: <Widget>[
-                            IconButton(
-                              icon: Icon(Icons.lightbulb_outline),
-                              onPressed: () async {
-                                bool status = await Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            SettingsView()));
-                                if (status == true)
-                                  _presenter.showDonateDialog(context);
-                              },
-                            )
-                          ]),
-                      body: Stack(children: [
-                        // TODO: 背景图片
+                    appBar: AppBar(
+                        centerTitle: true,
+                        title: Column(children: [
+                          Text(S.of(context).app_name),
+                          GestureDetector(
+                            child: Text(
+                                S.of(context).week(_nowWeekNum.toString()),
+                                style: TextStyle(fontSize: 16)),
+                            onTap: () => setState(() {
+                              weekSelectorVisibility = !weekSelectorVisibility;
+                            }),
+                          )
+                        ]),
+                        actions: <Widget>[
+                          IconButton(
+                            icon: Icon(Icons.lightbulb_outline),
+                            onPressed: () async {
+                              bool status = await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          SettingsView()));
+                              if (status == true)
+                                _presenter.showDonateDialog(context);
+                            },
+                          )
+                        ]),
+                    body: Stack(children: [
+                      // TODO: 背景图片
 //                        BackgroundImage(),
-                        SingleChildScrollView(
-                            child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: <Widget>[
-                              WeekSelector(model, weekSelectorVisibility),
-                              WeekTitle(_maxShowDays, _weekTitleHeight,
-                                  _classTitleWidth, _isShowMonth, _isShowDate),
-                              Row(children: [
-                                ClassTitle(_maxShowClasses, _classTitleHeight,
-                                    _classTitleWidth, _isShowClassTime),
+                      SingleChildScrollView(
+                          child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: <Widget>[
+                            WeekSelector(model, weekSelectorVisibility),
+                            WeekTitle(_maxShowDays, _weekTitleHeight,
+                                _classTitleWidth, _isShowMonth, _isShowDate),
+                            Row(children: [
+                              ClassTitle(_maxShowClasses, _classTitleHeight,
+                                  _classTitleWidth, _isShowClassTime),
 //                                Container(
 //                                    height: _classTitleHeight * _maxShowClasses,
 //                                    width: _classTitleWidth,
 //                                    child: Column(children: _classTitle)),
-                                Container(
-                                    height: _classTitleHeight * _maxShowClasses,
-                                    width: _screenWidth - _classTitleWidth,
-                                    // TODO: fix bug in stack
-                                    child: Stack(
-                                        children: _divider + snapshot.data,
-                                        overflow: Overflow.visible))
-                              ])
-                            ])),
-                      ]));
+                              Container(
+                                  height: _classTitleHeight * _maxShowClasses,
+                                  width: _screenWidth - _classTitleWidth,
+                                  // TODO: fix bug in stack
+                                  child: Stack(
+                                      children: _divider + snapshot.data,
+                                      overflow: Overflow.visible))
+                            ])
+                          ])),
+                    ]),
+                    floatingActionButton: _isShowAddButton
+                        ? FloatingActionButton(
+                            backgroundColor: Theme.of(context).primaryColor,
+                            onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) => AddView())),
+                            child: Icon(Icons.add, color: Colors.white,),
+                          )
+                        : Container(),
+                  );
                 }
               });
         }));

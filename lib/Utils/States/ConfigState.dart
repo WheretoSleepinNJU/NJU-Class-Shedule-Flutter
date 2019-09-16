@@ -6,6 +6,8 @@ abstract class ConfigStateModel extends Model {
   bool _showClassTime = false;
   bool _showMonth = false;
   bool _showDate = false;
+  bool _forceZoom = false;
+  bool _addButton = false;
 
   void setShowWeekend(bool showWeekend) async {
     _showWeekend = showWeekend;
@@ -73,5 +75,38 @@ abstract class ConfigStateModel extends Model {
       return showDate;
     }
     return _showDate;
+  }
+
+  void setForceZoom(bool forceZoom) async {
+    _forceZoom = forceZoom;
+    notifyListeners();
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setBool("forceZoom", _forceZoom);
+  }
+
+  Future<bool> getForceZoom() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    bool forceZoom = sp.getBool("forceZoom");
+    if (forceZoom != null) {
+      _forceZoom = forceZoom;
+      return forceZoom;
+    }
+    return _forceZoom;
+  }
+  void setAddButton(bool addButton) async {
+    _addButton = addButton;
+    notifyListeners();
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setBool("addButton", _addButton);
+  }
+
+  Future<bool> getAddButton() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    bool addButton = sp.getBool("addButton");
+    if (addButton != null) {
+      _addButton = addButton;
+      return addButton;
+    }
+    return _addButton;
   }
 }
