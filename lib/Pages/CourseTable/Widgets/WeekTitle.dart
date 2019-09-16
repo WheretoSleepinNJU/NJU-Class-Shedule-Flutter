@@ -31,6 +31,8 @@ class WeekTitle extends StatelessWidget {
                               Text(
                                 Constant.WEEK_WITHOUT_BIAS[i],
                                 style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
                                     color: _isWhiteMode
                                         ? Colors.white
                                         : Colors.black),
@@ -71,6 +73,8 @@ class WeekTitle extends StatelessWidget {
                               WeekUtil.getNowMonth().toString() +
                                   S.of(context).month,
                               style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
                                   color: _isWhiteMode
                                       ? Colors.white
                                       : Colors.black),

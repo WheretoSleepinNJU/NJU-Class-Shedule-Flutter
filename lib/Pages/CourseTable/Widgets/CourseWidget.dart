@@ -48,17 +48,34 @@ class CourseWidget extends StatelessWidget {
 //          boxShadow: setFlag? [BoxShadow(color: HexColor(Config.HIDE_CLASS_COLOR), offset: Offset(2.0, 2.0))]:[]
         ),
         child: InkWell(
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-          highlightColor: Colors.black,
-          onLongPress: onLongPress,
-          onTap: onTap,
-          child: Text(
-              (isActive ? '' : S.of(context).not_this_week) +
-                  course.name +
-                  S.of(context).at +
-                  (course.classroom ?? S.of(context).unknown_place),
-              style: TextStyle(color: Colors.white)),
-        ),
+            borderRadius: BorderRadius.all(Radius.circular(5)),
+            highlightColor: Colors.black,
+            onLongPress: onLongPress,
+            onTap: onTap,
+            child: new RichText(
+              text: new TextSpan(
+                style: new TextStyle(
+                  fontSize: 12.0,
+                  color: Colors.white,
+                ),
+                children: <TextSpan>[
+                  new TextSpan(
+                      text: (isActive ? '' : S.of(context).not_this_week) +
+                          course.name,
+                      style: new TextStyle(fontWeight: FontWeight.bold)),
+                  new TextSpan(
+                      text: S.of(context).at +
+                          (course.classroom ?? S.of(context).unknown_place)),
+                ],
+              ),
+            )
+//          Text(
+//              (isActive ? '' : S.of(context).not_this_week) +
+//                  course.name +
+//                  S.of(context).at +
+//                  (course.classroom ?? S.of(context).unknown_place),
+//              style: TextStyle(color: Colors.white, fontSize: 12)),
+            ),
       ),
     );
   }

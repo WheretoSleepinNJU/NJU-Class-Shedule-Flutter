@@ -21,10 +21,13 @@ class ClassTitle extends StatelessWidget {
           child: Center(
               child: _isShowWeekTime
                   ? Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         Text((i + 1).toString(),
                             textAlign: TextAlign.center,
                             style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
                                 color: _isWhiteMode
                                     ? Colors.white
                                     : Colors.black)),
