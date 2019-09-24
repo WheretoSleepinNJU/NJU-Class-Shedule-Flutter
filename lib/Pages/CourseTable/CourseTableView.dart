@@ -1,6 +1,7 @@
 import '../../generated/i18n.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
+//import 'package:text_view/text_view.dart';
 import './CourseTablePresenter.dart';
 import '../AddCourse/AddCourseView.dart';
 import '../Settings/SettingsView.dart';
@@ -114,6 +115,7 @@ class CourseTableViewState extends State<CourseTableView> {
                     appBar: AppBar(
                         centerTitle: true,
                         title: Column(children: [
+//                          TextView(),
                           Text(S.of(context).app_name),
                           GestureDetector(
                             child: Text(

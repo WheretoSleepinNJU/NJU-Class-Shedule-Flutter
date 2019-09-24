@@ -29,6 +29,9 @@ dependencies:
     git:
       url: git://github.com/chen-zeyu/html.git
       ref: patch-pola
+  text_view:
+    git:
+      url: git://github.com/felangel/flutter_text_view_plugin.git
   #  html: ^0.14.0+2
   dio: ^2.1.0
 

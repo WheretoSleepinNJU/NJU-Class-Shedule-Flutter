@@ -9,7 +9,8 @@ import '../Resources/Constant.dart';
 class CourseParser {
   final RegExp patten1 = new RegExp(r"第(\d{1,2})-(\d{1,2})节");
   final RegExp patten2 = new RegExp(r"(\d{1,2})-(\d{1,2})周");
-  final RegExp patten3 = new RegExp(r"第(\d{1,2})周");
+  final RegExp patten3 = new RegExp(r"从第(\d{1,2})-(\d{1,2})周开始");
+  final RegExp patten4 = new RegExp(r"第(\d{1,2})周");
 
   String html;
   Document document;
@@ -59,38 +60,7 @@ class CourseParser {
         int timeCount = int.parse(time.group(2)) - startTime;
 //        print(startTime.toString() + ' - ' + timeCount.toString());
 
-        String weekSeries;
-
-        var weeksResult = patten2.firstMatch(info);
-//        print(weeksResult.group(1));
-//        print(weeksResult.group(2));
-        if (weeksResult != null) {
-          int startWeek = int.parse(weeksResult.group(1));
-          int endWeek = int.parse(weeksResult.group(2));
-          if (info.contains('单周'))
-            weekSeries = _getSingleWeekSeries(startWeek, endWeek);
-          else if (info.contains('双周'))
-            weekSeries = _getDoubleWeekSeries(startWeek, endWeek);
-          else
-            weekSeries = _getWeekSeries(startWeek, endWeek);
-        } else {
-          // 有些课程会在特定的周数上
-          // "周一 第7-8节 第3周 第5周 第7周 第9周 仙二-207"
-          List weekResult = patten3.allMatches(info).toList();
-          List<int> weekList = [];
-          for (var match in weekResult) {
-            weekList.add(int.parse(match.group(1)));
-          }
-          weekSeries = weekList.toString();
-          if (weekResult.isEmpty)
-            // 有些课程只有单周/双周显示，无周数，故会出现找不到周数的情况
-            // "周二 第3-4节 单周 逸B-101"
-            if (info.contains('单周'))
-              weekSeries = _getSingleWeekSeries(Constant.DEFAULT_WEEK_START, Constant.DEFAULT_WEEK_END);
-            else if (info.contains('双周'))
-              weekSeries = _getDoubleWeekSeries(Constant.DEFAULT_WEEK_START, Constant.DEFAULT_WEEK_END);
-            else throw '课程周数解析失败';
-        }
+        String weekSeries = _getWeekSeriesString(info);
 
         // Get ClassRoom
         String classRoom = strs[strs.length - 1];
@@ -123,6 +93,59 @@ class CourseParser {
     int id = courseTable.id - 1;
     MainStateModel.of(context).changeclassTable(id);
     return id;
+  }
+
+  String _getWeekSeriesString(String info) {
+    String weekSeries;
+
+    // x-x周 (单周|双周)
+    var weeksResult = patten2.firstMatch(info);
+    if (weeksResult != null) {
+      int startWeek = int.parse(weeksResult.group(1));
+      int endWeek = int.parse(weeksResult.group(2));
+      if (info.contains('单周'))
+        weekSeries = _getSingleWeekSeries(startWeek, endWeek);
+      else if (info.contains('双周'))
+        weekSeries = _getDoubleWeekSeries(startWeek, endWeek);
+      else
+        weekSeries = _getWeekSeries(startWeek, endWeek);
+      return weekSeries;
+    }
+
+    // 从第x周开始：(单周|双周)
+    var fromWeekResult = patten3.firstMatch(info);
+    if (fromWeekResult != null) {
+      int startWeek = int.parse(weeksResult.group(1));
+      if (info.contains('单周'))
+        weekSeries = _getSingleWeekSeries(startWeek, Constant.DEFAULT_WEEK_END);
+      else if (info.contains('双周'))
+        weekSeries = _getDoubleWeekSeries(startWeek, Constant.DEFAULT_WEEK_END);
+      else
+        weekSeries = _getWeekSeries(startWeek, Constant.DEFAULT_WEEK_END);
+      return weekSeries;
+    }
+
+    // 第3周 第5周 第7周 第9周
+    List weekResult = patten4.allMatches(info).toList();
+    if (!weekResult.isEmpty) {
+      List<int> weekList = [];
+      for (var match in weekResult) {
+        weekList.add(int.parse(match.group(1)));
+      }
+      weekSeries = weekList.toString();
+    }
+
+    // 有些课程只有单周/双周显示，无周数，故会出现找不到周数的情况
+    // "周二 第3-4节 单周 逸B-101"
+    if (info.contains('单周'))
+      weekSeries = _getSingleWeekSeries(
+          Constant.DEFAULT_WEEK_START, Constant.DEFAULT_WEEK_END);
+    else if (info.contains('双周'))
+      weekSeries = _getDoubleWeekSeries(
+          Constant.DEFAULT_WEEK_START, Constant.DEFAULT_WEEK_END);
+    else
+      throw '课程周数解析失败';
+    return weekSeries;
   }
 
   int _getIntWeek(String chinaWeek) {

@@ -310,6 +310,15 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.2.5"
+  text_view:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "12b593a3e37e1719e002b4a26b123c7fd2a5fcf5"
+      url: "git://github.com/felangel/flutter_text_view_plugin.git"
+    source: git
+    version: "0.0.1"
   transformer_page_view:
     dependency: transitive
     description:
