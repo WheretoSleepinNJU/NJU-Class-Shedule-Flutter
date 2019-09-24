@@ -3,9 +3,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class ConfigStateModel extends Model {
   bool _showWeekend = true;
-  bool _showClassTime = false;
-  bool _showMonth = false;
-  bool _showDate = false;
+  bool _showClassTime = true;
+  bool _showMonth = true;
+  bool _showDate = true;
   bool _forceZoom = false;
   bool _addButton = false;
   bool _whiteMode = false;

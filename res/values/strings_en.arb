@@ -75,7 +75,7 @@
   "nowweek_edited_success_toast": "修改当前周成功 >v<",
   "QQ_open_fail_toast": "打开失败，可能是未安装 TIM/QQ",
   "QQ_copy_success_toast": "已复制群号到剪贴板",
-  "alipay_open_fail_toast": "打开失败，可能是未安装支付宝",
+  "alipay_open_fail_toast": "打开失败",
 
   "ok": "确认",
   "cancel": "取消",

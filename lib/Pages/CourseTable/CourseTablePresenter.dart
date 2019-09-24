@@ -98,9 +98,9 @@ class CourseTablePresenter {
                           child: Text(S.of(context).love_and_donate),
                           onPressed: () async {
                             if (Platform.isIOS)
-                              launch(Url.ALIPAY_URL_APPLE);
+                              launch(Url.ALI_URL_APPLE);
                             else if (Platform.isAndroid)
-                              launch(Url.ALIPAY_URL_ANDROID);
+                              launch(Url.ALI_URL_ANDROID);
                             Navigator.of(context).pop();
                           }),
                       FlatButton(

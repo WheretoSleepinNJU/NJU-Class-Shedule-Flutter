@@ -53,6 +53,8 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                 final File image =
                     await ImagePicker.pickImage(source: ImageSource.gallery);
 
+                if(image == null) return;
+
                 // delete old picture
                 String oldPath = await ScopedModel.of<MainStateModel>(context)
                     .getBgImgPath();

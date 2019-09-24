@@ -31,7 +31,7 @@ class S implements WidgetsLocalizations {
   String get add_class_table_dialog_title => "请输入课程表名称";
   String get add_manually_success_toast => "添加成功！>v<";
   String get add_manually_title => "添加课程";
-  String get alipay_open_fail_toast => "打开失败，可能是未安装支付宝";
+  String get alipay_open_fail_toast => "打开失败";
   String get app_name => "南哪课表";
   String get at => "@";
   String get bug_and_report => "似乎有bug，我要反馈";
@@ -283,7 +283,7 @@ class $zh_CN extends S {
   @override
   String get shuffle_color_pool_subtitle => "重置课程颜色池";
   @override
-  String get alipay_open_fail_toast => "打开失败，可能是未安装支付宝";
+  String get alipay_open_fail_toast => "打开失败";
   @override
   String get import_or_export_subtitle => "使用南哪课表内置的导入/导出功能";
   @override
