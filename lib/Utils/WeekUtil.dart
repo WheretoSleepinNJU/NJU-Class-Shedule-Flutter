@@ -69,6 +69,42 @@ class WeekUtil {
     return result;
   }
 
+  static int getWeekDay() {
+    DateTime now = new DateTime.now();
+    return now.weekday;
+  }
+  
+  static int getTmpMonth(int biasWeek){
+    DateTime now = new DateTime.now();
+    now = now.add(Duration(days: biasWeek * 7));
+    return now.month;
+  }
+
+  static String getTmpMonthName(int biasWeek) {
+    DateTime now = new DateTime.now();
+    now = now.add(Duration(days: biasWeek * 7));
+    var formatter = new DateFormat('MMM');
+    return formatter.format(now);
+  }
+
+  static List<String> getTmpDayList(int biasWeek) {
+    List<String> result = [];
+    int monday = 1;
+    DateTime now = new DateTime.now();
+
+    while (now.weekday != monday) {
+      now = now.subtract(new Duration(days: 1));
+    }
+    now = now.add(Duration(days: biasWeek * 7));
+    var formatter = new DateFormat('MM/dd');
+    for (int i = 0; i < 7; i++) {
+      String formatted = formatter.format(now);
+      result.add(formatted);
+      now = now.add(new Duration(days: 1));
+    }
+    return result;
+  }
+
   static String _getMonday() {
     int monday = 1;
     DateTime now = new DateTime.now();

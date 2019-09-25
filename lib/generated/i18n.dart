@@ -67,6 +67,7 @@ class S implements WidgetsLocalizations {
   String get force_zoom_subtitle => "强制缩放课程表为一页";
   String get force_zoom_title => "强制缩放";
   String get github_open_source => "GitHub 开源";
+  String get go_to_settings_toast => "修改当前周数请前往设置ww";
   String get hide_add_button_subtitle => "隐藏主界面右下角添加按钮";
   String get hide_add_button_title => "隐藏添加按钮";
   String get if_show_classtime_subtitle => "设置是否显示课程时间";
@@ -320,6 +321,8 @@ class $zh_CN extends S {
   String get week_num_invalid_dialog_content => "课程结束周数应大于起始周数";
   @override
   String get add_class => "添加课程";
+  @override
+  String get go_to_settings_toast => "修改当前周数请前往设置ww";
   @override
   String get week_num_invalid_dialog_title => "课程周数不合法";
   @override

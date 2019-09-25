@@ -9,7 +9,7 @@ import '../Resources/Constant.dart';
 class CourseParser {
   final RegExp patten1 = new RegExp(r"第(\d{1,2})-(\d{1,2})节");
   final RegExp patten2 = new RegExp(r"(\d{1,2})-(\d{1,2})周");
-  final RegExp patten3 = new RegExp(r"从第(\d{1,2})-(\d{1,2})周开始");
+  final RegExp patten3 = new RegExp(r"从第(\d{1,2})周开始");
   final RegExp patten4 = new RegExp(r"第(\d{1,2})周");
 
   String html;
@@ -115,7 +115,7 @@ class CourseParser {
     // 从第x周开始：(单周|双周)
     var fromWeekResult = patten3.firstMatch(info);
     if (fromWeekResult != null) {
-      int startWeek = int.parse(weeksResult.group(1));
+      int startWeek = int.parse(fromWeekResult.group(1));
       if (info.contains('单周'))
         weekSeries = _getSingleWeekSeries(startWeek, Constant.DEFAULT_WEEK_END);
       else if (info.contains('双周'))
@@ -133,6 +133,7 @@ class CourseParser {
         weekList.add(int.parse(match.group(1)));
       }
       weekSeries = weekList.toString();
+      return weekSeries;
     }
 
     // 有些课程只有单周/双周显示，无周数，故会出现找不到周数的情况

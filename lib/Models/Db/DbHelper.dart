@@ -2,7 +2,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DbHelper {
-  static final int DATABASE_VERSION = 1;
+  static final int DATABASE_VERSION = 2;
   static final String DATABASE_NAME = "course.db";
 
   static final String TEXT_TYPE = " TEXT";
@@ -82,9 +82,15 @@ class DbHelper {
     var databasesPath = await getDatabasesPath();
     String path = join(databasesPath, DATABASE_NAME);
     Database db = await openDatabase(path, version: 1,
+        onUpgrade: (Database db, int oldVersion, int newVersion) async {
+          await db.execute(SQL_CREATE_COURSETABLE);
+          await db.execute(SQL_CREATE_COURSES);
+          print('From Upgrade');
+        },
         onCreate: (Database db, int version) async {
           await db.execute(SQL_CREATE_COURSETABLE);
           await db.execute(SQL_CREATE_COURSES);
+          print('From OnCreate');
         });
     return db;
   }

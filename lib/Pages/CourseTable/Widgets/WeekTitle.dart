@@ -10,17 +10,21 @@ class WeekTitle extends StatelessWidget {
   final bool _isShowMonth;
   final bool _isShowDate;
   final bool _isWhiteMode;
+  final int _biasWeek;
 
   WeekTitle(this._maxShowDays, this._weekTitleHeight, this._classTitleWidth,
-      this._isShowMonth, this._isShowDate, this._isWhiteMode);
+      this._isShowMonth, this._isShowDate, this._isWhiteMode, this._biasWeek);
 
   @override
   Widget build(BuildContext context) {
-    List<String> _dayList = WeekUtil.getDayList();
+    int nowWeekDay = WeekUtil.getWeekDay();
+//    List<String> _dayList = WeekUtil.getDayList();
+    List<String> _dayList = WeekUtil.getTmpDayList(_biasWeek);
     List<Widget> _weekTitle = new List.generate(
         _maxShowDays,
         (int i) => new Expanded(
               child: Container(
+                color: i == nowWeekDay ? Colors.black12: Colors.transparent,
                 height: _isShowDate ? _weekTitleHeight * 1.2 : _weekTitleHeight,
 //                height: 40,
                 child: Center(
@@ -70,7 +74,8 @@ class WeekTitle extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             Text(
-                              WeekUtil.getNowMonth().toString() +
+//                              WeekUtil.getNowMonth().toString() +
+                              WeekUtil.getTmpMonth(_biasWeek).toString() +
                                   S.of(context).month,
                               style: TextStyle(
                                   fontSize: 12,
@@ -80,7 +85,8 @@ class WeekTitle extends StatelessWidget {
                                       : Colors.black),
                             ),
                             Text(
-                              WeekUtil.getNowMonthName() + '.',
+//                              WeekUtil.getNowMonthName() + '.',
+                              WeekUtil.getTmpMonthName(_biasWeek) + '.',
                               style: TextStyle(
                                   fontSize: 10,
                                   color: _isWhiteMode
@@ -91,7 +97,8 @@ class WeekTitle extends StatelessWidget {
                     )
                   : Center(
                       child: Text(
-                        WeekUtil.getNowMonth().toString() + S.of(context).month,
+                        WeekUtil.getTmpMonth(_biasWeek).toString() + S.of(context).month,
+//                        WeekUtil.getNowMonth().toString() + S.of(context).month,
                         style: TextStyle(
                             color: _isWhiteMode ? Colors.white : Colors.black),
                       ),

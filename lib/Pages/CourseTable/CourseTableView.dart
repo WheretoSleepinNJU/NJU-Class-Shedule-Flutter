@@ -1,6 +1,7 @@
 import '../../generated/i18n.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
+
 //import 'package:text_view/text_view.dart';
 import './CourseTablePresenter.dart';
 import '../AddCourse/AddCourseView.dart';
@@ -32,6 +33,7 @@ class CourseTableViewState extends State<CourseTableView> {
   int _maxShowClasses;
   int _maxShowDays;
   int _nowWeekNum;
+  int _nowShowWeekNum;
   double _screenWidth;
   double _screenHeight;
   double _classTitleWidth;
@@ -63,8 +65,10 @@ class CourseTableViewState extends State<CourseTableView> {
     _maxShowDays = _isShowWeekend ? 7 : 5;
     int index = await ScopedModel.of<MainStateModel>(context).getClassTable();
     _nowWeekNum = await ScopedModel.of<MainStateModel>(context).getWeek();
+    _nowShowWeekNum =
+        await ScopedModel.of<MainStateModel>(context).getTmpWeek();
 
-    await _presenter.refreshClasses(index, _nowWeekNum);
+    await _presenter.refreshClasses(index, _nowShowWeekNum);
 
     _screenWidth = MediaQuery.of(context).size.width;
     _screenHeight = MediaQuery.of(context).size.height;
@@ -81,7 +85,7 @@ class CourseTableViewState extends State<CourseTableView> {
       _classTitleHeight = 50;
 
     List<Widget> classWidgets = await _presenter.getClassesWidgetList(
-        context, _classTitleHeight, _weekTitleWidth, _nowWeekNum);
+        context, _classTitleHeight, _weekTitleWidth, _nowShowWeekNum);
 
     return classWidgets;
   }
@@ -119,7 +123,12 @@ class CourseTableViewState extends State<CourseTableView> {
                           Text(S.of(context).app_name),
                           GestureDetector(
                             child: Text(
-                                S.of(context).week(_nowWeekNum.toString()),
+                                (_nowWeekNum == _nowShowWeekNum
+                                        ? ''
+                                        : S.of(context).not_this_week + ' ') +
+                                    S
+                                        .of(context)
+                                        .week(_nowShowWeekNum.toString()),
                                 style: TextStyle(fontSize: 16)),
                             onTap: () => setState(() {
                               weekSelectorVisibility = !weekSelectorVisibility;
@@ -156,7 +165,8 @@ class CourseTableViewState extends State<CourseTableView> {
                                 _classTitleWidth,
                                 _isShowMonth,
                                 _isShowDate,
-                                _isWhiteMode),
+                                _isWhiteMode,
+                                _nowShowWeekNum - _nowWeekNum),
                             Row(children: [
                               ClassTitle(
                                   _maxShowClasses,

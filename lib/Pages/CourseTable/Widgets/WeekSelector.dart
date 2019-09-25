@@ -2,6 +2,7 @@ import '../../../generated/i18n.dart';
 import 'package:flutter/material.dart';
 import '../../../Resources/Config.dart';
 import '../../../Utils/States/MainState.dart';
+import '../../../Components/Toast.dart';
 
 class WeekSelector extends StatelessWidget {
   final bool weekSelectorVisibility;
@@ -23,7 +24,12 @@ class WeekSelector extends StatelessWidget {
                         padding: EdgeInsets.only(
                             left: 5, top: 10, right: 5, bottom: 10),
                         child: InkWell(
-                            onTap: () => model.changeWeek(i + 1),
+                            onTap: () {
+                              Toast.showToast(
+                                  S.of(context).go_to_settings_toast,
+                                  context);
+                              model.changeTmpWeek(i + 1);
+                              },
                             child: Text(
                               S.of(context).week((i + 1).toString()),
                               style:
