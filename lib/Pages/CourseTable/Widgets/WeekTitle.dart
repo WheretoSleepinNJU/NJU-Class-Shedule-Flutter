@@ -24,7 +24,7 @@ class WeekTitle extends StatelessWidget {
         _maxShowDays,
         (int i) => new Expanded(
               child: Container(
-                color: i == nowWeekDay ? Colors.black12: Colors.transparent,
+                color: i == nowWeekDay - 1 ? Colors.black12: Colors.transparent,
                 height: _isShowDate ? _weekTitleHeight * 1.2 : _weekTitleHeight,
 //                height: 40,
                 child: Center(
