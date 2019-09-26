@@ -1,7 +1,6 @@
 import 'Config.dart';
 
 class Constant {
-  static final String database_name = "demo.db";
   static final List<String> WEEK_WITH_BIAS = [
     "",
     "周一",

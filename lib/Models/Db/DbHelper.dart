@@ -81,10 +81,14 @@ class DbHelper {
   Future<Database> open() async {
     var databasesPath = await getDatabasesPath();
     String path = join(databasesPath, DATABASE_NAME);
-    Database db = await openDatabase(path, version: 1,
+    Database db = await openDatabase(path, version: DATABASE_VERSION,
         onUpgrade: (Database db, int oldVersion, int newVersion) async {
-          await db.execute(SQL_CREATE_COURSETABLE);
-          await db.execute(SQL_CREATE_COURSES);
+          try{
+            await db.query(COURSETABLE_TABLE_NAME);
+          } catch(e){
+            await db.execute(SQL_CREATE_COURSETABLE);
+            await db.execute(SQL_CREATE_COURSES);
+          }
           print('From Upgrade');
         },
         onCreate: (Database db, int version) async {
