@@ -70,8 +70,8 @@ class CourseParser {
             weekTime, startTime, timeCount, 1,
 //            color: color,
             classroom: classRoom,
-            teacher: e.children[4].innerHtml,
-            testLocation: e.children[10].innerHtml ?? '');
+            teacher: e.children[4].innerHtml ?? '',
+            testLocation: (e.children.length > 10) ? (e.children[10].innerHtml ?? '') : '');
 //        print(course.toMap().toString());
 
         rst.add(course);
