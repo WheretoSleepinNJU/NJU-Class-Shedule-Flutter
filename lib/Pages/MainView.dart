@@ -56,29 +56,4 @@ class MainView extends StatelessWidget {
               ],
             ));
   }
-
-//  void showDonateDialog(BuildContext context) async {
-//    showDialog(
-//        context: context,
-//        builder: (context) => mDialog(
-//              "欢迎使用",
-//              Text("欢迎使用！"),
-//              <Widget>[
-//                FlatButton(
-//                    child: Text(S.of(context).ok),
-//                    onPressed: () async {
-//                      if (Platform.isIOS)
-//                        launch(Url.ALIPAY_URL_APPLE);
-//                      else if (Platform.isAndroid)
-//                        launch(Url.ALIPAY_URL_ANDROID);
-//                    }),
-//                FlatButton(
-//                  child: Text(S.of(context).cancel),
-//                  onPressed: () {
-//                    Navigator.of(context).pop();
-//                  },
-//                ),
-//              ],
-//            ));
-//  }
 }

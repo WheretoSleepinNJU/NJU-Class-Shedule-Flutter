@@ -31,7 +31,6 @@ class S implements WidgetsLocalizations {
   String get add_class_table_dialog_title => "请输入课程表名称";
   String get add_manually_success_toast => "添加成功！>v<";
   String get add_manually_title => "添加课程";
-  String get alipay_open_fail_toast => "打开失败";
   String get app_name => "南哪课表";
   String get at => "@";
   String get bug_and_report => "似乎有bug，我要反馈";
@@ -104,6 +103,7 @@ class S implements WidgetsLocalizations {
   String get open_source_library_title => "所使用到的开源库";
   String get password => "密码";
   String get password_error_toast => "密码错误 = =||";
+  String get pay_open_fail_toast => "打开失败";
   String get qrcode_name_error_toast => "读取课表名称失败，可能为链接错误";
   String get qrcode_read_error_toast => "读取课程表，可能是 bug";
   String get qrcode_url_error_toast => "二维码无效，可能为链接过期";
@@ -284,8 +284,6 @@ class $zh_CN extends S {
   @override
   String get shuffle_color_pool_subtitle => "重置课程颜色池";
   @override
-  String get alipay_open_fail_toast => "打开失败";
-  @override
   String get import_or_export_subtitle => "使用南哪课表内置的导入/导出功能";
   @override
   String get welcome_content => "Hi！我是项目作者傻翠～\n\n看起来你已经导入我南教务处成功啦！撒花撒花！\n\n建议大家还是和自己教务系统中的课表对一下～避免出现什么bug～如果有bug的话欢迎反馈给我！设置-反馈中有交流群的群号～\n\n坦率地讲，从安卓移植到全平台是一个痛苦的过程。之前的APP多少是建立在开源项目的基础上，而这个重构项目算是自己从零开始搭起来的。其中也做了不少取舍与妥协，还有可能出现之前所没有过的bug。这都是我所会预料到的，如果你不巧遇到了bug，也欢迎向我反馈。\n\n写这个项目是一个吃力不讨好的事。单是苹果的开发者账号就要688/年，更不用提为了开发iOS版而单独买的macbook。所以如果小伙伴想让这个项目持续下去的话，欢迎投喂傻翠。\n\n其实我大四已经没课了，也早不需要课表这种东西了，可能你们的支持是我继续下去的唯一动力吧ww\n\n放心，这个弹框每次导入只会弹出一次，所以不会影响你的正常使用。\n\n希望南哪课表可以陪伴学弟学妹们走过每一学期ww\n\n傻翠 2019.09.14";
@@ -343,6 +341,8 @@ class $zh_CN extends S {
   String get shuffle_color_pool_success_toast => "重置颜色池成功 >v<";
   @override
   String get change_theme_title => "修改主题";
+  @override
+  String get pay_open_fail_toast => "打开失败";
   @override
   String get add_manually_success_toast => "添加成功！>v<";
   @override

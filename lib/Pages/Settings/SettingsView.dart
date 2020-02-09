@@ -116,12 +116,12 @@ class _SettingsViewState extends State<SettingsView> {
                   onTap: () async {
                     bool status = false;
                     if (Platform.isIOS)
-                      status = await _launchURL(Url.ALI_URL_APPLE);
+                      status = await _launchURL(Url.URL_APPLE);
                     else if (Platform.isAndroid)
-                      status = await _launchURL(Url.ALI_URL_ANDROID);
+                      status = await _launchURL(Url.URL_ANDROID);
                     if (!status)
                       Toast.showToast(
-                          S.of(context).alipay_open_fail_toast, context);
+                          S.of(context).pay_open_fail_toast, context);
                   }),
               ListTile(
                 title: Text(S.of(context).about_title),
