@@ -2,7 +2,7 @@ PODS:
   - barcode_scan (0.0.1):
     - Flutter
     - MTBBarcodeScanner
-  - Bugly (2.5.0)
+  - Bugly (2.5.2)
   - Flutter (1.0.0)
   - flutter_bugly (0.0.1):
     - Bugly
@@ -24,8 +24,6 @@ PODS:
   - sqflite (0.0.1):
     - Flutter
     - FMDB (~> 2.7.2)
-  - text_view (0.0.1):
-    - Flutter
   - url_launcher (0.0.1):
     - Flutter
 
@@ -39,7 +37,6 @@ DEPENDENCIES:
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
-  - text_view (from `.symlinks/plugins/text_view/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
 
 SPEC REPOS:
@@ -67,14 +64,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences/ios"
   sqflite:
     :path: ".symlinks/plugins/sqflite/ios"
-  text_view:
-    :path: ".symlinks/plugins/text_view/ios"
   url_launcher:
     :path: ".symlinks/plugins/url_launcher/ios"
 
 SPEC CHECKSUMS:
   barcode_scan: 33f586d02270046fc6559135038b34b5754eaa4f
-  Bugly: 3ca9f255c01025582df26f9222893b383c7e4b4e
+  Bugly: dbac48b55ad469a97cc4321045cd50df8f63d44f
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_bugly: c9800f4d5bc5bdc27ffdde3417a26ba44266e0c3
   fluttertoast: b644586ef3b16f67fae9a1f8754cef6b2d6b634b
@@ -85,7 +80,6 @@ SPEC CHECKSUMS:
   path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
   shared_preferences: 1feebfa37bb57264736e16865e7ffae7fc99b523
   sqflite: ff1d9da63c06588cc8d1faf7256d741f16989d5a
-  text_view: 257bf5bea5b1bf5b3e25c24452b7e1e914725504
   url_launcher: 0067ddb8f10d36786672aa0722a21717dba3a298
 
 PODFILE CHECKSUM: 1b66dae606f75376c5f2135a8290850eeb09ae83
