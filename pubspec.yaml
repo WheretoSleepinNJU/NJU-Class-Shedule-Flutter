@@ -1,7 +1,7 @@
 name: wheretosleepinnju
 description: A new Flutter project.
 
-version: 1.4.2+11
+version: 1.5.1+15
 
 environment:
   sdk: ">=2.1.0-dev.68.0 <3.0.0"
@@ -29,10 +29,10 @@ dependencies:
     git:
       url: git://github.com/chen-zeyu/html.git
       ref: patch-pola
-  text_view:
-    git:
-      url: git://github.com/felangel/flutter_text_view_plugin.git
-  #  html: ^0.14.0+2
+#  text_view:
+#    git:
+#      url: git://github.com/felangel/flutter_text_view_plugin.git
+#  html: ^0.14.0+2
   dio: ^2.1.0
 
 dev_dependencies:
