@@ -32,7 +32,7 @@ class CourseParser {
         document.getElementsByClassName("TABLE_TR_02");
     for (Element e in elements) {
       // Time and Place
-      String source = e.children[5].innerHtml.trim().replaceAll('<br>', '\n');
+      String source = e.children[4].innerHtml.trim().replaceAll('<br>', '\n');
       List<String> infos = source.split('\n');
 
 //      print(source);
@@ -66,12 +66,12 @@ class CourseParser {
         String classRoom = strs[strs.length - 1];
 //        print(classRoom);
 
-        Course course = new Course(tableId, e.children[2].innerHtml, weekSeries,
+        Course course = new Course(tableId, e.children[1].innerHtml, weekSeries,
             weekTime, startTime, timeCount, 1,
 //            color: color,
             classroom: classRoom,
-            teacher: e.children[4].innerHtml ?? '',
-            testLocation: (e.children.length > 10) ? (e.children[10].innerHtml ?? '') : '');
+            teacher: e.children[3].innerHtml ?? '',
+            testLocation: (e.children.length > 9) ? (e.children[9].innerHtml ?? '') : '');
 //        print(course.toMap().toString());
 
         rst.add(course);

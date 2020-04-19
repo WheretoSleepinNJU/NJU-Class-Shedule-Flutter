@@ -48,6 +48,7 @@ class _MyAppState extends State<MyApp> {
           builder: (context, child, model) {
             print("MainView rebuild.");
             return MaterialApp(
+              debugShowCheckedModeBanner: false,
               onGenerateTitle: (BuildContext context) => S.of(context).app_name,
               localizationsDelegates: const [
                 S.delegate,
