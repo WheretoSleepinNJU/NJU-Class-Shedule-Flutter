@@ -1,7 +1,5 @@
-import 'dart:io';
 import 'generated/i18n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_bugly/flutter_bugly.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter/material.dart';
 import 'Pages/MainView.dart';
@@ -13,16 +11,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   //Initialize the app config.
   int themeIndex = await InitUtil.Initialize();
-//  runApp(MyApp(themeIndex));
-  if (Platform.isAndroid || Platform.isIOS) {
-    //使用flutter异常上报
-    FlutterBugly.postCatchedException(() {
-      runApp(MyApp(themeIndex));
-    });
-    FlutterBugly.init(androidAppId: "b98f2b6d2f", iOSAppId: "92cf429ccb");
-  } else {
-    runApp(MyApp(themeIndex));
-  }
+  runApp(MyApp(themeIndex));
 }
 
 class MyApp extends StatefulWidget {

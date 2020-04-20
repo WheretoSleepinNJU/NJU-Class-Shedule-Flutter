@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
     <key>NSCameraUsageDescription</key>
-    <string>Camera permission is required for QRCode scanning.</string>
+    <string>南哪课表需要相机权限，才能扫码倒入课程。</string>
     <key>NSPhotoLibraryUsageDescription</key>
-    <string>Used to pick background image.</string>
+    <string>南哪课表需要相册权限，才能选择背景图片。</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
