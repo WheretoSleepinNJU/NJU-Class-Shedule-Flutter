@@ -1,4 +1,4 @@
-import '../../generated/i18n.dart';
+import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -32,7 +32,8 @@ class _ManageTableViewState extends State<ManageTableView> {
                   if (str != '') {
                     CourseTable courseTable =
                         await courseTableProvider.insert(new CourseTable(str));
-                    Toast.showToast('添加成功', context);
+                    Toast.showToast(
+                        S.of(context).add_class_table_success_toast, context);
                     if (courseTable.id != 0)
                       ScopedModel.of<MainStateModel>(context)
                           .changeclassTable(courseTable.id);
@@ -97,7 +98,9 @@ class _ManageTableViewState extends State<ManageTableView> {
             child: ListTile(
               title: Text(courseTables[i]['name'],
                   style: TextStyle(
-                    color: _selectedIndex == courseTables[i]['id'] ? Colors.white : Colors.black,
+                    color: _selectedIndex == courseTables[i]['id']
+                        ? Colors.white
+                        : Colors.black,
                   )),
               trailing: _selectedIndex == courseTables[i]['id']
                   ? null
@@ -108,14 +111,17 @@ class _ManageTableViewState extends State<ManageTableView> {
                         if (rst) {
                           await courseTableProvider
                               .delete(courseTables[i]['id']);
-                          Toast.showToast('删除成功', context);
+                          Toast.showToast(
+                              S.of(context).add_class_table_success_toast,
+                              context);
                           Navigator.of(context).pop();
                         }
                       },
                     ),
               onTap: () {
                 setState(() => _selectedIndex = courseTables[i]['id']);
-                ScopedModel.of<MainStateModel>(context).changeclassTable(courseTables[i]['id']);
+                ScopedModel.of<MainStateModel>(context)
+                    .changeclassTable(courseTables[i]['id']);
               },
             )));
     return result;

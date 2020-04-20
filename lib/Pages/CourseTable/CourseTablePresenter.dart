@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
-import '../../generated/i18n.dart';
+import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
@@ -177,15 +177,15 @@ class CourseTablePresenter {
   }
 
   //TEST: 测试用函数
-  Future insertMockData() async {
-    await courseProvider.insert(new Course(
-        0, "微积分", "[1,2,3,4,5,6,7]", 3, 5, 2, 0,
-        color: '#8AD297', classroom: 'QAQ'));
-    await courseProvider.insert(new Course(
-        0, "线性代数", "[1,2,3,4,5,6,7]", 4, 2, 3, 0,
-        color: '#F9A883', classroom: '仙林校区不知道哪个教室'));
-    await courseProvider.insert(new Course(
-        1, "并不是线性代数", "[1,2,3,4,5,6,7]", 4, 2, 3, 0,
-        color: '#F9A883', classroom: 'QAQ'));
-  }
+//  Future insertMockData() async {
+//    await courseProvider.insert(new Course(
+//        0, "微积分", "[1,2,3,4,5,6,7]", 3, 5, 2, 0,
+//        color: '#8AD297', classroom: 'QAQ'));
+//    await courseProvider.insert(new Course(
+//        0, "线性代数", "[1,2,3,4,5,6,7]", 4, 2, 3, 0,
+//        color: '#F9A883', classroom: '仙林校区不知道哪个教室'));
+//    await courseProvider.insert(new Course(
+//        1, "并不是线性代数", "[1,2,3,4,5,6,7]", 4, 2, 3, 0,
+//        color: '#F9A883', classroom: 'QAQ'));
+//  }
 }

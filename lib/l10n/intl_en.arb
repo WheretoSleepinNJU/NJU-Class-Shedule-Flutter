@@ -5,16 +5,16 @@
   "at": "@",
   "to": "-",
   "month": "月",
-  "week": "第 $num 周",
-  "class_single": "第 $num 节",
-  "class_duration": "第 $start - $end 节",
+  "week": "第 {num} 周",
+  "class_single": "第 {num} 节",
+  "class_duration": "第 {start} - {end} 节",
   "not_this_week": "[非本周]",
   "unknown_place": "未知地点",
   "import_auto": "自动导入",
   "import_manually": "手动导入",
 
   "delete_class_dialog_title": "删除课程",
-  "delete_class_dialog_content": "确定删除课程【 $className 】吗？",
+  "delete_class_dialog_content": "确定删除课程【 {className} 】吗？",
 
   "settings_title": "设置",
   "import_manually_title": "手动添加",
@@ -109,6 +109,11 @@
 
   "class_table_manage_title": "课表管理",
   "add_class_table_dialog_title": "请输入课程表名称",
+  "add_class_table_success_toast": "添加课程表成功",
+  "del_class_table_dialog_title": "确认删除",
+  "del_class_table_dialog_content": "此操作无法恢复，这将删除该课程表下的所有课程。",
+  "del_class_table_success_toast": "删除课程表成功",
+
   "github_open_source": "GitHub 开源",
   "developer": "开发者 idealclover",
   "introduction": "博客：https://idealclover.top\nEmail：idealclover@163.com",

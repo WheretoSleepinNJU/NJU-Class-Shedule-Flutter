@@ -1,4 +1,4 @@
-import '../../../generated/i18n.dart';
+import '../../../generated/l10n.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../Components/Dialog.dart';
@@ -15,8 +15,8 @@ class _DelDialogState extends State<DelDialog> {
   @override
   Widget build(BuildContext context) {
     return mDialog(
-      "确认删除",
-      Text("此操作无法恢复，这将删除该课程表下的所有课程。"),
+      S.of(context).del_class_table_dialog_title,
+      Text(S.of(context).del_class_table_dialog_content),
       <Widget>[
         FlatButton(
           child: Text(S.of(context).cancel),
