@@ -37,41 +37,57 @@ class CourseParser {
 
 //      print(source);
 
-      // Get Color
-//      String color = HexColor.getRandomColor();
-
       for (String info in infos) {
         if (info == '') continue;
+
+        String courseName = e.children[1].innerHtml;
+        String courseTeacher = e.children[3].innerHtml ?? '';
+        String testLocation =
+            (e.children.length > 9) ? (e.children[9].innerHtml ?? '') : '';
+
         //TODO: 自由时间
         // "自由时间 2-17周 详见主页通知"
         if (info.contains('自由时间')) continue;
 //        print(info);
 
+        if (!info.startsWith('周')) {
+          throw (courseName);
+        }
         // Get WeekTime
         List<String> strs = info.split(' ');
-        if (!info.startsWith('周')) {}
         String weekStr = info.substring(0, 2);
+        // 异常测试
+//        weekStr = '周零';
         int weekTime = _getIntWeek(weekStr);
+        if (weekTime == 0) {
+          throw (courseName);
+        }
 //        print(weekTime);
 
         // Get Time
-        var time = patten1.firstMatch(info);
-        int startTime = int.parse(time.group(1));
-        int timeCount = int.parse(time.group(2)) - startTime;
+        int startTime, timeCount;
+        String weekSeries;
+        // 异常测试
+//        info="周四 第9节 2-17周  仙Ⅱ-301";
+        try {
+          var time = patten1.firstMatch(info);
+          startTime = int.parse(time.group(1));
+          timeCount = int.parse(time.group(2)) - startTime;
+          weekSeries = _getWeekSeriesString(info);
+        } catch (e) {
+          throw (courseName);
+        }
 //        print(startTime.toString() + ' - ' + timeCount.toString());
-
-        String weekSeries = _getWeekSeriesString(info);
 
         // Get ClassRoom
         String classRoom = strs[strs.length - 1];
 //        print(classRoom);
 
-        Course course = new Course(tableId, e.children[1].innerHtml, weekSeries,
-            weekTime, startTime, timeCount, 1,
-//            color: color,
+        Course course = new Course(
+            tableId, courseName, weekSeries, weekTime, startTime, timeCount, 1,
             classroom: classRoom,
-            teacher: e.children[3].innerHtml ?? '',
-            testLocation: (e.children.length > 9) ? (e.children[9].innerHtml ?? '') : '');
+            teacher: courseTeacher,
+            testLocation: testLocation);
 //        print(course.toMap().toString());
 
         rst.add(course);
