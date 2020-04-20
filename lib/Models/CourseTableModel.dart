@@ -1,4 +1,5 @@
 import 'package:sqflite/sqflite.dart';
+import './CourseModel.dart';
 import './Db/DbHelper.dart';
 
 final String tableName = DbHelper.COURSETABLE_TABLE_NAME;
@@ -72,6 +73,8 @@ class CourseTableProvider {
 
   Future<int> delete(int id) async {
     await open();
+    CourseProvider courseProvider = new CourseProvider();
+    await courseProvider.deleteByTable(id);
     int rst = await db.delete(tableName, where: '$columnId = ?', whereArgs: [id]);
 //    await close();
     return rst;

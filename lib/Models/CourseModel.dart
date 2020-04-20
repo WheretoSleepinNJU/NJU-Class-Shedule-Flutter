@@ -151,6 +151,14 @@ class CourseProvider {
     return rst;
   }
 
+  Future<int> deleteByTable(int id) async {
+    await open();
+    int rst =
+    await db.delete(tableName, where: '$columnTableId = ?', whereArgs: [id]);
+//    await close();
+    return rst;
+  }
+
   Future<int> update(Course course) async {
     await open();
     int rst = await db.update(tableName, course.toMap(),

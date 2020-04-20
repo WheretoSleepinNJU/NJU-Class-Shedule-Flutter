@@ -184,7 +184,7 @@ class _ImportViewState extends State<ImportView> {
                           if (!isSuccess)
                             Toast.showToast(
                                 S.of(context).class_parse_error_toast, context);
-                          Toast.showToast(
+                          else Toast.showToast(
                               S.of(context).class_parse_toast_success, context);
                           Navigator.of(context).pop(true);
                         } else {
