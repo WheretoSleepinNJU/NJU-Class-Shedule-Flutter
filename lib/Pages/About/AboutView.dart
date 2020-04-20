@@ -2,6 +2,7 @@ import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../Utils/UpdateUtil.dart';
 import '../../Resources/Url.dart';
 import 'Widgets/RainDropWidget.dart';
 
@@ -18,10 +19,8 @@ class _AboutViewState extends State<AboutView> {
     super.initState();
   }
 
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         backgroundColor: Color(0xffeeeeee),
         appBar: AppBar(
@@ -53,6 +52,16 @@ class _AboutViewState extends State<AboutView> {
                         return Text(snapshot.data);
                       }
                     })),
+            new Container(
+              child: FlatButton(
+                child: Text(S.of(context).check_update_button),
+                color: Colors.white,
+                onPressed: () {
+                  UpdateUtil updateUtil = new UpdateUtil();
+                  updateUtil.checkUpdate(context, true);
+                },
+              ),
+            ),
             _generateTitle(S.of(context).github_open_source),
             _generateContent(Url.OPEN_SOURCE_URL,
                 onTap: () => launch(Url.OPEN_SOURCE_URL)),

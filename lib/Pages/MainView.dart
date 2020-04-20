@@ -1,18 +1,25 @@
 import 'dart:io';
+import 'dart:async';
+import 'dart:convert';
+import 'package:dio/dio.dart';
 import '../generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-//import 'package:package_info/package_info.dart';
-//import 'package:shared_preferences/shared_preferences.dart';
+import 'package:scoped_model/scoped_model.dart';
+import 'package:package_info/package_info.dart';
 import 'CourseTable/CourseTableView.dart';
+import '../Utils/UpdateUtil.dart';
+import '../Utils/States/MainState.dart';
 import '../Components/Dialog.dart';
-//import '../Resources/Url.dart';
+import '../Resources/Url.dart';
 
 class MainView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 //    checkFirstTime(context);
 //    showUpdateDialog(info, context);
+    UpdateUtil updateUtil = new UpdateUtil();
+    updateUtil.checkUpdate(context, false);
     return CourseTableView();
   }
 
@@ -25,25 +32,4 @@ class MainView extends StatelessWidget {
 //    sp.setString("version", packageInfo.version);
 //  }
 
-//  void showUpdateDialog(UpgradeInfo info, BuildContext context) async {
-//    showDialog(
-//        context: context,
-//        builder: (context) => mDialog(
-//              info.title,
-//              Text(info.newFeature),
-//              <Widget>[
-//                FlatButton(
-//                  child: Text(S.of(context).cancel),
-//                  onPressed: () {
-//                    Navigator.of(context).pop();
-//                  },
-//                ),
-//                FlatButton(
-//                    child: Text(S.of(context).ok),
-//                    onPressed: () async {
-//                      await launch(info.apkUrl);
-//                    }),
-//              ],
-//            ));
-//  }
 }

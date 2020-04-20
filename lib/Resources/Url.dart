@@ -1,7 +1,7 @@
 class Url {
-  static final String URL_NJU_HOST = "http://elite.nju.edu.cn/jiaowu/";
-  static final String ClassInfo = "student/teachinginfo/courseList.do?method=currentTermCourse";
-  static final String LoginUrl = "login.do";
+  static final String URL_NJU_HOST = "http://elite.nju.edu.cn/jiaowu";
+  static final String ClassInfo = "/student/teachinginfo/courseList.do?method=currentTermCourse";
+  static final String LoginUrl = "/login.do";
 
   static final String URL_APPLE = "https://pay.idealclover.cn/apple";
   static final String URL_ANDROID = "https://pay.idealclover.cn/android";
@@ -11,4 +11,7 @@ class Url {
 
   static final String OPEN_SOURCE_URL = 'https://github.com/idealclover/NJU-Class-Shedule-Flutter';
   static final String BLOG_URL = 'https://idealclover.top';
+
+//  static final String UPDATE_ROOT = 'https://cdn.idealclover.cn/Projects/wheretosleepinnju';
+  static final String UPDATE_ROOT = 'https://clover-1254951786.cos.ap-shanghai.myqcloud.com/Projects/wheretosleepinnju';
 }

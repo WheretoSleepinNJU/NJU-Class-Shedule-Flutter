@@ -10,6 +10,8 @@ abstract class ConfigStateModel extends Model {
   bool _addButton = false;
   bool _whiteMode = false;
   String _bgImgPath = null;
+  int _lastCheckUpdateTime = 0;
+  int _coolDownTime = 600;
 
   void setShowWeekend(bool showWeekend) async {
     _showWeekend = showWeekend;
@@ -151,5 +153,39 @@ abstract class ConfigStateModel extends Model {
     notifyListeners();
     SharedPreferences sp = await SharedPreferences.getInstance();
     sp.remove("bgImgPath");
+  }
+
+  Future<int> getLastCheckUpdateTime() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    int lastCheckUpdateTime = sp.getInt("lastCheckUpdateTime");
+    if (lastCheckUpdateTime != null) {
+      _lastCheckUpdateTime = lastCheckUpdateTime;
+      return lastCheckUpdateTime;
+    }
+    return _lastCheckUpdateTime;
+  }
+
+  void setLastCheckUpdateTime(int newTime) async {
+    _lastCheckUpdateTime = newTime;
+    // IMPORTANT: don't notify listeners
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setInt("lastCheckUpdateTime", _lastCheckUpdateTime);
+  }
+
+  Future<int> getCoolDownTime() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    int coolDownTime = sp.getInt("coolDownTime");
+    if (coolDownTime != null) {
+      _coolDownTime = coolDownTime;
+      return coolDownTime;
+    }
+    return _coolDownTime;
+  }
+
+  void setCoolDownTime(int newTime) async {
+    _coolDownTime = newTime;
+    // IMPORTANT: don't notify listeners
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setInt("coolDownTime", _coolDownTime);
   }
 }

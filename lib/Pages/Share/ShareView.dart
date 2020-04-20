@@ -49,7 +49,7 @@ class _ShareViewState extends State<ShareView> {
                 CourseTableProvider courseTableProvider =
                     new CourseTableProvider();
                 CourseTable courseTable =
-                    await courseTableProvider.getCourseTable(index + 1);
+                    await courseTableProvider.getCourseTable(index);
                 Map rst = {'name': courseTable.name, 'courses': allCoursesMap};
 //                  print(rst.toString());
                 Dio dio = new Dio();

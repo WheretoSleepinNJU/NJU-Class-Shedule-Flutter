@@ -963,6 +963,24 @@ class S {
     );
   }
 
+  String get check_update_button {
+    return Intl.message(
+      '检查更新',
+      name: 'check_update_button',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get already_newest_version_toast {
+    return Intl.message(
+      '已经是最新版本了呦～',
+      name: 'already_newest_version_toast',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get github_open_source {
     return Intl.message(
       'GitHub 开源',
@@ -1010,7 +1028,7 @@ class S {
 
   String get easter_egg {
     return Intl.message(
-      '感谢小百合工作室\n感谢 @ns @lgt 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光\n对了 如果那个人能看到的话 谢谢 祝幸福',
+      '感谢小百合工作室\n感谢 @ns @lgt 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光\n啊对了 谢谢 祝幸福',
       name: 'easter_egg',
       desc: '',
       args: [],
