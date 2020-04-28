@@ -115,6 +115,15 @@ class CourseTableViewState extends State<CourseTableView> {
                             child: Separator(color: Colors.grey),
                           ));
 
+                  String nowWeek =
+                      S.of(context).week(_nowShowWeekNum.toString());
+
+                  if(_nowWeekNum < 1) {
+                    nowWeek = S.of(context).not_open + ' ' + nowWeek;
+                  } else if (_nowWeekNum != _nowShowWeekNum) {
+                    nowWeek = S.of(context).not_this_week + ' ' + nowWeek;
+                  }
+
                   return Scaffold(
                     appBar: AppBar(
                         centerTitle: true,
@@ -122,14 +131,8 @@ class CourseTableViewState extends State<CourseTableView> {
 //                          TextView(),
                           Text(S.of(context).app_name),
                           GestureDetector(
-                            child: Text(
-                                (_nowWeekNum == _nowShowWeekNum
-                                        ? ''
-                                        : S.of(context).not_this_week + ' ') +
-                                    S
-                                        .of(context)
-                                        .week(_nowShowWeekNum.toString()),
-                                style: TextStyle(fontSize: 16)),
+                            child:
+                                Text((nowWeek), style: TextStyle(fontSize: 16)),
                             onTap: () => setState(() {
                               weekSelectorVisibility = !weekSelectorVisibility;
                             }),
@@ -149,7 +152,6 @@ class CourseTableViewState extends State<CourseTableView> {
                           )
                         ]),
                     body: Stack(children: [
-                      // TODO: 背景图片
                       _bgImgPath == null
                           ? Container()
                           : BackgroundImage(_bgImgPath),

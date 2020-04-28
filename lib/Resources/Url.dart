@@ -12,6 +12,7 @@ class Url {
   static final String OPEN_SOURCE_URL = 'https://github.com/idealclover/NJU-Class-Shedule-Flutter';
   static final String BLOG_URL = 'https://idealclover.top';
 
-//  static final String UPDATE_ROOT = 'https://cdn.idealclover.cn/Projects/wheretosleepinnju';
-  static final String UPDATE_ROOT = 'https://clover-1254951786.cos.ap-shanghai.myqcloud.com/Projects/wheretosleepinnju';
+  // TODO: change URL to production
+  static final String UPDATE_ROOT = 'https://cdn.idealclover.cn/Projects/wheretosleepinnju/production';
+//  static final String UPDATE_ROOT = 'https://clover-1254951786.cos.ap-shanghai.myqcloud.com/Projects/wheretosleepinnju';
 }

@@ -112,7 +112,7 @@ class _ManageTableViewState extends State<ManageTableView> {
                           await courseTableProvider
                               .delete(courseTables[i]['id']);
                           Toast.showToast(
-                              S.of(context).add_class_table_success_toast,
+                              S.of(context).del_class_table_success_toast,
                               context);
                           Navigator.of(context).pop();
                         }

@@ -40,8 +40,7 @@ class UpdateUtil {
     if (response.statusCode == HttpStatus.ok) {
       if (response.data['coolDownTime'] != null)
         ScopedModel.of<MainStateModel>(context).setCoolDownTime(coolDownTime);
-      print(response.data['version']);
-//      print(packageInfo.buildNumber);
+//      print(response.data['version']);
       if (response.data['version'] > int.parse(packageInfo.buildNumber)) {
         showUpdateDialog(response.data, context);
       } else if (isForce) {
@@ -51,25 +50,37 @@ class UpdateUtil {
   }
 
   void showUpdateDialog(Map info, BuildContext context) async {
+    List<Widget> widgets;
+    if(info['isForce']){
+       widgets = <Widget>[
+        FlatButton(
+            child: Text(info['confirm_text']),
+            onPressed: () async {
+              if (info['url'] != '') await launch(info['url']);
+            }),
+      ];
+    } else {
+      widgets = <Widget>[
+        FlatButton(
+          child: Text(info['cancel_text']),
+          textColor: Colors.grey,
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        FlatButton(
+            child: Text(info['confirm_text']),
+            onPressed: () async {
+              if (info['url'] != '') await launch(info['url']);
+            }),
+      ];
+    }
     showDialog(
         context: context,
         builder: (context) => mDialog(
               info['title'],
               Text(info['content']),
-              <Widget>[
-                FlatButton(
-                  child: Text(info['cancel_text']),
-                  textColor: Colors.grey,
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                FlatButton(
-                    child: Text(info['confirm_text']),
-                    onPressed: () async {
-                      if (info['url'] != '') await launch(info['url']);
-                    }),
-              ],
+              widgets,
             ));
   }
 }

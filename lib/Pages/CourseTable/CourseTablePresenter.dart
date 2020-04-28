@@ -6,11 +6,14 @@ import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:scoped_model/scoped_model.dart';
 import '../../Models/CourseModel.dart';
 import '../../Models/ScheduleModel.dart';
 import '../../Resources/Config.dart';
 import '../../Resources/Url.dart';
+import '../../Utils/States/MainState.dart';
 import '../../Utils/ColorUtil.dart';
+import '../../Utils/WeekUtil.dart';
 import '../../Components/Dialog.dart';
 import '../../Components/Toast.dart';
 
@@ -93,7 +96,9 @@ class CourseTablePresenter {
       welcome_title = response.data['title'];
       welcome_content = response.data['content'];
       delay_seconds = response.data['delay'];
-      if (true)
+      bool isSameWeek = await WeekUtil.isSameWeek(
+          (response.data['semester_start_monday']), 1);
+      if (!isSameWeek)
         await changeWeek(context, response.data['semester_start_monday']);
     } else {
       welcome_title = S.of(context).welcome_title;
@@ -149,12 +154,11 @@ class CourseTablePresenter {
   }
 
   void changeWeek(BuildContext context, String semester_start_monday) async {
-    print(semester_start_monday);
     await showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) =>
-          mDialog("周数矫正", Text("检测到学期周数与当前不一致，是否立即矫正？"), <Widget>[
+      builder: (context) => mDialog(S.of(context).fix_week_dialog_title,
+          Text(S.of(context).fix_week_dialog_content), <Widget>[
         FlatButton(
           child: Text(S.of(context).cancel),
           onPressed: () {
@@ -164,9 +168,10 @@ class CourseTablePresenter {
         FlatButton(
             child: Text(S.of(context).ok),
             onPressed: () async {
-              //TODO：矫正周数
+              WeekUtil.initWeek(semester_start_monday, 1);
+              ScopedModel.of<MainStateModel>(context).refresh();
               Navigator.of(context).pop();
-              Toast.showToast('矫正周数成功！OvO', context);
+              Toast.showToast(S.of(context).fix_week_toast_success, context);
             }),
       ]),
     );

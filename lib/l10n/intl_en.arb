@@ -9,6 +9,7 @@
   "class_single": "第 {num} 节",
   "class_duration": "第 {start} - {end} 节",
   "not_this_week": "[非本周]",
+  "not_open": "[未开学]",
   "unknown_place": "未知地点",
   "import_auto": "自动导入",
   "import_manually": "手动导入",
@@ -106,6 +107,9 @@
   "class_parse_error_toast": "课程解析失败 = =|| 可将课表反馈至翠翠",
   "class_parse_toast_success": "数据存储成功 >v<",
   "class_parse_toast_fail": "出现异常，建议提交反馈",
+  "fix_week_dialog_title": "周数矫正",
+  "fix_week_dialog_content": "检测到学期周数与当前不一致，是否立即矫正？",
+  "fix_week_toast_success": "矫正周数成功！OvO",
 
   "class_table_manage_title": "课表管理",
   "add_class_table_dialog_title": "请输入课程表名称",

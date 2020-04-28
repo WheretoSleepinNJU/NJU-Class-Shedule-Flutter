@@ -108,6 +108,15 @@ class S {
     );
   }
 
+  String get not_open {
+    return Intl.message(
+      '[未开学]',
+      name: 'not_open',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get unknown_place {
     return Intl.message(
       '未知地点',
@@ -904,6 +913,33 @@ class S {
     return Intl.message(
       '出现异常，建议提交反馈',
       name: 'class_parse_toast_fail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get fix_week_dialog_title {
+    return Intl.message(
+      '周数矫正',
+      name: 'fix_week_dialog_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get fix_week_dialog_content {
+    return Intl.message(
+      '检测到学期周数与当前不一致，是否立即矫正？',
+      name: 'fix_week_dialog_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get fix_week_toast_success {
+    return Intl.message(
+      '矫正周数成功！OvO',
+      name: 'fix_week_toast_success',
       desc: '',
       args: [],
     );
