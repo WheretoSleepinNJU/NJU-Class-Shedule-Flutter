@@ -31,7 +31,9 @@ class WeekChanger extends StatelessWidget {
                           height: 32,
                           child: CupertinoPicker(
                               scrollController: new FixedExtentScrollController(
-                                initialItem: snapshot.data - 1,
+                                initialItem: snapshot.data > Config.MAX_WEEKS
+                                    ? -1
+                                    : snapshot.data - 1,
                               ),
                               itemExtent: 32.0,
                               backgroundColor: Colors.white,

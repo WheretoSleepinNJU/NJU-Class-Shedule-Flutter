@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -11,6 +12,7 @@ import '../../Resources/Config.dart';
 import '../../Resources/Url.dart';
 import '../../Utils/ColorUtil.dart';
 import '../../Components/Dialog.dart';
+import '../../Components/Toast.dart';
 
 import 'Widgets/CourseDetailDialog.dart';
 import 'Widgets/CourseDeleteDialog.dart';
@@ -80,50 +82,94 @@ class CourseTablePresenter {
     return result;
   }
 
-  void showDonateDialog(BuildContext context) async {
-    Timer(Duration(seconds: Config.DONATE_DIALOG_DELAY_SECONDS), () {
-      showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) => SingleChildScrollView(
-                  child: mDialog(
-                S.of(context).welcome_title,
-                Text(S.of(context).welcome_content),
-                <Widget>[
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      FlatButton(
-                          textColor: Theme.of(context).primaryColor,
-                          child: Text(S.of(context).love_and_donate),
-                          onPressed: () async {
-                            if (Platform.isIOS)
-                              launch(Url.URL_APPLE);
-                            else if (Platform.isAndroid)
-                              launch(Url.URL_ANDROID);
-                            Navigator.of(context).pop();
-                          }),
-                      FlatButton(
-                          textColor: Theme.of(context).primaryColor,
-                          child: Text(S.of(context).bug_and_report),
-                          onPressed: () {
-                            if (Platform.isIOS)
-                              launch(Url.QQ_GROUP_APPLE_URL);
-                            else if (Platform.isAndroid)
-                              launch(Url.QQ_GROUP_ANDROID_URL);
-                            Navigator.of(context).pop();
-                          }),
-                      FlatButton(
-                          textColor: Colors.grey,
-                          child: Text(S.of(context).love_but_no_money),
-                          onPressed: () async {
-                            Navigator.of(context).pop();
-                          }),
-                    ],
-                  )
-                ],
-              )));
+  void showAfterImport(BuildContext context) async {
+    Dio dio = new Dio();
+    String url = Url.UPDATE_ROOT + '/complete.json';
+    Response response = await dio.get(url);
+    String welcome_title = '';
+    String welcome_content = '';
+    int delay_seconds = Config.DONATE_DIALOG_DELAY_SECONDS;
+    if (response.statusCode == HttpStatus.ok) {
+      welcome_title = response.data['title'];
+      welcome_content = response.data['content'];
+      delay_seconds = response.data['delay'];
+      if (true)
+        await changeWeek(context, response.data['semester_start_monday']);
+    } else {
+      welcome_title = S.of(context).welcome_title;
+      welcome_content = S.of(context).welcome_content;
+    }
+    Timer(Duration(seconds: delay_seconds), () {
+      showDonateDialog(context, welcome_title, welcome_content);
     });
+  }
+
+  void showDonateDialog(BuildContext context, String welcome_title,
+      String welcome_content) async {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => SingleChildScrollView(
+                child: mDialog(
+              welcome_title,
+              Text(welcome_content),
+              <Widget>[
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    FlatButton(
+                        textColor: Theme.of(context).primaryColor,
+                        child: Text(S.of(context).love_and_donate),
+                        onPressed: () async {
+                          if (Platform.isIOS)
+                            launch(Url.URL_APPLE);
+                          else if (Platform.isAndroid) launch(Url.URL_ANDROID);
+                          Navigator.of(context).pop();
+                        }),
+                    FlatButton(
+                        textColor: Theme.of(context).primaryColor,
+                        child: Text(S.of(context).bug_and_report),
+                        onPressed: () {
+                          if (Platform.isIOS)
+                            launch(Url.QQ_GROUP_APPLE_URL);
+                          else if (Platform.isAndroid)
+                            launch(Url.QQ_GROUP_ANDROID_URL);
+                          Navigator.of(context).pop();
+                        }),
+                    FlatButton(
+                        textColor: Colors.grey,
+                        child: Text(S.of(context).love_but_no_money),
+                        onPressed: () async {
+                          Navigator.of(context).pop();
+                        }),
+                  ],
+                )
+              ],
+            )));
+  }
+
+  void changeWeek(BuildContext context, String semester_start_monday) async {
+    print(semester_start_monday);
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) =>
+          mDialog("周数矫正", Text("检测到学期周数与当前不一致，是否立即矫正？"), <Widget>[
+        FlatButton(
+          child: Text(S.of(context).cancel),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        FlatButton(
+            child: Text(S.of(context).ok),
+            onPressed: () async {
+              //TODO：矫正周数
+              Navigator.of(context).pop();
+              Toast.showToast('矫正周数成功！OvO', context);
+            }),
+      ]),
+    );
   }
 
   showClassDialog(BuildContext context, Course course, bool isActive) {
@@ -176,7 +222,7 @@ class CourseTablePresenter {
     return weeks.contains(nowWeek);
   }
 
-  //TEST: 测试用函数
+//TEST: 测试用函数
 //  Future insertMockData() async {
 //    await courseProvider.insert(new Course(
 //        0, "微积分", "[1,2,3,4,5,6,7]", 3, 5, 2, 0,

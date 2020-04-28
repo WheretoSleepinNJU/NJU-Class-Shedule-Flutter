@@ -144,7 +144,7 @@ class CourseTableViewState extends State<CourseTableView> {
                                       builder: (BuildContext context) =>
                                           SettingsView()));
                               if (status == true)
-                                _presenter.showDonateDialog(context);
+                                _presenter.showAfterImport(context);
                             },
                           )
                         ]),

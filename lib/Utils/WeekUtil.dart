@@ -73,7 +73,7 @@ class WeekUtil {
     DateTime now = new DateTime.now();
     return now.weekday;
   }
-  
+
   static int getTmpMonth(int biasWeek){
     DateTime now = new DateTime.now();
     now = now.add(Duration(days: biasWeek * 7));
@@ -130,6 +130,7 @@ class WeekUtil {
   static _initWeek(String monday, int week) async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     await sp.setString("lastWeekMonday", monday);
+    await sp.setInt("tmpWeekIndex", week);
     await sp.setInt('weekIndex', week);
   }
 }
