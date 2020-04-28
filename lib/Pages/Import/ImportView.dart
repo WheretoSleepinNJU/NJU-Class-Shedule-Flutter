@@ -24,7 +24,7 @@ class _ImportViewState extends State<ImportView> {
   final FocusNode captchaTextFieldNode = FocusNode();
 
   bool _checkboxSelected = false;
-  double randomNumForCaptcha = 0;
+  double randomNumForCaptcha = Random().nextDouble();
 
   @override
   void initState() {
