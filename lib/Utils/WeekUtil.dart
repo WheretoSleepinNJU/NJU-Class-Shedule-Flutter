@@ -8,12 +8,14 @@ class WeekUtil {
     String lastMondayString = sp.getString("lastWeekMonday");
     String thisMondayString = _getMonday();
     DateTime thisMonday = DateTime.parse(thisMondayString);
+    print(lastMondayString);
     if (lastMondayString == null) {
       await _initWeek(thisMondayString, 1);
+    } else{
+      DateTime lastMonday = DateTime.parse(lastMondayString);
+      int weekBias = thisMonday.difference(lastMonday).inDays ~/ 7;
+      if (weekBias != 0) await _setWeek(thisMondayString, weekBias);
     }
-    DateTime lastMonday = DateTime.parse(lastMondayString);
-    int weekBias = thisMonday.difference(lastMonday).inDays ~/ 7;
-    if (weekBias != 0) await _setWeek(thisMondayString, weekBias);
   }
 
   static setNowWeek(int weekNum) async {
