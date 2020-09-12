@@ -126,6 +126,7 @@ class WeekUtil {
     await sp.setString("lastWeekMonday", monday);
     int nowWeek = await sp.getInt('weekIndex');
     await sp.setInt('weekIndex', nowWeek + bias);
+    await sp.setInt('tmpWeekIndex', nowWeek + bias);
   }
 
   static _initWeek(String monday, int week) async {

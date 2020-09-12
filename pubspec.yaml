@@ -1,7 +1,7 @@
 name: wheretosleepinnju
 description: A new Flutter project.
 
-version: 1.6.0+20
+version: 1.6.2+21
 
 environment:
   sdk: ">=2.1.0-dev.68.0 <3.0.0"

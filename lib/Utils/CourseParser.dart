@@ -75,7 +75,8 @@ class CourseParser {
           timeCount = int.parse(time.group(2)) - startTime;
           weekSeries = _getWeekSeriesString(info);
         } catch (e) {
-          throw (courseName);
+          continue;
+//          throw (courseName);
         }
 //        print(startTime.toString() + ' - ' + timeCount.toString());
 
