@@ -43,7 +43,7 @@ class HttpUtil {
     Response response = await dio.post(url,
         data: jsonMap,
         options: Options(
-          contentType: ContentType.parse("application/x-www-form-urlencoded"),
+          contentType: Headers.formUrlEncodedContentType,
           headers: {'Cookie': _Cookies.toString()},
         ));
     return response.data.toString();

@@ -56,8 +56,7 @@ class _ShareViewState extends State<ShareView> {
                 Response response = await dio.post("https://file.io",
                     data: {"text": json.encode(rst)},
                     options: Options(
-                      contentType: ContentType.parse(
-                          "application/x-www-form-urlencoded"),
+                      contentType: Headers.formUrlEncodedContentType,
                     ));
                 print(response.data['link']);
                 Navigator.of(context).push(MaterialPageRoute(

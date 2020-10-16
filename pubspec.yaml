@@ -1,10 +1,14 @@
 name: wheretosleepinnju
-description: A new Flutter project.
+description: wheretosleepinnju
+
+# The following line prevents the package from being accidentally published to
+# pub.dev using `pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 version: 1.6.2+21
 
 environment:
-  sdk: ">=2.1.0-dev.68.0 <3.0.0"
+  sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -12,7 +16,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  shared_preferences: ^0.5.6+3
+  shared_preferences: ^0.5.12+2
   flutter_swiper: ^1.1.6
   image_picker: ^0.6.5
   package_info: ^0.4.0+16
@@ -27,7 +31,7 @@ dependencies:
     git:
       url: git://github.com/chen-zeyu/html.git
       ref: patch-pola
-  dio: ^2.1.0
+  dio: ^3.0.10
 
 dev_dependencies:
   flutter_test:
@@ -37,5 +41,11 @@ flutter:
   uses-material-design: true
   assets:
     - res/icon.png
+
 flutter_intl:
   enabled: true
+
+analyzer:
+  strong-mode: true
+  language:
+    enableSuperMixins: true
