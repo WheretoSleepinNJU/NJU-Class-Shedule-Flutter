@@ -20,6 +20,7 @@ dependencies:
   flutter_swiper: ^1.1.6
   image_picker: ^0.6.5
   package_info: ^0.4.0+16
+  webview_flutter: ^1.0.3
   path_provider: ^1.6.7
   barcode_scan: ^2.0.2
   url_launcher: ^5.4.2

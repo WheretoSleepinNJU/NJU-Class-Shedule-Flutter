@@ -8,15 +8,8 @@ class ImportPresenter {
   HttpUtil httpUtil = new HttpUtil();
 
   Future<Image> getCaptcha(double num) async {
-//    String response = await httpUtil.getWithCookie(Url.URL_NJU_HOST);
-//    print(response);
-//    下面这行代码记得取消注释
     await httpUtil.getWithCookie(Url.URL_NJU_HOST);
     List cookies = httpUtil.getCookies();
-//    print(cookies);
-    print('http://cer.nju.edu.cn/amserver/verify/image.jsp?' +
-        num.toString() +
-        '100');
     return Image.network(
         'http://elite.nju.edu.cn/jiaowu/ValidateCode.jsp?TimeCode=' +
 //        'http://cer.nju.edu.cn/amserver/verify/image.jsp?' +

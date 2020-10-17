@@ -1,4 +1,4 @@
-package top.idealclover.wheretosleepinnju
+package com.lilystudio.wheretosleepinnju
 
 import io.flutter.embedding.android.FlutterActivity
 

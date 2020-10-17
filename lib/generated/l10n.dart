@@ -213,10 +213,10 @@ class S {
     );
   }
 
-  /// `导入南京大学课表`
+  /// `从南京大学教务处导入课表`
   String get import_from_NJU_title {
     return Intl.message(
-      '导入南京大学课表',
+      '从南京大学教务处导入课表',
       name: 'import_from_NJU_title',
       desc: '',
       args: [],
@@ -228,6 +228,26 @@ class S {
     return Intl.message(
       '登录南京大学教务系统导入课程表',
       name: 'import_from_NJU_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `从南京大学统一认证导入课表`
+  String get import_from_NJU_cer_title {
+    return Intl.message(
+      '从南京大学统一认证导入课表',
+      name: 'import_from_NJU_cer_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `教务处哇教务处，不愧是你`
+  String get import_from_NJU_cer_subtitle {
+    return Intl.message(
+      '教务处哇教务处，不愧是你',
+      name: 'import_from_NJU_cer_subtitle',
       desc: '',
       args: [],
     );
