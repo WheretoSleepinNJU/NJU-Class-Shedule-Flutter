@@ -146,8 +146,10 @@ class CourseTableViewState extends State<CourseTableView> {
                                   MaterialPageRoute(
                                       builder: (BuildContext context) =>
                                           SettingsView()));
-                              if (status == true)
+                              if (status == true) {
+                                ScopedModel.of<MainStateModel>(context).refresh();
                                 _presenter.showAfterImport(context);
+                              }
                             },
                           )
                         ]),

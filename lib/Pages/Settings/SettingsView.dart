@@ -7,7 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info/package_info.dart';
 import '../ManageTable/ManageTableView.dart';
 import '../Import/ImportView.dart';
-import '../ImportFromWeb//ImportFromWebView.dart';
+import '../ImportFromWeb/ImportFromWebView.dart';
 import '../About/AboutView.dart';
 import '../AddCourse/AddCourseView.dart';
 import '../MoreSettings/MoreSettingsView.dart';
@@ -68,7 +68,7 @@ class _SettingsViewState extends State<SettingsView> {
                 onTap: () async {
                   bool status = await Navigator.of(context).push(
                       MaterialPageRoute(
-                          builder: (BuildContext context) => WebviewDemo()));
+                          builder: (BuildContext context) => ImportFromWebView()));
                   if (status == true) Navigator.of(context).pop(status);
                 },
               ),

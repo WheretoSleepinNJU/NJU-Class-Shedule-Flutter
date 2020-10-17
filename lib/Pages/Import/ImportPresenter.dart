@@ -9,7 +9,7 @@ class ImportPresenter {
 
   Future<Image> getCaptcha(double num) async {
     await httpUtil.getWithCookie(Url.URL_NJU_HOST);
-    List cookies = httpUtil.getCookies();
+    String cookies = httpUtil.getCookies();
     return Image.network(
         'http://elite.nju.edu.cn/jiaowu/ValidateCode.jsp?TimeCode=' +
 //        'http://cer.nju.edu.cn/amserver/verify/image.jsp?' +

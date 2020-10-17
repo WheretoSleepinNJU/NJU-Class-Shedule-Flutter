@@ -31,13 +31,19 @@ class CourseParser {
     List<Element> elements = document.getElementsByClassName("TABLE_TR_01") +
         document.getElementsByClassName("TABLE_TR_02");
     for (Element e in elements) {
+      //退选课程
+      String state = e.children[6].innerHtml.trim();
+      if(state.contains('已退选')) continue;
+
       // Time and Place
-      String source = e.children[4].innerHtml.trim().replaceAll('<br>', '\n');
-      List<String> infos = source.split('\n');
+      String source = e.children[4].innerHtml.trim().replaceAll('<br>', '\\n');
+      List<String> infos = source.split('\\n');
 
 //      print(source);
 
       for (String info in infos) {
+        info = info.replaceAll('\\t\\t\\t\\t\\t  \\t', '');
+        info = info.replaceAll('\\t\\t\\t\\t\\t', '');
         if (info == '') continue;
 
         String courseName = e.children[1].innerHtml;
@@ -50,9 +56,9 @@ class CourseParser {
         if (info.contains('自由时间')) continue;
 //        print(info);
 
-        if (!info.startsWith('周')) {
-          throw (courseName);
-        }
+//        if (!info.startsWith('周')) {
+//          throw (courseName);
+//        }
         // Get WeekTime
         List<String> strs = info.split(' ');
         String weekStr = info.substring(0, 2);
