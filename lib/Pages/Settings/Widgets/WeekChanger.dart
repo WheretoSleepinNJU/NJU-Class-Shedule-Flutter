@@ -1,6 +1,7 @@
 import '../../../generated/l10n.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 import '../../../Utils/States/MainState.dart';
 import '../../../Utils/WeekUtil.dart';
 import '../../../Components/Toast.dart';
@@ -51,12 +52,14 @@ class WeekChanger extends StatelessWidget {
                               }))),
                       <Widget>[
                         FlatButton(
+                          textColor: Colors.grey,
                           child: Text(S.of(context).cancel),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
                         ),
                         FlatButton(
+                            textColor: Theme.of(context).primaryColor,
                             child: Text(S.of(context).ok),
                             onPressed: () async {
                               await changeWeek(
@@ -84,6 +87,7 @@ class WeekChanger extends StatelessWidget {
     } else {
       await WeekUtil.setNowWeek(changedWeek + 1);
       Toast.showToast(S.of(context).nowweek_edited_success_toast, context);
+      ScopedModel.of<MainStateModel>(context).refresh();
       Navigator.of(context).pop();
     }
   }

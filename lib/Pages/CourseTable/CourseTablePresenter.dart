@@ -160,18 +160,20 @@ class CourseTablePresenter {
       builder: (context) => mDialog(S.of(context).fix_week_dialog_title,
           Text(S.of(context).fix_week_dialog_content), <Widget>[
         FlatButton(
+          textColor: Colors.grey,
           child: Text(S.of(context).cancel),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
         FlatButton(
+            textColor: Theme.of(context).primaryColor,
             child: Text(S.of(context).ok),
             onPressed: () async {
-              WeekUtil.initWeek(semester_start_monday, 1);
-              ScopedModel.of<MainStateModel>(context).refresh();
-              Navigator.of(context).pop();
+              await WeekUtil.initWeek(semester_start_monday, 1);
+              await ScopedModel.of<MainStateModel>(context).refresh();
               Toast.showToast(S.of(context).fix_week_toast_success, context);
+              Navigator.of(context).pop(true);
             }),
       ]),
     );

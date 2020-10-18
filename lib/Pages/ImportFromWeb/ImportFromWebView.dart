@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -37,6 +38,11 @@ class _WebViewState extends State<ImportFromWebView> {
   Completer<WebViewController>();
   WebViewController _webViewController;
 
+  @override
+  void initState() {
+    super.initState();
+    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+  }
 
   @override
   Widget build(BuildContext context) {

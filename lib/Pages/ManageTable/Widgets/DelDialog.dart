@@ -19,12 +19,14 @@ class _DelDialogState extends State<DelDialog> {
       Text(S.of(context).del_class_table_dialog_content),
       <Widget>[
         FlatButton(
+          textColor: Colors.grey,
           child: Text(S.of(context).cancel),
           onPressed: () {
             Navigator.of(context).pop('false');
           },
         ),
         FlatButton(
+          textColor: Theme.of(context).primaryColor,
           child: Text(S.of(context).ok),
           onPressed: () {
             Navigator.of(context).pop('true');

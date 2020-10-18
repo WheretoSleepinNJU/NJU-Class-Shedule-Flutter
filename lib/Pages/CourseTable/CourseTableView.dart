@@ -148,7 +148,7 @@ class CourseTableViewState extends State<CourseTableView> {
                                           SettingsView()));
                               if (status == true) {
                                 ScopedModel.of<MainStateModel>(context).refresh();
-                                _presenter.showAfterImport(context);
+                                await _presenter.showAfterImport(context);
                               }
                             },
                           )
