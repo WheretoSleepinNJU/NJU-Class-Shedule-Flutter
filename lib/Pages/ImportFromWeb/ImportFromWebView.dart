@@ -37,6 +37,7 @@ class _WebViewState extends State<ImportFromWebView> {
   final Completer<WebViewController> _controller =
   Completer<WebViewController>();
   WebViewController _webViewController;
+  final CookieManager cookieManager = CookieManager();
 
   @override
   void initState() {
@@ -58,9 +59,10 @@ class _WebViewState extends State<ImportFromWebView> {
           return WebView(
             initialUrl: 'https://authserver.nju.edu.cn/authserver/login?service=http%3A%2F%2Felite.nju.edu.cn%2Fjiaowu%2Fcaslogin.jsp',
             javascriptMode: JavascriptMode.unrestricted,
-            onWebViewCreated: (WebViewController webViewController) {
+            onWebViewCreated: (WebViewController webViewController) async {
               _webViewController = webViewController;
               _controller.complete(webViewController);
+              await cookieManager.clearCookies();
             },
             javascriptChannels: <JavascriptChannel>[
               snackbarJavascriptChannel(context),
