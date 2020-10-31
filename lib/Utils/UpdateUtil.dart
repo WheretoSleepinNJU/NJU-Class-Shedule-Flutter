@@ -77,6 +77,7 @@ class UpdateUtil {
     }
     showDialog(
         context: context,
+        barrierDismissible: !info['isForce'],
         builder: (context) => mDialog(
               info['title'],
               Text(info['content']),

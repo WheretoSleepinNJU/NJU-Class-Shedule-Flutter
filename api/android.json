@@ -1,10 +1,10 @@
 {
-  "version": 20,
-  "title": "1.6.0 更新",
-  "content": "试验更新",
-  "isForce": true,
+  "version": 25,
+  "title": "南哪课表2.0.3更新",
+  "content": "支持了统一认证登录～20级同学也可以用啦！快来更新吧w",
+  "isForce": false,
   "confirm_text": "立刻更新",
   "cancel_text": "下次再说",
   "url": "https://www.coolapk.com/apk/218862",
-  "coolDownTime": 600
+  "coolDownTime": 86400
 }
