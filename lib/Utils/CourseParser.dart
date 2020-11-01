@@ -112,8 +112,7 @@ class CourseParser {
     CourseTableProvider courseTableProvider = new CourseTableProvider();
     CourseTable courseTable =
         await courseTableProvider.insert(new CourseTable(name));
-    // 减1的原因：SQL中id从1开始计
-    int id = courseTable.id - 1;
+    int id = courseTable.id;
     MainStateModel.of(context).changeclassTable(id);
     return id;
   }

@@ -158,6 +158,15 @@ class _ImportViewState extends State<ImportView> {
                           _saveUserInfo();
                         else
                           _clearUserInfo();
+                        if (_usrController.value.text.toString() == 'admin' &&
+                            _pwdController.value.text.toString() == 'admin') {
+                          await _presenter.getDemoClasses(context);
+                          Toast.showToast(
+                              S.of(context).class_parse_toast_success,
+                              context);
+                          Navigator.of(context).pop(true);
+                          return;
+                        }
                         int status = await _presenter.login(
                             _usrController.value.text.toString(),
                             _pwdController.value.text.toString(),
@@ -184,8 +193,10 @@ class _ImportViewState extends State<ImportView> {
                           if (!isSuccess)
                             Toast.showToast(
                                 S.of(context).class_parse_error_toast, context);
-                          else Toast.showToast(
-                              S.of(context).class_parse_toast_success, context);
+                          else
+                            Toast.showToast(
+                                S.of(context).class_parse_toast_success,
+                                context);
                           Navigator.of(context).pop(true);
                         } else {
                           Toast.showToast(

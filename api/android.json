@@ -1,7 +1,7 @@
 {
-  "version": 25,
-  "title": "南哪课表2.0.3更新",
-  "content": "支持了统一认证登录～20级同学也可以用啦！快来更新吧w",
+  "version": 26,
+  "title": "南哪课表2.0.4更新",
+  "content": "支持了统一认证登录，并修复了部分bug～20级同学也可以用啦！快来更新吧w",
   "isForce": false,
   "confirm_text": "立刻更新",
   "cancel_text": "下次再说",

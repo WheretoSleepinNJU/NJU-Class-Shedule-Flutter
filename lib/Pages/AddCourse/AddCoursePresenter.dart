@@ -7,6 +7,11 @@ class AddCoursePresenter {
   Future<bool> addCourse(BuildContext context, String name, String teacher,
       List<Map> nodes) async {
     int tableId = await MainStateModel.of(context).getClassTable();
+    // initialize
+    if(tableId == 0) {
+      tableId = 1;
+      await MainStateModel.of(context).changeclassTable(1);
+    }
     for (Map node in nodes) {
       Course course = new Course(
           tableId,
