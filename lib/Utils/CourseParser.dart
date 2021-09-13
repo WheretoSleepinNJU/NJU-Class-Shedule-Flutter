@@ -13,23 +13,23 @@ class CourseParser {
   final RegExp patten4 = new RegExp(r"第(\d{1,2})周");
 
   String html;
-  Document document;
+  Document? document;
 
   CourseParser(this.html) {
     document = parse(html);
   }
 
   String parseCourseName() {
-    Element element = document.querySelector(
+    Element? element = document!.querySelector(
         "body > div:nth-child(10) > table > tbody > tr:nth-child(2) > td");
 //    print(element.innerHtml);
-    return element.innerHtml;
+    return element!.innerHtml;
   }
 
   Future<List<Course>> parseCourse(int tableId) async {
     List<Course> rst = [];
-    List<Element> elements = document.getElementsByClassName("TABLE_TR_01") +
-        document.getElementsByClassName("TABLE_TR_02");
+    List<Element> elements = document!.getElementsByClassName("TABLE_TR_01") +
+        document!.getElementsByClassName("TABLE_TR_02");
     for (Element e in elements) {
       //退选课程
       String state = e.children[6].innerHtml.trim();
@@ -47,9 +47,9 @@ class CourseParser {
         if (info == '') continue;
 
         String courseName = e.children[1].innerHtml;
-        String courseTeacher = e.children[3].innerHtml ?? '';
+        String courseTeacher = e.children[3].innerHtml;
         String testLocation =
-            (e.children.length > 9) ? (e.children[9].innerHtml ?? '') : '';
+            (e.children.length > 9) ? (e.children[9].innerHtml) : '';
 
         //TODO: 自由时间
         // "自由时间 2-17周 详见主页通知"
@@ -77,8 +77,8 @@ class CourseParser {
 //        info="周四 第9节 2-17周  仙Ⅱ-301";
         try {
           var time = patten1.firstMatch(info);
-          startTime = int.parse(time.group(1));
-          timeCount = int.parse(time.group(2)) - startTime;
+          startTime = int.parse(time!.group(1)!);
+          timeCount = int.parse(time.group(2)!) - startTime;
           weekSeries = _getWeekSeriesString(info);
         } catch (e) {
           continue;
@@ -112,7 +112,7 @@ class CourseParser {
     CourseTableProvider courseTableProvider = new CourseTableProvider();
     CourseTable courseTable =
         await courseTableProvider.insert(new CourseTable(name));
-    int id = courseTable.id;
+    int id = courseTable.id!;
     MainStateModel.of(context).changeclassTable(id);
     return id;
   }
@@ -123,8 +123,8 @@ class CourseParser {
     // x-x周 (单周|双周)
     var weeksResult = patten2.firstMatch(info);
     if (weeksResult != null) {
-      int startWeek = int.parse(weeksResult.group(1));
-      int endWeek = int.parse(weeksResult.group(2));
+      int startWeek = int.parse(weeksResult.group(1)!);
+      int endWeek = int.parse(weeksResult.group(2)!);
       if (info.contains('单周'))
         weekSeries = _getSingleWeekSeries(startWeek, endWeek);
       else if (info.contains('双周'))
@@ -137,7 +137,7 @@ class CourseParser {
     // 从第x周开始：(单周|双周)
     var fromWeekResult = patten3.firstMatch(info);
     if (fromWeekResult != null) {
-      int startWeek = int.parse(fromWeekResult.group(1));
+      int startWeek = int.parse(fromWeekResult.group(1)!);
       if (info.contains('单周'))
         weekSeries = _getSingleWeekSeries(startWeek, Constant.DEFAULT_WEEK_END);
       else if (info.contains('双周'))

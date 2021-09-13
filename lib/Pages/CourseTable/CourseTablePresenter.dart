@@ -2,10 +2,10 @@ import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
 import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../../Models/CourseModel.dart';
 import '../../Models/ScheduleModel.dart';
@@ -28,9 +28,9 @@ class CourseTablePresenter {
   List<List<Course>> multiCourses = [];
 
   refreshClasses(int tableId, int nowWeek) async {
-    List<Map> allCoursesMap = await courseProvider.getAllCourses(tableId);
+    List allCoursesMap = await courseProvider.getAllCourses(tableId);
     List<Course> allCourses = [];
-    for (Map courseMap in allCoursesMap) {
+    for (Map<String, dynamic> courseMap in allCoursesMap) {
       allCourses.add(new Course.fromMap(courseMap));
     }
     ScheduleModel scheduleModel = new ScheduleModel(allCourses, nowWeek);
@@ -41,10 +41,10 @@ class CourseTablePresenter {
     multiCourses = scheduleModel.multiCourses;
   }
 
-  Future<List<Widget>> getClassesWidgetList(
+  Future<List<Widget>?> getClassesWidgetList(
       BuildContext context, double height, double width, int nowWeek) async {
     List colorPool = await ColorPool.getColorPool();
-    List result = List.generate(
+    List<Widget> result = List.generate(
             hideCourses.length,
             (int i) => CourseWidget(
                   hideCourses[i],
@@ -63,7 +63,7 @@ class CourseTablePresenter {
             activeCourses.length,
             (int i) => CourseWidget(
                   activeCourses[i],
-                  activeCourses[i].getColor(colorPool),
+                  activeCourses[i].getColor(colorPool)!,
                   height,
                   width,
                   true,
@@ -75,7 +75,7 @@ class CourseTablePresenter {
             multiCourses.length,
             (int i) => CourseWidget(
                 multiCourses[i][0],
-                multiCourses[i][0].getColor(colorPool),
+                multiCourses[i][0].getColor(colorPool)!,
                 height,
                 width,
                 isThisWeek(multiCourses[i][0], nowWeek),
@@ -85,7 +85,7 @@ class CourseTablePresenter {
     return result;
   }
 
-  void showAfterImport(BuildContext context) async {
+  Future<bool> showAfterImport(BuildContext context) async {
     Dio dio = new Dio();
     String url = Url.UPDATE_ROOT + '/complete.json';
     Response response = await dio.get(url);
@@ -107,6 +107,7 @@ class CourseTablePresenter {
     Timer(Duration(seconds: delay_seconds), () {
       showDonateDialog(context, welcome_title, welcome_content);
     });
+    return true;
   }
 
   void showDonateDialog(BuildContext context, String welcome_title,
@@ -153,7 +154,7 @@ class CourseTablePresenter {
             )));
   }
 
-  void changeWeek(BuildContext context, String semester_start_monday) async {
+  Future<bool> changeWeek(BuildContext context, String semester_start_monday) async {
     await showDialog(
       context: context,
       barrierDismissible: false,
@@ -171,12 +172,13 @@ class CourseTablePresenter {
             child: Text(S.of(context).ok),
             onPressed: () async {
               await WeekUtil.initWeek(semester_start_monday, 1);
-              await ScopedModel.of<MainStateModel>(context).refresh();
+              ScopedModel.of<MainStateModel>(context).refresh();
               Toast.showToast(S.of(context).fix_week_toast_success, context);
               Navigator.of(context).pop(true);
             }),
       ]),
     );
+    return true;
   }
 
   showClassDialog(BuildContext context, Course course, bool isActive) {
@@ -225,7 +227,7 @@ class CourseTablePresenter {
   }
 
   bool isThisWeek(Course course, int nowWeek) {
-    List weeks = json.decode(course.weeks);
+    List weeks = json.decode(course.weeks!);
     return weeks.contains(nowWeek);
   }
 

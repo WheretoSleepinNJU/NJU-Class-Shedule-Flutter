@@ -36,7 +36,7 @@ class _ManageTableViewState extends State<ManageTableView> {
                         S.of(context).add_class_table_success_toast, context);
                     if (courseTable.id != 0)
                       ScopedModel.of<MainStateModel>(context)
-                          .changeclassTable(courseTable.id);
+                          .changeclassTable(courseTable.id!);
                     Navigator.of(context).pop();
                   }
                 },
@@ -52,14 +52,14 @@ class _ManageTableViewState extends State<ManageTableView> {
                   } else {
                     return Column(
                         children: ListTile.divideTiles(
-                                context: context, tiles: snapshot.data)
+                                context: context, tiles: snapshot.data!)
                             .toList());
                   }
                 })));
   }
 
   Future<String> _addTableDialog(BuildContext context) async {
-    String tableName = await showDialog<String>(
+    String? tableName = await showDialog<String>(
       context: context,
       barrierDismissible: false,
       // dialog is dismissible with a tap on the barrier
@@ -67,11 +67,11 @@ class _ManageTableViewState extends State<ManageTableView> {
         return AddDialog();
       },
     );
-    return tableName;
+    return tableName!;
   }
 
   Future<bool> _delTableDialog(BuildContext context) async {
-    String result = await showDialog<String>(
+    String? result = await showDialog<String>(
       context: context,
       barrierDismissible: false,
       // dialog is dismissible with a tap on the barrier

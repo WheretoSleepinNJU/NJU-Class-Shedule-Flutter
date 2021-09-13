@@ -12,9 +12,9 @@ import '../../Utils/CourseParser.dart';
 import '../../Components/Toast.dart';
 
 class ImportFromWebView extends StatefulWidget {
-  final String title;
+  final String? title;
 
-  ImportFromWebView({Key key, this.title}) : super(key: key);
+  ImportFromWebView({Key? key, this.title}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -36,7 +36,7 @@ JavascriptChannel snackbarJavascriptChannel(BuildContext context) {
 class _WebViewState extends State<ImportFromWebView> {
   final Completer<WebViewController> _controller =
   Completer<WebViewController>();
-  WebViewController _webViewController;
+  late WebViewController _webViewController;
   final CookieManager cookieManager = CookieManager();
 
   @override
@@ -121,7 +121,7 @@ class ManualMenu extends StatelessWidget {
           (BuildContext context, AsyncSnapshot<WebViewController> controller) {
         return IconButton(
           icon: const Icon(Icons.send),
-          onPressed: () async {listCookies(controller.data, context);},
+          onPressed: () async {listCookies(controller.data!, context);},
         );
       },
     );

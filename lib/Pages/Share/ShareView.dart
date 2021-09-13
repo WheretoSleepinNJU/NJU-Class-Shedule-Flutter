@@ -5,7 +5,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:barcode_scan/barcode_scan.dart';
 import '../../Utils/States/MainState.dart';
 import '../../Components/Toast.dart';
 import '../../Models/CourseModel.dart';
@@ -44,13 +43,13 @@ class _ShareViewState extends State<ShareView> {
                 int index = await ScopedModel.of<MainStateModel>(context)
                     .getClassTable();
                 CourseProvider courseProvider = new CourseProvider();
-                List<Map> allCoursesMap =
+                List allCoursesMap =
                     await courseProvider.getAllCourses(index);
                 CourseTableProvider courseTableProvider =
                     new CourseTableProvider();
-                CourseTable courseTable =
+                CourseTable? courseTable =
                     await courseTableProvider.getCourseTable(index);
-                Map rst = {'name': courseTable.name, 'courses': allCoursesMap};
+                Map rst = {'name': courseTable!.name, 'courses': allCoursesMap};
 //                  print(rst.toString());
                 Dio dio = new Dio();
                 Response response = await dio.post("https://file.io",
@@ -91,7 +90,7 @@ class _ShareViewState extends State<ShareView> {
                 try {
                   CourseTable courseTable = await courseTableProvider
                       .insert(new CourseTable(courseTableMap['name']));
-                  index = courseTable.id - 1;
+                  index = (courseTable.id! - 1);
 //                    print(index);
                 } catch (e) {
                   Toast.showToast(
@@ -102,10 +101,10 @@ class _ShareViewState extends State<ShareView> {
                 await ScopedModel.of<MainStateModel>(context)
                     .changeclassTable(index);
 
-                List<Map> coursesMap =
-                    new List<Map>.from(courseTableMap['courses']);
+                List<Map<String, dynamic>> coursesMap =
+                    new List<Map<String, dynamic>>.from(courseTableMap['courses']);
                 try {
-                  coursesMap.forEach((Map courseMap) {
+                  coursesMap.forEach((Map<String, dynamic> courseMap) {
                     courseMap.remove('id');
                     courseMap['tableid'] = index;
                     Course course = new Course.fromMap(courseMap);
@@ -127,15 +126,15 @@ class _ShareViewState extends State<ShareView> {
   }
 
   Future<String> _scan() async {
-    String barcode = null;
+    String? barcode = null;
     try {
-      barcode = await BarcodeScanner.scan();
+      // barcode = await BarcodeScanner.scan();
 //    } on PlatformException catch (e) {
 //      if (e.code == BarcodeScanner.CameraAccessDenied) {
 //      } else {
 //      }
 //    } on FormatException{
     } catch (e) {}
-    return barcode;
+    return "barcode";
   }
 }

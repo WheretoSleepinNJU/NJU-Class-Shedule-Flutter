@@ -14,7 +14,7 @@ class CourseDeleteDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return mDialog(
       S.of(context).delete_class_dialog_title,
-      Text(S.of(context).delete_class_dialog_content(course.name)),
+      Text(S.of(context).delete_class_dialog_content(course.name!)),
       <Widget>[
         FlatButton(
           textColor: Colors.grey,
@@ -28,7 +28,7 @@ class CourseDeleteDialog extends StatelessWidget {
           child: Text(S.of(context).ok),
           onPressed: () async {
             CourseProvider courseProvider = new CourseProvider();
-            await courseProvider.delete(course.id);
+            await courseProvider.delete(course.id!);
             ScopedModel.of<MainStateModel>(context).refresh();
             Navigator.of(context).pop();
           },
