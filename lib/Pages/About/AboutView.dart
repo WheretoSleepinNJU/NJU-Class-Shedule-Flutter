@@ -49,7 +49,7 @@ class _AboutViewState extends State<AboutView> {
                       if (!snapshot.hasData) {
                         return Container();
                       } else {
-                        return Text(snapshot.data);
+                        return Text(snapshot.data!);
                       }
                     })),
             new Container(

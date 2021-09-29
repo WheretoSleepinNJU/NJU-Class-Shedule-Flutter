@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 class HttpUtil {
 //  List _Cookies = [];
   String _Cookies = '';
-  Dio dio;
+  Dio? dio;
 
   HttpUtil() {
     dio = new Dio();
@@ -37,7 +37,7 @@ class HttpUtil {
   }
 
   Future<Response> _get(String url) async {
-    Response response = await dio.get(url,
+    Response response = await dio!.get(url,
         options: Options(
           headers: {'Cookie': _Cookies},
         ));
@@ -45,7 +45,7 @@ class HttpUtil {
   }
 
   Future<String> post(String url, Map jsonMap) async {
-    Response response = await dio.post(url,
+    Response response = await dio!.post(url,
         data: jsonMap,
         options: Options(
           contentType: Headers.formUrlEncodedContentType,

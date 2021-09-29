@@ -143,7 +143,7 @@ class _SettingsViewState extends State<SettingsView> {
                       if (!snapshot.hasData) {
                         return Container();
                       } else {
-                        return Text(snapshot.data);
+                        return Text(snapshot.data!);
                       }
                     }),
                 onTap: () {

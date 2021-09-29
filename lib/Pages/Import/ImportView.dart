@@ -34,8 +34,8 @@ class _ImportViewState extends State<ImportView> {
 
   _getUserInfo() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
-    String username = sp.getString('username');
-    String password = sp.getString('password');
+    String? username = sp.getString('username');
+    String? password = sp.getString('password');
     if (username == null || password == null)
       _checkboxSelected = false;
     else {
@@ -109,7 +109,7 @@ class _ImportViewState extends State<ImportView> {
                           builder: (BuildContext context,
                               AsyncSnapshot<Image> image) {
                             if (image.hasData) {
-                              return image.data;
+                              return image.data!;
                             } else {
                               return new Container();
                             }
@@ -139,7 +139,7 @@ class _ImportViewState extends State<ImportView> {
                       activeColor: Theme.of(context).primaryColor, //选中时的颜色
                       onChanged: (value) {
                         setState(() {
-                          _checkboxSelected = value;
+                          _checkboxSelected = value!;
                         });
                       },
                     ),

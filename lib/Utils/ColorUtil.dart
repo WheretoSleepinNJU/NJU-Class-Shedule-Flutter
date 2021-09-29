@@ -25,15 +25,15 @@ class ColorPool {
 
   static checkColorPool() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
-    String colorPool = sp.getString("colorPool");
+    String? colorPool = sp.getString("colorPool");
     if(colorPool == null) shuffleColorPool();
   }
 
   static Future<List> getColorPool() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
-    String colorPoolString = await sp.getString('colorPool');
+    String? colorPoolString = await sp.getString('colorPool');
 //    print(colorPoolString);
-    List colorPool = json.decode(colorPoolString);
+    List colorPool = json.decode(colorPoolString!);
     return colorPool;
   }
 

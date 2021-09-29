@@ -14,7 +14,7 @@ class CourseDetailDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return mDialog(
-      (isActive ? '' : S.of(context).not_this_week) + course.name,
+      (isActive ? '' : S.of(context).not_this_week) + course.name!,
       new Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -31,15 +31,15 @@ class CourseDetailDialog extends StatelessWidget {
           Row(children: [
             Icon(Icons.access_time, color: Theme.of(context).primaryColor),
             Flexible(
-                child: Text(Constant.WEEK_WITH_BIAS[course.weekTime] +
+                child: Text(Constant.WEEK_WITH_BIAS[course.weekTime!] +
                     course.startTime.toString() +
                     '-' +
-                    (course.startTime + course.timeCount).toString() +
+                    (course.startTime! + course.timeCount!).toString() +
                     '节')),
           ]),
           Row(children: [
             Icon(Icons.calendar_today, color: Theme.of(context).primaryColor),
-            Flexible(child: Text(course.weeks)),
+            Flexible(child: Text(course.weeks!)),
           ]),
           Row(children: [
             Icon(Icons.android, color: Theme.of(context).primaryColor),

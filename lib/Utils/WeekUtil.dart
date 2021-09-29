@@ -5,7 +5,7 @@ import '../Resources/Config.dart';
 class WeekUtil {
   static checkWeek() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
-    String lastMondayString = sp.getString("lastWeekMonday");
+    String? lastMondayString = sp.getString("lastWeekMonday");
     String thisMondayString = _getMonday();
     DateTime thisMonday = DateTime.parse(thisMondayString);
     print(lastMondayString);
@@ -33,12 +33,12 @@ class WeekUtil {
 
   static isSameWeek(String monday, int index) async {
     SharedPreferences sp = await SharedPreferences.getInstance();
-    String lastMondayString = sp.getString("lastWeekMonday");
-    DateTime lastMonday = DateTime.parse(lastMondayString);
-    int lastIndex = sp.getInt("weekIndex");
+    String? lastMondayString = sp.getString("lastWeekMonday");
+    DateTime lastMonday = DateTime.parse(lastMondayString!);
+    int? lastIndex = sp.getInt("weekIndex");
     DateTime thisMonday = DateTime.parse(monday);
     int weekBias = thisMonday.difference(lastMonday).inDays ~/ 7;
-    return (weekBias == index - lastIndex);
+    return (weekBias == index - lastIndex!);
   }
 
   static int getNowMonth() {
@@ -124,8 +124,8 @@ class WeekUtil {
   static _setWeek(String monday, int bias) async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     await sp.setString("lastWeekMonday", monday);
-    int nowWeek = await sp.getInt('weekIndex');
-    await sp.setInt('weekIndex', nowWeek + bias);
+    int? nowWeek = await sp.getInt('weekIndex');
+    await sp.setInt('weekIndex', nowWeek! + bias);
     await sp.setInt('tmpWeekIndex', nowWeek + bias);
   }
 

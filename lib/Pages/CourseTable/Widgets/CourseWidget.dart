@@ -29,10 +29,10 @@ class CourseWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Container(
       margin: EdgeInsets.only(
-          top: (course.startTime - 1) * height,
-          left: (course.weekTime - 1) * width),
+          top: (course.startTime! - 1) * height,
+          left: (course.weekTime! - 1) * width),
       padding: EdgeInsets.all(0.5),
-      height: (course.timeCount + 1) * height,
+      height: (course.timeCount! + 1) * height,
       width: width,
       child: Container(
         decoration: BoxDecoration(
@@ -61,7 +61,7 @@ class CourseWidget extends StatelessWidget {
                 children: <TextSpan>[
                   new TextSpan(
                       text: (isActive ? '' : S.of(context).not_this_week) +
-                          course.name,
+                          course.name!,
                       style: new TextStyle(fontWeight: FontWeight.bold)),
                   new TextSpan(
                       text: S.of(context).at +

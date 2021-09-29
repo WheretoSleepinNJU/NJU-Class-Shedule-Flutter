@@ -25,16 +25,16 @@ class WeekChanger extends StatelessWidget {
                 await showDialog<String>(
                   context: context,
                   builder: (BuildContext context) {
-                    int changedWeek = snapshot.data - 1;
+                    int changedWeek = snapshot.data! - 1;
                     return mDialog(
                       S.of(context).change_week_title,
                       Container(
                           height: 32,
                           child: CupertinoPicker(
                               scrollController: new FixedExtentScrollController(
-                                initialItem: snapshot.data > Config.MAX_WEEKS
+                                initialItem: snapshot.data! > Config.MAX_WEEKS
                                     ? -1
-                                    : snapshot.data - 1,
+                                    : snapshot.data! - 1,
                               ),
                               itemExtent: 32.0,
                               backgroundColor: Colors.white,
@@ -63,7 +63,7 @@ class WeekChanger extends StatelessWidget {
                             child: Text(S.of(context).ok),
                             onPressed: () async {
                               await changeWeek(
-                                  context, changedWeek, snapshot.data);
+                                  context, changedWeek, snapshot.data!);
                               Navigator.of(context).pop();
                             }),
                       ],
@@ -81,7 +81,7 @@ class WeekChanger extends StatelessWidget {
     return week;
   }
 
-  void changeWeek(BuildContext context, int changedWeek, int nowWeek) async {
+  Future<bool> changeWeek(BuildContext context, int changedWeek, int nowWeek) async {
     if (changedWeek == nowWeek - 1) {
       Toast.showToast(S.of(context).nowweek_not_edited_success_toast, context);
     } else {
@@ -90,5 +90,6 @@ class WeekChanger extends StatelessWidget {
       ScopedModel.of<MainStateModel>(context).refresh();
       Navigator.of(context).pop();
     }
+    return true;
   }
 }

@@ -29,7 +29,7 @@ class ScheduleModel {
 
   void classify() {
     for (Course course in courses) {
-      List weeks = json.decode(course.weeks);
+      List weeks = json.decode(course.weeks!);
       if (weeks.contains(nowWeek))
         activeCourses.add(course);
       else
@@ -102,10 +102,10 @@ class ScheduleModel {
 
   bool _checkIfOverlapping(Course a, Course b) {
     bool result = a.weekTime == b.weekTime &&
-        ((a.startTime >= b.startTime &&
-                a.startTime <= b.startTime + b.timeCount) ||
-            (b.startTime >= a.startTime &&
-                b.startTime <= a.startTime + a.timeCount));
+        ((a.startTime! >= b.startTime! &&
+                a.startTime! <= b.startTime! + b.timeCount!) ||
+            (b.startTime! >= a.startTime! &&
+                b.startTime! <= a.startTime! + a.timeCount!));
 //    print(result);
     return result;
   }
@@ -115,10 +115,10 @@ class ScheduleModel {
     int max_count = 0;
     int max_index = 0;
     for (int i = 0; i < multiCoursesElement.length; i++) {
-      List weeks = json.decode(multiCoursesElement[i].weeks);
-      if (multiCoursesElement[i].timeCount > max_count &&
+      List weeks = json.decode(multiCoursesElement[i].weeks!);
+      if (multiCoursesElement[i].timeCount! > max_count &&
           weeks.contains(nowWeek)) {
-        max_count = multiCoursesElement[i].timeCount;
+        max_count = multiCoursesElement[i].timeCount!;
         max_index = i;
       }
     }

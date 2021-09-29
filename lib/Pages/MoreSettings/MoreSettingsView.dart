@@ -51,7 +51,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
               onTap: () async {
                 // using your method of getting an image
                 final File image =
-                    await ImagePicker.pickImage(source: ImageSource.gallery);
+                    (await ImagePicker().pickImage(source: ImageSource.gallery)) as File;
 
                 if(image == null) return;
 
@@ -88,12 +88,10 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                 // delete old picture
                 String oldPath = await ScopedModel.of<MainStateModel>(context)
                     .getBgImgPath();
-                if (oldPath != null) {
-                  File oldImg = File(oldPath);
-                  if (oldImg.existsSync()) {
-                    oldImg.deleteSync(recursive: true);
-                    print('Old image deleted.');
-                  }
+                File oldImg = File(oldPath);
+                if (oldImg.existsSync()) {
+                  oldImg.deleteSync(recursive: true);
+                  print('Old image deleted.');
                 }
                 await ScopedModel.of<MainStateModel>(context).removeBgImgPath();
                 Toast.showToast(
@@ -114,7 +112,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                         return Container(width: 0);
                       } else {
                         return Switch(
-                          value: snapshot.data,
+                          value: snapshot.data!,
                           onChanged: (bool value) =>
                               ScopedModel.of<MainStateModel>(context)
                                   .setWhiteMode(value),
@@ -132,7 +130,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                         return Container(width: 0);
                       } else {
                         return Switch(
-                          value: !snapshot.data,
+                          value: !snapshot.data!,
                           onChanged: (bool value) =>
                               ScopedModel.of<MainStateModel>(context)
                                   .setAddButton(!value),
@@ -150,7 +148,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                        value: snapshot.data,
+                        value: snapshot.data!,
                         onChanged: (bool value) =>
                             ScopedModel.of<MainStateModel>(context)
                                 .setShowWeekend(value),
@@ -169,7 +167,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                        value: snapshot.data,
+                        value: snapshot.data!,
                         onChanged: (bool value) =>
                             ScopedModel.of<MainStateModel>(context)
                                 .setShowClassTime(value),
@@ -188,7 +186,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                        value: snapshot.data,
+                        value: snapshot.data!,
                         onChanged: (bool value) =>
                             ScopedModel.of<MainStateModel>(context)
                                 .setShowMonth(value),
@@ -207,7 +205,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                        value: snapshot.data,
+                        value: snapshot.data!,
                         onChanged: (bool value) =>
                             ScopedModel.of<MainStateModel>(context)
                                 .setShowDate(value),
@@ -226,7 +224,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                        value: snapshot.data,
+                        value: snapshot.data!,
                         onChanged: (bool value) =>
                             ScopedModel.of<MainStateModel>(context)
                                 .setForceZoom(value),

@@ -2,8 +2,8 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class WeekStateModel extends Model {
-  int _weekIndex;
-  int _tmpWeekIndex;
+  int? _weekIndex;
+  int? _tmpWeekIndex;
 
   get wekIndex => _weekIndex;
   get tmpWeekIndex => _tmpWeekIndex;
@@ -19,7 +19,7 @@ abstract class WeekStateModel extends Model {
 
   Future<int> getWeek() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
-    int weekIndex = sp.getInt("weekIndex");
+    int? weekIndex = sp.getInt("weekIndex");
     if (weekIndex != null) {
       return weekIndex;
     }
@@ -35,7 +35,7 @@ abstract class WeekStateModel extends Model {
 
   Future<int> getTmpWeek() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
-    int tmpWeekIndex = sp.getInt("tmpWeekIndex");
+    int? tmpWeekIndex = sp.getInt("tmpWeekIndex");
     if (tmpWeekIndex != null) {
       return tmpWeekIndex;
     }
