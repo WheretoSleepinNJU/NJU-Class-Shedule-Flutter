@@ -135,7 +135,7 @@ class CourseTableViewState extends State<CourseTableView> {
                           Text(S.of(context).app_name),
                           GestureDetector(
                             child:
-                                Text((nowWeek), style: TextStyle(fontSize: 16)),
+                                Text((nowWeek), style: TextStyle(fontSize: 14)),
                             onTap: () => setState(() {
                               weekSelectorVisibility = !weekSelectorVisibility;
                             }),

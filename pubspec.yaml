@@ -29,6 +29,10 @@ dependencies:
   qr_flutter: ^4.0.0
   sqflite: ^2.0.0+4
   html: ^0.15.0
+#  text_view:
+#    path: ./lib/Libs/text_view
+#    git:
+#      url: git://github.com/felangel/flutter_text_view_plugin.git
   dio: ^4.0.0
 
 dev_dependencies:

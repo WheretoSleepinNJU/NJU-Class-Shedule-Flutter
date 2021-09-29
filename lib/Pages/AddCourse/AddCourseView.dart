@@ -102,12 +102,15 @@ class _AddViewState extends State<AddView> {
                             color: Theme.of(context).primaryColor),
                       ),
                       onTap: () async {
-                        _node = (await showDialog<Map>(
+                        Map new_node = (await showDialog<Map>(
                             context: context,
                             barrierDismissible: false,
                             builder: (BuildContext context) {
-                              return NodeDialog();
+                              return NodeDialog(node: _node);
                             }))!;
+                        setState(() {
+                          _node = new_node;
+                        });
                       })
                 ]),
                 Padding(
