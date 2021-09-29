@@ -145,7 +145,7 @@ class CourseTableViewState extends State<CourseTableView> {
                           IconButton(
                             icon: Icon(Icons.settings),
                             onPressed: () async {
-                              bool status = await Navigator.of(context).push(
+                              bool? status = await Navigator.of(context).push(
                                   MaterialPageRoute(
                                       builder: (BuildContext context) =>
                                           SettingsView()));

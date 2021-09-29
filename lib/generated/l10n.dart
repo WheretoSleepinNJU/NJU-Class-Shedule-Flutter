@@ -9,28 +9,45 @@ import 'intl/messages_all.dart';
 // **************************************************************************
 
 // ignore_for_file: non_constant_identifier_names, lines_longer_than_80_chars
+// ignore_for_file: join_return_with_assignment, prefer_final_in_for_each
+// ignore_for_file: avoid_redundant_argument_values, avoid_escaping_inner_quotes
 
 class S {
   S();
-  
-  static S? current;
-  
-  static const AppLocalizationDelegate delegate =
-    AppLocalizationDelegate();
+
+  static S? _current;
+
+  static S get current {
+    assert(_current != null,
+        'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.');
+    return _current!;
+  }
+
+  static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
   static Future<S> load(Locale locale) {
-    final name = (locale.countryCode?.isEmpty ?? false) ? locale.languageCode : locale.toString();
-    final localeName = Intl.canonicalizedLocale(name); 
+    final name = (locale.countryCode?.isEmpty ?? false)
+        ? locale.languageCode
+        : locale.toString();
+    final localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
-      S.current = S();
-      
-      return S.current!;
+      final instance = S();
+      S._current = instance;
+
+      return instance;
     });
-  } 
+  }
 
   static S of(BuildContext context) {
-    return Localizations.of<S>(context, S)!;
+    final instance = S.maybeOf(context);
+    assert(instance != null,
+        'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?');
+    return instance!;
+  }
+
+  static S? maybeOf(BuildContext context) {
+    return Localizations.of<S>(context, S);
   }
 
   /// `南哪课表`
@@ -248,6 +265,26 @@ class S {
     return Intl.message(
       '教务处哇教务处，不愧是你',
       name: 'import_from_NJU_cer_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `从南京大学选课系统导入课表`
+  String get import_from_NJU_xk_title {
+    return Intl.message(
+      '从南京大学选课系统导入课表',
+      name: 'import_from_NJU_xk_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `两种方式已经无法满足我校教务处了...`
+  String get import_from_NJU_xk_subtitle {
+    return Intl.message(
+      '两种方式已经无法满足我校教务处了...',
+      name: 'import_from_NJU_xk_subtitle',
       desc: '',
       args: [],
     );
@@ -1013,6 +1050,16 @@ class S {
     );
   }
 
+  /// `数据识别与导入中~`
+  String get class_parse_toast_importing {
+    return Intl.message(
+      '数据识别与导入中~',
+      name: 'class_parse_toast_importing',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `课程解析失败 = =|| 可将课表反馈至翠翠`
   String get class_parse_error_toast {
     return Intl.message(
@@ -1292,11 +1339,9 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
   bool shouldReload(AppLocalizationDelegate old) => false;
 
   bool _isSupported(Locale locale) {
-    if (locale != null) {
-      for (var supportedLocale in supportedLocales) {
-        if (supportedLocale.languageCode == locale.languageCode) {
-          return true;
-        }
+    for (var supportedLocale in supportedLocales) {
+      if (supportedLocale.languageCode == locale.languageCode) {
+        return true;
       }
     }
     return false;

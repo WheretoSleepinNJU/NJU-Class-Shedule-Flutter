@@ -11,7 +11,8 @@ class BackgroundImage extends StatelessWidget {
   Widget build(BuildContext context) {
 //    return Container(child: Image.file(File(_bgImgPath)));
 //      Image.file(File(_bgImgPath));
-
+    if(_bgImgPath == '')
+      return Container();
     return Container(
         decoration: BoxDecoration(
       image: DecorationImage(

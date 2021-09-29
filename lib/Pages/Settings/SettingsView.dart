@@ -8,6 +8,7 @@ import 'package:package_info/package_info.dart';
 import '../ManageTable/ManageTableView.dart';
 import '../Import/ImportView.dart';
 import '../ImportFromWeb/ImportFromWebView.dart';
+import '../ImportFromXK/ImportFromXKView.dart';
 import '../About/AboutView.dart';
 import '../AddCourse/AddCourseView.dart';
 import '../MoreSettings/MoreSettingsView.dart';
@@ -68,7 +69,19 @@ class _SettingsViewState extends State<SettingsView> {
                 onTap: () async {
                   bool status = await Navigator.of(context).push(
                       MaterialPageRoute(
-                          builder: (BuildContext context) => ImportFromWebView()));
+                          builder: (BuildContext context) =>
+                              ImportFromWebView()));
+                  if (status == true) Navigator.of(context).pop(status);
+                },
+              ),
+              ListTile(
+                title: Text(S.of(context).import_from_NJU_xk_title),
+                subtitle: Text(S.of(context).import_from_NJU_xk_subtitle),
+                onTap: () async {
+                  bool? status = await Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              ImportFromXKView()));
                   if (status == true) Navigator.of(context).pop(status);
                 },
               ),
