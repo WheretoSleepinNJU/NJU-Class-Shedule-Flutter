@@ -35,7 +35,7 @@ JavascriptChannel snackbarJavascriptChannel(BuildContext context) {
 
 class _WebViewState extends State<ImportFromWebView> {
   final Completer<WebViewController> _controller =
-  Completer<WebViewController>();
+      Completer<WebViewController>();
   late WebViewController _webViewController;
   final CookieManager cookieManager = CookieManager();
 
@@ -50,14 +50,13 @@ class _WebViewState extends State<ImportFromWebView> {
     return new Scaffold(
       appBar: new AppBar(
         title: new Text('统一认证登录'),
-        actions: <Widget>[
-          ManualMenu(_controller.future)
-        ],
+        actions: <Widget>[ManualMenu(_controller.future)],
       ),
       body: Builder(
         builder: (BuildContext context) {
           return WebView(
-            initialUrl: 'https://authserver.nju.edu.cn/authserver/login?service=http%3A%2F%2Felite.nju.edu.cn%2Fjiaowu%2Fcaslogin.jsp',
+            initialUrl:
+                'https://authserver.nju.edu.cn/authserver/login?service=http%3A%2F%2Felite.nju.edu.cn%2Fjiaowu%2Fcaslogin.jsp',
             javascriptMode: JavascriptMode.unrestricted,
             onWebViewCreated: (WebViewController webViewController) async {
               _webViewController = webViewController;
@@ -69,9 +68,10 @@ class _WebViewState extends State<ImportFromWebView> {
             ].toSet(),
             onPageFinished: (url) {
               if (url.startsWith("http://elite.nju.edu.cn/jiaowu/login.do")) {
-                _webViewController.loadUrl('http://elite.nju.edu.cn/jiaowu/student/teachinginfo/courseList.do?method=currentTermCourse');
-              }
-              else if (url.startsWith("http://elite.nju.edu.cn/jiaowu/student/teachinginfo/courseList.do?method=currentTermCourse")) {
+                _webViewController.loadUrl(
+                    'http://elite.nju.edu.cn/jiaowu/student/teachinginfo/courseList.do?method=currentTermCourse');
+              } else if (url.startsWith(
+                  "http://elite.nju.edu.cn/jiaowu/student/teachinginfo/courseList.do?method=currentTermCourse")) {
                 import(_webViewController, context);
                 print('Login success!');
               }
@@ -83,9 +83,10 @@ class _WebViewState extends State<ImportFromWebView> {
   }
 
   import(WebViewController controller, BuildContext context) async {
-    final String cookies =
-    await controller.evaluateJavascript('document.cookie');
-    String response = await controller.evaluateJavascript('document.body.innerHTML');
+    // final String cookies =
+    //     await controller.evaluateJavascript('document.cookie');
+    String response =
+        await controller.evaluateJavascript('document.body.innerHTML');
 
     response = response.replaceAll('\\u003C', '<');
     response = response.replaceAll('\\\"', '\"');
@@ -98,19 +99,19 @@ class _WebViewState extends State<ImportFromWebView> {
     CourseParser cp = new CourseParser(response);
     String courseTableName = cp.parseCourseName();
     int rst = await cp.addCourseTable(courseTableName, context);
-    try{
+    try {
       await cp.parseCourse(rst);
-      Toast.showToast(
-          S.of(context).class_parse_toast_success, context);
+      Toast.showToast(S.of(context).class_parse_toast_success, context);
       Navigator.of(context).pop(true);
-    } catch(e) {
-      Toast.showToast(
-          S.of(context).class_parse_error_toast, context);    }
+    } catch (e) {
+      Toast.showToast(S.of(context).class_parse_error_toast, context);
+    }
   }
 }
 
 class ManualMenu extends StatelessWidget {
   ManualMenu(this.controller);
+
   final Future<WebViewController> controller;
 
   @override
@@ -121,7 +122,9 @@ class ManualMenu extends StatelessWidget {
           (BuildContext context, AsyncSnapshot<WebViewController> controller) {
         return IconButton(
           icon: const Icon(Icons.send),
-          onPressed: () async {listCookies(controller.data!, context);},
+          onPressed: () async {
+            listCookies(controller.data!, context);
+          },
         );
       },
     );
@@ -129,22 +132,21 @@ class ManualMenu extends StatelessWidget {
 
   listCookies(WebViewController controller, BuildContext context) async {
     final String cookies =
-    await controller.evaluateJavascript('document.cookie');
-    String response = await controller.evaluateJavascript('document.body.innerHTML');
+        await controller.evaluateJavascript('document.cookie');
+    String response =
+        await controller.evaluateJavascript('document.body.innerHTML');
 
     response = response.replaceAll('\\u003C', '<');
     response = response.replaceAll('\\\"', '\"');
     CourseParser cp = new CourseParser(response);
     String courseTableName = cp.parseCourseName();
     int rst = await cp.addCourseTable(courseTableName, context);
-    try{
+    try {
       await cp.parseCourse(rst);
-      Toast.showToast(
-          S.of(context).class_parse_toast_success, context);
+      Toast.showToast(S.of(context).class_parse_toast_success, context);
       Navigator.of(context).pop(true);
-    } catch(e) {
-      Toast.showToast(
-          S.of(context).class_parse_error_toast, context);
+    } catch (e) {
+      Toast.showToast(S.of(context).class_parse_error_toast, context);
     }
   }
 }

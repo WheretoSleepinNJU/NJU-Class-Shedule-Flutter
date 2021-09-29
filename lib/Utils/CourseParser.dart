@@ -20,10 +20,12 @@ class CourseParser {
   }
 
   String parseCourseName() {
-    Element? element = document!.querySelector(
-        "body > div:nth-child(10) > table > tbody > tr:nth-child(2) > td");
-//    print(element.innerHtml);
-    return element!.innerHtml;
+    // Element? element = document!.querySelector(
+    //     "body > div:nth-child(10) > table > tbody > tr:nth-child(2) > td");
+    final RegExp nameExp = new RegExp("[0-9]+-[0-9]+学年第(一|二)学期");
+    String name = nameExp.stringMatch(html).toString();
+    //    print(element.innerHtml);
+    return name;
   }
 
   Future<List<Course>> parseCourse(int tableId) async {

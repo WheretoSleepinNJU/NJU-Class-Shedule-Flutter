@@ -76,7 +76,7 @@ class CourseTableViewState extends State<CourseTableView> {
     _screenWidth = MediaQuery.of(context).size.width;
     _screenHeight = MediaQuery.of(context).size.height;
     _weekTitleHeight = 30;
-    _classTitleWidth = 30;
+    _classTitleWidth = 40;
     _weekTitleWidth = (_screenWidth - _classTitleWidth) / _maxShowDays;
     if (_isForceZoom)
       _classTitleHeight = (_screenHeight -

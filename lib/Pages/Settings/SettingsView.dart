@@ -72,14 +72,14 @@ class _SettingsViewState extends State<SettingsView> {
                   if (status == true) Navigator.of(context).pop(status);
                 },
               ),
-              ListTile(
-                title: Text(S.of(context).import_or_export_title),
-                subtitle: Text(S.of(context).import_or_export_subtitle),
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => ShareView()));
-                },
-              ),
+              // ListTile(
+              //   title: Text(S.of(context).import_or_export_title),
+              //   subtitle: Text(S.of(context).import_or_export_subtitle),
+              //   onTap: () {
+              //     Navigator.of(context).push(MaterialPageRoute(
+              //         builder: (BuildContext context) => ShareView()));
+              //   },
+              // ),
               ListTile(
                 title: Text(S.of(context).manage_table_title),
                 subtitle: Text(S.of(context).manage_table_subtitle),
