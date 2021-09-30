@@ -7,7 +7,7 @@ import '../../Utils/States/MainState.dart';
 import '../../Models/CourseTableModel.dart';
 import '../../Models/CourseModel.dart';
 
-class ImportPresenter {
+class ImportFromJWPresenter {
   HttpUtil httpUtil = new HttpUtil();
 
   Future<Image> getCaptcha(double num) async {

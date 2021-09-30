@@ -132,6 +132,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "if_show_weekend_title": MessageLookupByLibrary.simpleMessage("显示周末"),
         "import": MessageLookupByLibrary.simpleMessage("导入"),
         "import_auto": MessageLookupByLibrary.simpleMessage("自动导入"),
+        "import_from_JW_title": MessageLookupByLibrary.simpleMessage("导入课程表"),
         "import_from_NJU_cer_subtitle":
             MessageLookupByLibrary.simpleMessage("教务处哇教务处，不愧是你"),
         "import_from_NJU_cer_title":
@@ -156,6 +157,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("使用南哪课表内置的导入/导出功能"),
         "import_or_export_title":
             MessageLookupByLibrary.simpleMessage("导入/导出课表"),
+        "import_subtitle": MessageLookupByLibrary.simpleMessage("自动导入课程表数据"),
         "import_success_toast": MessageLookupByLibrary.simpleMessage("导入完成"),
         "import_title": MessageLookupByLibrary.simpleMessage("导入课程表"),
         "importing_toast": MessageLookupByLibrary.simpleMessage("导入中 请稍后"),

@@ -230,6 +230,26 @@ class S {
     );
   }
 
+  /// `导入课程表`
+  String get import_from_JW_title {
+    return Intl.message(
+      '导入课程表',
+      name: 'import_from_JW_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `自动导入课程表数据`
+  String get import_subtitle {
+    return Intl.message(
+      '自动导入课程表数据',
+      name: 'import_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `从南京大学教务处导入课表`
   String get import_from_NJU_title {
     return Intl.message(

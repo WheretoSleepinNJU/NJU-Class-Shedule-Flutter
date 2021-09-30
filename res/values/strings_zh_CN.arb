@@ -19,6 +19,8 @@
   "settings_title": "设置",
   "import_manually_title": "手动添加",
   "import_manually_subtitle": "手动添加课程表数据",
+  "import_title": "导入课表",
+  "import__subtitle": "自动导入课程表数据",
   "import_from_NJU_title": "从南京大学教务处导入课表",
   "import_from_NJU_subtitle": "登录南京大学教务系统导入课程表",
   "import_from_NJU_cer_title": "从南京大学统一认证导入课表",
@@ -95,7 +97,7 @@
   "add_class": "添加课程",
   "add_manually_success_toast": "添加成功！>v<",
 
-  "import_title": "导入课程表",
+  "import_from_JW_title": "导入课程表",
   "username": "用户名",
   "password": "密码",
   "captcha": "验证码",

@@ -11,14 +11,14 @@ import '../../Resources/Constant.dart';
 import '../../Utils/CourseParser.dart';
 import '../../Components/Toast.dart';
 
-class ImportFromWebView extends StatefulWidget {
+class ImportFromCerView extends StatefulWidget {
   final String? title;
 
-  ImportFromWebView({Key? key, this.title}) : super(key: key);
+  ImportFromCerView({Key? key, this.title}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _WebViewState();
+    return ImportFromCerViewState();
   }
 }
 
@@ -33,7 +33,7 @@ JavascriptChannel snackbarJavascriptChannel(BuildContext context) {
   );
 }
 
-class _WebViewState extends State<ImportFromWebView> {
+class ImportFromCerViewState extends State<ImportFromCerView> {
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
   late WebViewController _webViewController;
