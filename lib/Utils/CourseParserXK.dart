@@ -36,6 +36,10 @@ class CourseParser {
 
       // Time and Place
       List<Element> infos = e.children[3].children;
+      String courseName = e.children[1].innerHtml;
+      String courseTeacher = e.children[2].innerHtml;
+      String courseInfo = e.children[6].attributes['title'] ?? '';
+
       // String source = e.children[3].innerHtml.trim().replaceAll('<br>', '\\n');
       // List<String> infos = source.split('\\n');
 
@@ -47,8 +51,6 @@ class CourseParser {
         // info = info.replaceAll('\\t\\t\\t\\t\\t', '');
         if (info == '') continue;
 
-        String courseName = e.children[1].innerHtml;
-        String courseTeacher = e.children[2].innerHtml;
         // String testLocation =
         //     (e.children.length > 9) ? (e.children[9].innerHtml) : '';
 
@@ -92,17 +94,10 @@ class CourseParser {
         // print(classRoom);
 
         Course course = new Course(
-          tableId,
-          courseName,
-          weekSeries,
-          weekTime,
-          startTime,
-          timeCount,
-          1,
-          classroom: classRoom,
-          teacher: courseTeacher,
-          // testLocation: testLocation
-        );
+            tableId, courseName, weekSeries, weekTime, startTime, timeCount, 1,
+            classroom: classRoom, teacher: courseTeacher, info: courseInfo
+            // testLocation: testLocation
+            );
         // print(course.toMap().toString());
 
         rst.add(course);

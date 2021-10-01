@@ -35,48 +35,44 @@ class CourseParser {
     for (Element e in elements) {
       //退选课程
       String state = e.children[6].innerHtml.trim();
-      if(state.contains('已退选')) continue;
+      if (state.contains('已退选')) continue;
 
       // Time and Place
       String source = e.children[4].innerHtml.trim().replaceAll('<br>', '\\n');
       List<String> infos = source.split('\\n');
 
-//      print(source);
+      String courseName = e.children[1].innerHtml;
+      String courseTeacher = e.children[3].innerHtml;
+      String testLocation =
+          (e.children.length > 9) ? (e.children[9].innerHtml) : '';
+      String testTime =
+          (e.children.length > 9) ? (e.children[8].innerHtml) : '';
+      String courseInfo = (e.children.length > 9) ? (e.children[10].text) : '';
 
       for (String info in infos) {
         info = info.replaceAll('\\t\\t\\t\\t\\t  \\t', '');
         info = info.replaceAll('\\t\\t\\t\\t\\t', '');
         if (info == '') continue;
 
-        String courseName = e.children[1].innerHtml;
-        String courseTeacher = e.children[3].innerHtml;
-        String testLocation =
-            (e.children.length > 9) ? (e.children[9].innerHtml) : '';
-
         //TODO: 自由时间
         // "自由时间 2-17周 详见主页通知"
         if (info.contains('自由时间')) continue;
-//        print(info);
 
-//        if (!info.startsWith('周')) {
-//          throw (courseName);
-//        }
         // Get WeekTime
         List<String> strs = info.split(' ');
         String weekStr = info.substring(0, 2);
         // 异常测试
-//        weekStr = '周零';
+        // weekStr = '周零';
         int weekTime = _getIntWeek(weekStr);
         if (weekTime == 0) {
           throw (courseName);
         }
-//        print(weekTime);
 
         // Get Time
         int startTime, timeCount;
         String weekSeries;
         // 异常测试
-//        info="周四 第9节 2-17周  仙Ⅱ-301";
+        // info="周四 第9节 2-17周  仙Ⅱ-301";
         try {
           var time = patten1.firstMatch(info);
           startTime = int.parse(time!.group(1)!);
@@ -84,24 +80,25 @@ class CourseParser {
           weekSeries = _getWeekSeriesString(info);
         } catch (e) {
           continue;
-//          throw (courseName);
+          // throw (courseName);
         }
-//        print(startTime.toString() + ' - ' + timeCount.toString());
+        // print(startTime.toString() + ' - ' + timeCount.toString());
 
         // Get ClassRoom
         String classRoom = strs[strs.length - 1];
-//        print(classRoom);
+        // print(classRoom);
 
         Course course = new Course(
             tableId, courseName, weekSeries, weekTime, startTime, timeCount, 1,
             classroom: classRoom,
             teacher: courseTeacher,
-            testLocation: testLocation);
-//        print(course.toMap().toString());
-
+            testLocation: testLocation,
+            testTime: testTime,
+            info: courseInfo);
+        // print(course.toMap().toString());
         rst.add(course);
       }
-//      new Course(tableId, e.children[2].innerHtml, "[1,2,3,4,5,6,7]", 3, 5, 2, 0, '#8AD297', classroom: e.children[3].innerHtml)
+      // new Course(tableId, e.children[2].innerHtml, "[1,2,3,4,5,6,7]", 3, 5, 2, 0, '#8AD297', classroom: e.children[3].innerHtml)
     }
     CourseProvider courseProvider = new CourseProvider();
     for (Course course in rst) {
@@ -184,21 +181,21 @@ class CourseParser {
 
   String _getWeekSeries(int start, int end) {
     List<int> list = [for (int i = start; i <= end; i += 1) i];
-//    print (list.toString());
+    // print (list.toString());
     return list.toString();
   }
 
   String _getSingleWeekSeries(int start, int end) {
     if (start % 2 == 0) start++;
     List<int> list = [for (int i = start; i <= end; i += 2) i];
-//    print (list.toString());
+    // print (list.toString());
     return list.toString();
   }
 
   String _getDoubleWeekSeries(int start, int end) {
     if (start % 2 == 1) start++;
     List<int> list = [for (int i = start; i <= end; i += 2) i];
-//    print (list.toString());
+    // print (list.toString());
     return list.toString();
   }
 }

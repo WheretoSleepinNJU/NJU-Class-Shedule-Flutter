@@ -160,6 +160,16 @@ class S {
     );
   }
 
+  /// `暂无备注`
+  String get unknown_info {
+    return Intl.message(
+      '暂无备注',
+      name: 'unknown_info',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `自动导入`
   String get import_auto {
     return Intl.message(

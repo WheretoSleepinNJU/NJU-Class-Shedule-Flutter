@@ -12,6 +12,7 @@ final String columnTeacher = DbHelper.COURSE_COLUMN_TEACHER;
 final String columnTestTime = DbHelper.COURSE_COLUMN_TEST_TIME;
 final String columnTestLocation = DbHelper.COURSE_COLUMN_TEST_LOCATION;
 final String columnLink = DbHelper.COURSE_COLUMN_INFO_LINK;
+final String columnInfo = DbHelper.COURSE_COLUMN_INFO;
 final String columnWeeks = DbHelper.COURSE_COLUMN_WEEKS;
 final String columnWeekTime = DbHelper.COURSE_COLUMN_WEEK_TIME;
 final String columnStartTime = DbHelper.COURSE_COLUMN_START_TIME;
@@ -31,6 +32,7 @@ class Course {
   String? testTime;
   String? testLocation;
   String? link;
+  String? info;
 
   String? weeks;
   int? weekTime;
@@ -50,7 +52,8 @@ class Course {
       this.testLocation,
       this.link,
       this.color,
-      this.courseId});
+      this.courseId,
+      this.info});
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
@@ -69,7 +72,8 @@ class Course {
       columnTestTime: testTime,
       columnTestLocation: testLocation,
       columnLink: link,
-      columnCourseId: courseId
+      columnCourseId: courseId,
+      columnInfo: info,
     };
     return map;
   }
@@ -85,6 +89,7 @@ class Course {
     testTime = map[columnTestTime];
     testLocation = map[columnTestLocation];
     link = map[columnLink];
+    info = map[columnInfo];
 
     weeks = map[columnWeeks];
     weekTime = map[columnWeekTime];

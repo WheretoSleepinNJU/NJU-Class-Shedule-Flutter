@@ -35,7 +35,7 @@ class _ImportViewState extends State<ImportView> {
                 title: Text(S.of(context).import_from_NJU_title),
                 subtitle: Text(S.of(context).import_from_NJU_subtitle),
                 onTap: () async {
-                  bool status = await Navigator.of(context).push(
+                  bool? status = await Navigator.of(context).push(
                       MaterialPageRoute(
                           builder: (BuildContext context) => ImportFromJWView()));
                   if (status == true) Navigator.of(context).pop(status);

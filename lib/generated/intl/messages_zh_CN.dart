@@ -211,6 +211,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("重置课程颜色"),
         "tap_to_refresh": MessageLookupByLibrary.simpleMessage("点击刷新"),
         "to": MessageLookupByLibrary.simpleMessage("-"),
+        "unknown_info": MessageLookupByLibrary.simpleMessage("暂无备注"),
         "unknown_place": MessageLookupByLibrary.simpleMessage("未知地点"),
         "username": MessageLookupByLibrary.simpleMessage("用户名"),
         "username_error_toast":

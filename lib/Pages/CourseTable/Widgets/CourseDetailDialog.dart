@@ -21,15 +21,20 @@ class CourseDetailDialog extends StatelessWidget {
         children: <Widget>[
           Row(children: [
             Icon(Icons.location_on, color: Theme.of(context).primaryColor),
+            Padding(padding: EdgeInsets.only(left: 5)),
             Flexible(
                 child: Text(course.classroom ?? S.of(context).unknown_place)),
           ]),
+          Padding(padding: EdgeInsets.only(bottom: 10)),
           Row(children: [
             Icon(Icons.account_circle, color: Theme.of(context).primaryColor),
+            Padding(padding: EdgeInsets.only(left: 5)),
             Flexible(child: Text(course.teacher ?? '')),
           ]),
+          Padding(padding: EdgeInsets.only(bottom: 10)),
           Row(children: [
             Icon(Icons.access_time, color: Theme.of(context).primaryColor),
+            Padding(padding: EdgeInsets.only(left: 5)),
             Flexible(
                 child: Text(Constant.WEEK_WITH_BIAS[course.weekTime!] +
                     course.startTime.toString() +
@@ -37,16 +42,26 @@ class CourseDetailDialog extends StatelessWidget {
                     (course.startTime! + course.timeCount!).toString() +
                     '节')),
           ]),
-          Row(children: [
-            Icon(Icons.calendar_today, color: Theme.of(context).primaryColor),
+          Padding(padding: EdgeInsets.only(bottom: 10)),
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Icon(Icons.event, color: Theme.of(context).primaryColor),
+            Padding(padding: EdgeInsets.only(left: 5)),
             Flexible(child: Text(course.weeks!)),
           ]),
+          Padding(padding: EdgeInsets.only(bottom: 10)),
           Row(children: [
-            Icon(Icons.android, color: Theme.of(context).primaryColor),
+            Icon(Icons.settings_suggest, color: Theme.of(context).primaryColor),
+            Padding(padding: EdgeInsets.only(left: 5)),
             Flexible(
                 child: Text(course.importType == Constant.ADD_BY_IMPORT
                     ? S.of(context).import_auto
                     : S.of(context).import_manually)),
+          ]),
+          Padding(padding: EdgeInsets.only(bottom: 10)),
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Icon(Icons.description, color: Theme.of(context).primaryColor),
+            Padding(padding: EdgeInsets.only(left: 5)),
+            Flexible(child: Text(course.info ?? S.of(context).unknown_info)),
           ]),
         ],
       ),
