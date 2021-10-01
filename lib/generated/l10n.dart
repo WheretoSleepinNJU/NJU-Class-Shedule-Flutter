@@ -1250,6 +1250,16 @@ class S {
     );
   }
 
+  /// `隐私政策`
+  String get check_privacy_button {
+    return Intl.message(
+      '隐私政策',
+      name: 'check_privacy_button',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `GitHub 开源`
   String get github_open_source {
     return Intl.message(

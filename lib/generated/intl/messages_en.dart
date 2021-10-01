@@ -60,6 +60,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "change_theme_title": MessageLookupByLibrary.simpleMessage("修改主题"),
         "change_week_subtitle": MessageLookupByLibrary.simpleMessage("当前周数："),
         "change_week_title": MessageLookupByLibrary.simpleMessage("修改当前周"),
+        "check_privacy_button": MessageLookupByLibrary.simpleMessage("隐私政策"),
         "check_update_button": MessageLookupByLibrary.simpleMessage("检查更新"),
         "choose_class_time_dialog_title":
             MessageLookupByLibrary.simpleMessage("选择上课时间"),

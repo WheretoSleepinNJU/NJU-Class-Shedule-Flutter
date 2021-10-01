@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../Utils/UpdateUtil.dart';
+import '../../Utils/PrivacyUtil.dart';
 import '../../Resources/Url.dart';
 import 'Widgets/RainDropWidget.dart';
 
@@ -59,6 +60,16 @@ class _AboutViewState extends State<AboutView> {
                 onPressed: () {
                   UpdateUtil updateUtil = new UpdateUtil();
                   updateUtil.checkUpdate(context, true);
+                },
+              ),
+            ),
+            new Container(
+              child: TextButton(
+                child: Text(S.of(context).check_privacy_button,
+                    style: TextStyle(color: Theme.of(context).primaryColor)),
+                onPressed: () {
+                  PrivacyUtil privacyUtil = new PrivacyUtil();
+                  privacyUtil.checkPrivacy(context, true);
                 },
               ),
             ),

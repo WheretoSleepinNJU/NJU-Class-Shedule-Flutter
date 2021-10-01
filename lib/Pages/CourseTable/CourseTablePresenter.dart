@@ -115,26 +115,65 @@ class CourseTablePresenter {
     showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => SingleChildScrollView(
-                child: mDialog(
+        // builder: (context) => mDialog(
+        //       welcome_title,
+        //       SingleChildScrollView(child: Text(welcome_content)),
+        //       <Widget>[
+        //         Column(
+        //           mainAxisSize: MainAxisSize.min,
+        //           children: <Widget>[
+        //             TextButton(
+        //                 // textColor: Theme.of(context).primaryColor,
+        //                 child: Text(S.of(context).love_and_donate),
+        //                 onPressed: () async {
+        //                   if (Platform.isIOS)
+        //                     launch(Url.URL_APPLE);
+        //                   else if (Platform.isAndroid) launch(Url.URL_ANDROID);
+        //                   Navigator.of(context).pop();
+        //                 }),
+        //             TextButton(
+        //                 // textColor: Theme.of(context).primaryColor,
+        //                 child: Text(S.of(context).bug_and_report),
+        //                 onPressed: () {
+        //                   if (Platform.isIOS)
+        //                     launch(Url.QQ_GROUP_APPLE_URL);
+        //                   else if (Platform.isAndroid)
+        //                     launch(Url.QQ_GROUP_ANDROID_URL);
+        //                   Navigator.of(context).pop();
+        //                 }),
+        //             TextButton(
+        //                 // textColor: Colors.grey,
+        //                 child: Text(S.of(context).love_but_no_money),
+        //                 onPressed: () async {
+        //                   Navigator.of(context).pop();
+        //                 }),
+        //           ],
+        //         )
+        //       ],
+        //     ));
+        builder: (context) => mDialog(
               welcome_title,
-              Text(welcome_content),
-              <Widget>[
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    FlatButton(
-                        textColor: Theme.of(context).primaryColor,
-                        child: Text(S.of(context).love_and_donate),
+              SingleChildScrollView(
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                    Text(welcome_content),
+                    TextButton(
+                        style: ButtonStyle(alignment: Alignment.centerRight),
+                        child: Text(S.of(context).love_and_donate,
+                            style: TextStyle(
+                                color: Theme.of(context).primaryColor)),
                         onPressed: () async {
                           if (Platform.isIOS)
                             launch(Url.URL_APPLE);
                           else if (Platform.isAndroid) launch(Url.URL_ANDROID);
                           Navigator.of(context).pop();
                         }),
-                    FlatButton(
-                        textColor: Theme.of(context).primaryColor,
-                        child: Text(S.of(context).bug_and_report),
+                    TextButton(
+                        style: ButtonStyle(alignment: Alignment.centerRight),
+                        child: Text(S.of(context).bug_and_report,
+                            style: TextStyle(
+                                color: Theme.of(context).primaryColor)),
                         onPressed: () {
                           if (Platform.isIOS)
                             launch(Url.QQ_GROUP_APPLE_URL);
@@ -142,19 +181,20 @@ class CourseTablePresenter {
                             launch(Url.QQ_GROUP_ANDROID_URL);
                           Navigator.of(context).pop();
                         }),
-                    FlatButton(
-                        textColor: Colors.grey,
-                        child: Text(S.of(context).love_but_no_money),
+                    TextButton(
+                        style: ButtonStyle(alignment: Alignment.centerRight),
+                        child: Text(S.of(context).love_but_no_money,
+                            style: TextStyle(color: Colors.grey)),
                         onPressed: () async {
                           Navigator.of(context).pop();
                         }),
-                  ],
-                )
-              ],
-            )));
+                  ])),
+              <Widget>[],
+            ));
   }
 
-  Future<bool> changeWeek(BuildContext context, String semester_start_monday) async {
+  Future<bool> changeWeek(
+      BuildContext context, String semester_start_monday) async {
     await showDialog(
       context: context,
       barrierDismissible: false,

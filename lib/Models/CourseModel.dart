@@ -148,6 +148,12 @@ class CourseProvider {
     return rst.toList();
   }
 
+  Future<int> getCourseNum() async {
+    await open();
+    List<Map> rst = await db!.query(tableName);
+    return rst.length;
+  }
+
   Future<int> delete(int id) async {
     await open();
     int rst =
