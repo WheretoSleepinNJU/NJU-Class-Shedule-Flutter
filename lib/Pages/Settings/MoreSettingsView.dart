@@ -50,20 +50,18 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
               subtitle: Text(S.of(context).add_backgound_picture_subtitle),
               onTap: () async {
                 // using your method of getting an image
-                final File image =
-                    (await ImagePicker().pickImage(source: ImageSource.gallery)) as File;
+                final XFile? image =
+                    await ImagePicker().pickImage(source: ImageSource.gallery);
 
                 if(image == null) return;
 
                 // delete old picture
                 String oldPath = await ScopedModel.of<MainStateModel>(context)
                     .getBgImgPath();
-                if (oldPath != null) {
-                  File oldImg = File(oldPath);
-                  if (oldImg.existsSync()) {
-                    oldImg.deleteSync(recursive: true);
-                    print('Old image deleted.');
-                  }
+                File oldImg = File(oldPath);
+                if (oldImg.existsSync()) {
+                  oldImg.deleteSync(recursive: true);
+                  print('Old image deleted.');
                 }
 
                 // add new picture
@@ -71,7 +69,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                 Directory directory = await getApplicationDocumentsDirectory();
                 final String path = directory.path;
                 String fileName = '$path/background_$num.jpg';
-                await image.copy(fileName);
+                await image.saveTo(fileName);
                 await ScopedModel.of<MainStateModel>(context)
                     .setBgImgPath(fileName);
                 print('New image added.');

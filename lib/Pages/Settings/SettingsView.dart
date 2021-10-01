@@ -58,7 +58,7 @@ class _SettingsViewState extends State<SettingsView> {
                 title: Text(S.of(context).import_title),
                 subtitle: Text(S.of(context).import_subtitle),
                 onTap: () async {
-                  bool status = await Navigator.of(context).push(
+                  bool? status = await Navigator.of(context).push(
                       MaterialPageRoute(
                           builder: (BuildContext context) => ImportView()));
                   if (status == true) Navigator.of(context).pop(status);

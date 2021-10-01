@@ -13,12 +13,15 @@ class BackgroundImage extends StatelessWidget {
 //      Image.file(File(_bgImgPath));
     if(_bgImgPath == '')
       return Container();
+    File file = File(_bgImgPath);
+    // if(file == null)
+    //   return Container();
     return Container(
         decoration: BoxDecoration(
       image: DecorationImage(
         colorFilter: new ColorFilter.mode(
             Colors.white.withOpacity(0.8), BlendMode.dstATop),
-        image: FileImage(File(_bgImgPath)),
+        image: FileImage(file),
         fit: BoxFit.cover,
       ),
     ));
