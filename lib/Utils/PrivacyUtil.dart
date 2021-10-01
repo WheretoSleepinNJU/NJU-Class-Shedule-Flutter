@@ -24,6 +24,8 @@ class PrivacyUtil {
     int privacyVersion = sp.getInt("privacyVersion") ?? 0;
     int targetVersion = response.data['version'] ?? 0;
     if (isForce || targetVersion > privacyVersion) {
+      print(isForce);
+      print(privacyVersion);
       showPrivacyDialog(response.data, targetVersion, isForce, context);
     }
   }
@@ -55,7 +57,10 @@ class PrivacyUtil {
                     child: Text(info['confirm_text_first_install'],
                         style:
                             TextStyle(color: Theme.of(context).primaryColor)),
-                    onPressed: () {
+                    onPressed: () async {
+                      SharedPreferences sp =
+                          await SharedPreferences.getInstance();
+                      await sp.setInt("privacyVersion", version);
                       Navigator.of(context).pop();
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (BuildContext context) => ImportView()));

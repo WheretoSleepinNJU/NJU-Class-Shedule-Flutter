@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:sqflite/sqflite.dart';
 import '../Resources/Colors.dart';
 import './Db/DbHelper.dart';
@@ -91,7 +92,7 @@ class Course {
     link = map[columnLink];
     info = map[columnInfo];
 
-    weeks = map[columnWeeks];
+    weeks = map[columnWeeks].toString();
     weekTime = map[columnWeekTime];
     startTime = map[columnStartTime];
     timeCount = map[columnTimeCount];
