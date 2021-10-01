@@ -102,6 +102,8 @@
   "add_manually_success_toast": "添加成功！>v<",
 
   "import_from_JW_title": "导入课程表",
+  "import_banner": "注意：如加载失败，优先检查是否开启南京大学VPN\n如果浏览器也无法访问教务网，那一定是教务系统又抽风了",
+  "import_banner_action": "下载南京大学VPN",
   "username": "用户名",
   "password": "密码",
   "captcha": "验证码",

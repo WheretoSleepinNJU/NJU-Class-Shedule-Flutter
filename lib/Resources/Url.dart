@@ -3,6 +3,8 @@ class Url {
   static final String ClassInfo = "/student/teachinginfo/courseList.do?method=currentTermCourse";
   static final String LoginUrl = "/login.do";
 
+  static final String URL_NJU_VPN = "https://vpn.nju.edu.cn";
+
   static final String URL_APPLE = "https://pay.idealclover.cn/apple";
   static final String URL_ANDROID = "https://pay.idealclover.cn/android";
 

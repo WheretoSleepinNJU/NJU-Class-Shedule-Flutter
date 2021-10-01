@@ -63,7 +63,6 @@ class CourseTableViewState extends State<CourseTableView> {
     _isWhiteMode = await ScopedModel.of<MainStateModel>(context).getWhiteMode();
 
     _bgImgPath = await ScopedModel.of<MainStateModel>(context).getBgImgPath();
-    print("object");
     _maxShowClasses = Config.MAX_CLASSES;
     _maxShowDays = _isShowWeekend ? 7 : 5;
     int index = await ScopedModel.of<MainStateModel>(context).getClassTable();

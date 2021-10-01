@@ -990,6 +990,26 @@ class S {
     );
   }
 
+  /// `注意：如加载失败，优先检查是否开启南京大学VPN\n如浏览器也无法访问教务网，那一定是教务系统又抽风了`
+  String get import_banner {
+    return Intl.message(
+      '注意：如加载失败，优先检查是否开启南京大学VPN\n如浏览器也无法访问教务网，那一定是教务系统又抽风了',
+      name: 'import_banner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `下载南京大学VPN`
+  String get import_banner_action {
+    return Intl.message(
+      '下载南京大学VPN',
+      name: 'import_banner_action',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `用户名`
   String get username {
     return Intl.message(

@@ -1,8 +1,11 @@
 import '../../generated/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import '../../Resources/Constant.dart';
 import '../../Components/Toast.dart';
+import '../../Resources/Url.dart';
+
 import 'ImportFromJWPresenter.dart';
 import 'dart:math';
 
@@ -70,6 +73,18 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
               width: double.infinity,
               margin: EdgeInsets.all(10),
               child: Column(children: <Widget>[
+                MaterialBanner(
+                  forceActionsBelow: true,
+                  content: Text(S.of(context).import_banner,
+                      style: TextStyle(color: Colors.white)),
+                  backgroundColor: Theme.of(context).primaryColor,
+                  actions: [
+                    TextButton(
+                        child: Text(S.of(context).import_banner_action,
+                            style: TextStyle(color: Colors.white)),
+                        onPressed: () => launch(Url.URL_NJU_VPN))
+                  ],
+                ),
                 TextField(
                   controller: _usrController,
                   decoration: InputDecoration(
@@ -162,8 +177,7 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
                             _pwdController.value.text.toString() == 'admin') {
                           await _presenter.getDemoClasses(context);
                           Toast.showToast(
-                              S.of(context).class_parse_toast_success,
-                              context);
+                              S.of(context).class_parse_toast_success, context);
                           Navigator.of(context).pop(true);
                           return;
                         }

@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../../Utils/States/MainState.dart';
+import '../../Resources/Url.dart';
 import 'dart:async';
 import '../../generated/l10n.dart';
 import '../../Resources/Url.dart';
@@ -54,29 +56,44 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
       ),
       body: Builder(
         builder: (BuildContext context) {
-          return WebView(
-            initialUrl:
-                'https://authserver.nju.edu.cn/authserver/login?service=http%3A%2F%2Felite.nju.edu.cn%2Fjiaowu%2Fcaslogin.jsp',
-            javascriptMode: JavascriptMode.unrestricted,
-            onWebViewCreated: (WebViewController webViewController) async {
-              _webViewController = webViewController;
-              _controller.complete(webViewController);
-              await cookieManager.clearCookies();
-            },
-            javascriptChannels: <JavascriptChannel>[
-              snackbarJavascriptChannel(context),
-            ].toSet(),
-            onPageFinished: (url) {
-              if (url.startsWith("http://elite.nju.edu.cn/jiaowu/login.do")) {
-                _webViewController.loadUrl(
-                    'http://elite.nju.edu.cn/jiaowu/student/teachinginfo/courseList.do?method=currentTermCourse');
-              } else if (url.startsWith(
-                  "http://elite.nju.edu.cn/jiaowu/student/teachinginfo/courseList.do?method=currentTermCourse")) {
-                import(_webViewController, context);
-                print('Login success!');
-              }
-            },
-          );
+          return Column(children: <Widget>[
+            MaterialBanner(
+              forceActionsBelow: true,
+              content: Text(S.of(context).import_banner,
+                  style: TextStyle(color: Colors.white)),
+              backgroundColor: Theme.of(context).primaryColor,
+              actions: [
+                TextButton(
+                    child: Text(S.of(context).import_banner_action,
+                        style: TextStyle(color: Colors.white)),
+                    onPressed: () => launch(Url.URL_NJU_VPN)),
+              ],
+            ),
+            Expanded(
+                child: WebView(
+              initialUrl:
+                  'https://authserver.nju.edu.cn/authserver/login?service=http%3A%2F%2Felite.nju.edu.cn%2Fjiaowu%2Fcaslogin.jsp',
+              javascriptMode: JavascriptMode.unrestricted,
+              onWebViewCreated: (WebViewController webViewController) async {
+                _webViewController = webViewController;
+                _controller.complete(webViewController);
+                await cookieManager.clearCookies();
+              },
+              javascriptChannels: <JavascriptChannel>[
+                snackbarJavascriptChannel(context),
+              ].toSet(),
+              onPageFinished: (url) {
+                if (url.startsWith("http://elite.nju.edu.cn/jiaowu/login.do")) {
+                  _webViewController.loadUrl(
+                      'http://elite.nju.edu.cn/jiaowu/student/teachinginfo/courseList.do?method=currentTermCourse');
+                } else if (url.startsWith(
+                    "http://elite.nju.edu.cn/jiaowu/student/teachinginfo/courseList.do?method=currentTermCourse")) {
+                  import(_webViewController, context);
+                  print('Login success!');
+                }
+              },
+            ))
+          ]);
         },
       ),
     );

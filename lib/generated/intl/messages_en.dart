@@ -132,6 +132,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "if_show_weekend_title": MessageLookupByLibrary.simpleMessage("显示周末"),
         "import": MessageLookupByLibrary.simpleMessage("导入"),
         "import_auto": MessageLookupByLibrary.simpleMessage("自动导入"),
+        "import_banner": MessageLookupByLibrary.simpleMessage(
+            "注意：如加载失败，优先检查是否开启南京大学VPN\n如浏览器也无法访问教务网，那一定是教务系统又抽风了"),
+        "import_banner_action":
+            MessageLookupByLibrary.simpleMessage("下载南京大学VPN"),
         "import_from_JW_title": MessageLookupByLibrary.simpleMessage("导入课程表"),
         "import_from_NJU_cer_subtitle":
             MessageLookupByLibrary.simpleMessage("教务处哇教务处，不愧是你"),
