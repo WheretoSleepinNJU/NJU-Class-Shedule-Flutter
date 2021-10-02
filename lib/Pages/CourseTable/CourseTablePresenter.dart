@@ -3,10 +3,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
-import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:flutter_html/flutter_html.dart';
+import '../../generated/l10n.dart';
 import '../../Models/CourseModel.dart';
 import '../../Models/ScheduleModel.dart';
 import '../../Resources/Config.dart';
@@ -94,7 +95,7 @@ class CourseTablePresenter {
     int delay_seconds = Config.DONATE_DIALOG_DELAY_SECONDS;
     if (response.statusCode == HttpStatus.ok) {
       welcome_title = response.data['title'];
-      welcome_content = response.data['content'];
+      welcome_content = response.data['content_html'];
       delay_seconds = response.data['delay'];
       bool isSameWeek = await WeekUtil.isSameWeek(
           (response.data['semester_start_monday']), 1);
@@ -102,7 +103,7 @@ class CourseTablePresenter {
         await changeWeek(context, response.data['semester_start_monday']);
     } else {
       welcome_title = S.of(context).welcome_title;
-      welcome_content = S.of(context).welcome_content;
+      welcome_content = S.of(context).welcome_content_html;
     }
     Timer(Duration(seconds: delay_seconds), () {
       showDonateDialog(context, welcome_title, welcome_content);
@@ -157,7 +158,7 @@ class CourseTablePresenter {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
-                    Text(welcome_content),
+                    Html(data: welcome_content),
                     TextButton(
                         style: ButtonStyle(alignment: Alignment.centerRight),
                         child: Text(S.of(context).love_and_donate,

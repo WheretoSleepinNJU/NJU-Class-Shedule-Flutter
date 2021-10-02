@@ -18,21 +18,16 @@ dependencies:
 
   shared_preferences: ^2.0.7
   flutter_swiper_null_safety: ^1.0.2
+  scoped_model: ^2.0.0-nullsafety.0
+  webview_flutter: ^2.0.13
   image_picker: ^0.8.4
   package_info: ^2.0.2
-  webview_flutter: ^2.0.13
   path_provider: ^2.0.3
-#  barcode_scan: ^2.0.2
   url_launcher: ^6.0.10
-  scoped_model: ^2.0.0-nullsafety.0
+  flutter_html: ^2.1.3
   fluttertoast: ^8.0.1
-  qr_flutter: ^4.0.0
   sqflite: ^2.0.0+4
   html: ^0.15.0
-#  text_view:
-#    path: ./lib/Libs/text_view
-#    git:
-#      url: git://github.com/felangel/flutter_text_view_plugin.git
   dio: ^4.0.0
 
 dev_dependencies:

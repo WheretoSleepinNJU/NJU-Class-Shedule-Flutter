@@ -2,16 +2,12 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:scoped_model/scoped_model.dart';
-import 'package:package_info/package_info.dart';
+import 'package:flutter_html/flutter_html.dart';
 import '../../Models/CourseModel.dart';
 import '../Pages/Import/ImportView.dart';
 import '../generated/l10n.dart';
-import '../Utils/States/MainState.dart';
 import '../Components/Dialog.dart';
-import '../Components/Toast.dart';
 import '../Resources/Url.dart';
 
 class PrivacyUtil {
@@ -24,8 +20,6 @@ class PrivacyUtil {
     int privacyVersion = sp.getInt("privacyVersion") ?? 0;
     int targetVersion = response.data['version'] ?? 0;
     if (isForce || targetVersion > privacyVersion) {
-      print(isForce);
-      print(privacyVersion);
       showPrivacyDialog(response.data, targetVersion, isForce, context);
     }
   }
@@ -36,7 +30,6 @@ class PrivacyUtil {
     CourseProvider courseProvider = new CourseProvider();
     int courseNum = await courseProvider.getCourseNum();
     bool firstInstall = (courseNum == 0);
-
     widgets = isForce
         ? <Widget>[
             TextButton(
@@ -81,7 +74,7 @@ class PrivacyUtil {
         barrierDismissible: false,
         builder: (context) => mDialog(
               info['title'],
-              SingleChildScrollView(child: Text(info['content'])),
+              SingleChildScrollView(child: Html(data: info['content'])),
               widgets,
             ));
   }
