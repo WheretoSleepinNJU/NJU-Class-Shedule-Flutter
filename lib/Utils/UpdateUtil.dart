@@ -40,7 +40,6 @@ class UpdateUtil {
     if (response.statusCode == HttpStatus.ok) {
       if (response.data['coolDownTime'] != null)
         ScopedModel.of<MainStateModel>(context).setCoolDownTime(coolDownTime);
-//      print(response.data['version']);
       if (response.data['version'] > int.parse(packageInfo.buildNumber)) {
         showUpdateDialog(response.data, context);
       } else if (isForce) {

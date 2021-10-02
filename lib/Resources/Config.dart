@@ -1,4 +1,4 @@
-class Config{
+class Config {
   static const int MAX_CLASSES = 13;
   static const int MAX_WEEKS = 25;
   static const int DEFAULT_WEEK_NUM = 17;
@@ -12,4 +12,31 @@ class Config{
 
   static const int DONATE_DIALOG_DELAY_SECONDS = 15;
 
+  static const Map jw_config = {
+    "page_title": "统一认证登录",
+    "initialUrl":
+        "https://authserver.nju.edu.cn/authserver/login?service=http%3A%2F%2Felite.nju.edu.cn%2Fjiaowu%2Fcaslogin.jsp",
+    "redirectUrl": "http://elite.nju.edu.cn/jiaowu/login.do",
+    "targetUrl":
+        "http://elite.nju.edu.cn/jiaowu/student/teachinginfo/courseList.do?method=currentTermCourse",
+    "extractJS": "document.body.innerHTML",
+    "banner_content": "注意：如加载失败，优先检查是否开启南京大学VPN\n如浏览器也无法访问教务网，那一定是教务系统又抽风了",
+    "banner_action": "下载南京大学VPN",
+    "banner_url": "https://vpn.nju.edu.cn"
+  };
+
+  static const Map xk_config = {
+    "page_title": "选课系统登录",
+    "initialUrl": "https://xk.nju.edu.cn/xsxkapp/sys/xsxkapp/*default/index.do",
+    "redirectUrl": "",
+    "targetUrl":
+        "https://xk.nju.edu.cn/xsxkapp/sys/xsxkapp/*default/grablessons.do",
+    "preExtractJS":
+        "document.getElementsByClassName('yxkc-window-btn')[0].click()",
+    "delayTime": 3,
+    "extractJS": "document.body.innerHTML",
+    "banner_content": "注意：如加载失败，优先检查是否开启南京大学VPN\n如浏览器也无法访问教务网，那一定是教务系统又抽风了",
+    "banner_action": "下载南京大学VPN",
+    "banner_url": "https://vpn.nju.edu.cn"
+  };
 }

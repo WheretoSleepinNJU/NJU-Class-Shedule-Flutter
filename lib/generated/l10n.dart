@@ -981,6 +981,26 @@ class S {
   }
 
   /// `导入课程表`
+  String get import_settings_title {
+    return Intl.message(
+      '导入课程表',
+      name: 'import_settings_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `适配更多学校`
+  String get import_more_schools {
+    return Intl.message(
+      '适配更多学校',
+      name: 'import_more_schools',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `导入课程表`
   String get import_title {
     return Intl.message(
       '导入课程表',

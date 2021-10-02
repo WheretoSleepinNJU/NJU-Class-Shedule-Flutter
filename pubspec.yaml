@@ -19,6 +19,7 @@ dependencies:
   shared_preferences: ^2.0.7
   flutter_swiper_null_safety: ^1.0.2
   scoped_model: ^2.0.0-nullsafety.0
+  azlistview: ^2.0.0-nullsafety.0
   webview_flutter: ^2.0.13
   image_picker: ^0.8.4
   package_info: ^2.0.2

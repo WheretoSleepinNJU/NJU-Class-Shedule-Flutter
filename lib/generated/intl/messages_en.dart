@@ -158,10 +158,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_manually_subtitle":
             MessageLookupByLibrary.simpleMessage("手动添加课程表数据"),
         "import_manually_title": MessageLookupByLibrary.simpleMessage("手动添加"),
+        "import_more_schools": MessageLookupByLibrary.simpleMessage("适配更多学校"),
         "import_or_export_subtitle":
             MessageLookupByLibrary.simpleMessage("使用南哪课表内置的导入/导出功能"),
         "import_or_export_title":
             MessageLookupByLibrary.simpleMessage("导入/导出课表"),
+        "import_settings_title": MessageLookupByLibrary.simpleMessage("导入课程表"),
         "import_subtitle": MessageLookupByLibrary.simpleMessage("自动导入课程表数据"),
         "import_success_toast": MessageLookupByLibrary.simpleMessage("导入完成"),
         "import_title": MessageLookupByLibrary.simpleMessage("导入课程表"),
