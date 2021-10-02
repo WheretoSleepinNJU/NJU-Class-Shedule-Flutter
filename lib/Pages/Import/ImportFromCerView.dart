@@ -104,8 +104,8 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
     await Future.delayed(Duration(seconds: widget.config['delayTime'] ?? 0));
     String response =
         await controller.evaluateJavascript(widget.config['extractJS']);
-
     response = response.replaceAll('\\u003C', '<').replaceAll('\\\"', '\"');
+
     CourseParser cp = new CourseParser(response);
     String courseTableName = cp.parseCourseName();
     int rst = await cp.addCourseTable(courseTableName, context);

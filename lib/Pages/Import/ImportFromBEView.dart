@@ -88,6 +88,7 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
                 snackbarJavascriptChannel(context),
               ].toSet(),
               onPageFinished: (url) {
+                print(url);
                 if (widget.config['redirectUrl'] != '' &&
                     url.startsWith(widget.config['redirectUrl'])) {
                   _webViewController.loadUrl(widget.config['targetUrl']);
@@ -103,31 +104,26 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
   }
 
   import(WebViewController controller, BuildContext context) async {
-    Toast.showToast(S.of(context).class_parse_toast_importing, context);
-    await controller.evaluateJavascript(widget.config['preExtractJS'] ?? '');
-    await Future.delayed(Duration(seconds: widget.config['delayTime'] ?? 0));
-    String response =
-        await controller.evaluateJavascript(widget.config['extractJS']);
-
-    Map courseTableMap = json.decode(response);
-    CourseTableProvider courseTableProvider = new CourseTableProvider();
-    int index;
-
     try {
+      CourseTableProvider courseTableProvider = new CourseTableProvider();
+      Toast.showToast(S.of(context).class_parse_toast_importing, context);
+      await controller.evaluateJavascript(widget.config['preExtractJS'] ?? '');
+      await Future.delayed(Duration(seconds: widget.config['delayTime'] ?? 0));
+
+      String response =
+          await controller.evaluateJavascript(widget.config['extractJS']);
+      response = response.replaceAll('\\u003C', '<').replaceAll('\\\"', '\"');
+
+      Map courseTableMap = json.decode(response);
       CourseTable courseTable = await courseTableProvider
           .insert(new CourseTable(courseTableMap['name']));
-      index = (courseTable.id!);
-    } catch (e) {
-      Toast.showToast(S.of(context).qrcode_name_error_toast, context);
-      return;
-    }
-    CourseProvider courseProvider = new CourseProvider();
-    await ScopedModel.of<MainStateModel>(context).changeclassTable(index);
+      int index = (courseTable.id!);
+      CourseProvider courseProvider = new CourseProvider();
+      await ScopedModel.of<MainStateModel>(context).changeclassTable(index);
 
-    Iterable courses = json.decode(courseTableMap['courses']);
-    List<Map<String, dynamic>> coursesMap =
-        new List<Map<String, dynamic>>.from(courses);
-    try {
+      Iterable courses = json.decode(courseTableMap['courses']);
+      List<Map<String, dynamic>> coursesMap =
+          new List<Map<String, dynamic>>.from(courses);
       coursesMap.forEach((courseMap) {
         courseMap.remove('id');
         courseMap['tableid'] = index;
@@ -137,7 +133,7 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
       Toast.showToast(S.of(context).class_parse_toast_success, context);
       Navigator.of(context).pop(true);
     } catch (e) {
-      Toast.showToast(S.of(context).qrcode_read_error_toast, context);
+      Toast.showToast(S.of(context).online_parse_error_toast, context);
       return;
     }
   }

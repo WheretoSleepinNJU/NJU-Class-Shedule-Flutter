@@ -73,8 +73,7 @@
   "import_from_qrcode_subtitle": "从他人分享的二维码导入课表",
   "importing_toast": "导入中 请稍后",
   "qrcode_url_error_toast": "二维码无效，可能为链接过期",
-  "qrcode_name_error_toast": "读取课表名称失败，可能为链接错误",
-  "qrcode_read_error_toast": "读取课程表，可能是 bug",
+  "online_parse_error_toast": "导入课表失败，可能是 bug",
   "import_success_toast": "导入完成",
   "export_title": "导出",
 

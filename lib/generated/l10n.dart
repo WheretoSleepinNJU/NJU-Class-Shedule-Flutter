@@ -740,21 +740,11 @@ class S {
     );
   }
 
-  /// `读取课表名称失败，可能为链接错误`
-  String get qrcode_name_error_toast {
+  /// `导入课表失败，可能是 bug`
+  String get online_parse_error_toast {
     return Intl.message(
-      '读取课表名称失败，可能为链接错误',
-      name: 'qrcode_name_error_toast',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `读取课程表，可能是 bug`
-  String get qrcode_read_error_toast {
-    return Intl.message(
-      '读取课程表，可能是 bug',
-      name: 'qrcode_read_error_toast',
+      '导入课表失败，可能是 bug',
+      name: 'online_parse_error_toast',
       desc: '',
       args: [],
     );

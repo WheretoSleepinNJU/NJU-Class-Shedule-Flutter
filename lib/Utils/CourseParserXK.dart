@@ -20,6 +20,7 @@ class CourseParser {
   }
 
   String parseCourseName() {
+    print(document);
     Element? element = document!.getElementsByClassName("currentTerm")[0];
     String rst = element.innerHtml;
     return rst;

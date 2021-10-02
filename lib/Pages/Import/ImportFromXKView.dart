@@ -103,6 +103,7 @@ class _WebViewState extends State<ImportFromXKView> {
     await Future.delayed(Duration(seconds: widget.config['delayTime'] ?? 0));
     String response =
         await controller.evaluateJavascript(widget.config['extractJS']);
+    response = response.replaceAll('\\u003C', '<').replaceAll('\\\"', '\"');
 
     CourseParser cp = new CourseParser(response);
     String courseTableName = cp.parseCourseName();

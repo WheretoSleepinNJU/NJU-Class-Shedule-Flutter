@@ -110,6 +110,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                         return Container(width: 0);
                       } else {
                         return Switch(
+                          activeColor: Theme.of(context).primaryColor,
                           value: snapshot.data!,
                           onChanged: (bool value) =>
                               ScopedModel.of<MainStateModel>(context)
@@ -128,6 +129,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                         return Container(width: 0);
                       } else {
                         return Switch(
+                          activeColor: Theme.of(context).primaryColor,
                           value: !snapshot.data!,
                           onChanged: (bool value) =>
                               ScopedModel.of<MainStateModel>(context)
@@ -146,6 +148,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
+                        activeColor: Theme.of(context).primaryColor,
                         value: snapshot.data!,
                         onChanged: (bool value) =>
                             ScopedModel.of<MainStateModel>(context)
@@ -165,6 +168,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
+                        activeColor: Theme.of(context).primaryColor,
                         value: snapshot.data!,
                         onChanged: (bool value) =>
                             ScopedModel.of<MainStateModel>(context)
@@ -184,6 +188,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
+                        activeColor: Theme.of(context).primaryColor,
                         value: snapshot.data!,
                         onChanged: (bool value) =>
                             ScopedModel.of<MainStateModel>(context)
@@ -203,6 +208,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
+                        activeColor: Theme.of(context).primaryColor,
                         value: snapshot.data!,
                         onChanged: (bool value) =>
                             ScopedModel.of<MainStateModel>(context)
@@ -222,6 +228,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
+                        activeColor: Theme.of(context).primaryColor,
                         value: snapshot.data!,
                         onChanged: (bool value) =>
                             ScopedModel.of<MainStateModel>(context)
