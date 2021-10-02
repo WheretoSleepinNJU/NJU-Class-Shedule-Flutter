@@ -10,8 +10,7 @@ import '../../Components/Toast.dart';
 class ImportFromXKView extends StatefulWidget {
   final Map config;
 
-  ImportFromXKView({Key? key, required this.config})
-      : super(key: key);
+  ImportFromXKView({Key? key, required this.config}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -57,10 +56,10 @@ class _WebViewState extends State<ImportFromXKView> {
       ),
       body: Builder(
         builder: (BuildContext context) {
-          print(widget.config['banner_content']);
           return Column(children: <Widget>[
             widget.config['banner_content'] == null
-                ? Container(): MaterialBanner(
+                ? Container()
+                : MaterialBanner(
                     forceActionsBelow: true,
                     content: Text(widget.config['banner_content'],
                         style: TextStyle(color: Colors.white)),
@@ -71,8 +70,7 @@ class _WebViewState extends State<ImportFromXKView> {
                               style: TextStyle(color: Colors.white)),
                           onPressed: () => launch(widget.config['banner_url'])),
                     ],
-                  )
-                 ,
+                  ),
             Expanded(
                 child: WebView(
               initialUrl: widget.config['initialUrl'],

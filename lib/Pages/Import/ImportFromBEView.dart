@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../../Utils/States/MainState.dart';
 import 'dart:async';
@@ -61,24 +62,41 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
       ),
       body: Builder(
         builder: (BuildContext context) {
-          return WebView(
-            initialUrl: widget.config['initialUrl'],
-            javascriptMode: JavascriptMode.unrestricted,
-            onWebViewCreated: (WebViewController webViewController) async {
-              _webViewController = webViewController;
-            },
-            javascriptChannels: <JavascriptChannel>[
-              snackbarJavascriptChannel(context),
-            ].toSet(),
-            onPageFinished: (url) {
-              if (widget.config['redirectUrl'] != '' &&
-                  url.startsWith(widget.config['redirectUrl'])) {
-                _webViewController.loadUrl(widget.config['targetUrl']);
-              } else if (url.startsWith(widget.config['targetUrl'])) {
-                import(_webViewController, context);
-              }
-            },
-          );
+          return Column(children: <Widget>[
+            widget.config['banner_content'] == null
+                ? Container()
+                : MaterialBanner(
+                    forceActionsBelow: true,
+                    content: Text(widget.config['banner_content'],
+                        style: TextStyle(color: Colors.white)),
+                    backgroundColor: Theme.of(context).primaryColor,
+                    actions: [
+                      TextButton(
+                          child: Text(widget.config['banner_action'],
+                              style: TextStyle(color: Colors.white)),
+                          onPressed: () => launch(widget.config['banner_url'])),
+                    ],
+                  ),
+            Expanded(
+                child: WebView(
+              initialUrl: widget.config['initialUrl'],
+              javascriptMode: JavascriptMode.unrestricted,
+              onWebViewCreated: (WebViewController webViewController) async {
+                _webViewController = webViewController;
+              },
+              javascriptChannels: <JavascriptChannel>[
+                snackbarJavascriptChannel(context),
+              ].toSet(),
+              onPageFinished: (url) {
+                if (widget.config['redirectUrl'] != '' &&
+                    url.startsWith(widget.config['redirectUrl'])) {
+                  _webViewController.loadUrl(widget.config['targetUrl']);
+                } else if (url.startsWith(widget.config['targetUrl'])) {
+                  import(_webViewController, context);
+                }
+              },
+            ))
+          ]);
         },
       ),
     );
