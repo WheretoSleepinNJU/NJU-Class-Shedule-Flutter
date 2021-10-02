@@ -88,6 +88,10 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
                 TextField(
                   controller: _usrController,
                   decoration: InputDecoration(
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Theme.of(context).primaryColor),
+                    ),
                     icon: Icon(Icons.account_circle,
                         color: Theme.of(context).primaryColor),
                     hintText: S.of(context).username,
@@ -98,6 +102,10 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
                 TextField(
                   controller: _pwdController,
                   decoration: InputDecoration(
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Theme.of(context).primaryColor),
+                    ),
                     icon:
                         Icon(Icons.lock, color: Theme.of(context).primaryColor),
                     hintText: S.of(context).password,
@@ -111,6 +119,10 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
                       child: TextField(
                     controller: _captchaController,
                     decoration: InputDecoration(
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Theme.of(context).primaryColor),
+                      ),
                       icon: Icon(Icons.code,
                           color: Theme.of(context).primaryColor),
                       hintText: S.of(context).captcha,

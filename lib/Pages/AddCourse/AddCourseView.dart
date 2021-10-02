@@ -54,6 +54,10 @@ class _AddViewState extends State<AddView> {
                 TextField(
                   controller: _nameController,
                   decoration: InputDecoration(
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Theme.of(context).primaryColor),
+                      ),
                       icon: Icon(Icons.book,
                           color: Theme.of(context).primaryColor),
                       hintText: S.of(context).class_name,
@@ -70,6 +74,10 @@ class _AddViewState extends State<AddView> {
                   controller: _teacherController,
                   focusNode: teacherTextFieldNode,
                   decoration: InputDecoration(
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Theme.of(context).primaryColor),
+                    ),
                     icon: Icon(Icons.account_circle,
                         color: Theme.of(context).primaryColor),
                     hintText: S.of(context).class_teacher,

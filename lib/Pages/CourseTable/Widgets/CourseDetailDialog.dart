@@ -1,5 +1,7 @@
 import '../../../generated/l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../Models/CourseModel.dart';
 import '../../../Resources/Constant.dart';
 import '../../../Components/Dialog.dart';
@@ -15,7 +17,7 @@ class CourseDetailDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return mDialog(
       (isActive ? '' : S.of(context).not_this_week) + course.name!,
-      new Column(
+      new SingleChildScrollView(child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -61,10 +63,25 @@ class CourseDetailDialog extends StatelessWidget {
           Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Icon(Icons.description, color: Theme.of(context).primaryColor),
             Padding(padding: EdgeInsets.only(left: 5)),
-            Flexible(child: Text(course.info ?? S.of(context).unknown_info)),
+            Flexible(
+              child: SelectableLinkify(
+                onOpen: (link) async {
+                  String url = link.url.replaceAll(RegExp('[^\x00-\xff]'), '');
+                  if (await canLaunch(url)) {
+                    await launch(url);
+                  } else {
+                    throw 'Could not launch $link';
+                  }
+                },
+                text: course.info ?? S.of(context).unknown_info,
+                style: TextStyle(fontSize: 16),
+                linkStyle: TextStyle(color: Theme.of(context).primaryColor),
+                options: LinkifyOptions(humanize: false),
+              ),
+            ),
           ]),
         ],
-      ),
+      )),
       <Widget>[
         FlatButton(
           child: Text(S.of(context).ok),
