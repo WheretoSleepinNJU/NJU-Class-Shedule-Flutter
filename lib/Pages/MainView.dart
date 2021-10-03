@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import '../generated/l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:home_widget/home_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -24,22 +25,39 @@ class MainView extends StatelessWidget {
     updateUtil.checkUpdate(context, false);
     PrivacyUtil privacyUtil = new PrivacyUtil();
     privacyUtil.checkPrivacy(context, false);
+    widget();
     return CourseTableView();
   }
 
-   // void checkPrivacy(BuildContext context) async {
-   //   PackageInfo packageInfo = await PackageInfo.fromPlatform();
-   //   SharedPreferences sp = await SharedPreferences.getInstance();
-   //   PrivacyUtil privacyUtil = new PrivacyUtil();
-   //   await privacyUtil.checkUpdate(context, false);
-   //   String storedVersion = sp.getString('privacyversion');
-   //
-   //
-   //
-   //   if(storedVersion == null || storedVersion != packageInfo.version)
-   //     showDonateDialog(context);
-   //   sp.setString("version", packageInfo.version);
-   // }
+  void widget() {
+    final now = DateTime.now();
+    HomeWidget.saveWidgetData(
+      'title',
+      'Updated from Background',
+    );
+    HomeWidget.saveWidgetData(
+      'message',
+      '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}',
+    );
+    HomeWidget.updateWidget(
+      name: 'WidgetProvider',
+      // iOSName: 'HomeWidgetExample',
+    );
+  }
+
+// void checkPrivacy(BuildContext context) async {
+//   PackageInfo packageInfo = await PackageInfo.fromPlatform();
+//   SharedPreferences sp = await SharedPreferences.getInstance();
+//   PrivacyUtil privacyUtil = new PrivacyUtil();
+//   await privacyUtil.checkUpdate(context, false);
+//   String storedVersion = sp.getString('privacyversion');
+//
+//
+//
+//   if(storedVersion == null || storedVersion != packageInfo.version)
+//     showDonateDialog(context);
+//   sp.setString("version", packageInfo.version);
+// }
 
 //  void checkFirstTime(BuildContext context) async {
 //    PackageInfo packageInfo = await PackageInfo.fromPlatform();

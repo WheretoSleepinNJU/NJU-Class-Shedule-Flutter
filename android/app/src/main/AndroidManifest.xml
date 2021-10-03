@@ -57,5 +57,8 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <service android:name=".WidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"
+            android:exported="false" />
     </application>
 </manifest>
