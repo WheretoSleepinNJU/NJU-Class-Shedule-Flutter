@@ -27,7 +27,7 @@ class Config {
 
   static const Map xk_config = {
     "page_title": "选课系统登录",
-    "initialUrl": "https://xk.nju.edu.cn/xsxkapp/sys/xsxkapp/*default/index.do",
+    "initialUrl": "https://xk.nju.edu.cn",
     "redirectUrl": "",
     "targetUrl":
         "https://xk.nju.edu.cn/xsxkapp/sys/xsxkapp/*default/grablessons.do",
