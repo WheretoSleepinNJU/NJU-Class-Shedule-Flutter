@@ -37,7 +37,7 @@ android {
 
     defaultConfig {
         applicationId "com.lilystudio.wheretosleepinnju"
-        minSdkVersion 16
+        minSdkVersion 23
         targetSdkVersion 29
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -65,12 +65,14 @@ flutter {
 }
 
 dependencies {
-    implementation "com.umeng.umsdk:common:9.1.0"
-    implementation "com.umeng.umsdk:asms:1.1.3"
-    implementation "com.umeng.umsdk:crash:0.0.4"
-//    api fileTree(include: ['*.jar'], dir: '../libs')
-    implementation "com.umeng.umsdk:oaid_lenovo:1.0.0" // (可选)
-    implementation "com.umeng.umsdk:oaid_mi:1.0.0" // (可选)
-    implementation "com.umeng.umsdk:oaid_oppo:1.0.4" // (可选)
-    implementation "com.umeng.umsdk:oaid_vivo:1.0.0.1" // (可选)
+    implementation  'com.umeng.umsdk:common:9.4.4'// 必选
+    implementation  'com.umeng.umsdk:asms:1.4.1'// 必选
+//    implementation "com.umeng.umsdk:common:9.1.0"
+//    implementation "com.umeng.umsdk:asms:1.1.3"
+//    implementation "com.umeng.umsdk:crash:0.0.4"
+////    api fileTree(include: ['*.jar'], dir: '../libs')
+//    implementation "com.umeng.umsdk:oaid_lenovo:1.0.0" // (可选)
+//    implementation "com.umeng.umsdk:oaid_mi:1.0.0" // (可选)
+//    implementation "com.umeng.umsdk:oaid_oppo:1.0.4" // (可选)
+//    implementation "com.umeng.umsdk:oaid_vivo:1.0.0.1" // (可选)
 }

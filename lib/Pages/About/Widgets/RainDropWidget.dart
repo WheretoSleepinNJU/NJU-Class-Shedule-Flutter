@@ -6,7 +6,7 @@ import 'dart:async';
 import 'dart:math';
 
 class RainDropWidget extends StatefulWidget {
-  RainDropWidget({Key key, this.width, this.height}) : super(key: key);
+  RainDropWidget({Key? key, this.width = 300, this.height = 300}) : super(key: key);
 
   final double width;
   final double height;
@@ -17,28 +17,28 @@ class RainDropWidget extends StatefulWidget {
 
 class RainDropState extends State<RainDropWidget>
     with TickerProviderStateMixin {
-  List<RainDropDrawer> _rainList;
-  AnimationController _animation;
-  double _width = 300;
+  List<RainDropDrawer>? _rainList;
+  AnimationController? _animation;
+  double _width = 300 ;
   double _height = 300;
-  Timer _timer;
+  Timer? _timer;
 
   RainDropState(double width, double height) {
-    _width = width ?? _width;
-    _height = height ?? _height;
+    _width = width;
+    _height = height;
   }
 
   @override
   void initState() {
     super.initState();
-    _rainList = List();
+    _rainList = [];
     _animation = new AnimationController(
         // 因为是repeat的，这里的duration其实不care
         duration: const Duration(milliseconds: 200),
         vsync: this)
       ..addListener(() {
-        if (_rainList.isEmpty) {
-          _animation.stop();
+        if (_rainList!.isEmpty) {
+          _animation!.stop();
         }
         setState(() {});
       });
@@ -49,15 +49,15 @@ class RainDropState extends State<RainDropWidget>
           random.nextDouble() * _width,
           random.nextDouble() * _height,
           colorList[random.nextInt(colorList.length)]);
-      _rainList.add(rainDrop);
-      _animation.repeat();
+      _rainList!.add(rainDrop);
+      _animation!.repeat();
     });
   }
 
   @override
   void dispose() {
-    _timer.cancel();
-    _animation.dispose();
+    _timer!.cancel();
+    _animation!.dispose();
     super.dispose();
   }
 
@@ -67,7 +67,7 @@ class RainDropState extends State<RainDropWidget>
       width: _width,
       height: _height,
       child: CustomPaint(
-        painter: RainDrop(_rainList),
+        painter: RainDrop(_rainList!),
       ),
     );
   }
@@ -76,7 +76,7 @@ class RainDropState extends State<RainDropWidget>
 class RainDrop extends CustomPainter {
   RainDrop(this.rainList);
 
-  List<RainDropDrawer> rainList = List();
+  List<RainDropDrawer> rainList = [];
   Paint _paint = new Paint()
     ..style = PaintingStyle.stroke
     ..strokeWidth = 3;

@@ -2,11 +2,12 @@ import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import '../../generated/l10n.dart';
+import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:flutter_html/flutter_html.dart';
+import '../../generated/l10n.dart';
 import '../../Models/CourseModel.dart';
 import '../../Models/ScheduleModel.dart';
 import '../../Resources/Config.dart';
@@ -18,6 +19,7 @@ import '../../Components/Dialog.dart';
 import '../../Components/Toast.dart';
 
 import 'Widgets/CourseDetailDialog.dart';
+import 'Widgets/HideFreeCourseDialog.dart';
 import 'Widgets/CourseDeleteDialog.dart';
 import 'Widgets/CourseWidget.dart';
 
@@ -26,11 +28,12 @@ class CourseTablePresenter {
   List<Course> activeCourses = [];
   List<Course> hideCourses = [];
   List<List<Course>> multiCourses = [];
+  List<Course> freeCourses = [];
 
   refreshClasses(int tableId, int nowWeek) async {
-    List<Map> allCoursesMap = await courseProvider.getAllCourses(tableId);
+    List allCoursesMap = await courseProvider.getAllCourses(tableId);
     List<Course> allCourses = [];
-    for (Map courseMap in allCoursesMap) {
+    for (Map<String, dynamic> courseMap in allCoursesMap) {
       allCourses.add(new Course.fromMap(courseMap));
     }
     ScheduleModel scheduleModel = new ScheduleModel(allCourses, nowWeek);
@@ -39,12 +42,13 @@ class CourseTablePresenter {
     activeCourses = scheduleModel.activeCourses;
     hideCourses = scheduleModel.hideCourses;
     multiCourses = scheduleModel.multiCourses;
+    freeCourses = scheduleModel.freeCourses;
   }
 
-  Future<List<Widget>> getClassesWidgetList(
+  Future<List<Widget>?> getClassesWidgetList(
       BuildContext context, double height, double width, int nowWeek) async {
     List colorPool = await ColorPool.getColorPool();
-    List result = List.generate(
+    List<Widget> result = List.generate(
             hideCourses.length,
             (int i) => CourseWidget(
                   hideCourses[i],
@@ -63,7 +67,7 @@ class CourseTablePresenter {
             activeCourses.length,
             (int i) => CourseWidget(
                   activeCourses[i],
-                  activeCourses[i].getColor(colorPool),
+                  activeCourses[i].getColor(colorPool)!,
                   height,
                   width,
                   true,
@@ -75,7 +79,7 @@ class CourseTablePresenter {
             multiCourses.length,
             (int i) => CourseWidget(
                 multiCourses[i][0],
-                multiCourses[i][0].getColor(colorPool),
+                multiCourses[i][0].getColor(colorPool)!,
                 height,
                 width,
                 isThisWeek(multiCourses[i][0], nowWeek),
@@ -85,7 +89,7 @@ class CourseTablePresenter {
     return result;
   }
 
-  void showAfterImport(BuildContext context) async {
+  Future<bool> showAfterImport(BuildContext context) async {
     Dio dio = new Dio();
     String url = Url.UPDATE_ROOT + '/complete.json';
     Response response = await dio.get(url);
@@ -94,7 +98,7 @@ class CourseTablePresenter {
     int delay_seconds = Config.DONATE_DIALOG_DELAY_SECONDS;
     if (response.statusCode == HttpStatus.ok) {
       welcome_title = response.data['title'];
-      welcome_content = response.data['content'];
+      welcome_content = response.data['content_html'];
       delay_seconds = response.data['delay'];
       bool isSameWeek = await WeekUtil.isSameWeek(
           (response.data['semester_start_monday']), 1);
@@ -102,11 +106,12 @@ class CourseTablePresenter {
         await changeWeek(context, response.data['semester_start_monday']);
     } else {
       welcome_title = S.of(context).welcome_title;
-      welcome_content = S.of(context).welcome_content;
+      welcome_content = S.of(context).welcome_content_html;
     }
     Timer(Duration(seconds: delay_seconds), () {
       showDonateDialog(context, welcome_title, welcome_content);
     });
+    return true;
   }
 
   void showDonateDialog(BuildContext context, String welcome_title,
@@ -114,26 +119,65 @@ class CourseTablePresenter {
     showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => SingleChildScrollView(
-                child: mDialog(
+        // builder: (context) => mDialog(
+        //       welcome_title,
+        //       SingleChildScrollView(child: Text(welcome_content)),
+        //       <Widget>[
+        //         Column(
+        //           mainAxisSize: MainAxisSize.min,
+        //           children: <Widget>[
+        //             TextButton(
+        //                 // textColor: Theme.of(context).primaryColor,
+        //                 child: Text(S.of(context).love_and_donate),
+        //                 onPressed: () async {
+        //                   if (Platform.isIOS)
+        //                     launch(Url.URL_APPLE);
+        //                   else if (Platform.isAndroid) launch(Url.URL_ANDROID);
+        //                   Navigator.of(context).pop();
+        //                 }),
+        //             TextButton(
+        //                 // textColor: Theme.of(context).primaryColor,
+        //                 child: Text(S.of(context).bug_and_report),
+        //                 onPressed: () {
+        //                   if (Platform.isIOS)
+        //                     launch(Url.QQ_GROUP_APPLE_URL);
+        //                   else if (Platform.isAndroid)
+        //                     launch(Url.QQ_GROUP_ANDROID_URL);
+        //                   Navigator.of(context).pop();
+        //                 }),
+        //             TextButton(
+        //                 // textColor: Colors.grey,
+        //                 child: Text(S.of(context).love_but_no_money),
+        //                 onPressed: () async {
+        //                   Navigator.of(context).pop();
+        //                 }),
+        //           ],
+        //         )
+        //       ],
+        //     ));
+        builder: (context) => mDialog(
               welcome_title,
-              Text(welcome_content),
-              <Widget>[
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    FlatButton(
-                        textColor: Theme.of(context).primaryColor,
-                        child: Text(S.of(context).love_and_donate),
+              SingleChildScrollView(
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                    Html(data: welcome_content),
+                    TextButton(
+                        style: ButtonStyle(alignment: Alignment.centerRight),
+                        child: Text(S.of(context).love_and_donate,
+                            style: TextStyle(
+                                color: Theme.of(context).primaryColor)),
                         onPressed: () async {
                           if (Platform.isIOS)
                             launch(Url.URL_APPLE);
                           else if (Platform.isAndroid) launch(Url.URL_ANDROID);
                           Navigator.of(context).pop();
                         }),
-                    FlatButton(
-                        textColor: Theme.of(context).primaryColor,
-                        child: Text(S.of(context).bug_and_report),
+                    TextButton(
+                        style: ButtonStyle(alignment: Alignment.centerRight),
+                        child: Text(S.of(context).bug_and_report,
+                            style: TextStyle(
+                                color: Theme.of(context).primaryColor)),
                         onPressed: () {
                           if (Platform.isIOS)
                             launch(Url.QQ_GROUP_APPLE_URL);
@@ -141,19 +185,20 @@ class CourseTablePresenter {
                             launch(Url.QQ_GROUP_ANDROID_URL);
                           Navigator.of(context).pop();
                         }),
-                    FlatButton(
-                        textColor: Colors.grey,
-                        child: Text(S.of(context).love_but_no_money),
+                    TextButton(
+                        style: ButtonStyle(alignment: Alignment.centerRight),
+                        child: Text(S.of(context).love_but_no_money,
+                            style: TextStyle(color: Colors.grey)),
                         onPressed: () async {
                           Navigator.of(context).pop();
                         }),
-                  ],
-                )
-              ],
-            )));
+                  ])),
+              <Widget>[],
+            ));
   }
 
-  void changeWeek(BuildContext context, String semester_start_monday) async {
+  Future<bool> changeWeek(
+      BuildContext context, String semester_start_monday) async {
     await showDialog(
       context: context,
       barrierDismissible: false,
@@ -171,12 +216,13 @@ class CourseTablePresenter {
             child: Text(S.of(context).ok),
             onPressed: () async {
               await WeekUtil.initWeek(semester_start_monday, 1);
-              await ScopedModel.of<MainStateModel>(context).refresh();
+              ScopedModel.of<MainStateModel>(context).refresh();
               Toast.showToast(S.of(context).fix_week_toast_success, context);
               Navigator.of(context).pop(true);
             }),
       ]),
     );
+    return true;
   }
 
   showClassDialog(BuildContext context, Course course, bool isActive) {
@@ -208,9 +254,33 @@ class CourseTablePresenter {
                 builder: new DotSwiperPaginationBuilder(
                     color: Colors.grey,
                     activeColor: Theme.of(context).primaryColor)),
-            loop: false,
-            viewportFraction: 0.8,
-            scale: 0.9,
+            viewportFraction: 1,
+            scale: 1,
+          );
+        });
+  }
+
+  showFreeClassDialog(BuildContext context, int nowWeek) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+
+          return Swiper(
+            itemBuilder: (BuildContext context, int index) {
+              return CourseDetailDialog(
+                  freeCourses[index],
+                  isThisWeek(freeCourses[index], nowWeek),
+                      () => Navigator.of(context).pop());
+            },
+            itemCount: freeCourses.length,
+            pagination: new SwiperPagination(
+                margin: new EdgeInsets.only(bottom: 100),
+                builder: new DotSwiperPaginationBuilder(
+                    color: Colors.grey,
+                    activeColor: Theme.of(context).primaryColor)),
+            loop: freeCourses.length > 1,
+            viewportFraction: 1,
+            scale: 1,
           );
         });
   }
@@ -224,8 +294,17 @@ class CourseTablePresenter {
     );
   }
 
+  showHideFreeCourseDialog(BuildContext context) {
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return HideFreeCourseDialog();
+      },
+    );
+  }
+
   bool isThisWeek(Course course, int nowWeek) {
-    List weeks = json.decode(course.weeks);
+    List weeks = json.decode(course.weeks!);
     return weeks.contains(nowWeek);
   }
 

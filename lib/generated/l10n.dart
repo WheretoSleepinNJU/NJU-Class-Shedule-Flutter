@@ -9,27 +9,44 @@ import 'intl/messages_all.dart';
 // **************************************************************************
 
 // ignore_for_file: non_constant_identifier_names, lines_longer_than_80_chars
+// ignore_for_file: join_return_with_assignment, prefer_final_in_for_each
+// ignore_for_file: avoid_redundant_argument_values, avoid_escaping_inner_quotes
 
 class S {
   S();
-  
-  static S current;
-  
-  static const AppLocalizationDelegate delegate =
-    AppLocalizationDelegate();
+
+  static S? _current;
+
+  static S get current {
+    assert(_current != null,
+        'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.');
+    return _current!;
+  }
+
+  static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
   static Future<S> load(Locale locale) {
-    final name = (locale.countryCode?.isEmpty ?? false) ? locale.languageCode : locale.toString();
-    final localeName = Intl.canonicalizedLocale(name); 
+    final name = (locale.countryCode?.isEmpty ?? false)
+        ? locale.languageCode
+        : locale.toString();
+    final localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
-      S.current = S();
-      
-      return S.current;
+      final instance = S();
+      S._current = instance;
+
+      return instance;
     });
-  } 
+  }
 
   static S of(BuildContext context) {
+    final instance = S.maybeOf(context);
+    assert(instance != null,
+        'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?');
+    return instance!;
+  }
+
+  static S? maybeOf(BuildContext context) {
     return Localizations.of<S>(context, S);
   }
 
@@ -133,11 +150,31 @@ class S {
     );
   }
 
+  /// `自由时间`
+  String get free_time {
+    return Intl.message(
+      '自由时间',
+      name: 'free_time',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `未知地点`
   String get unknown_place {
     return Intl.message(
       '未知地点',
       name: 'unknown_place',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `暂无备注`
+  String get unknown_info {
+    return Intl.message(
+      '暂无备注',
+      name: 'unknown_info',
       desc: '',
       args: [],
     );
@@ -158,6 +195,56 @@ class S {
     return Intl.message(
       '手动导入',
       name: 'import_manually',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `另有 {num} 节「自由时间」课程 >>`
+  String free_class_banner(Object num) {
+    return Intl.message(
+      '另有 $num 节「自由时间」课程 >>',
+      name: 'free_class_banner',
+      desc: '',
+      args: [num],
+    );
+  }
+
+  /// `查看`
+  String get free_class_button {
+    return Intl.message(
+      '查看',
+      name: 'free_class_button',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `隐藏`
+  String get hide_free_class_button {
+    return Intl.message(
+      '隐藏',
+      name: 'hide_free_class_button',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `隐藏自由时间课程`
+  String get hide_free_class_dialog_title {
+    return Intl.message(
+      '隐藏自由时间课程',
+      name: 'hide_free_class_dialog_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `确认隐藏自由时间课程？\n您可在[设置]-[自定义选项]-[显示自由时间课程]选项中再次启用显示该模块～`
+  String get hide_free_class_dialog_content {
+    return Intl.message(
+      '确认隐藏自由时间课程？\n您可在[设置]-[自定义选项]-[显示自由时间课程]选项中再次启用显示该模块～',
+      name: 'hide_free_class_dialog_content',
       desc: '',
       args: [],
     );
@@ -213,20 +300,40 @@ class S {
     );
   }
 
-  /// `从南京大学教务处导入课表`
+  /// `导入课程表`
+  String get import_from_JW_title {
+    return Intl.message(
+      '导入课程表',
+      name: 'import_from_JW_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `自动导入课程表数据`
+  String get import_subtitle {
+    return Intl.message(
+      '自动导入课程表数据',
+      name: 'import_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `从南京大学教务系统导入课表`
   String get import_from_NJU_title {
     return Intl.message(
-      '从南京大学教务处导入课表',
+      '从南京大学教务系统导入课表',
       name: 'import_from_NJU_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `登录南京大学教务系统导入课程表`
+  /// `20级前同学可使用此方法登录导入`
   String get import_from_NJU_subtitle {
     return Intl.message(
-      '登录南京大学教务系统导入课程表',
+      '20级前同学可使用此方法登录导入',
       name: 'import_from_NJU_subtitle',
       desc: '',
       args: [],
@@ -243,11 +350,31 @@ class S {
     );
   }
 
-  /// `教务处哇教务处，不愧是你`
+  /// `推荐通过统一认证进行登录导入`
   String get import_from_NJU_cer_subtitle {
     return Intl.message(
-      '教务处哇教务处，不愧是你',
+      '推荐通过统一认证进行登录导入',
       name: 'import_from_NJU_cer_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `从南京大学选课系统导入课表`
+  String get import_from_NJU_xk_title {
+    return Intl.message(
+      '从南京大学选课系统导入课表',
+      name: 'import_from_NJU_xk_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `新选课系统，尚不稳定的备选导入方式`
+  String get import_from_NJU_xk_subtitle {
+    return Intl.message(
+      '新选课系统，尚不稳定的备选导入方式',
+      name: 'import_from_NJU_xk_subtitle',
       desc: '',
       args: [],
     );
@@ -533,6 +660,26 @@ class S {
     );
   }
 
+  /// `显示自由时间课程`
+  String get if_show_freeclass_title {
+    return Intl.message(
+      '显示自由时间课程',
+      name: 'if_show_freeclass_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `设置是否显示自由时间课程`
+  String get if_show_freeclass_subtitle {
+    return Intl.message(
+      '设置是否显示自由时间课程',
+      name: 'if_show_freeclass_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `强制缩放`
   String get force_zoom_title {
     return Intl.message(
@@ -673,21 +820,11 @@ class S {
     );
   }
 
-  /// `读取课表名称失败，可能为链接错误`
-  String get qrcode_name_error_toast {
+  /// `导入课表失败，可能是 bug`
+  String get online_parse_error_toast {
     return Intl.message(
-      '读取课表名称失败，可能为链接错误',
-      name: 'qrcode_name_error_toast',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `读取课程表，可能是 bug`
-  String get qrcode_read_error_toast {
-    return Intl.message(
-      '读取课程表，可能是 bug',
-      name: 'qrcode_read_error_toast',
+      '导入课表失败，可能是 bug',
+      name: 'online_parse_error_toast',
       desc: '',
       args: [],
     );
@@ -914,10 +1051,50 @@ class S {
   }
 
   /// `导入课程表`
+  String get import_settings_title {
+    return Intl.message(
+      '导入课程表',
+      name: 'import_settings_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `适配更多学校`
+  String get import_more_schools {
+    return Intl.message(
+      '适配更多学校',
+      name: 'import_more_schools',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `导入课程表`
   String get import_title {
     return Intl.message(
       '导入课程表',
       name: 'import_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `注意：如加载失败，请连接南京大学VPN\n试试浏览器访问教务网，没准系统又抽风了\n听起来有点离谱，不过在南京大学，倒也正常`
+  String get import_banner {
+    return Intl.message(
+      '注意：如加载失败，请连接南京大学VPN\n试试浏览器访问教务网，没准系统又抽风了\n听起来有点离谱，不过在南京大学，倒也正常',
+      name: 'import_banner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `下载南京大学VPN`
+  String get import_banner_action {
+    return Intl.message(
+      '下载南京大学VPN',
+      name: 'import_banner_action',
       desc: '',
       args: [],
     );
@@ -1008,6 +1185,16 @@ class S {
     return Intl.message(
       '用户名错误 TvT',
       name: 'username_error_toast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `数据识别与导入中~`
+  String get class_parse_toast_importing {
+    return Intl.message(
+      '数据识别与导入中~',
+      name: 'class_parse_toast_importing',
       desc: '',
       args: [],
     );
@@ -1153,6 +1340,16 @@ class S {
     );
   }
 
+  /// `隐私政策`
+  String get check_privacy_button {
+    return Intl.message(
+      '隐私政策',
+      name: 'check_privacy_button',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `GitHub 开源`
   String get github_open_source {
     return Intl.message(
@@ -1193,20 +1390,20 @@ class S {
     );
   }
 
-  /// `shared_preferences: ^0.5.3+4\npackage_info: ^0.4.0+6\nflutter_bugly: ^0.2.6\nurl_launcher: ^5.1.2\nscoped_model: ^1.0.1\nfluttertoast: ^3.1.3\nsqflite: ^1.1.6\nintl: ^0.16.0`
+  /// `shared_preferences: ^2.0.7\nflutter_swiper_null_safety: ^1.0.2\nscoped_model: ^2.0.0-nullsafety.0\nazlistview: ^2.0.0-nullsafety.0\nwebview_flutter: ^2.0.13\nflutter_linkify: ^5.0.2\nimage_picker: ^0.8.4\npackage_info: ^2.0.2\npath_provider: ^2.0.3\nurl_launcher: ^6.0.10\nflutter_html: ^2.1.3\nfluttertoast: ^8.0.1\nsqflite: ^2.0.0+4\nhtml: ^0.15.0\ndio: ^4.0.0`
   String get open_source_library_content {
     return Intl.message(
-      'shared_preferences: ^0.5.3+4\npackage_info: ^0.4.0+6\nflutter_bugly: ^0.2.6\nurl_launcher: ^5.1.2\nscoped_model: ^1.0.1\nfluttertoast: ^3.1.3\nsqflite: ^1.1.6\nintl: ^0.16.0',
+      'shared_preferences: ^2.0.7\nflutter_swiper_null_safety: ^1.0.2\nscoped_model: ^2.0.0-nullsafety.0\nazlistview: ^2.0.0-nullsafety.0\nwebview_flutter: ^2.0.13\nflutter_linkify: ^5.0.2\nimage_picker: ^0.8.4\npackage_info: ^2.0.2\npath_provider: ^2.0.3\nurl_launcher: ^6.0.10\nflutter_html: ^2.1.3\nfluttertoast: ^8.0.1\nsqflite: ^2.0.0+4\nhtml: ^0.15.0\ndio: ^4.0.0',
       name: 'open_source_library_content',
       desc: '',
       args: [],
     );
   }
 
-  /// `感谢小百合工作室\n感谢 @ns @lgt 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光\n啊对了 谢谢 祝幸福`
+  /// `感谢小百合工作室\n感谢 @ns @lgt @FengChendian 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光`
   String get easter_egg {
     return Intl.message(
-      '感谢小百合工作室\n感谢 @ns @lgt 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光\n啊对了 谢谢 祝幸福',
+      '感谢小百合工作室\n感谢 @ns @lgt @FengChendian 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光',
       name: 'easter_egg',
       desc: '',
       args: [],
@@ -1243,11 +1440,21 @@ class S {
     );
   }
 
-  /// `2020.5\n在付出了另一个¥688后，南哪课表终于上线 APP Store 啦！感谢大家一直以来的支持！\n\n2020.2\n年2月全部投喂收入将捐赠以支援湖北疫情\n\n2019.9\nHi！我是项目作者傻翠～\n\n看起来你已经导入我南教务处成功啦！撒花撒花！\n\n建议大家还是和自己教务系统中的课表对一下～避免出现什么bug～如果有bug的话欢迎反馈给我！设置-反馈中有交流群的群号～\n\n坦率地讲，从安卓移植到全平台是一个痛苦的过程。之前的APP多少是建立在开源项目的基础上，而这个重构项目算是自己从零开始搭起来的。其中也做了不少取舍与妥协，还有可能出现之前所没有过的bug。这都是我所会预料到的，如果你不巧遇到了bug，也欢迎向我反馈。\n\n写这个项目是一个吃力不讨好的事。单是苹果的开发者账号就要688/年，更不用提为了开发iOS版而单独买的macbook。所以如果小伙伴想让这个项目持续下去的话，欢迎投喂傻翠。\n\n其实我大四已经没课了，也早不需要课表这种东西了，可能你们的支持是我继续下去的唯一动力吧ww\n\n放心，这个弹框每次导入只会弹出一次，所以不会影响你的正常使用。\n\n希望南哪课表可以陪伴学弟学妹们走过每一学期ww\n\n傻翠`
+  /// `2021.08\n又是新的学期啦\n21届的新同学都要来了，瞬间有种自己太老了的感觉hhhhhh\n\n2021.2\n不知不觉小作文更新这么长了～\n\n又是新的一年，新的一学期了。\n\n过去的这一年或许大家都经历了很多，疫情来了，翠翠毕业了，紫荆站关闭了。或许，哪次教务系统更新之后，南哪课表就再也用不起来了。\n\n所以，如果南哪课表还不错，可以在它还在的时候，一起安利给周围的小伙伴吗～\n\n过去的时光，我们都辛苦了，未来，一起加油。\n\n“敬自己一杯，因为值得。”\n\n2020.9\n这是翠翠离开南大的第一个秋天。不过放心，南哪课表还在维护。\n\n离开校园，其实想说的话有很多，但却又不知道从哪里说起，说些什么，却总会在被社会毒打的时候怀念起在南大的快乐时光。\n\n大概，衷心希望学弟学妹们珍惜大学生活w\n\n2020.5\n在付出了另一个¥688后，南哪课表终于上线 APP Store 啦！感谢大家一直以来的支持！\n\n2020.2\n2020年2月全部投喂收入将捐赠以支援湖北疫情\n(2020.3补充：已捐赠)\n\n2019.9\nHi！我是项目作者傻翠～\n\n看起来你已经导入我南教务处成功啦！撒花撒花！\n\n建议大家还是和自己教务系统中的课表对一下～避免出现什么bug～如果有bug的话欢迎反馈给我！设置-反馈中有交流群的群号～\n\n坦率地讲，从安卓移植到全平台是一个痛苦的过程。之前的APP多少是建立在开源项目的基础上，而这个重构项目算是自己从零开始搭起来的。其中也做了不少取舍与妥协，还有可能出现之前所没有过的bug，如果不巧遇到bug，欢迎向我反馈。\n\n写这个项目是一个吃力不讨好的事。单是苹果的开发者账号就要688/年，更不用提为了开发iOS版而单独买的MacBook。所以如果小伙伴想让这个项目持续下去的话，欢迎投喂傻翠。\n\n放心，这个弹框每次导入只会弹出一次，所以不会影响你的正常使用。\n\n希望南哪课表可以陪伴学弟学妹们走过每一学期ww\n\n傻翠`
   String get welcome_content {
     return Intl.message(
-      '2020.5\n在付出了另一个¥688后，南哪课表终于上线 APP Store 啦！感谢大家一直以来的支持！\n\n2020.2\n年2月全部投喂收入将捐赠以支援湖北疫情\n\n2019.9\nHi！我是项目作者傻翠～\n\n看起来你已经导入我南教务处成功啦！撒花撒花！\n\n建议大家还是和自己教务系统中的课表对一下～避免出现什么bug～如果有bug的话欢迎反馈给我！设置-反馈中有交流群的群号～\n\n坦率地讲，从安卓移植到全平台是一个痛苦的过程。之前的APP多少是建立在开源项目的基础上，而这个重构项目算是自己从零开始搭起来的。其中也做了不少取舍与妥协，还有可能出现之前所没有过的bug。这都是我所会预料到的，如果你不巧遇到了bug，也欢迎向我反馈。\n\n写这个项目是一个吃力不讨好的事。单是苹果的开发者账号就要688/年，更不用提为了开发iOS版而单独买的macbook。所以如果小伙伴想让这个项目持续下去的话，欢迎投喂傻翠。\n\n其实我大四已经没课了，也早不需要课表这种东西了，可能你们的支持是我继续下去的唯一动力吧ww\n\n放心，这个弹框每次导入只会弹出一次，所以不会影响你的正常使用。\n\n希望南哪课表可以陪伴学弟学妹们走过每一学期ww\n\n傻翠',
+      '2021.08\n又是新的学期啦\n21届的新同学都要来了，瞬间有种自己太老了的感觉hhhhhh\n\n2021.2\n不知不觉小作文更新这么长了～\n\n又是新的一年，新的一学期了。\n\n过去的这一年或许大家都经历了很多，疫情来了，翠翠毕业了，紫荆站关闭了。或许，哪次教务系统更新之后，南哪课表就再也用不起来了。\n\n所以，如果南哪课表还不错，可以在它还在的时候，一起安利给周围的小伙伴吗～\n\n过去的时光，我们都辛苦了，未来，一起加油。\n\n“敬自己一杯，因为值得。”\n\n2020.9\n这是翠翠离开南大的第一个秋天。不过放心，南哪课表还在维护。\n\n离开校园，其实想说的话有很多，但却又不知道从哪里说起，说些什么，却总会在被社会毒打的时候怀念起在南大的快乐时光。\n\n大概，衷心希望学弟学妹们珍惜大学生活w\n\n2020.5\n在付出了另一个¥688后，南哪课表终于上线 APP Store 啦！感谢大家一直以来的支持！\n\n2020.2\n2020年2月全部投喂收入将捐赠以支援湖北疫情\n(2020.3补充：已捐赠)\n\n2019.9\nHi！我是项目作者傻翠～\n\n看起来你已经导入我南教务处成功啦！撒花撒花！\n\n建议大家还是和自己教务系统中的课表对一下～避免出现什么bug～如果有bug的话欢迎反馈给我！设置-反馈中有交流群的群号～\n\n坦率地讲，从安卓移植到全平台是一个痛苦的过程。之前的APP多少是建立在开源项目的基础上，而这个重构项目算是自己从零开始搭起来的。其中也做了不少取舍与妥协，还有可能出现之前所没有过的bug，如果不巧遇到bug，欢迎向我反馈。\n\n写这个项目是一个吃力不讨好的事。单是苹果的开发者账号就要688/年，更不用提为了开发iOS版而单独买的MacBook。所以如果小伙伴想让这个项目持续下去的话，欢迎投喂傻翠。\n\n放心，这个弹框每次导入只会弹出一次，所以不会影响你的正常使用。\n\n希望南哪课表可以陪伴学弟学妹们走过每一学期ww\n\n傻翠',
       name: 'welcome_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `<p><b>2021.08</b></p><p>又是新的学期啦</p><p>21届的新同学都要来了，瞬间有种自己太老了的感觉hhhhhh</p><p><b>2021.2</b></p><p>不知不觉小作文更新这么长了～</p><p>又是新的一年，新的一学期了。</p><p>过去的这一年或许大家都经历了很多，疫情来了，翠翠毕业了，紫荆站关闭了。或许，哪次教务系统更新之后，南哪课表就再也用不起来了。</p><p>所以，如果南哪课表还不错，可以在它还在的时候，一起安利给周围的小伙伴吗～</p><p>过去的时光，我们都辛苦了，未来，一起加油。</p><p>“敬自己一杯，因为值得。”</p><p><b>2020.9</b></p><p>这是翠翠离开南大的第一个秋天。不过放心，南哪课表还在维护。</p><p>离开校园，其实想说的话有很多，但却又不知道从哪里说起，说些什么，却总会在被社会毒打的时候怀念起在南大的快乐时光。</p><p>大概，衷心希望学弟学妹们珍惜大学生活w</p><p><b>2020.5</b></p><p>在付出了另一个¥688后，南哪课表终于上线 APP Store 啦！感谢大家一直以来的支持！</p><p><b>2020.2</b></p><p>2020年2月全部投喂收入将捐赠以支援湖北疫情</p><p>(2020.3补充：已捐赠)</p><p><b>2019.9</b></p><p>Hi！我是项目作者傻翠～</p><p>看起来你已经导入我南教务处成功啦！撒花撒花！</p><p>建议大家还是和自己教务系统中的课表对一下～避免出现什么bug～如果有bug的话欢迎反馈给我！设置-反馈中有交流群的群号～</p><p>坦率地讲，从安卓移植到全平台是一个痛苦的过程。之前的APP多少是建立在开源项目的基础上，而这个重构项目算是自己从零开始搭起来的。其中也做了不少取舍与妥协，还有可能出现之前所没有过的bug，如果不巧遇到bug，欢迎向我反馈。</p><p>写这个项目是一个吃力不讨好的事。单是苹果的开发者账号就要688/年，更不用提为了开发iOS版而单独买的MacBook。所以如果小伙伴想让这个项目持续下去的话，欢迎投喂傻翠。</p><p>放心，这个弹框每次导入只会弹出一次，所以不会影响你的正常使用。</p><p>希望南哪课表可以陪伴学弟学妹们走过每一学期ww</p><p>傻翠</p>`
+  String get welcome_content_html {
+    return Intl.message(
+      '<p><b>2021.08</b></p><p>又是新的学期啦</p><p>21届的新同学都要来了，瞬间有种自己太老了的感觉hhhhhh</p><p><b>2021.2</b></p><p>不知不觉小作文更新这么长了～</p><p>又是新的一年，新的一学期了。</p><p>过去的这一年或许大家都经历了很多，疫情来了，翠翠毕业了，紫荆站关闭了。或许，哪次教务系统更新之后，南哪课表就再也用不起来了。</p><p>所以，如果南哪课表还不错，可以在它还在的时候，一起安利给周围的小伙伴吗～</p><p>过去的时光，我们都辛苦了，未来，一起加油。</p><p>“敬自己一杯，因为值得。”</p><p><b>2020.9</b></p><p>这是翠翠离开南大的第一个秋天。不过放心，南哪课表还在维护。</p><p>离开校园，其实想说的话有很多，但却又不知道从哪里说起，说些什么，却总会在被社会毒打的时候怀念起在南大的快乐时光。</p><p>大概，衷心希望学弟学妹们珍惜大学生活w</p><p><b>2020.5</b></p><p>在付出了另一个¥688后，南哪课表终于上线 APP Store 啦！感谢大家一直以来的支持！</p><p><b>2020.2</b></p><p>2020年2月全部投喂收入将捐赠以支援湖北疫情</p><p>(2020.3补充：已捐赠)</p><p><b>2019.9</b></p><p>Hi！我是项目作者傻翠～</p><p>看起来你已经导入我南教务处成功啦！撒花撒花！</p><p>建议大家还是和自己教务系统中的课表对一下～避免出现什么bug～如果有bug的话欢迎反馈给我！设置-反馈中有交流群的群号～</p><p>坦率地讲，从安卓移植到全平台是一个痛苦的过程。之前的APP多少是建立在开源项目的基础上，而这个重构项目算是自己从零开始搭起来的。其中也做了不少取舍与妥协，还有可能出现之前所没有过的bug，如果不巧遇到bug，欢迎向我反馈。</p><p>写这个项目是一个吃力不讨好的事。单是苹果的开发者账号就要688/年，更不用提为了开发iOS版而单独买的MacBook。所以如果小伙伴想让这个项目持续下去的话，欢迎投喂傻翠。</p><p>放心，这个弹框每次导入只会弹出一次，所以不会影响你的正常使用。</p><p>希望南哪课表可以陪伴学弟学妹们走过每一学期ww</p><p>傻翠</p>',
+      name: 'welcome_content_html',
       desc: '',
       args: [],
     );
@@ -1292,11 +1499,9 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
   bool shouldReload(AppLocalizationDelegate old) => false;
 
   bool _isSupported(Locale locale) {
-    if (locale != null) {
-      for (var supportedLocale in supportedLocales) {
-        if (supportedLocale.languageCode == locale.languageCode) {
-          return true;
-        }
+    for (var supportedLocale in supportedLocales) {
+      if (supportedLocale.languageCode == locale.languageCode) {
+        return true;
       }
     }
     return false;

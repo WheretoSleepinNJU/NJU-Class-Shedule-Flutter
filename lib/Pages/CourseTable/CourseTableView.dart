@@ -23,44 +23,50 @@ class CourseTableView extends StatefulWidget {
 
 class CourseTableViewState extends State<CourseTableView> {
   CourseTablePresenter _presenter = new CourseTablePresenter();
-  bool _isShowWeekend;
-  bool _isShowClassTime;
-  bool _isShowMonth;
-  bool _isShowDate;
-  bool _isForceZoom;
-  bool _isShowAddButton;
-  bool _isWhiteMode;
-  int _maxShowClasses;
-  int _maxShowDays;
-  int _nowWeekNum;
-  int _nowShowWeekNum;
-  double _screenWidth;
-  double _screenHeight;
-  double _classTitleWidth;
-  double _classTitleHeight;
-  double _weekTitleHeight;
-  double _weekTitleWidth;
-  String _bgImgPath;
+  late bool _isShowWeekend;
+  late bool _isShowClassTime;
+  late bool _isShowFreeClass;
+  late bool _isShowMonth;
+  late bool _isShowDate;
+  late bool _isForceZoom;
+  late bool _isShowAddButton;
+  late bool _isWhiteMode;
+  late int _maxShowClasses;
+  late int _maxShowDays;
+  late int _nowWeekNum;
+  late int _nowShowWeekNum;
+  late double _screenWidth;
+  late double _screenHeight;
+  late double _classTitleWidth;
+  late double _classTitleHeight;
+  late double _weekTitleHeight;
+  late double _weekTitleWidth;
+  late String _bgImgPath;
+  int _freeCourseNum = 0;
 
   bool weekSelectorVisibility = false;
 
   List<Course> multiClassesDialog = [];
 
-  Future<List<Widget>> _getData(BuildContext context) async {
+  Future<List<Widget>>? _getData(BuildContext context) async {
 //    await courseTablePresenter.insertMockData();
 
     _isShowWeekend =
         await ScopedModel.of<MainStateModel>(context).getShowWeekend();
+
     _isShowClassTime =
         await ScopedModel.of<MainStateModel>(context).getShowClassTime();
+    _isShowFreeClass =
+        await ScopedModel.of<MainStateModel>(context).getShowFreeClass();
     _isShowMonth = await ScopedModel.of<MainStateModel>(context).getShowMonth();
     _isShowDate = await ScopedModel.of<MainStateModel>(context).getShowDate();
     _isForceZoom = await ScopedModel.of<MainStateModel>(context).getForceZoom();
+
     _isShowAddButton =
         await ScopedModel.of<MainStateModel>(context).getAddButton();
     _isWhiteMode = await ScopedModel.of<MainStateModel>(context).getWhiteMode();
-    _bgImgPath = await ScopedModel.of<MainStateModel>(context).getBgImgPath();
 
+    _bgImgPath = await ScopedModel.of<MainStateModel>(context).getBgImgPath();
     _maxShowClasses = Config.MAX_CLASSES;
     _maxShowDays = _isShowWeekend ? 7 : 5;
     int index = await ScopedModel.of<MainStateModel>(context).getClassTable();
@@ -69,11 +75,12 @@ class CourseTableViewState extends State<CourseTableView> {
         await ScopedModel.of<MainStateModel>(context).getTmpWeek();
 
     await _presenter.refreshClasses(index, _nowShowWeekNum);
+    _freeCourseNum = _presenter.freeCourses.length;
 
     _screenWidth = MediaQuery.of(context).size.width;
     _screenHeight = MediaQuery.of(context).size.height;
     _weekTitleHeight = 30;
-    _classTitleWidth = 30;
+    _classTitleWidth = 40;
     _weekTitleWidth = (_screenWidth - _classTitleWidth) / _maxShowDays;
     if (_isForceZoom)
       _classTitleHeight = (_screenHeight -
@@ -82,16 +89,30 @@ class CourseTableViewState extends State<CourseTableView> {
               (_isShowDate ? _weekTitleHeight * 1.2 : _weekTitleHeight)) /
           _maxShowClasses;
     else
-      _classTitleHeight = 50;
+      _classTitleHeight = 52;
 
-    List<Widget> classWidgets = await _presenter.getClassesWidgetList(
+    List<Widget>? classWidgets = await _presenter.getClassesWidgetList(
         context, _classTitleHeight, _weekTitleWidth, _nowShowWeekNum);
 
-    return classWidgets;
+    return classWidgets!;
   }
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  // }
+
+  // void showSnackBar() async {
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     const SnackBar(
+  //       content: Text('A SnackBar has been shown.'),
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
+    // showSnackBar();
     return ScopedModel<MainStateModel>(
         model: MainStateModel(),
         child: ScopedModelDescendant<MainStateModel>(
@@ -118,11 +139,12 @@ class CourseTableViewState extends State<CourseTableView> {
                   String nowWeek =
                       S.of(context).week(_nowShowWeekNum.toString());
 
-                  if(_nowWeekNum < 1) {
+                  if (_nowWeekNum < 1) {
                     nowWeek = S.of(context).not_open + ' ' + nowWeek;
                   } else if (_nowWeekNum != _nowShowWeekNum) {
                     nowWeek = S.of(context).not_this_week + ' ' + nowWeek;
                   }
+                  double height = MediaQuery.of(context).size.height;
 
                   return Scaffold(
                     appBar: AppBar(
@@ -132,7 +154,7 @@ class CourseTableViewState extends State<CourseTableView> {
                           Text(S.of(context).app_name),
                           GestureDetector(
                             child:
-                                Text((nowWeek), style: TextStyle(fontSize: 16)),
+                                Text((nowWeek), style: TextStyle(fontSize: 14)),
                             onTap: () => setState(() {
                               weekSelectorVisibility = !weekSelectorVisibility;
                             }),
@@ -142,7 +164,7 @@ class CourseTableViewState extends State<CourseTableView> {
                           IconButton(
                             icon: Icon(Icons.settings),
                             onPressed: () async {
-                              bool status = await Navigator.of(context).push(
+                              bool? status = await Navigator.of(context).push(
                                   MaterialPageRoute(
                                       builder: (BuildContext context) =>
                                           SettingsView()));
@@ -157,21 +179,32 @@ class CourseTableViewState extends State<CourseTableView> {
                       _bgImgPath == null
                           ? Container()
                           : BackgroundImage(_bgImgPath),
-                      SingleChildScrollView(
-                          child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: <Widget>[
-                            WeekSelector(model, weekSelectorVisibility),
-                            WeekTitle(
-                                _maxShowDays,
-                                _weekTitleHeight,
-                                _classTitleWidth,
-                                _isShowMonth,
-                                _isShowDate,
-                                _isWhiteMode,
-                                _nowShowWeekNum - _nowWeekNum),
-                            Row(children: [
+                      //   Container(
+                      // decoration: _bgImgPath == ""
+                      //     ? BoxDecoration()
+                      //     : BoxDecoration(
+                      //         image: DecorationImage(
+                      //           image: AssetImage(_bgImgPath),
+                      //           fit: BoxFit.cover,
+                      //         ),
+                      //       ),
+                      // child:
+                      Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
+                        WeekSelector(model, weekSelectorVisibility),
+                        WeekTitle(
+                            _maxShowDays,
+                            _weekTitleHeight,
+                            _classTitleWidth,
+                            _isShowMonth,
+                            _isShowDate,
+                            _isWhiteMode,
+                            _nowShowWeekNum - _nowWeekNum),
+                        Flexible(
+                            child: SingleChildScrollView(
+                                child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
                               ClassTitle(
                                   _maxShowClasses,
                                   _classTitleHeight,
@@ -183,23 +216,58 @@ class CourseTableViewState extends State<CourseTableView> {
                                   width: _screenWidth - _classTitleWidth,
                                   // TODO: fix bug in stack
                                   child: Stack(
-                                      children: _divider + snapshot.data,
+                                      children: _divider + snapshot.data!,
                                       overflow: Overflow.visible))
-                            ])
-                          ])),
+                            ]))),
+                        ((!_isShowFreeClass) || (_freeCourseNum == 0))
+                            ? Container()
+                            : MaterialBanner(
+                                content: Text(
+                                    S.of(context).free_class_banner(
+                                        _freeCourseNum.toString()),
+                                    style: TextStyle(color: Colors.white)),
+                                backgroundColor: Theme.of(context).primaryColor,
+                                actions: [
+                                  Row(children: [
+                                    TextButton(
+                                      child: Text(S.of(context).free_class_button,
+                                          style: TextStyle(color: Colors.white)),
+                                      onPressed: () =>
+                                          _presenter.showFreeClassDialog(
+                                              context, _nowShowWeekNum),
+                                      style: TextButton.styleFrom(
+                                          minimumSize: Size.zero,
+                                        padding: EdgeInsets.zero),
+                                    ),
+                                    TextButton(
+                                      child: Text(S.of(context).hide_free_class_button,
+                                          style: TextStyle(color: Colors.white)),
+                                      onPressed: () =>
+                                          _presenter.showHideFreeCourseDialog(context),
+                                      style: TextButton.styleFrom(
+                                          minimumSize: Size.zero,
+                                          padding: EdgeInsets.zero),
+                                    ),
+                                  ],)
+                                ],
+                              ),
+                      ]),
+                      // ),
                     ]),
                     floatingActionButton: _isShowAddButton
-                        ? FloatingActionButton(
-                            backgroundColor: Theme.of(context).primaryColor,
-                            onPressed: () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        AddView())),
-                            child: Icon(
-                              Icons.add,
-                              color: Colors.white,
-                            ),
-                          )
+                        ? Padding(
+                            padding: const EdgeInsets.only(bottom: 50.0, left: 10.0),
+                            child: FloatingActionButton(
+                              backgroundColor: Theme.of(context).primaryColor,
+                              onPressed: () => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          AddView())),
+                              child: Icon(
+                                Icons.add,
+                                color: Colors.white,
+                              ),
+                            ))
                         : Container(),
                   );
                 }

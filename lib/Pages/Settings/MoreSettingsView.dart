@@ -50,20 +50,18 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
               subtitle: Text(S.of(context).add_backgound_picture_subtitle),
               onTap: () async {
                 // using your method of getting an image
-                final File image =
-                    await ImagePicker.pickImage(source: ImageSource.gallery);
+                final XFile? image =
+                    await ImagePicker().pickImage(source: ImageSource.gallery);
 
                 if(image == null) return;
 
                 // delete old picture
                 String oldPath = await ScopedModel.of<MainStateModel>(context)
                     .getBgImgPath();
-                if (oldPath != null) {
-                  File oldImg = File(oldPath);
-                  if (oldImg.existsSync()) {
-                    oldImg.deleteSync(recursive: true);
-                    print('Old image deleted.');
-                  }
+                File oldImg = File(oldPath);
+                if (oldImg.existsSync()) {
+                  oldImg.deleteSync(recursive: true);
+                  print('Old image deleted.');
                 }
 
                 // add new picture
@@ -71,7 +69,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                 Directory directory = await getApplicationDocumentsDirectory();
                 final String path = directory.path;
                 String fileName = '$path/background_$num.jpg';
-                await image.copy(fileName);
+                await image.saveTo(fileName);
                 await ScopedModel.of<MainStateModel>(context)
                     .setBgImgPath(fileName);
                 print('New image added.');
@@ -88,12 +86,10 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                 // delete old picture
                 String oldPath = await ScopedModel.of<MainStateModel>(context)
                     .getBgImgPath();
-                if (oldPath != null) {
-                  File oldImg = File(oldPath);
-                  if (oldImg.existsSync()) {
-                    oldImg.deleteSync(recursive: true);
-                    print('Old image deleted.');
-                  }
+                File oldImg = File(oldPath);
+                if (oldImg.existsSync()) {
+                  oldImg.deleteSync(recursive: true);
+                  print('Old image deleted.');
                 }
                 await ScopedModel.of<MainStateModel>(context).removeBgImgPath();
                 Toast.showToast(
@@ -114,7 +110,8 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                         return Container(width: 0);
                       } else {
                         return Switch(
-                          value: snapshot.data,
+                          activeColor: Theme.of(context).primaryColor,
+                          value: snapshot.data!,
                           onChanged: (bool value) =>
                               ScopedModel.of<MainStateModel>(context)
                                   .setWhiteMode(value),
@@ -132,7 +129,8 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                         return Container(width: 0);
                       } else {
                         return Switch(
-                          value: !snapshot.data,
+                          activeColor: Theme.of(context).primaryColor,
+                          value: !snapshot.data!,
                           onChanged: (bool value) =>
                               ScopedModel.of<MainStateModel>(context)
                                   .setAddButton(!value),
@@ -150,7 +148,8 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                        value: snapshot.data,
+                        activeColor: Theme.of(context).primaryColor,
+                        value: snapshot.data!,
                         onChanged: (bool value) =>
                             ScopedModel.of<MainStateModel>(context)
                                 .setShowWeekend(value),
@@ -169,10 +168,31 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                        value: snapshot.data,
+                        activeColor: Theme.of(context).primaryColor,
+                        value: snapshot.data!,
                         onChanged: (bool value) =>
                             ScopedModel.of<MainStateModel>(context)
                                 .setShowClassTime(value),
+                      );
+                    }
+                  }),
+            ),
+            ListTile(
+              title: Text(S.of(context).if_show_freeclass_title),
+              subtitle: Text(S.of(context).if_show_freeclass_subtitle),
+              trailing: FutureBuilder<bool>(
+                  future: _getShowFreeClass(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                    if (!snapshot.hasData) {
+                      return Container(width: 0);
+                    } else {
+                      return Switch(
+                        activeColor: Theme.of(context).primaryColor,
+                        value: snapshot.data!,
+                        onChanged: (bool value) =>
+                            ScopedModel.of<MainStateModel>(context)
+                                .setShowFreeClass(value),
                       );
                     }
                   }),
@@ -188,7 +208,8 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                        value: snapshot.data,
+                        activeColor: Theme.of(context).primaryColor,
+                        value: snapshot.data!,
                         onChanged: (bool value) =>
                             ScopedModel.of<MainStateModel>(context)
                                 .setShowMonth(value),
@@ -207,7 +228,8 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                        value: snapshot.data,
+                        activeColor: Theme.of(context).primaryColor,
+                        value: snapshot.data!,
                         onChanged: (bool value) =>
                             ScopedModel.of<MainStateModel>(context)
                                 .setShowDate(value),
@@ -226,7 +248,8 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                        value: snapshot.data,
+                        activeColor: Theme.of(context).primaryColor,
+                        value: snapshot.data!,
                         onChanged: (bool value) =>
                             ScopedModel.of<MainStateModel>(context)
                                 .setForceZoom(value),
@@ -244,6 +267,10 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
 
   Future<bool> _getShowClassTime() async {
     return await ScopedModel.of<MainStateModel>(context).getShowClassTime();
+  }
+
+  Future<bool> _getShowFreeClass() async {
+    return await ScopedModel.of<MainStateModel>(context).getShowFreeClass();
   }
 
   Future<bool> _getShowMonth() async {

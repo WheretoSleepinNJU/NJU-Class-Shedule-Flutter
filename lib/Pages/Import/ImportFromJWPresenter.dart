@@ -7,7 +7,7 @@ import '../../Utils/States/MainState.dart';
 import '../../Models/CourseTableModel.dart';
 import '../../Models/CourseModel.dart';
 
-class ImportPresenter {
+class ImportFromJWPresenter {
   HttpUtil httpUtil = new HttpUtil();
 
   Future<Image> getCaptcha(double num) async {
@@ -72,7 +72,7 @@ class ImportPresenter {
     CourseTable courseTable =
         await courseTableProvider.insert(new CourseTable('Demo课表'));
     // 减1的原因：SQL中id从1开始计
-    MainStateModel.of(context).changeclassTable(courseTable.id);
+    MainStateModel.of(context).changeclassTable(courseTable.id!);
     CourseProvider courseProvider = new CourseProvider();
     await courseProvider.insert(new Course(
         courseTable.id, "自动导入", "[1,2,3,4,5,6,7]", 3, 5, 2, 0,

@@ -1,7 +1,7 @@
 import 'Config.dart';
 
 class Constant {
-  static final List<String> WEEK_WITH_BIAS = [
+  static const List<String> WEEK_WITH_BIAS = [
     "",
     "周一",
     "周二",
@@ -11,7 +11,7 @@ class Constant {
     "周六",
     "周日"
   ];
-  static final List<String> WEEK_WITHOUT_BIAS = [
+  static const List<String> WEEK_WITHOUT_BIAS = [
     "周一",
     "周二",
     "周三",
@@ -20,7 +20,7 @@ class Constant {
     "周六",
     "周日"
   ];
-  static final List<String> WEEK_WITHOUT_BIAS_WITHOUT_PRE = [
+  static const List<String> WEEK_WITHOUT_BIAS_WITHOUT_PRE = [
     "一",
     "二",
     "三",
@@ -30,7 +30,7 @@ class Constant {
     "日"
   ];
 
-  static final List<String> CLASS_TIME = [
+  static const List<String> CLASS_TIME = [
     "08:00\n08:50",
     "09:00\n09:50",
     "10:10\n11:00",
@@ -46,23 +46,23 @@ class Constant {
     "22:30"
   ];
 
-  static final int LOGIN_CORRECT = 0;
-  static final int PASSWORD_ERROR = 1;
-  static final int CAPTCHA_ERROR = 2;
-  static final int USERNAME_ERROR = 3;
+  static const int LOGIN_CORRECT = 0;
+  static const int PASSWORD_ERROR = 1;
+  static const int CAPTCHA_ERROR = 2;
+  static const int USERNAME_ERROR = 3;
 
-  static final int ADD_MANUALLY = 0;
-  static final int ADD_BY_IMPORT = 1;
+  static const int ADD_MANUALLY = 0;
+  static const int ADD_BY_IMPORT = 1;
 
-  static final int DEFAULT_WEEK_START = 1;
-  static final int DEFAULT_WEEK_END = Config.DEFAULT_WEEK_NUM;
-  static final int DEFAULT_WEEK_NUM = Config.DEFAULT_WEEK_NUM;
+  static const int DEFAULT_WEEK_START = 1;
+  static const int DEFAULT_WEEK_END = Config.DEFAULT_WEEK_NUM;
+  static const int DEFAULT_WEEK_NUM = Config.DEFAULT_WEEK_NUM;
 
-  static final int FULL_WEEKS = 0;
-  static final int SINGLE_WEEKS = 1;
-  static final int DOUBLE_WEEKS = 2;
-  static final int DEFINED_WEEKS = 3;
+  static const int FULL_WEEKS = 0;
+  static const int SINGLE_WEEKS = 1;
+  static const int DOUBLE_WEEKS = 2;
+  static const int DEFINED_WEEKS = 3;
 
   //TODO: add 自定义
-  static final List<String> WEEK_TYPES = ['全部', '单周', '双周'];
+  static const List<String> WEEK_TYPES = ['全部', '单周', '双周'];
 }

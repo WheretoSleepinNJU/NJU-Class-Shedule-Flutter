@@ -2,7 +2,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DbHelper {
-  static final int DATABASE_VERSION = 2;
+  static final int DATABASE_VERSION = 3;
   static final String DATABASE_NAME = "course.db";
 
   static final String TEXT_TYPE = " TEXT";
@@ -20,6 +20,8 @@ class DbHelper {
   static final String COURSE_COLUMN_TEST_TIME = "test_time";
   static final String COURSE_COLUMN_TEST_LOCATION = "test_location";
   static final String COURSE_COLUMN_INFO_LINK = "link";
+  static final String COURSE_COLUMN_INFO = "info";
+  static final String COURSE_COLUMN_DATA = "data";
 
   static final String COURSE_COLUMN_WEEKS = "weeks";
   static final String COURSE_COLUMN_WEEK_TIME = "week_time";
@@ -32,6 +34,7 @@ class DbHelper {
   static final String COURSETABLE_TABLE_NAME = "CourseTable";
   static final String COURSETABLE_COLUMN_ID = 'id';
   static final String COURSETABLE_COLUMN_NAME = 'name';
+  static final String COURSETABLE_COLUMN_DATA = "data";
 
   static final String SQL_CREATE_COURSES =
       "CREATE TABLE " + COURSE_TABLE_NAME + " (" +
@@ -44,6 +47,8 @@ class DbHelper {
           COURSE_COLUMN_TEST_TIME + TEXT_TYPE + COMMA_SEP +
           COURSE_COLUMN_TEST_LOCATION + TEXT_TYPE + COMMA_SEP +
           COURSE_COLUMN_INFO_LINK + TEXT_TYPE + COMMA_SEP +
+          COURSE_COLUMN_INFO + TEXT_TYPE + COMMA_SEP +
+          COURSE_COLUMN_DATA + TEXT_TYPE + COMMA_SEP +
 
           COURSE_COLUMN_WEEKS + TEXT_TYPE + COMMA_SEP +
 
@@ -72,26 +77,46 @@ class DbHelper {
   static final String SQL_CREATE_COURSETABLE =
       "CREATE TABLE " + COURSETABLE_TABLE_NAME + " (" +
           COURSETABLE_COLUMN_ID + INTEGER_TYPE + " PRIMARY KEY AUTOINCREMENT" + COMMA_SEP +
-          COURSETABLE_COLUMN_NAME + TEXT_TYPE +
+          COURSETABLE_COLUMN_NAME + TEXT_TYPE + COMMA_SEP +
+          COURSETABLE_COLUMN_DATA + TEXT_TYPE +
           " )";
+
+  static final String SQL_UPDATE_COURSES_FROM_Version_2_PART_1 =
+      "ALTER TABLE " + COURSE_TABLE_NAME +
+          " ADD COLUMN " + COURSE_COLUMN_INFO + TEXT_TYPE;
+
+  static final String SQL_UPDATE_COURSES_FROM_Version_2_PART_2 =
+      "ALTER TABLE " + COURSE_TABLE_NAME +
+          " ADD COLUMN " + COURSE_COLUMN_DATA + TEXT_TYPE;
+
+  static final String SQL_UPDATE_COURSETABLE_FROM_Version_2 =
+      "ALTER TABLE " + COURSETABLE_TABLE_NAME +
+          " ADD COLUMN " + COURSETABLE_COLUMN_DATA + TEXT_TYPE;
 
   Future<Database> open() async {
     var databasesPath = await getDatabasesPath();
     String path = join(databasesPath, DATABASE_NAME);
     Database db = await openDatabase(path, version: DATABASE_VERSION,
         onUpgrade: (Database db, int oldVersion, int newVersion) async {
-          try{
-            await db.query(COURSETABLE_TABLE_NAME);
-          } catch(e){
-            await db.execute(SQL_CREATE_COURSETABLE);
-            await db.execute(SQL_CREATE_COURSES);
+          if(oldVersion == 2) {
+            await db.execute(SQL_UPDATE_COURSES_FROM_Version_2_PART_1);
+            await db.execute(SQL_UPDATE_COURSES_FROM_Version_2_PART_2);
+            await db.execute(SQL_UPDATE_COURSETABLE_FROM_Version_2);
+            print('From upgrade version 2 or other.');
+          } else {
+            try{
+              await db.query(COURSETABLE_TABLE_NAME);
+            } catch(e){
+              await db.execute(SQL_CREATE_COURSETABLE);
+              await db.execute(SQL_CREATE_COURSES);
+            }
+            print('SQLite upgraded from version 1 or other.');
           }
-          print('From Upgrade');
         },
         onCreate: (Database db, int version) async {
           await db.execute(SQL_CREATE_COURSETABLE);
           await db.execute(SQL_CREATE_COURSES);
-          print('From OnCreate');
+          print('SQLite created.');
         });
     return db;
   }

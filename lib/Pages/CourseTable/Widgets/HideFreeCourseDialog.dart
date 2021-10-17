@@ -5,16 +5,15 @@ import '../../../Models/CourseModel.dart';
 import '../../../Utils/States/MainState.dart';
 import '../../../Components/Dialog.dart';
 
-class CourseDeleteDialog extends StatelessWidget {
-  final Course course;
+class HideFreeCourseDialog extends StatelessWidget {
 
-  CourseDeleteDialog(this.course);
+  HideFreeCourseDialog();
 
   @override
   Widget build(BuildContext context) {
     return mDialog(
-      S.of(context).delete_class_dialog_title,
-      Text(S.of(context).delete_class_dialog_content(course.name!)),
+      S.of(context).hide_free_class_dialog_title,
+      Text(S.of(context).hide_free_class_dialog_content),
       <Widget>[
         FlatButton(
           textColor: Colors.grey,
@@ -27,9 +26,8 @@ class CourseDeleteDialog extends StatelessWidget {
           textColor: Theme.of(context).primaryColor,
           child: Text(S.of(context).ok),
           onPressed: () async {
-            CourseProvider courseProvider = new CourseProvider();
-            await courseProvider.delete(course.id!);
-            ScopedModel.of<MainStateModel>(context).refresh();
+            ScopedModel.of<MainStateModel>(context).setShowFreeClass(false);
+            // ScopedModel.of<MainStateModel>(context).refresh();
             Navigator.of(context).pop();
           },
         ),

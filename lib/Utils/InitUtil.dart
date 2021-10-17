@@ -15,7 +15,7 @@ class InitUtil {
 
   static Future<int> getTheme() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
-    int themeIndex = sp.getInt("themeIndex");
+    int? themeIndex = sp.getInt("themeIndex");
     if (themeIndex != null) {
       return themeIndex;
     }

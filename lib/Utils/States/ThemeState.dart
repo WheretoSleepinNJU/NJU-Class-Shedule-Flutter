@@ -2,7 +2,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class ThemeStateModel extends Model {
-  int _themeIndex;
+  int? _themeIndex;
 
   get themeIndex => _themeIndex;
 
@@ -15,7 +15,7 @@ abstract class ThemeStateModel extends Model {
 
   Future<int> getTheme() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
-    int themeIndex = sp.getInt("themeIndex");
+    int? themeIndex = sp.getInt("themeIndex");
     if (themeIndex != null) {
       return themeIndex;
     }

@@ -6,14 +6,8 @@ import '../../../Resources/Config.dart';
 import '../../../Components/Dialog.dart';
 
 class NodeDialog extends StatefulWidget {
-  NodeDialog() : super();
-
-  @override
-  _NodeDialogState createState() => _NodeDialogState();
-}
-
-class _NodeDialogState extends State<NodeDialog> {
-  Map _node = {
+  final Map node ;
+  static const Map map = {
     'weekTime': 0,
     'startTime': 0,
     'endTime': 0,
@@ -22,9 +16,19 @@ class _NodeDialogState extends State<NodeDialog> {
     'endWeek': Config.MAX_WEEKS - 1,
     'weekType': Constant.FULL_WEEKS
   };
+  NodeDialog({this.node = map}) : super();
+
+  @override
+  _NodeDialogState createState() => _NodeDialogState();
+}
+
+class _NodeDialogState extends State<NodeDialog> {
 
   @override
   Widget build(BuildContext context) {
+    Map _node = widget.node;
+    TextEditingController _classroomController = TextEditingController();
+    _classroomController.text = _node['classroom'];
     return mDialog(
       S.of(context).choose_class_time_dialog_title,
       Container(
@@ -33,15 +37,16 @@ class _NodeDialogState extends State<NodeDialog> {
           children: [
             TextField(
               decoration: InputDecoration(
-                contentPadding: const EdgeInsets.only(top: 10.0),
+                // contentPadding: const EdgeInsets.only(top: 10.0),
                 icon: Icon(Icons.code, color: Theme.of(context).primaryColor),
                 hintText: S.of(context).class_room,
               ),
+              controller: _classroomController,
               onChanged: (String text) {
                 _node['classroom'] = text;
               },
             ),
-            Padding(padding: EdgeInsets.all(8.0)),
+            Padding(padding: EdgeInsets.only(bottom: 30)),
             Container(
               height: 32,
               child: Flex(

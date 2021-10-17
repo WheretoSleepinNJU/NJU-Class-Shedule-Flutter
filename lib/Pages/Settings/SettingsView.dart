@@ -7,10 +7,12 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info/package_info.dart';
 import '../ManageTable/ManageTableView.dart';
 import '../Import/ImportView.dart';
-import '../ImportFromWeb/ImportFromWebView.dart';
+import '../Import/ImportFromJWView.dart';
+import '../Import/ImportFromCerView.dart';
+import '../Import/ImportFromXKView.dart';
 import '../About/AboutView.dart';
 import '../AddCourse/AddCourseView.dart';
-import '../MoreSettings/MoreSettingsView.dart';
+import 'MoreSettingsView.dart';
 import '../Share/ShareView.dart';
 import '../../Components/Toast.dart';
 import '../../Resources/Config.dart';
@@ -53,33 +55,56 @@ class _SettingsViewState extends State<SettingsView> {
                 },
               ),
               ListTile(
-                title: Text(S.of(context).import_from_NJU_title),
-                subtitle: Text(S.of(context).import_from_NJU_subtitle),
+                title: Text(S.of(context).import_title),
+                subtitle: Text(S.of(context).import_subtitle),
                 onTap: () async {
-                  bool status = await Navigator.of(context).push(
+                  bool? status = await Navigator.of(context).push(
                       MaterialPageRoute(
                           builder: (BuildContext context) => ImportView()));
                   if (status == true) Navigator.of(context).pop(status);
                 },
               ),
-              ListTile(
-                title: Text(S.of(context).import_from_NJU_cer_title),
-                subtitle: Text(S.of(context).import_from_NJU_cer_subtitle),
-                onTap: () async {
-                  bool status = await Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => ImportFromWebView()));
-                  if (status == true) Navigator.of(context).pop(status);
-                },
-              ),
-              ListTile(
-                title: Text(S.of(context).import_or_export_title),
-                subtitle: Text(S.of(context).import_or_export_subtitle),
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => ShareView()));
-                },
-              ),
+              // ListTile(
+              //   title: Text(S.of(context).import_from_NJU_title),
+              //   subtitle: Text(S.of(context).import_from_NJU_subtitle),
+              //   onTap: () async {
+              //     bool status = await Navigator.of(context).push(
+              //         MaterialPageRoute(
+              //             builder: (BuildContext context) => ImportView()));
+              //     if (status == true) Navigator.of(context).pop(status);
+              //   },
+              // ),
+              // ListTile(
+              //   title: Text(S.of(context).import_from_NJU_cer_title),
+              //   subtitle: Text(S.of(context).import_from_NJU_cer_subtitle),
+              //   onTap: () async {
+              //     bool status = await Navigator.of(context).push(
+              //         MaterialPageRoute(
+              //             builder: (BuildContext context) =>
+              //                 ImportFromWebView()));
+              //     if (status == true) Navigator.of(context).pop(status);
+              //   },
+              // ),
+              // ListTile(
+              //   title: Text(S.of(context).import_from_NJU_xk_title),
+              //   subtitle: Text(S.of(context).import_from_NJU_xk_subtitle),
+              //   onTap: () async {
+              //     bool? status = await Navigator.of(context).push(
+              //         MaterialPageRoute(
+              //             builder: (BuildContext context) =>
+              //                 ImportFromXKView()));
+              //     if (status == true) Navigator.of(context).pop(status);
+              //   },
+              // ),
+              // ---
+              // ListTile(
+              //   title: Text(S.of(context).import_or_export_title),
+              //   subtitle: Text(S.of(context).import_or_export_subtitle),
+              //   onTap: () {
+              //     Navigator.of(context).push(MaterialPageRoute(
+              //         builder: (BuildContext context) => ShareView()));
+              //   },
+              // ),
               ListTile(
                 title: Text(S.of(context).manage_table_title),
                 subtitle: Text(S.of(context).manage_table_subtitle),
@@ -143,7 +168,7 @@ class _SettingsViewState extends State<SettingsView> {
                       if (!snapshot.hasData) {
                         return Container();
                       } else {
-                        return Text(snapshot.data);
+                        return Text(snapshot.data!);
                       }
                     }),
                 onTap: () {

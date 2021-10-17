@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:sqflite/sqflite.dart';
 import '../Resources/Colors.dart';
 import './Db/DbHelper.dart';
@@ -12,6 +13,7 @@ final String columnTeacher = DbHelper.COURSE_COLUMN_TEACHER;
 final String columnTestTime = DbHelper.COURSE_COLUMN_TEST_TIME;
 final String columnTestLocation = DbHelper.COURSE_COLUMN_TEST_LOCATION;
 final String columnLink = DbHelper.COURSE_COLUMN_INFO_LINK;
+final String columnInfo = DbHelper.COURSE_COLUMN_INFO;
 final String columnWeeks = DbHelper.COURSE_COLUMN_WEEKS;
 final String columnWeekTime = DbHelper.COURSE_COLUMN_WEEK_TIME;
 final String columnStartTime = DbHelper.COURSE_COLUMN_START_TIME;
@@ -21,24 +23,25 @@ final String columnColor = DbHelper.COURSE_COLUMN_COLOR;
 final String columnCourseId = DbHelper.COURSE_COLUMN_COURSE_ID;
 
 class Course {
-  int id;
-  String name;
-  int tableId;
+  int? id;
+  String? name;
+  int? tableId;
 
-  String classroom;
-  String classNumber;
-  String teacher;
-  String testTime;
-  String testLocation;
-  String link;
+  String? classroom;
+  String? classNumber;
+  String? teacher;
+  String? testTime;
+  String? testLocation;
+  String? link;
+  String? info;
 
-  String weeks;
-  int weekTime;
-  int startTime;
-  int timeCount;
-  int importType;
-  String color;
-  int courseId;
+  String? weeks;
+  int? weekTime;
+  int? startTime;
+  int? timeCount;
+  int? importType;
+  String? color;
+  int? courseId;
 
   Course(this.tableId, this.name, this.weeks, this.weekTime, this.startTime,
       this.timeCount, this.importType,
@@ -50,7 +53,8 @@ class Course {
       this.testLocation,
       this.link,
       this.color,
-      this.courseId});
+      this.courseId,
+      this.info});
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
@@ -69,7 +73,8 @@ class Course {
       columnTestTime: testTime,
       columnTestLocation: testLocation,
       columnLink: link,
-      columnCourseId: courseId
+      columnCourseId: courseId,
+      columnInfo: info,
     };
     return map;
   }
@@ -85,8 +90,9 @@ class Course {
     testTime = map[columnTestTime];
     testLocation = map[columnTestLocation];
     link = map[columnLink];
+    info = map[columnInfo];
 
-    weeks = map[columnWeeks];
+    weeks = map[columnWeeks].toString();
     weekTime = map[columnWeekTime];
     startTime = map[columnStartTime];
     timeCount = map[columnTimeCount];
@@ -95,34 +101,34 @@ class Course {
     courseId = map[columnCourseId];
   }
 
-  String getColor(List colorPool) {
+  String? getColor(List colorPool) {
     if (this.color != null) return this.color;
-    return colorList[colorPool[this.courseId % colorPool.length] as int];
+    return colorList[colorPool[this.courseId! % colorPool.length] as int];
   }
 }
 
 class CourseProvider {
-  Database db;
+  Database? db;
   DbHelper dbHelper = new DbHelper();
 
   Future open() async {
     db = await dbHelper.open();
   }
 
-  Future close() async => db.close();
+  Future close() async => db!.close();
 
   Future<Course> insert(Course course) async {
     await open();
     if (course.courseId == null) course.courseId = await getCourseId(course);
 //    print(course.toMap());
-    course.id = await db.insert(tableName, course.toMap());
+    course.id = await db!.insert(tableName, course.toMap());
 //    await close();
     return course;
   }
 
-  Future<Course> getCourse(int id) async {
+  Future<Course?> getCourse(int id) async {
     await open();
-    List<Map> maps = await db.query(tableName,
+    List<Map<String, dynamic>> maps = await db!.query(tableName,
         columns: [columnId, columnName],
         where: '$columnId = ?',
         whereArgs: [id]);
@@ -135,7 +141,7 @@ class CourseProvider {
 
   Future<List> getAllCourses(int tableId) async {
     await open();
-    List<Map> rst = await db.query(tableName,
+    List<Map> rst = await db!.query(tableName,
 //        columns: [columnId, columnName],
         where: '$columnTableId = ?',
         whereArgs: [tableId]);
@@ -143,10 +149,16 @@ class CourseProvider {
     return rst.toList();
   }
 
+  Future<int> getCourseNum() async {
+    await open();
+    List<Map> rst = await db!.query(tableName);
+    return rst.length;
+  }
+
   Future<int> delete(int id) async {
     await open();
     int rst =
-        await db.delete(tableName, where: '$columnId = ?', whereArgs: [id]);
+        await db!.delete(tableName, where: '$columnId = ?', whereArgs: [id]);
 //    await close();
     return rst;
   }
@@ -154,14 +166,14 @@ class CourseProvider {
   Future<int> deleteByTable(int id) async {
     await open();
     int rst =
-    await db.delete(tableName, where: '$columnTableId = ?', whereArgs: [id]);
+    await db!.delete(tableName, where: '$columnTableId = ?', whereArgs: [id]);
 //    await close();
     return rst;
   }
 
   Future<int> update(Course course) async {
     await open();
-    int rst = await db.update(tableName, course.toMap(),
+    int rst = await db!.update(tableName, course.toMap(),
         where: '$columnId = ?', whereArgs: [course.id]);
 //    await close();
     return rst;
@@ -169,12 +181,12 @@ class CourseProvider {
 
   //获取课程 courseid，如果存在已有课程则为已有课程，否则指定新id
   Future<int> getCourseId(Course course) async {
-    List<Map> rst = await db.query(tableName,
+    List<Map> rst = await db!.query(tableName,
         where: '$columnName = ? and $columnTableId = ?',
         whereArgs: [course.name, course.tableId]);
     if (!rst.isEmpty) return rst[0]['$columnCourseId'];
     var maxId =
-        await db.rawQuery('SELECT MAX($columnCourseId) FROM $tableName');
+        await db!.rawQuery('SELECT MAX($columnCourseId) FROM $tableName');
     List maxIdList = maxId.toList();
 //    print(maxIdList);
     if (maxIdList == null ||

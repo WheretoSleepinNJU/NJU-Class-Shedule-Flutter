@@ -1,0 +1,34 @@
+{
+  "data": [
+    {
+      "title": "清华大学选课系统",
+      "pinyin": "qinghuadaxuexuanke",
+      "description": "在线获取南京大学选课导入，稳定性可能更好",
+      "page_title": "选课系统登录",
+      "initialUrl": "https://xk.nju.edu.cn/xsxkapp/sys/xsxkapp/*default/index.do",
+      "redirectUrl": "",
+      "targetUrl": "https://xk.nju.edu.cn/xsxkapp/sys/xsxkapp/*default/grablessons.do",
+      "preExtractJS": "document.getElementsByClassName('yxkc-window-btn')[0].click()",
+      "delayTime": 3,
+      "extractJS": "document.body.innerHTML",
+      "banner_content": "注意：如加载失败，优先检查是否开启南京大学VPN\n如浏览器也无法访问教务网，那一定是教务系统又抽风了",
+      "banner_action": "下载南京大学VPN",
+      "banner_url": "https://vpn.nju.edu.cn"
+    },
+    {
+      "title": "南京大学选课系统",
+      "pinyin": "nanjingdaxueyanjiu",
+      "description": "在线获取南京大学选课导入，稳定性可能更好",
+      "page_title": "选课系统登录",
+      "initialUrl": "https://xk.nju.edu.cn/xsxkapp/sys/xsxkapp/*default/index.do",
+      "redirectUrl": "",
+      "targetUrl": "https://xk.nju.edu.cn/xsxkapp/sys/xsxkapp/*default/grablessons.do",
+      "preExtractJS": "document.getElementsByClassName('yxkc-window-btn')[0].click()",
+      "delayTime": 3,
+      "extractJS": "document.body.innerHTML",
+      "banner_content": "注意：如加载失败，优先检查是否开启南京大学VPN\n如浏览器也无法访问教务网，那一定是教务系统又抽风了",
+      "banner_action": "下载南京大学VPN",
+      "banner_url": "https://vpn.nju.edu.cn"
+    }
+  ]
+}

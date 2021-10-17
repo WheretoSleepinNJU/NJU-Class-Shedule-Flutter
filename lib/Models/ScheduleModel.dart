@@ -7,18 +7,19 @@ class ScheduleModel {
   List<Course> activeCourses = [];
   List<Course> hideCourses = [];
   List<List<Course>> multiCourses = [];
+  List<Course> freeCourses = [];
 
   //TODO: multiCourses
-//  List<List<Course>> multiCourses = [
-//    [
-//      new Course(0, "微积分", "[1,2,3,4,5,6,7]", 1, 7, 2, 0,
-//          color: '#8AD297', classroom: 'QAQ'),
-//      new Course(0, "还是微积分", "[1,2,3,4,5,6,7]", 1, 7, 2, 0,
-//          color: '#F9A883', classroom: 'QAQ'),
-//      new Course(0, "又是微积分", "[1,2,3,4,5,6,7]", 1, 7, 2, 0,
-//          color: '#F9A883', classroom: 'QAQ')
-//    ]
-//  ];
+ // List<List<Course>> multiCourses = [
+ //  List<Course> freeCourses = [
+ //     new Course(0, "微积分", "[1,2,3,4,5,6,7]", 1, 7, 2, 0,
+ //         color: '#8AD297', classroom: 'QAQ'),
+ //     new Course(0, "还是微积分", "[1,2,3,4,5,6,7]", 1, 7, 2, 0,
+ //         color: '#F9A883', classroom: 'QAQ'),
+ //     new Course(0, "又是微积分", "[1,2,3,4,5,6,7]", 1, 7, 2, 0,
+ //         color: '#F9A883', classroom: 'QAQ')
+ //   ];
+ // ];
 
   ScheduleModel(this.courses, this.nowWeek);
 
@@ -29,8 +30,10 @@ class ScheduleModel {
 
   void classify() {
     for (Course course in courses) {
-      List weeks = json.decode(course.weeks);
-      if (weeks.contains(nowWeek))
+      List weeks = json.decode(course.weeks!);
+      if(course.weekTime == 0)
+        freeCourses.add(course);
+      else if (weeks.contains(nowWeek))
         activeCourses.add(course);
       else
         hideCourses.add(course);
@@ -102,10 +105,10 @@ class ScheduleModel {
 
   bool _checkIfOverlapping(Course a, Course b) {
     bool result = a.weekTime == b.weekTime &&
-        ((a.startTime >= b.startTime &&
-                a.startTime <= b.startTime + b.timeCount) ||
-            (b.startTime >= a.startTime &&
-                b.startTime <= a.startTime + a.timeCount));
+        ((a.startTime! >= b.startTime! &&
+                a.startTime! <= b.startTime! + b.timeCount!) ||
+            (b.startTime! >= a.startTime! &&
+                b.startTime! <= a.startTime! + a.timeCount!));
 //    print(result);
     return result;
   }
@@ -115,10 +118,10 @@ class ScheduleModel {
     int max_count = 0;
     int max_index = 0;
     for (int i = 0; i < multiCoursesElement.length; i++) {
-      List weeks = json.decode(multiCoursesElement[i].weeks);
-      if (multiCoursesElement[i].timeCount > max_count &&
+      List weeks = json.decode(multiCoursesElement[i].weeks!);
+      if (multiCoursesElement[i].timeCount! > max_count &&
           weeks.contains(nowWeek)) {
-        max_count = multiCoursesElement[i].timeCount;
+        max_count = multiCoursesElement[i].timeCount!;
         max_index = i;
       }
     }

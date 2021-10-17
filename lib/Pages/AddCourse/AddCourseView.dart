@@ -54,6 +54,10 @@ class _AddViewState extends State<AddView> {
                 TextField(
                   controller: _nameController,
                   decoration: InputDecoration(
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Theme.of(context).primaryColor),
+                      ),
                       icon: Icon(Icons.book,
                           color: Theme.of(context).primaryColor),
                       hintText: S.of(context).class_name,
@@ -70,6 +74,10 @@ class _AddViewState extends State<AddView> {
                   controller: _teacherController,
                   focusNode: teacherTextFieldNode,
                   decoration: InputDecoration(
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Theme.of(context).primaryColor),
+                    ),
                     icon: Icon(Icons.account_circle,
                         color: Theme.of(context).primaryColor),
                     hintText: S.of(context).class_teacher,
@@ -102,12 +110,15 @@ class _AddViewState extends State<AddView> {
                             color: Theme.of(context).primaryColor),
                       ),
                       onTap: () async {
-                        _node = await showDialog<Map>(
+                        Map new_node = (await showDialog<Map>(
                             context: context,
                             barrierDismissible: false,
                             builder: (BuildContext context) {
-                              return NodeDialog();
-                            });
+                              return NodeDialog(node: _node);
+                            }))!;
+                        setState(() {
+                          _node = new_node;
+                        });
                       })
                 ]),
                 Padding(
