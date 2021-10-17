@@ -150,6 +150,16 @@ class S {
     );
   }
 
+  /// `自由时间`
+  String get free_time {
+    return Intl.message(
+      '自由时间',
+      name: 'free_time',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `未知地点`
   String get unknown_place {
     return Intl.message(
@@ -185,6 +195,56 @@ class S {
     return Intl.message(
       '手动导入',
       name: 'import_manually',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `另有 {num} 节「自由时间」课程 >>`
+  String free_class_banner(Object num) {
+    return Intl.message(
+      '另有 $num 节「自由时间」课程 >>',
+      name: 'free_class_banner',
+      desc: '',
+      args: [num],
+    );
+  }
+
+  /// `查看`
+  String get free_class_button {
+    return Intl.message(
+      '查看',
+      name: 'free_class_button',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `隐藏`
+  String get hide_free_class_button {
+    return Intl.message(
+      '隐藏',
+      name: 'hide_free_class_button',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `隐藏自由时间课程`
+  String get hide_free_class_dialog_title {
+    return Intl.message(
+      '隐藏自由时间课程',
+      name: 'hide_free_class_dialog_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `确认隐藏自由时间课程？\n您可在[设置]-[自定义选项]-[显示自由时间课程]选项中再次启用显示该模块～`
+  String get hide_free_class_dialog_content {
+    return Intl.message(
+      '确认隐藏自由时间课程？\n您可在[设置]-[自定义选项]-[显示自由时间课程]选项中再次启用显示该模块～',
+      name: 'hide_free_class_dialog_content',
       desc: '',
       args: [],
     );
@@ -260,20 +320,20 @@ class S {
     );
   }
 
-  /// `从南京大学教务处导入课表`
+  /// `从南京大学教务系统导入课表`
   String get import_from_NJU_title {
     return Intl.message(
-      '从南京大学教务处导入课表',
+      '从南京大学教务系统导入课表',
       name: 'import_from_NJU_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `登录南京大学教务系统导入课程表`
+  /// `20级前同学可使用此方法登录导入`
   String get import_from_NJU_subtitle {
     return Intl.message(
-      '登录南京大学教务系统导入课程表',
+      '20级前同学可使用此方法登录导入',
       name: 'import_from_NJU_subtitle',
       desc: '',
       args: [],
@@ -290,10 +350,10 @@ class S {
     );
   }
 
-  /// `教务处哇教务处，不愧是你`
+  /// `推荐通过统一认证进行登录导入`
   String get import_from_NJU_cer_subtitle {
     return Intl.message(
-      '教务处哇教务处，不愧是你',
+      '推荐通过统一认证进行登录导入',
       name: 'import_from_NJU_cer_subtitle',
       desc: '',
       args: [],
@@ -310,10 +370,10 @@ class S {
     );
   }
 
-  /// `两种方式已经无法满足我校教务处了...`
+  /// `新选课系统，尚不稳定的备选导入方式`
   String get import_from_NJU_xk_subtitle {
     return Intl.message(
-      '两种方式已经无法满足我校教务处了...',
+      '新选课系统，尚不稳定的备选导入方式',
       name: 'import_from_NJU_xk_subtitle',
       desc: '',
       args: [],
@@ -595,6 +655,26 @@ class S {
     return Intl.message(
       '设置是否显示课程时间',
       name: 'if_show_classtime_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `显示自由时间课程`
+  String get if_show_freeclass_title {
+    return Intl.message(
+      '显示自由时间课程',
+      name: 'if_show_freeclass_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `设置是否显示自由时间课程`
+  String get if_show_freeclass_subtitle {
+    return Intl.message(
+      '设置是否显示自由时间课程',
+      name: 'if_show_freeclass_subtitle',
       desc: '',
       args: [],
     );
@@ -1000,20 +1080,20 @@ class S {
     );
   }
 
-  /// `注意：如加载失败，南京大学VPN\n若浏览器也无法访问教务网，可能教务系统又抽风了\n听起来有点离谱，不过在南京大学，倒也正常.jpg`
+  /// `注意：如加载失败，请连接南京大学VPN\n试试浏览器访问教务网，没准系统又抽风了\n听起来有点离谱，不过在南京大学，倒也正常`
   String get import_banner {
     return Intl.message(
-      '注意：如加载失败，南京大学VPN\n若浏览器也无法访问教务网，可能教务系统又抽风了\n听起来有点离谱，不过在南京大学，倒也正常.jpg',
+      '注意：如加载失败，请连接南京大学VPN\n试试浏览器访问教务网，没准系统又抽风了\n听起来有点离谱，不过在南京大学，倒也正常',
       name: 'import_banner',
       desc: '',
       args: [],
     );
   }
 
-  /// `下载/打开南京大学VPN`
+  /// `下载南京大学VPN`
   String get import_banner_action {
     return Intl.message(
-      '下载/打开南京大学VPN',
+      '下载南京大学VPN',
       name: 'import_banner_action',
       desc: '',
       args: [],
@@ -1320,10 +1400,10 @@ class S {
     );
   }
 
-  /// `感谢小百合工作室\n感谢 @ns @lgt @FengChendian 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光\n感谢 @11 给了她第二次生命`
+  /// `感谢小百合工作室\n感谢 @ns @lgt @FengChendian 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光`
   String get easter_egg {
     return Intl.message(
-      '感谢小百合工作室\n感谢 @ns @lgt @FengChendian 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光\n感谢 @11 给了她第二次生命',
+      '感谢小百合工作室\n感谢 @ns @lgt @FengChendian 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光',
       name: 'easter_egg',
       desc: '',
       args: [],

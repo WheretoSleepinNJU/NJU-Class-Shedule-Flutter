@@ -178,6 +178,26 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                   }),
             ),
             ListTile(
+              title: Text(S.of(context).if_show_freeclass_title),
+              subtitle: Text(S.of(context).if_show_freeclass_subtitle),
+              trailing: FutureBuilder<bool>(
+                  future: _getShowFreeClass(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                    if (!snapshot.hasData) {
+                      return Container(width: 0);
+                    } else {
+                      return Switch(
+                        activeColor: Theme.of(context).primaryColor,
+                        value: snapshot.data!,
+                        onChanged: (bool value) =>
+                            ScopedModel.of<MainStateModel>(context)
+                                .setShowFreeClass(value),
+                      );
+                    }
+                  }),
+            ),
+            ListTile(
               title: Text(S.of(context).show_month_title),
               subtitle: Text(S.of(context).show_month_subtitle),
               trailing: FutureBuilder<bool>(
@@ -247,6 +267,10 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
 
   Future<bool> _getShowClassTime() async {
     return await ScopedModel.of<MainStateModel>(context).getShowClassTime();
+  }
+
+  Future<bool> _getShowFreeClass() async {
+    return await ScopedModel.of<MainStateModel>(context).getShowFreeClass();
   }
 
   Future<bool> _getShowMonth() async {

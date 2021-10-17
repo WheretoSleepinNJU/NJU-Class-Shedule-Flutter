@@ -1,3 +1,4 @@
+import 'dart:convert';
 import '../../../generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
@@ -13,11 +14,53 @@ class CourseDetailDialog extends StatelessWidget {
 
   CourseDetailDialog(this.course, this.isActive, this.onPressed);
 
+  String _getWeekListString() {
+    bool flag = true;
+    List weekList = json.decode(course.weeks!);
+    String base = weekList[0].toString() +
+        '-' +
+        weekList[weekList.length - 1].toString() +
+        '周';
+    for (int i = 1; i < weekList.length; i++) {
+      if (weekList[i] - weekList[0] != i) {
+        flag = false;
+        break;
+      }
+    }
+    if (flag)
+      return base;
+    flag = true;
+    for (int i = 1; i < weekList.length; i++) {
+      if (weekList[i] - weekList[0] != 2 * i) {
+        flag = false;
+        break;
+      }
+    }
+    if (flag)
+      if(weekList[0] % 2 == 0)
+        return base + " 双周";
+      else
+        return base + " 单周";
+    else
+      return course.weeks!;
+  }
+
   @override
   Widget build(BuildContext context) {
+    String weekString = Constant.WEEK_WITH_BIAS[course.weekTime!] +
+        course.startTime.toString() +
+        '-' +
+        (course.startTime! + course.timeCount!).toString() +
+        '节';
+    if (course.startTime == 0 && course.timeCount == 0)
+      weekString = S.of(context).free_time;
+
+    String weekListString = _getWeekListString();
+
     return mDialog(
       (isActive ? '' : S.of(context).not_this_week) + course.name!,
-      new SingleChildScrollView(child: Column(
+      new SingleChildScrollView(
+          child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -25,7 +68,9 @@ class CourseDetailDialog extends StatelessWidget {
             Icon(Icons.location_on, color: Theme.of(context).primaryColor),
             Padding(padding: EdgeInsets.only(left: 5)),
             Flexible(
-                child: Text(course.classroom ?? S.of(context).unknown_place)),
+                child: Text(course.classroom == ""
+                    ? S.of(context).unknown_place
+                    : course.classroom ?? S.of(context).unknown_place)),
           ]),
           Padding(padding: EdgeInsets.only(bottom: 10)),
           Row(children: [
@@ -37,18 +82,13 @@ class CourseDetailDialog extends StatelessWidget {
           Row(children: [
             Icon(Icons.access_time, color: Theme.of(context).primaryColor),
             Padding(padding: EdgeInsets.only(left: 5)),
-            Flexible(
-                child: Text(Constant.WEEK_WITH_BIAS[course.weekTime!] +
-                    course.startTime.toString() +
-                    '-' +
-                    (course.startTime! + course.timeCount!).toString() +
-                    '节')),
+            Flexible(child: Text(weekString)),
           ]),
           Padding(padding: EdgeInsets.only(bottom: 10)),
           Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Icon(Icons.event, color: Theme.of(context).primaryColor),
             Padding(padding: EdgeInsets.only(left: 5)),
-            Flexible(child: Text(course.weeks!)),
+            Flexible(child: Text(weekListString)),
           ]),
           Padding(padding: EdgeInsets.only(bottom: 10)),
           Row(children: [
@@ -73,7 +113,9 @@ class CourseDetailDialog extends StatelessWidget {
                     throw 'Could not launch $link';
                   }
                 },
-                text: course.info ?? S.of(context).unknown_info,
+                text: course.info == ""
+                    ? S.of(context).unknown_info
+                    : course.info ?? S.of(context).unknown_info,
                 style: TextStyle(fontSize: 16),
                 linkStyle: TextStyle(color: Theme.of(context).primaryColor),
                 options: LinkifyOptions(humanize: false),

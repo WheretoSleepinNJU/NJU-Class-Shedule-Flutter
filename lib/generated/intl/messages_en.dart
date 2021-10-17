@@ -25,7 +25,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m2(className) => "确定删除课程【 ${className} 】吗？";
 
-  static String m3(num) => "第 ${num} 周";
+  static String m3(num) => "另有 ${num} 节「自由时间」课程 >>";
+
+  static String m4(num) => "第 ${num} 周";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -103,7 +105,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "donate_subtitle": MessageLookupByLibrary.simpleMessage("给傻翠买支棒棒糖吧！"),
         "donate_title": MessageLookupByLibrary.simpleMessage("投喂"),
         "easter_egg": MessageLookupByLibrary.simpleMessage(
-            "感谢小百合工作室\n感谢 @ns @lgt @FengChendian 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光\n感谢 @11 给了她第二次生命"),
+            "感谢小百合工作室\n感谢 @ns @lgt @FengChendian 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光"),
         "export_classtable_subtitle": MessageLookupByLibrary.simpleMessage(
             "导出当前课表为二维码/链接\n使用公共服务 file.io"),
         "export_classtable_title":
@@ -118,36 +120,48 @@ class MessageLookup extends MessageLookupByLibrary {
         "force_zoom_subtitle":
             MessageLookupByLibrary.simpleMessage("强制缩放课程表为一页"),
         "force_zoom_title": MessageLookupByLibrary.simpleMessage("强制缩放"),
+        "free_class_banner": m3,
+        "free_class_button": MessageLookupByLibrary.simpleMessage("查看"),
+        "free_time": MessageLookupByLibrary.simpleMessage("自由时间"),
         "github_open_source": MessageLookupByLibrary.simpleMessage("GitHub 开源"),
         "go_to_settings_toast":
             MessageLookupByLibrary.simpleMessage("修改当前周数请前往设置ww"),
         "hide_add_button_subtitle":
             MessageLookupByLibrary.simpleMessage("隐藏主界面右下角添加按钮"),
         "hide_add_button_title": MessageLookupByLibrary.simpleMessage("隐藏添加按钮"),
+        "hide_free_class_button": MessageLookupByLibrary.simpleMessage("隐藏"),
+        "hide_free_class_dialog_content": MessageLookupByLibrary.simpleMessage(
+            "确认隐藏自由时间课程？\n您可在[设置]-[自定义选项]-[显示自由时间课程]选项中再次启用显示该模块～"),
+        "hide_free_class_dialog_title":
+            MessageLookupByLibrary.simpleMessage("隐藏自由时间课程"),
         "if_show_classtime_subtitle":
             MessageLookupByLibrary.simpleMessage("设置是否显示课程时间"),
         "if_show_classtime_title":
             MessageLookupByLibrary.simpleMessage("显示课程时间"),
+        "if_show_freeclass_subtitle":
+            MessageLookupByLibrary.simpleMessage("设置是否显示自由时间课程"),
+        "if_show_freeclass_title":
+            MessageLookupByLibrary.simpleMessage("显示自由时间课程"),
         "if_show_weekend_subtitle":
             MessageLookupByLibrary.simpleMessage("设置是否显示周六周日"),
         "if_show_weekend_title": MessageLookupByLibrary.simpleMessage("显示周末"),
         "import": MessageLookupByLibrary.simpleMessage("导入"),
         "import_auto": MessageLookupByLibrary.simpleMessage("自动导入"),
         "import_banner": MessageLookupByLibrary.simpleMessage(
-            "注意：如加载失败，南京大学VPN\n若浏览器也无法访问教务网，可能教务系统又抽风了\n听起来有点离谱，不过在南京大学，倒也正常.jpg"),
+            "注意：如加载失败，请连接南京大学VPN\n试试浏览器访问教务网，没准系统又抽风了\n听起来有点离谱，不过在南京大学，倒也正常"),
         "import_banner_action":
-            MessageLookupByLibrary.simpleMessage("下载/打开南京大学VPN"),
+            MessageLookupByLibrary.simpleMessage("下载南京大学VPN"),
         "import_from_JW_title": MessageLookupByLibrary.simpleMessage("导入课程表"),
         "import_from_NJU_cer_subtitle":
-            MessageLookupByLibrary.simpleMessage("教务处哇教务处，不愧是你"),
+            MessageLookupByLibrary.simpleMessage("推荐通过统一认证进行登录导入"),
         "import_from_NJU_cer_title":
             MessageLookupByLibrary.simpleMessage("从南京大学统一认证导入课表"),
         "import_from_NJU_subtitle":
-            MessageLookupByLibrary.simpleMessage("登录南京大学教务系统导入课程表"),
+            MessageLookupByLibrary.simpleMessage("20级前同学可使用此方法登录导入"),
         "import_from_NJU_title":
-            MessageLookupByLibrary.simpleMessage("从南京大学教务处导入课表"),
+            MessageLookupByLibrary.simpleMessage("从南京大学教务系统导入课表"),
         "import_from_NJU_xk_subtitle":
-            MessageLookupByLibrary.simpleMessage("两种方式已经无法满足我校教务处了..."),
+            MessageLookupByLibrary.simpleMessage("新选课系统，尚不稳定的备选导入方式"),
         "import_from_NJU_xk_title":
             MessageLookupByLibrary.simpleMessage("从南京大学选课系统导入课表"),
         "import_from_qrcode_subtitle":
@@ -221,7 +235,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "username": MessageLookupByLibrary.simpleMessage("用户名"),
         "username_error_toast":
             MessageLookupByLibrary.simpleMessage("用户名错误 TvT"),
-        "week": m3,
+        "week": m4,
         "week_num_invalid_dialog_content":
             MessageLookupByLibrary.simpleMessage("课程结束周数应大于起始周数"),
         "week_num_invalid_dialog_title":

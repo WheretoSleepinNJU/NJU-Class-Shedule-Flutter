@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 abstract class ConfigStateModel extends Model {
   bool _showWeekend = true;
   bool _showClassTime = true;
+  bool _showFreeClass = true;
   bool _showMonth = true;
   bool _showDate = true;
   bool _forceZoom = false;
@@ -45,6 +46,23 @@ abstract class ConfigStateModel extends Model {
       return showClassTime;
     }
     return _showClassTime;
+  }
+
+  void setShowFreeClass(bool showFreeClass) async {
+    _showFreeClass = showFreeClass;
+    notifyListeners();
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setBool("showFreeClass", _showFreeClass);
+  }
+
+  Future<bool> getShowFreeClass() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    bool? showFreeClass = sp.getBool("showFreeClass");
+    if (showFreeClass != null) {
+      _showFreeClass = showFreeClass;
+      return showFreeClass;
+    }
+    return _showFreeClass;
   }
 
   void setShowMonth(bool showMonth) async {

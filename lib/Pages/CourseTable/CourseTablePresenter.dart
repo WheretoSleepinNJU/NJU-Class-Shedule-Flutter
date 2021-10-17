@@ -19,6 +19,7 @@ import '../../Components/Dialog.dart';
 import '../../Components/Toast.dart';
 
 import 'Widgets/CourseDetailDialog.dart';
+import 'Widgets/HideFreeCourseDialog.dart';
 import 'Widgets/CourseDeleteDialog.dart';
 import 'Widgets/CourseWidget.dart';
 
@@ -27,6 +28,7 @@ class CourseTablePresenter {
   List<Course> activeCourses = [];
   List<Course> hideCourses = [];
   List<List<Course>> multiCourses = [];
+  List<Course> freeCourses = [];
 
   refreshClasses(int tableId, int nowWeek) async {
     List allCoursesMap = await courseProvider.getAllCourses(tableId);
@@ -40,6 +42,7 @@ class CourseTablePresenter {
     activeCourses = scheduleModel.activeCourses;
     hideCourses = scheduleModel.hideCourses;
     multiCourses = scheduleModel.multiCourses;
+    freeCourses = scheduleModel.freeCourses;
   }
 
   Future<List<Widget>?> getClassesWidgetList(
@@ -251,9 +254,33 @@ class CourseTablePresenter {
                 builder: new DotSwiperPaginationBuilder(
                     color: Colors.grey,
                     activeColor: Theme.of(context).primaryColor)),
-            loop: false,
-            viewportFraction: 0.8,
-            scale: 0.9,
+            viewportFraction: 1,
+            scale: 1,
+          );
+        });
+  }
+
+  showFreeClassDialog(BuildContext context, int nowWeek) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+
+          return Swiper(
+            itemBuilder: (BuildContext context, int index) {
+              return CourseDetailDialog(
+                  freeCourses[index],
+                  isThisWeek(freeCourses[index], nowWeek),
+                      () => Navigator.of(context).pop());
+            },
+            itemCount: freeCourses.length,
+            pagination: new SwiperPagination(
+                margin: new EdgeInsets.only(bottom: 100),
+                builder: new DotSwiperPaginationBuilder(
+                    color: Colors.grey,
+                    activeColor: Theme.of(context).primaryColor)),
+            loop: freeCourses.length > 1,
+            viewportFraction: 1,
+            scale: 1,
           );
         });
   }
@@ -263,6 +290,15 @@ class CourseTablePresenter {
       context: context,
       builder: (BuildContext context) {
         return CourseDeleteDialog(course);
+      },
+    );
+  }
+
+  showHideFreeCourseDialog(BuildContext context) {
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return HideFreeCourseDialog();
       },
     );
   }

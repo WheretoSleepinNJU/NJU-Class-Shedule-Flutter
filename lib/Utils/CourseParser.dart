@@ -52,37 +52,43 @@ class CourseParser {
       for (String info in infos) {
         info = info.replaceAll('\\t\\t\\t\\t\\t  \\t', '');
         info = info.replaceAll('\\t\\t\\t\\t\\t', '');
+        info = info.trim();
         if (info == '') continue;
+        List<String> strs = info.split(' ');
+
+        //自由时间缺省值
+        int weekTime = 0;
+        int startTime = 0;
+        int timeCount = 0;
 
         //TODO: 自由时间
         // "自由时间 2-17周 详见主页通知"
-        if (info.contains('自由时间')) continue;
+        if (!info.contains('自由时间')) {
+          // Get WeekTime
+          String weekStr = info.substring(0, 2);
+          // 异常测试
+          // weekStr = '周零';
+          weekTime = _getIntWeek(weekStr);
+          if (weekTime == 0) {
+            throw (courseName);
+          }
 
-        // Get WeekTime
-        List<String> strs = info.split(' ');
-        String weekStr = info.substring(0, 2);
-        // 异常测试
-        // weekStr = '周零';
-        int weekTime = _getIntWeek(weekStr);
-        if (weekTime == 0) {
-          throw (courseName);
+          // 异常测试
+          // info="周四 第9节 2-17周  仙Ⅱ-301";
+          try {
+            var time = patten1.firstMatch(info);
+            startTime = int.parse(time!.group(1)!);
+            timeCount = int.parse(time.group(2)!) - startTime;
+          } catch (e) {
+            continue;
+            // throw (courseName);
+          }
         }
 
         // Get Time
-        int startTime, timeCount;
         String weekSeries;
-        // 异常测试
-        // info="周四 第9节 2-17周  仙Ⅱ-301";
-        try {
-          var time = patten1.firstMatch(info);
-          startTime = int.parse(time!.group(1)!);
-          timeCount = int.parse(time.group(2)!) - startTime;
-          weekSeries = getWeekSeriesString(info);
-        } catch (e) {
-          continue;
-          // throw (courseName);
-        }
-        // print(startTime.toString() + ' - ' + timeCount.toString());
+        weekSeries = getWeekSeriesString(info);
+
 
         // Get ClassRoom
         String classRoom = strs[strs.length - 1];

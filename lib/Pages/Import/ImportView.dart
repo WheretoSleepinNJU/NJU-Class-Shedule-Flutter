@@ -71,21 +71,21 @@ class _ImportViewState extends State<ImportView> {
             color: Color(0xffeeeeee),
           ),
           ListTile(
-            title: Text(S.of(context).import_from_NJU_title),
-            subtitle: Text(S.of(context).import_from_NJU_subtitle),
-            onTap: () async {
-              bool? status = await Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => ImportFromJWView()));
-              if (status == true) Navigator.of(context).pop(status);
-            },
-          ),
-          ListTile(
             title: Text(S.of(context).import_from_NJU_cer_title),
             subtitle: Text(S.of(context).import_from_NJU_cer_subtitle),
             onTap: () async {
               bool? status = await Navigator.of(context).push(MaterialPageRoute(
                   builder: (BuildContext context) =>
                       ImportFromCerView(config: Config.jw_config)));
+              if (status == true) Navigator.of(context).pop(status);
+            },
+          ),
+          ListTile(
+            title: Text(S.of(context).import_from_NJU_title),
+            subtitle: Text(S.of(context).import_from_NJU_subtitle),
+            onTap: () async {
+              bool? status = await Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => ImportFromJWView()));
               if (status == true) Navigator.of(context).pop(status);
             },
           ),
