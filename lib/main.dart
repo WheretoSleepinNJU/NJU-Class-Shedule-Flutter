@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:flutter/services.dart';
+
 import 'generated/l10n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -11,6 +15,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   //Initialize the app config.
   int themeIndex = await InitUtil.Initialize();
+  
+  /// 原生安卓上去除状态栏遮罩
+  if (Platform.isAndroid) {
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+  }
   runApp(MyApp(themeIndex));
 }
 
