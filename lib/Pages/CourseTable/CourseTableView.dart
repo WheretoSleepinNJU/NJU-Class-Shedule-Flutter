@@ -222,33 +222,43 @@ class CourseTableViewState extends State<CourseTableView> {
                         ((!_isShowFreeClass) || (_freeCourseNum == 0))
                             ? Container()
                             : MaterialBanner(
-                                content: Text(
-                                    S.of(context).free_class_banner(
-                                        _freeCourseNum.toString()),
-                                    style: TextStyle(color: Colors.white)),
+                                content: FittedBox(
+                                    fit: BoxFit.fitWidth,
+                                    child: Text(
+                                        S.of(context).free_class_banner(
+                                            _freeCourseNum.toString()),
+                                        style: TextStyle(color: Colors.white))),
                                 backgroundColor: Theme.of(context).primaryColor,
                                 actions: [
-                                  Row(children: [
-                                    TextButton(
-                                      child: Text(S.of(context).free_class_button,
-                                          style: TextStyle(color: Colors.white)),
-                                      onPressed: () =>
-                                          _presenter.showFreeClassDialog(
-                                              context, _nowShowWeekNum),
-                                      style: TextButton.styleFrom(
-                                          minimumSize: Size.zero,
-                                        padding: EdgeInsets.zero),
-                                    ),
-                                    TextButton(
-                                      child: Text(S.of(context).hide_free_class_button,
-                                          style: TextStyle(color: Colors.white)),
-                                      onPressed: () =>
-                                          _presenter.showHideFreeCourseDialog(context),
-                                      style: TextButton.styleFrom(
-                                          minimumSize: Size.zero,
-                                          padding: EdgeInsets.zero),
-                                    ),
-                                  ],)
+                                  Row(
+                                    children: [
+                                      TextButton(
+                                        child: Text(
+                                            S.of(context).free_class_button,
+                                            style:
+                                                TextStyle(color: Colors.white)),
+                                        onPressed: () =>
+                                            _presenter.showFreeClassDialog(
+                                                context, _nowShowWeekNum),
+                                        style: TextButton.styleFrom(
+                                            minimumSize: Size.zero,
+                                            padding: EdgeInsets.zero),
+                                      ),
+                                      TextButton(
+                                        child: Text(
+                                            S
+                                                .of(context)
+                                                .hide_free_class_button,
+                                            style:
+                                                TextStyle(color: Colors.white)),
+                                        onPressed: () => _presenter
+                                            .showHideFreeCourseDialog(context),
+                                        style: TextButton.styleFrom(
+                                            minimumSize: Size.zero,
+                                            padding: EdgeInsets.zero),
+                                      ),
+                                    ],
+                                  )
                                 ],
                               ),
                       ]),
@@ -256,7 +266,8 @@ class CourseTableViewState extends State<CourseTableView> {
                     ]),
                     floatingActionButton: _isShowAddButton
                         ? Padding(
-                            padding: const EdgeInsets.only(bottom: 50.0, left: 10.0),
+                            padding:
+                                const EdgeInsets.only(bottom: 50.0, left: 10.0),
                             child: FloatingActionButton(
                               backgroundColor: Theme.of(context).primaryColor,
                               onPressed: () => Navigator.of(context).push(

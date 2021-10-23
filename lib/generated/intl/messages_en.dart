@@ -110,7 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "导出当前课表为二维码/链接\n使用公共服务 file.io"),
         "export_classtable_title":
             MessageLookupByLibrary.simpleMessage("导出当前课表"),
-        "export_title": MessageLookupByLibrary.simpleMessage("导出"),
+        "export_title": MessageLookupByLibrary.simpleMessage("导出课程表"),
         "fix_week_dialog_content":
             MessageLookupByLibrary.simpleMessage("检测到学期周数与当前不一致，是否立即矫正？"),
         "fix_week_dialog_title": MessageLookupByLibrary.simpleMessage("周数矫正"),
@@ -168,15 +168,20 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("从他人分享的二维码导入课表"),
         "import_from_qrcode_title":
             MessageLookupByLibrary.simpleMessage("二维码导入课表"),
+        "import_inline":
+            MessageLookupByLibrary.simpleMessage("内置导入：应用内自带的导入方式"),
         "import_manually": MessageLookupByLibrary.simpleMessage("手动导入"),
         "import_manually_subtitle":
             MessageLookupByLibrary.simpleMessage("手动添加课程表数据"),
         "import_manually_title": MessageLookupByLibrary.simpleMessage("手动添加"),
         "import_more_schools": MessageLookupByLibrary.simpleMessage("适配更多学校"),
+        "import_online":
+            MessageLookupByLibrary.simpleMessage("在线导入：从服务器获取的最新配置"),
         "import_or_export_subtitle":
             MessageLookupByLibrary.simpleMessage("使用南哪课表内置的导入/导出功能"),
         "import_or_export_title":
             MessageLookupByLibrary.simpleMessage("导入/导出课表"),
+        "import_qr_title": MessageLookupByLibrary.simpleMessage("二维码导入"),
         "import_settings_title": MessageLookupByLibrary.simpleMessage("导入课程表"),
         "import_subtitle": MessageLookupByLibrary.simpleMessage("自动导入课程表数据"),
         "import_success_toast": MessageLookupByLibrary.simpleMessage("导入完成"),
@@ -210,6 +215,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "password_error_toast":
             MessageLookupByLibrary.simpleMessage("密码错误 = =||"),
         "pay_open_fail_toast": MessageLookupByLibrary.simpleMessage("打开失败"),
+        "qrcode_name_error_toast":
+            MessageLookupByLibrary.simpleMessage("读取课表名称失败，可能为链接错误"),
+        "qrcode_read_error_toast":
+            MessageLookupByLibrary.simpleMessage("读取课程表，可能是 bug"),
         "qrcode_url_error_toast":
             MessageLookupByLibrary.simpleMessage("二维码无效，可能为链接过期"),
         "remember_password": MessageLookupByLibrary.simpleMessage("记住密码"),

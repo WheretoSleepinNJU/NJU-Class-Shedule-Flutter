@@ -10,8 +10,7 @@ import '../../Components/Toast.dart';
 class ImportFromCerView extends StatefulWidget {
   final Map config;
 
-  ImportFromCerView({Key? key, required this.config})
-      : super(key: key);
+  ImportFromCerView({Key? key, required this.config}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -62,8 +61,11 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
                 ? Container()
                 : MaterialBanner(
                     forceActionsBelow: true,
-                    content: Text(widget.config['banner_content'],
-                        style: TextStyle(color: Colors.white)),
+                    content: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(widget.config['banner_content'],
+                            style: TextStyle(color: Colors.white))),
                     backgroundColor: Theme.of(context).primaryColor,
                     actions: [
                       TextButton(

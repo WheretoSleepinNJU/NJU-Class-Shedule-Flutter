@@ -80,9 +80,12 @@
   "import_from_qrcode_subtitle": "从他人分享的二维码导入课表",
   "importing_toast": "导入中 请稍后",
   "qrcode_url_error_toast": "二维码无效，可能为链接过期",
+  "qrcode_name_error_toast": "读取课表名称失败，可能为链接错误",
+  "qrcode_read_error_toast": "读取课程表，可能是 bug",
   "online_parse_error_toast": "导入课表失败，可能是 bug",
   "import_success_toast": "导入完成",
-  "export_title": "导出",
+  "export_title": "导出课程表",
+  "import_qr_title": "二维码导入",
 
   "shuffle_color_pool_success_toast": "重置颜色池成功 >v<",
   "nowweek_not_edited_success_toast": "当前周未修改 >v<",
@@ -109,6 +112,8 @@
 
   "import_settings_title": "导入课程表",
   "import_more_schools": "适配更多学校",
+  "import_inline": "内置导入：应用内自带的导入方式",
+  "import_online": "在线导入：从服务器获取的最新配置",
 
   "import_title": "导入课程表",
   "import_banner": "注意：如加载失败，请连接南京大学VPN\n试试浏览器访问教务网，没准系统又抽风了\n听起来有点离谱，不过在南京大学，倒也正常",

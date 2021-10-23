@@ -61,8 +61,11 @@ class _WebViewState extends State<ImportFromXKView> {
                 ? Container()
                 : MaterialBanner(
                     forceActionsBelow: true,
-                    content: Text(widget.config['banner_content'],
-                        style: TextStyle(color: Colors.white)),
+                    content: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(widget.config['banner_content'],
+                            style: TextStyle(color: Colors.white))),
                     backgroundColor: Theme.of(context).primaryColor,
                     actions: [
                       TextButton(

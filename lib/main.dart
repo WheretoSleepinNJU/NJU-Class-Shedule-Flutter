@@ -15,10 +15,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   //Initialize the app config.
   int themeIndex = await InitUtil.Initialize();
-  
+
   /// 原生安卓上去除状态栏遮罩
   if (Platform.isAndroid) {
-      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(statusBarColor: Colors.transparent));
   }
   runApp(MyApp(themeIndex));
 }
@@ -51,7 +52,8 @@ class _MyAppState extends State<MyApp> {
               localizationsDelegates: const [
                 S.delegate,
                 GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
               ],
               supportedLocales: S.delegate.supportedLocales,
               title: '南哪课表',

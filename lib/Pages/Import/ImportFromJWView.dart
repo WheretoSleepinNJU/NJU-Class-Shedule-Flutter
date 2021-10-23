@@ -75,8 +75,11 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
               child: Column(children: <Widget>[
                 MaterialBanner(
                   forceActionsBelow: true,
-                  content: Text(S.of(context).import_banner,
-                      style: TextStyle(color: Colors.white)),
+                  content: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Text(S.of(context).import_banner,
+                          style: TextStyle(color: Colors.white))),
                   backgroundColor: Theme.of(context).primaryColor,
                   actions: [
                     TextButton(

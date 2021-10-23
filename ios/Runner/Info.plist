@@ -26,6 +26,8 @@
 	<string>南哪课表需要相机权限，才能扫码导入课程。</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>南哪课表需要相册权限，才能选择背景图片。</string>
+	<key>io.flutter.embedded_views_preview</key>
+    <true/>
     <key>NSAppTransportSecurity</key>
     <dict>
     <key>NSAllowsArbitraryLoads</key>

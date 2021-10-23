@@ -820,6 +820,26 @@ class S {
     );
   }
 
+  /// `读取课表名称失败，可能为链接错误`
+  String get qrcode_name_error_toast {
+    return Intl.message(
+      '读取课表名称失败，可能为链接错误',
+      name: 'qrcode_name_error_toast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `读取课程表，可能是 bug`
+  String get qrcode_read_error_toast {
+    return Intl.message(
+      '读取课程表，可能是 bug',
+      name: 'qrcode_read_error_toast',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `导入课表失败，可能是 bug`
   String get online_parse_error_toast {
     return Intl.message(
@@ -840,11 +860,21 @@ class S {
     );
   }
 
-  /// `导出`
+  /// `导出课程表`
   String get export_title {
     return Intl.message(
-      '导出',
+      '导出课程表',
       name: 'export_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `二维码导入`
+  String get import_qr_title {
+    return Intl.message(
+      '二维码导入',
+      name: 'import_qr_title',
       desc: '',
       args: [],
     );
@@ -1065,6 +1095,26 @@ class S {
     return Intl.message(
       '适配更多学校',
       name: 'import_more_schools',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `内置导入：应用内自带的导入方式`
+  String get import_inline {
+    return Intl.message(
+      '内置导入：应用内自带的导入方式',
+      name: 'import_inline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `在线导入：从服务器获取的最新配置`
+  String get import_online {
+    return Intl.message(
+      '在线导入：从服务器获取的最新配置',
+      name: 'import_online',
       desc: '',
       args: [],
     );

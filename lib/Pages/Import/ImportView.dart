@@ -65,14 +65,17 @@ class _ImportViewState extends State<ImportView> {
             Column(
                 children: ListTile.divideTiles(context: context, tiles: [
           Container(
-            child: Text("内置导入：应用内自带的导入方式", style: TextStyle()),
+            child: Text(S.of(context).import_inline, style: TextStyle()),
             padding: const EdgeInsets.only(left: 15.0, top: 10.0, bottom: 5.0),
             alignment: Alignment.centerLeft,
             color: Color(0xffeeeeee),
           ),
           ListTile(
             title: Text(S.of(context).import_from_NJU_cer_title),
-            subtitle: Text(S.of(context).import_from_NJU_cer_subtitle),
+            subtitle: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(S.of(context).import_from_NJU_cer_subtitle)),
             onTap: () async {
               bool? status = await Navigator.of(context).push(MaterialPageRoute(
                   builder: (BuildContext context) =>
@@ -82,7 +85,10 @@ class _ImportViewState extends State<ImportView> {
           ),
           ListTile(
             title: Text(S.of(context).import_from_NJU_title),
-            subtitle: Text(S.of(context).import_from_NJU_subtitle),
+            subtitle: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(S.of(context).import_from_NJU_subtitle)),
             onTap: () async {
               bool? status = await Navigator.of(context).push(MaterialPageRoute(
                   builder: (BuildContext context) => ImportFromJWView()));
@@ -91,7 +97,10 @@ class _ImportViewState extends State<ImportView> {
           ),
           ListTile(
             title: Text(S.of(context).import_from_NJU_xk_title),
-            subtitle: Text(S.of(context).import_from_NJU_xk_subtitle),
+            subtitle: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(S.of(context).import_from_NJU_xk_subtitle)),
             onTap: () async {
               bool? status = await Navigator.of(context).push(MaterialPageRoute(
                   builder: (BuildContext context) =>
@@ -100,7 +109,7 @@ class _ImportViewState extends State<ImportView> {
             },
           ),
           Container(
-            child: Text("在线导入：从服务器获取的最新配置", style: TextStyle()),
+            child: Text(S.of(context).import_online, style: TextStyle()),
             padding: const EdgeInsets.only(left: 15.0, top: 5.0, bottom: 5.0),
             alignment: Alignment.centerLeft,
             color: Color(0xffeeeeee),
@@ -120,7 +129,7 @@ class _ImportViewState extends State<ImportView> {
                               config: data))
                           .toList();
                       schoolList.add(School(
-                          name: '适配更多学校',
+                          name: S.of(context).import_more_schools,
                           namePinyin: '#',
                           tagIndex: '#',
                           config: {}));
@@ -139,8 +148,11 @@ class _ImportViewState extends State<ImportView> {
                           }
                           return ListTile(
                             title: Text(schoolList[index].name),
-                            subtitle:
-                                Text(schoolList[index].config!['description']),
+                            subtitle: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                    schoolList[index].config!['description'])),
                             onTap: () async {
                               bool? status = await Navigator.of(context).push(
                                   MaterialPageRoute(
