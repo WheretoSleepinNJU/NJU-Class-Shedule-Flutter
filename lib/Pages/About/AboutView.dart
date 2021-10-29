@@ -65,8 +65,9 @@ class _AboutViewState extends State<AboutView> {
             ),
             new Container(
               child: TextButton(
-                child: Text(S.of(context).check_privacy_button,
-                    style: TextStyle(color: Theme.of(context).primaryColor)),
+                style: TextButton.styleFrom(
+                    primary: Theme.of(context).primaryColor),
+                child: Text(S.of(context).check_privacy_button),
                 onPressed: () {
                   PrivacyUtil privacyUtil = new PrivacyUtil();
                   privacyUtil.checkPrivacy(context, true);

@@ -83,8 +83,8 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
                   backgroundColor: Theme.of(context).primaryColor,
                   actions: [
                     TextButton(
-                        child: Text(S.of(context).import_banner_action,
-                            style: TextStyle(color: Colors.white)),
+                        style: TextButton.styleFrom(primary: Colors.white),
+                        child: Text(S.of(context).import_banner_action),
                         onPressed: () => launch(Url.URL_NJU_VPN))
                   ],
                 ),

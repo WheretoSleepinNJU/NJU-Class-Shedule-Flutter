@@ -223,7 +223,8 @@ class CourseTableViewState extends State<CourseTableView> {
                             ? Container()
                             : MaterialBanner(
                                 content: FittedBox(
-                                    fit: BoxFit.fitWidth,
+                                    fit: BoxFit.scaleDown,
+                                    alignment: Alignment.centerLeft,
                                     child: Text(
                                         S.of(context).free_class_banner(
                                             _freeCourseNum.toString()),

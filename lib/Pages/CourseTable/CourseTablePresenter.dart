@@ -163,10 +163,10 @@ class CourseTablePresenter {
                       children: <Widget>[
                     Html(data: welcome_content),
                     TextButton(
-                        style: ButtonStyle(alignment: Alignment.centerRight),
-                        child: Text(S.of(context).love_and_donate,
-                            style: TextStyle(
-                                color: Theme.of(context).primaryColor)),
+                        style: TextButton.styleFrom(
+                            alignment: Alignment.centerRight,
+                            primary: Theme.of(context).primaryColor),
+                        child: Text(S.of(context).love_and_donate),
                         onPressed: () async {
                           if (Platform.isIOS)
                             launch(Url.URL_APPLE);
@@ -174,7 +174,9 @@ class CourseTablePresenter {
                           Navigator.of(context).pop();
                         }),
                     TextButton(
-                        style: ButtonStyle(alignment: Alignment.centerRight),
+                        style: TextButton.styleFrom(
+                            alignment: Alignment.centerRight,
+                            primary: Theme.of(context).primaryColor),
                         child: Text(S.of(context).bug_and_report,
                             style: TextStyle(
                                 color: Theme.of(context).primaryColor)),
@@ -186,7 +188,9 @@ class CourseTablePresenter {
                           Navigator.of(context).pop();
                         }),
                     TextButton(
-                        style: ButtonStyle(alignment: Alignment.centerRight),
+                        style: TextButton.styleFrom(
+                            alignment: Alignment.centerRight,
+                            primary: Colors.grey),
                         child: Text(S.of(context).love_but_no_money,
                             style: TextStyle(color: Colors.grey)),
                         onPressed: () async {
@@ -264,13 +268,12 @@ class CourseTablePresenter {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
-
           return Swiper(
             itemBuilder: (BuildContext context, int index) {
               return CourseDetailDialog(
                   freeCourses[index],
                   isThisWeek(freeCourses[index], nowWeek),
-                      () => Navigator.of(context).pop());
+                  () => Navigator.of(context).pop());
             },
             itemCount: freeCourses.length,
             pagination: new SwiperPagination(
