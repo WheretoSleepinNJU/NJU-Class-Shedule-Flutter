@@ -14,21 +14,18 @@ class CourseDetailDialog extends StatelessWidget {
 
   CourseDetailDialog(this.course, this.isActive, this.onPressed);
 
-  String _getWeekListString() {
+  String _getWeekListString(BuildContext context) {
     bool flag = true;
     List weekList = json.decode(course.weeks!);
-    String base = weekList[0].toString() +
-        '-' +
-        weekList[weekList.length - 1].toString() +
-        '周';
+    String base = S.of(context).week_duration(
+        weekList[0].toString(), weekList[weekList.length - 1].toString());
     for (int i = 1; i < weekList.length; i++) {
       if (weekList[i] - weekList[0] != i) {
         flag = false;
         break;
       }
     }
-    if (flag)
-      return base;
+    if (flag) return base;
     flag = true;
     for (int i = 1; i < weekList.length; i++) {
       if (weekList[i] - weekList[0] != 2 * i) {
@@ -36,11 +33,10 @@ class CourseDetailDialog extends StatelessWidget {
         break;
       }
     }
-    if (flag)
-      if(weekList[0] % 2 == 0)
-        return base + " 双周";
-      else
-        return base + " 单周";
+    if (flag) if (weekList[0] % 2 == 0)
+      return base + " " + S.of(context).double_week;
+    else
+      return base + " " + S.of(context).single_week;
     else
       return course.weeks!;
   }
@@ -48,14 +44,13 @@ class CourseDetailDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String weekString = Constant.WEEK_WITH_BIAS[course.weekTime!] +
-        course.startTime.toString() +
-        '-' +
-        (course.startTime! + course.timeCount!).toString() +
-        '节';
+        ' ' +
+        S.of(context).class_duration(course.startTime.toString(),
+            (course.startTime! + course.timeCount!).toString());
     if (course.startTime == 0 && course.timeCount == 0)
       weekString = S.of(context).free_time;
 
-    String weekListString = _getWeekListString();
+    String weekListString = _getWeekListString(context);
 
     return mDialog(
       (isActive ? '' : S.of(context).not_this_week) + course.name!,

@@ -19,7 +19,7 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'zh_CN';
 
-  static String m0(start, end) => "第 ${start} - ${end} 节";
+  static String m0(start, end) => "第 ${start}-${end} 节";
 
   static String m1(num) => "第 ${num} 节";
 
@@ -27,7 +27,13 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m3(num) => "另有 ${num} 节「自由时间」课程 >>";
 
-  static String m4(num) => "第 ${num} 周";
+  static String m4(num) => "加入当前课表(${num})";
+
+  static String m5(num) => "已添加(${num})";
+
+  static String m6(num) => "第 ${num} 周";
+
+  static String m7(start, end) => "${start}-${end} 周";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -104,6 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "developer": MessageLookupByLibrary.simpleMessage("开发者 idealclover"),
         "donate_subtitle": MessageLookupByLibrary.simpleMessage("给傻翠买支棒棒糖吧！"),
         "donate_title": MessageLookupByLibrary.simpleMessage("投喂"),
+        "double_week": MessageLookupByLibrary.simpleMessage("双周"),
         "easter_egg": MessageLookupByLibrary.simpleMessage(
             "感谢小百合工作室\n感谢 @ns @lgt @FengChendian 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光"),
         "export_classtable_subtitle": MessageLookupByLibrary.simpleMessage(
@@ -164,6 +171,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("新选课系统，尚不稳定的备选导入方式"),
         "import_from_NJU_xk_title":
             MessageLookupByLibrary.simpleMessage("从南京大学选课系统导入课表"),
+        "import_from_qrcode_content": MessageLookupByLibrary.simpleMessage(
+            "扫描二维码导入此课表\n南哪课表-设置-导入/导出课表-二维码导入课表\n有效期一周，扫描一次后过期"),
         "import_from_qrcode_subtitle":
             MessageLookupByLibrary.simpleMessage("从他人分享的二维码导入课表"),
         "import_from_qrcode_title":
@@ -189,6 +198,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "importing_toast": MessageLookupByLibrary.simpleMessage("导入中 请稍后"),
         "introduction": MessageLookupByLibrary.simpleMessage(
             "博客：https://idealclover.top\nEmail：idealclover@163.com"),
+        "lecture_add": m4,
+        "lecture_add_success_toast":
+            MessageLookupByLibrary.simpleMessage("讲座已添加至当前课表～"),
+        "lecture_added": m5,
+        "lecture_added_toast":
+            MessageLookupByLibrary.simpleMessage("这个讲座已经添加过啦～"),
+        "lecture_bottom":
+            MessageLookupByLibrary.simpleMessage("讲座列表由NJU助手团队提供与维护"),
+        "lecture_no_classroom": MessageLookupByLibrary.simpleMessage("暂无地点"),
+        "lecture_no_info": MessageLookupByLibrary.simpleMessage("暂无信息"),
+        "lecture_no_name": MessageLookupByLibrary.simpleMessage("暂无名称"),
+        "lecture_no_teacher": MessageLookupByLibrary.simpleMessage("暂无老师"),
+        "lecture_title": MessageLookupByLibrary.simpleMessage("讲座列表"),
         "love_and_donate": MessageLookupByLibrary.simpleMessage("完美导入！投喂傻翠w"),
         "love_but_no_money": MessageLookupByLibrary.simpleMessage("感谢制作，但我没钱"),
         "manage_table_subtitle":
@@ -237,6 +259,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("重置颜色池成功 >v<"),
         "shuffle_color_pool_title":
             MessageLookupByLibrary.simpleMessage("重置课程颜色"),
+        "single_week": MessageLookupByLibrary.simpleMessage("单周"),
         "tap_to_refresh": MessageLookupByLibrary.simpleMessage("点击刷新"),
         "to": MessageLookupByLibrary.simpleMessage("-"),
         "unknown_info": MessageLookupByLibrary.simpleMessage("暂无备注"),
@@ -244,7 +267,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "username": MessageLookupByLibrary.simpleMessage("用户名"),
         "username_error_toast":
             MessageLookupByLibrary.simpleMessage("用户名错误 TvT"),
-        "week": m4,
+        "view_lecture_subtitle":
+            MessageLookupByLibrary.simpleMessage("查看南哪最新讲座信息，可一键导入至课表"),
+        "view_lecture_title": MessageLookupByLibrary.simpleMessage("查看/添加讲座"),
+        "week": m6,
+        "week_duration": m7,
         "week_num_invalid_dialog_content":
             MessageLookupByLibrary.simpleMessage("课程结束周数应大于起始周数"),
         "week_num_invalid_dialog_title":

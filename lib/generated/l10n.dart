@@ -110,6 +110,16 @@ class S {
     );
   }
 
+  /// `{start}-{end} 周`
+  String week_duration(Object start, Object end) {
+    return Intl.message(
+      '$start-$end 周',
+      name: 'week_duration',
+      desc: '',
+      args: [start, end],
+    );
+  }
+
   /// `第 {num} 节`
   String class_single(Object num) {
     return Intl.message(
@@ -120,10 +130,10 @@ class S {
     );
   }
 
-  /// `第 {start} - {end} 节`
+  /// `第 {start}-{end} 节`
   String class_duration(Object start, Object end) {
     return Intl.message(
-      '第 $start - $end 节',
+      '第 $start-$end 节',
       name: 'class_duration',
       desc: '',
       args: [start, end],
@@ -135,6 +145,26 @@ class S {
     return Intl.message(
       '[非本周]',
       name: 'not_this_week',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `单周`
+  String get single_week {
+    return Intl.message(
+      '单周',
+      name: 'single_week',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `双周`
+  String get double_week {
+    return Intl.message(
+      '双周',
+      name: 'double_week',
       desc: '',
       args: [],
     );
@@ -375,6 +405,26 @@ class S {
     return Intl.message(
       '新选课系统，尚不稳定的备选导入方式',
       name: 'import_from_NJU_xk_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `查看/添加讲座`
+  String get view_lecture_title {
+    return Intl.message(
+      '查看/添加讲座',
+      name: 'view_lecture_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `查看南哪最新讲座信息，可一键导入至课表`
+  String get view_lecture_subtitle {
+    return Intl.message(
+      '查看南哪最新讲座信息，可一键导入至课表',
+      name: 'view_lecture_subtitle',
       desc: '',
       args: [],
     );
@@ -760,6 +810,106 @@ class S {
     );
   }
 
+  /// `讲座列表`
+  String get lecture_title {
+    return Intl.message(
+      '讲座列表',
+      name: 'lecture_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `暂无名称`
+  String get lecture_no_name {
+    return Intl.message(
+      '暂无名称',
+      name: 'lecture_no_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `暂无老师`
+  String get lecture_no_teacher {
+    return Intl.message(
+      '暂无老师',
+      name: 'lecture_no_teacher',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `暂无地点`
+  String get lecture_no_classroom {
+    return Intl.message(
+      '暂无地点',
+      name: 'lecture_no_classroom',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `暂无信息`
+  String get lecture_no_info {
+    return Intl.message(
+      '暂无信息',
+      name: 'lecture_no_info',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `加入当前课表({num})`
+  String lecture_add(Object num) {
+    return Intl.message(
+      '加入当前课表($num)',
+      name: 'lecture_add',
+      desc: '',
+      args: [num],
+    );
+  }
+
+  /// `已添加({num})`
+  String lecture_added(Object num) {
+    return Intl.message(
+      '已添加($num)',
+      name: 'lecture_added',
+      desc: '',
+      args: [num],
+    );
+  }
+
+  /// `讲座已添加至当前课表～`
+  String get lecture_add_success_toast {
+    return Intl.message(
+      '讲座已添加至当前课表～',
+      name: 'lecture_add_success_toast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `这个讲座已经添加过啦～`
+  String get lecture_added_toast {
+    return Intl.message(
+      '这个讲座已经添加过啦～',
+      name: 'lecture_added_toast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `讲座列表由NJU助手团队提供与维护`
+  String get lecture_bottom {
+    return Intl.message(
+      '讲座列表由NJU助手团队提供与维护',
+      name: 'lecture_bottom',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `导出当前课表`
   String get export_classtable_title {
     return Intl.message(
@@ -795,6 +945,16 @@ class S {
     return Intl.message(
       '从他人分享的二维码导入课表',
       name: 'import_from_qrcode_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `扫描二维码导入此课表\n南哪课表-设置-导入/导出课表-二维码导入课表\n有效期一周，扫描一次后过期`
+  String get import_from_qrcode_content {
+    return Intl.message(
+      '扫描二维码导入此课表\n南哪课表-设置-导入/导出课表-二维码导入课表\n有效期一周，扫描一次后过期',
+      name: 'import_from_qrcode_content',
       desc: '',
       args: [],
     );

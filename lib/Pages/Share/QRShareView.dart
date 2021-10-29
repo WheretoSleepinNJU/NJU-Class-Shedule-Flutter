@@ -15,15 +15,20 @@ class QRShareView extends StatelessWidget {
         ),
         body: Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             QrImage(
               data: url,
               version: QrVersions.auto,
               size: 200.0,
             ),
-            Text('扫描二维码')
+            Padding(padding: EdgeInsets.all(10)),
+            Text(
+              S.of(context).import_from_qrcode_content,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16),
+            )
           ],
         )));
   }
