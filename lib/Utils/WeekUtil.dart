@@ -106,6 +106,19 @@ class WeekUtil {
     return result;
   }
 
+  static Future<int> getWeekNumOfDay(DateTime dateTime) async {
+    int monday = 1;
+    while (dateTime.weekday != monday) {
+      dateTime = dateTime.subtract(new Duration(days: 1));
+    }
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    String? lastMondayString = sp.getString("lastWeekMonday");
+    DateTime lastMonday = DateTime.parse(lastMondayString!);
+    int lastIndex = sp.getInt("weekIndex") ?? 0;
+    int weekBias = dateTime.difference(lastMonday).inDays ~/ 7;
+    return lastIndex + weekBias;
+  }
+
   static String _getMonday() {
     int monday = 1;
     DateTime now = new DateTime.now();

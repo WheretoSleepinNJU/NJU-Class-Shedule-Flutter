@@ -54,16 +54,20 @@ class _ShareViewState extends State<ShareView> {
                 String rstStr = json.encode(rst).toString();
                 // print(rstStr);
 
-                Dio dio = new Dio();
-                Response response = await dio.post("https://file.io/?expires=1w",
-                    data: {"text": json.encode(rst)},
-                    options: Options(
-                      contentType: Headers.formUrlEncodedContentType,
-                    ));
-                // print(response.data);
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) =>
-                        QRShareView(response.data['link'])));
+                try{
+                  Dio dio = new Dio();
+                  Response response = await dio.post("https://file.io/?expires=1w",
+                      data: {"text": json.encode(rst)},
+                      options: Options(
+                        contentType: Headers.formUrlEncodedContentType,
+                      ));
+                  // print(response.data);
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          QRShareView(response.data['link'])));
+                }catch(e) {
+                  Toast.showToast(S.of(context).network_error_toast, context);
+                }
               },
             ),
             ListTile(

@@ -32,7 +32,9 @@ class ClassTitle extends StatelessWidget {
                                     ? Colors.white
                                     : Colors.black)),
                         Text(
-                          Constant.CLASS_TIME[i],
+                          Constant.CLASS_TIME_LIST[i]['start'] +
+                              '\n' +
+                              Constant.CLASS_TIME_LIST[i]['end'],
                           style: TextStyle(
                               fontSize: 10,
                               color:

@@ -17,6 +17,7 @@ class CourseDetailDialog extends StatelessWidget {
   String _getWeekListString(BuildContext context) {
     bool flag = true;
     List weekList = json.decode(course.weeks!);
+    if(weekList.length == 1) return S.of(context).week(weekList[0]);
     String base = S.of(context).week_duration(
         weekList[0].toString(), weekList[weekList.length - 1].toString());
     for (int i = 1; i < weekList.length; i++) {
@@ -51,6 +52,19 @@ class CourseDetailDialog extends StatelessWidget {
       weekString = S.of(context).free_time;
 
     String weekListString = _getWeekListString(context);
+
+    String importTypeStr = '';
+    switch(course.importType) {
+      case Constant.ADD_BY_IMPORT:
+        importTypeStr = S.of(context).import_auto;
+        break;
+      case Constant.ADD_MANUALLY:
+        importTypeStr = S.of(context).import_manually;
+        break;
+      case Constant.ADD_BY_LECTURE:
+        importTypeStr = S.of(context).import_from_lecture;
+        break;
+    }
 
     return mDialog(
       (isActive ? '' : S.of(context).not_this_week) + course.name!,
@@ -90,9 +104,8 @@ class CourseDetailDialog extends StatelessWidget {
             Icon(Icons.settings_suggest, color: Theme.of(context).primaryColor),
             Padding(padding: EdgeInsets.only(left: 5)),
             Flexible(
-                child: Text(course.importType == Constant.ADD_BY_IMPORT
-                    ? S.of(context).import_auto
-                    : S.of(context).import_manually)),
+                child: Text(importTypeStr)
+            ),
           ]),
           Padding(padding: EdgeInsets.only(bottom: 10)),
           Row(crossAxisAlignment: CrossAxisAlignment.start, children: [

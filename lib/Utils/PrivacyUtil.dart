@@ -8,19 +8,24 @@ import '../../Models/CourseModel.dart';
 import '../Pages/Import/ImportView.dart';
 import '../generated/l10n.dart';
 import '../Components/Dialog.dart';
+import '../Components/Toast.dart';
 import '../Resources/Url.dart';
 
 class PrivacyUtil {
   checkPrivacy(BuildContext context, bool isForce) async {
-    Dio dio = new Dio();
-    String url = Url.UPDATE_ROOT + '/privacy.json';
-    Response response = await dio.get(url);
-    if (response.statusCode != HttpStatus.ok) return;
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    int privacyVersion = sp.getInt("privacyVersion") ?? 0;
-    int targetVersion = response.data['version'] ?? 0;
-    if (isForce || targetVersion > privacyVersion) {
-      showPrivacyDialog(response.data, targetVersion, isForce, context);
+    try {
+      Dio dio = new Dio();
+      String url = Url.UPDATE_ROOT + '/privacy.json';
+      Response response = await dio.get(url);
+      if (response.statusCode != HttpStatus.ok) return;
+      SharedPreferences sp = await SharedPreferences.getInstance();
+      int privacyVersion = sp.getInt("privacyVersion") ?? 0;
+      int targetVersion = response.data['version'] ?? 0;
+      if (isForce || targetVersion > privacyVersion) {
+        showPrivacyDialog(response.data, targetVersion, isForce, context);
+      }
+    } catch (e) {
+      if (isForce) Toast.showToast(S.of(context).network_error_toast, context);
     }
   }
 

@@ -27,19 +27,19 @@ class MainView extends StatelessWidget {
     return CourseTableView();
   }
 
-   // void checkPrivacy(BuildContext context) async {
-   //   PackageInfo packageInfo = await PackageInfo.fromPlatform();
-   //   SharedPreferences sp = await SharedPreferences.getInstance();
-   //   PrivacyUtil privacyUtil = new PrivacyUtil();
-   //   await privacyUtil.checkUpdate(context, false);
-   //   String storedVersion = sp.getString('privacyversion');
-   //
-   //
-   //
-   //   if(storedVersion == null || storedVersion != packageInfo.version)
-   //     showDonateDialog(context);
-   //   sp.setString("version", packageInfo.version);
-   // }
+// void checkPrivacy(BuildContext context) async {
+//   PackageInfo packageInfo = await PackageInfo.fromPlatform();
+//   SharedPreferences sp = await SharedPreferences.getInstance();
+//   PrivacyUtil privacyUtil = new PrivacyUtil();
+//   await privacyUtil.checkUpdate(context, false);
+//   String storedVersion = sp.getString('privacyversion');
+//
+//
+//
+//   if(storedVersion == null || storedVersion != packageInfo.version)
+//     showDonateDialog(context);
+//   sp.setString("version", packageInfo.version);
+// }
 
 //  void checkFirstTime(BuildContext context) async {
 //    PackageInfo packageInfo = await PackageInfo.fromPlatform();

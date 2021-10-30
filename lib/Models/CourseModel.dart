@@ -179,6 +179,14 @@ class CourseProvider {
     return rst;
   }
 
+  Future<bool> checkHasClassByName(int tableId, String name) async {
+    await open();
+    List<Map> rst = await db!.query(tableName,
+        where: '$columnTableId = ? and $columnName = ?',
+        whereArgs: [tableId, name]);
+    return !rst.isEmpty;
+  }
+
   //获取课程 courseid，如果存在已有课程则为已有课程，否则指定新id
   Future<int> getCourseId(Course course) async {
     List<Map> rst = await db!.query(tableName,

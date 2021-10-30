@@ -30,20 +30,20 @@ class Constant {
     "日"
   ];
 
-  static const List<String> CLASS_TIME = [
-    "08:00\n08:50",
-    "09:00\n09:50",
-    "10:10\n11:00",
-    "11:10\n12:00",
-    "14:00\n14:50",
-    "15:00\n15:50",
-    "16:10\n17:00",
-    "17:10\n18:00",
-    "18:30\n19:20",
-    "19:30\n20:20",
-    "20:30\n21:20",
-    "21:30\n22:20",
-    "22:30"
+  static const List<Map> CLASS_TIME_LIST = [
+    {"start": "08:00", "end": "08:50"},
+    {"start": "09:00", "end": "09:50"},
+    {"start": "10:10", "end": "11:00"},
+    {"start": "11:10", "end": "12:00"},
+    {"start": "14:00", "end": "14:50"},
+    {"start": "15:00", "end": "15:50"},
+    {"start": "16:10", "end": "17:00"},
+    {"start": "17:10", "end": "18:00"},
+    {"start": "18:30", "end": "19:20"},
+    {"start": "19:30", "end": "20:20"},
+    {"start": "20:30", "end": "21:20"},
+    {"start": "21:30", "end": "22:20"},
+    {"start": "22:30", "end": "23:59"},
   ];
 
   static const int LOGIN_CORRECT = 0;
@@ -53,6 +53,7 @@ class Constant {
 
   static const int ADD_MANUALLY = 0;
   static const int ADD_BY_IMPORT = 1;
+  static const int ADD_BY_LECTURE = 2;
 
   static const int DEFAULT_WEEK_START = 1;
   static const int DEFAULT_WEEK_END = Config.DEFAULT_WEEK_NUM;

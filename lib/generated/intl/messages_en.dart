@@ -171,6 +171,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("新选课系统，尚不稳定的备选导入方式"),
         "import_from_NJU_xk_title":
             MessageLookupByLibrary.simpleMessage("从南京大学选课系统导入课表"),
+        "import_from_lecture": MessageLookupByLibrary.simpleMessage("讲座导入"),
         "import_from_qrcode_content": MessageLookupByLibrary.simpleMessage(
             "扫描二维码导入此课表\n南哪课表-设置-导入/导出课表-二维码导入课表\n有效期一周，扫描一次后过期"),
         "import_from_qrcode_subtitle":
@@ -199,6 +200,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "introduction": MessageLookupByLibrary.simpleMessage(
             "博客：https://idealclover.top\nEmail：idealclover@163.com"),
         "lecture_add": m4,
+        "lecture_add_fail_toast":
+            MessageLookupByLibrary.simpleMessage("讲座添加失败，可能是学期不对"),
         "lecture_add_success_toast":
             MessageLookupByLibrary.simpleMessage("讲座已添加至当前课表～"),
         "lecture_added": m5,
@@ -206,10 +209,19 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("这个讲座已经添加过啦～"),
         "lecture_bottom":
             MessageLookupByLibrary.simpleMessage("讲座列表由NJU助手团队提供与维护"),
+        "lecture_cast_dialog_content": MessageLookupByLibrary.simpleMessage(
+            "该讲座时间不完全对应课表节数，已为您匹配最近课程时间，请在课程详情中关注该讲座具体时间\n\n确认添加该讲座至当前课表？"),
+        "lecture_cast_dialog_title":
+            MessageLookupByLibrary.simpleMessage("讲座时间不完全对应"),
         "lecture_no_classroom": MessageLookupByLibrary.simpleMessage("暂无地点"),
         "lecture_no_info": MessageLookupByLibrary.simpleMessage("暂无信息"),
         "lecture_no_name": MessageLookupByLibrary.simpleMessage("暂无名称"),
         "lecture_no_teacher": MessageLookupByLibrary.simpleMessage("暂无老师"),
+        "lecture_no_time": MessageLookupByLibrary.simpleMessage("暂无时间"),
+        "lecture_refresh_fail_toast":
+            MessageLookupByLibrary.simpleMessage("刷新失败了喵，检查下网络吧"),
+        "lecture_refresh_success_toast":
+            MessageLookupByLibrary.simpleMessage("讲座列表刷新成功"),
         "lecture_title": MessageLookupByLibrary.simpleMessage("讲座列表"),
         "love_and_donate": MessageLookupByLibrary.simpleMessage("完美导入！投喂傻翠w"),
         "love_but_no_money": MessageLookupByLibrary.simpleMessage("感谢制作，但我没钱"),
@@ -220,6 +232,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "more_settings_subtitle":
             MessageLookupByLibrary.simpleMessage("课表样式设置，高级设置与试验功能"),
         "more_settings_title": MessageLookupByLibrary.simpleMessage("自定义选项"),
+        "network_error_toast": MessageLookupByLibrary.simpleMessage("网络错误，请重试"),
         "not_open": MessageLookupByLibrary.simpleMessage("[未开学]"),
         "not_this_week": MessageLookupByLibrary.simpleMessage("[非本周]"),
         "nowweek_edited_success_toast":
