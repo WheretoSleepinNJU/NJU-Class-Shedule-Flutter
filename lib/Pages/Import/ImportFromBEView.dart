@@ -91,7 +91,6 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
                 snackbarJavascriptChannel(context),
               ].toSet(),
               onPageFinished: (url) {
-                print(url);
                 if (widget.config['redirectUrl'] != '' &&
                     url.startsWith(widget.config['redirectUrl'])) {
                   _webViewController.loadUrl(widget.config['targetUrl']);

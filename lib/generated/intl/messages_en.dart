@@ -261,6 +261,11 @@ class MessageLookup extends MessageLookupByLibrary {
             "加入用户群一起愉快地玩耍吧！\n轻触直接加群，长按复制群号"),
         "report_title": MessageLookupByLibrary.simpleMessage("反馈"),
         "settings_title": MessageLookupByLibrary.simpleMessage("设置"),
+        "share_content": MessageLookupByLibrary.simpleMessage(
+            "南哪课表-南大同学的专属课表APP，导课表、蹭好课、找讲座，快来试试吧！ https://app.nju.today"),
+        "share_subtitle":
+            MessageLookupByLibrary.simpleMessage("把南哪课表分享给更多小伙伴吧！"),
+        "share_title": MessageLookupByLibrary.simpleMessage("分享此应用"),
         "show_date_subtitle": MessageLookupByLibrary.simpleMessage("显示当前周的日期"),
         "show_date_title": MessageLookupByLibrary.simpleMessage("显示日期"),
         "show_month_subtitle":

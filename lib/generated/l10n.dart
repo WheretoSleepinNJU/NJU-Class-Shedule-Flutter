@@ -570,6 +570,36 @@ class S {
     );
   }
 
+  /// `分享此应用`
+  String get share_title {
+    return Intl.message(
+      '分享此应用',
+      name: 'share_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `把南哪课表分享给更多小伙伴吧！`
+  String get share_subtitle {
+    return Intl.message(
+      '把南哪课表分享给更多小伙伴吧！',
+      name: 'share_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `南哪课表-南大同学的专属课表APP，导课表、蹭好课、找讲座，快来试试吧！ https://app.nju.today`
+  String get share_content {
+    return Intl.message(
+      '南哪课表-南大同学的专属课表APP，导课表、蹭好课、找讲座，快来试试吧！ https://app.nju.today',
+      name: 'share_content',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `关于`
   String get about_title {
     return Intl.message(

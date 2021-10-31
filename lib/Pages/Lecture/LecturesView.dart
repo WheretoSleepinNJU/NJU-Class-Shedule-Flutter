@@ -9,7 +9,6 @@ import '../../Models/LectureModel.dart';
 import '../../Resources/Constant.dart';
 import '../../Resources/Url.dart';
 import '../../Utils/WeekUtil.dart';
-import '../../Utils/TimeUtil.dart';
 
 import './Widgets/LectureCard.dart';
 
@@ -21,8 +20,7 @@ class LectureView extends StatefulWidget {
 }
 
 class _LectureViewState extends State<LectureView> {
-  // TODO: change
-  int totalPages = 2;
+  int totalPages = 1;
   int pageNum = 0;
   List<LectureCard> _lectureCards = <LectureCard>[];
   GlobalKey<RefreshIndicatorState> _refreshKey =
@@ -50,11 +48,15 @@ class _LectureViewState extends State<LectureView> {
 
   Future<bool> _loadLectures() async {
     Dio dio = Dio();
-    var response = await dio.get(Url.URL_BACKEND + '/getAll');
-    // print(response);
+    // print(pageNum);
+    var response = await dio.get(Url.URL_BACKEND + '/getAll',
+        queryParameters: {'limit': 5, 'page': pageNum + 1});
+    totalPages = response.data['total_page'];
 
     for (Map lectureRow in response.data['data']) {
-      _lectureCards.add(LectureCard(lecture: await _parseLecture(lectureRow)));
+      _lectureCards.add(LectureCard(
+          lecture: await _parseLecture(lectureRow),
+          count: lectureRow['count']));
     }
 
     setState(() {
@@ -74,27 +76,26 @@ class _LectureViewState extends State<LectureView> {
     String timeString =
         fullFormatter.format(startTime) + '-' + simpleFormatter.format(endTime);
 
-    TimeUtil timeUtil = TimeUtil();
-    Map timeRst = timeUtil.getClassTime(startTime, endTime);
-
-    print(data['title']);
-    print(timeRst['isStrict']);
     return Lecture(
         0,
         data['title'],
         weekNum.toString(),
         startTime.weekday,
-        timeRst['startTime'],
-        timeRst['timeCount'],
+        data['startIndex'],
+        data['endIndex'] - data['startIndex'],
         Constant.ADD_BY_LECTURE,
+        data['id'],
         timeString,
-        timeRst['isStrict'],
+        data['accurate'],
         classroom: data['classroom'],
         teacher: data['teacher'],
         info: data['info']);
   }
 
   Future<Null> _refresh() async {
+    totalPages = 1;
+    pageNum = 0;
+    _lectureCards = <LectureCard>[];
     bool rst = await _loadLectures();
     if (rst)
       Toast.showToast(S.of(context).lecture_refresh_success_toast, context);
@@ -107,14 +108,14 @@ class _LectureViewState extends State<LectureView> {
     return Scaffold(
         appBar:
             AppBar(title: Text(S.of(context).lecture_title), actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () async {},
-          ),
-          IconButton(
-            icon: Icon(Icons.filter_list),
-            onPressed: () async {},
-          ),
+          // IconButton(
+          //   icon: Icon(Icons.search),
+          //   onPressed: () async {},
+          // ),
+          // IconButton(
+          //   icon: Icon(Icons.filter_list),
+          //   onPressed: () async {},
+          // ),
         ]),
         body: RefreshIndicator(
             color: Theme.of(context).primaryColor,

@@ -10,7 +10,9 @@ class Url {
   // static final String URL_APPLE = "https://pay.idealclover.cn/apple";
   // static final String URL_ANDROID = "https://pay.idealclover.cn/android";
 
-  static final String URL_BACKEND = "http://127.0.0.1:8000";
+  // static final String URL_BACKEND = "http://127.0.0.1:8000";
+  static final String URL_BACKEND = "https://lecture.idealclover.cn";
+
 
   static final String QQ_GROUP_APPLE_URL = 'https://jq.qq.com/?_wv=1027&k=5hL1ccO';
   static final String QQ_GROUP_ANDROID_URL = 'https://jq.qq.com/?_wv=1027&k=5PNwtkh';

@@ -3,6 +3,7 @@ import '../../generated/l10n.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:share_extend/share_extend.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info/package_info.dart';
 import '../ManageTable/ManageTableView.dart';
@@ -135,6 +136,13 @@ class _SettingsViewState extends State<SettingsView> {
                 },
               ),
               WeekChanger(),
+              ListTile(
+                title: Text(S.of(context).share_title),
+                subtitle: Text(S.of(context).share_subtitle),
+                onTap: () {
+                  ShareExtend.share(S.of(context).share_content, "text");
+                },
+              ),
               ListTile(
                 title: Text(S.of(context).report_title),
                 subtitle: Text(S.of(context).report_subtitle),

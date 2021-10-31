@@ -11,7 +11,7 @@ import '../Components/Toast.dart';
 import '../Resources/Url.dart';
 
 class UpdateUtil {
-  void checkUpdate(BuildContext context, bool isForce) async {
+  checkUpdate(BuildContext context, bool isForce) async {
     int lastCheckUpdateTime =
         await ScopedModel.of<MainStateModel>(context).getLastCheckUpdateTime();
     int coolDownTime =
@@ -27,37 +27,34 @@ class UpdateUtil {
         .setLastCheckUpdateTime(now.millisecondsSinceEpoch);
     if (!isForce && difference.inSeconds < coolDownTime) return;
 
-    try {
-      Dio dio = new Dio();
-      String url;
-      if (Platform.isIOS)
-        url = Url.UPDATE_ROOT + '/ios.json';
-      else if (Platform.isAndroid)
-        url = Url.UPDATE_ROOT + '/android.json';
-      else
-        return;
-      PackageInfo packageInfo = await PackageInfo.fromPlatform();
-      Response response = await dio.get(url);
-      if (response.statusCode == HttpStatus.ok) {
-        if (response.data['coolDownTime'] != null)
-          ScopedModel.of<MainStateModel>(context).setCoolDownTime(coolDownTime);
-        if (response.data['version'] > int.parse(packageInfo.buildNumber)) {
-          showUpdateDialog(response.data, context);
-        } else if (isForce) {
-          Toast.showToast(S.of(context).already_newest_version_toast, context);
-        }
+    Dio dio = new Dio();
+    String url;
+    if (Platform.isIOS)
+      url = Url.UPDATE_ROOT + '/ios.json';
+    else if (Platform.isAndroid)
+      url = Url.UPDATE_ROOT + '/android.json';
+    else
+      return;
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    Response response = await dio.get(url);
+    if (response.statusCode == HttpStatus.ok) {
+      if (response.data['coolDownTime'] != null)
+        ScopedModel.of<MainStateModel>(context).setCoolDownTime(coolDownTime);
+      if (response.data['version'] > int.parse(packageInfo.buildNumber)) {
+        await showUpdateDialog(response.data, context);
+      } else if (isForce) {
+        Toast.showToast(S.of(context).already_newest_version_toast, context);
       }
-    } catch (e) {
-      if (isForce) Toast.showToast(S.of(context).network_error_toast, context);
     }
   }
 
-  void showUpdateDialog(Map info, BuildContext context) async {
+  showUpdateDialog(Map info, BuildContext context) async {
     List<Widget> widgets;
-    if (info['isForce']) {
-      widgets = <Widget>[
+    if(info['isForce']){
+       widgets = <Widget>[
         FlatButton(
             child: Text(info['confirm_text']),
+            textColor: Theme.of(context).primaryColor,
             onPressed: () async {
               if (info['url'] != '') await launch(info['url']);
             }),
@@ -73,12 +70,13 @@ class UpdateUtil {
         ),
         FlatButton(
             child: Text(info['confirm_text']),
+            textColor: Theme.of(context).primaryColor,
             onPressed: () async {
               if (info['url'] != '') await launch(info['url']);
             }),
       ];
     }
-    showDialog(
+    await showDialog(
         context: context,
         barrierDismissible: !info['isForce'],
         builder: (context) => mDialog(

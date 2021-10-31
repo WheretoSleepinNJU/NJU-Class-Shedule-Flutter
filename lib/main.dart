@@ -6,7 +6,7 @@ import 'generated/l10n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter/material.dart';
-import 'Pages/MainView.dart';
+import 'Pages/CourseTable/CourseTableView.dart';
 import 'Resources/Themes.dart';
 import 'Utils/States/MainState.dart';
 import 'Utils/InitUtil.dart';
@@ -60,7 +60,7 @@ class _MyAppState extends State<MyApp> {
               theme: themeDataList[model.themeIndex != null
                   ? model.themeIndex
                   : widget.themeIndex],
-              home: MainView(),
+              home: CourseTableView(),
             );
           },
         ));

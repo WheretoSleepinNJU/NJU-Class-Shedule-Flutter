@@ -6,9 +6,12 @@ import 'package:scoped_model/scoped_model.dart';
 import './CourseTablePresenter.dart';
 import '../AddCourse/AddCourseView.dart';
 import '../Settings/SettingsView.dart';
+import '../Import/ImportView.dart';
 import '../../Components/Separator.dart';
 import '../../Resources/Config.dart';
 import '../../Utils/States/MainState.dart';
+import '../../Utils/PrivacyUtil.dart';
+import '../../Utils/UpdateUtil.dart';
 import '../../Models/CourseModel.dart';
 
 import 'Widgets/BackgroundImage.dart';
@@ -97,22 +100,28 @@ class CourseTableViewState extends State<CourseTableView> {
     return classWidgets!;
   }
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  // }
+  basicCheck() async {
+    UpdateUtil updateUtil = new UpdateUtil();
+    await updateUtil.checkUpdate(context, false);
+    PrivacyUtil privacyUtil = new PrivacyUtil();
+    bool privacyRst = await privacyUtil.checkPrivacy(context, false);
+    if (!privacyRst) return;
+    bool rst = await Navigator.of(context).push(MaterialPageRoute(
+            builder: (BuildContext context) => ImportView())) ??
+        false;
+    if (!rst) return;
+    await _presenter.showAfterImport(context);
+    ScopedModel.of<MainStateModel>(context).refresh();
+  }
 
-  // void showSnackBar() async {
-  //   ScaffoldMessenger.of(context).showSnackBar(
-  //     const SnackBar(
-  //       content: Text('A SnackBar has been shown.'),
-  //     ),
-  //   );
-  // }
+  @override
+  void initState() {
+    super.initState();
+    basicCheck();
+  }
 
   @override
   Widget build(BuildContext context) {
-    // showSnackBar();
     return ScopedModel<MainStateModel>(
         model: MainStateModel(),
         child: ScopedModelDescendant<MainStateModel>(

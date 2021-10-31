@@ -5,31 +5,31 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_html/flutter_html.dart';
 import '../../Models/CourseModel.dart';
-import '../Pages/Import/ImportView.dart';
 import '../generated/l10n.dart';
 import '../Components/Dialog.dart';
-import '../Components/Toast.dart';
 import '../Resources/Url.dart';
 
 class PrivacyUtil {
-  checkPrivacy(BuildContext context, bool isForce) async {
+  Future<bool> checkPrivacy(BuildContext context, bool isForce) async {
     try {
       Dio dio = new Dio();
       String url = Url.UPDATE_ROOT + '/privacy.json';
       Response response = await dio.get(url);
-      if (response.statusCode != HttpStatus.ok) return;
+      if (response.statusCode != HttpStatus.ok) return false;
       SharedPreferences sp = await SharedPreferences.getInstance();
       int privacyVersion = sp.getInt("privacyVersion") ?? 0;
       int targetVersion = response.data['version'] ?? 0;
       if (isForce || targetVersion > privacyVersion) {
-        showPrivacyDialog(response.data, targetVersion, isForce, context);
+        return await showPrivacyDialog(response.data, targetVersion, isForce, context);
+      } else {
+        return false;
       }
     } catch (e) {
-      if (isForce) Toast.showToast(S.of(context).network_error_toast, context);
+      return false;
     }
   }
 
-  void showPrivacyDialog(
+  Future<bool> showPrivacyDialog(
       Map info, int version, bool isForce, BuildContext context) async {
     List<Widget> widgets;
     CourseProvider courseProvider = new CourseProvider();
@@ -41,7 +41,7 @@ class PrivacyUtil {
                 child: Text(S.of(context).ok,
                     style: TextStyle(color: Theme.of(context).primaryColor)),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(false);
                 })
           ]
         : <Widget>[
@@ -59,9 +59,7 @@ class PrivacyUtil {
                       SharedPreferences sp =
                           await SharedPreferences.getInstance();
                       await sp.setInt("privacyVersion", version);
-                      Navigator.of(context).pop();
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (BuildContext context) => ImportView()));
+                      Navigator.of(context).pop(true);
                     })
                 : TextButton(
                     child: Text(info['confirm_text_for_upgrade'],
@@ -71,10 +69,10 @@ class PrivacyUtil {
                       SharedPreferences sp =
                           await SharedPreferences.getInstance();
                       await sp.setInt("privacyVersion", version);
-                      Navigator.of(context).pop();
+                      Navigator.of(context).pop(false);
                     }),
           ];
-    showDialog(
+    return await showDialog(
         context: context,
         barrierDismissible: false,
         builder: (context) => mDialog(

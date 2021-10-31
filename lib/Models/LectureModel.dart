@@ -4,11 +4,21 @@ import '../Resources/Colors.dart';
 import './CourseModel.dart';
 
 class Lecture extends Course {
+  int lectureId;
   String? realTime;
-  bool isStrict;
+  bool isAccurate;
 
-  Lecture(int tableId, String name, String weeks, int weekTime, int startTime,
-      int timeCount, int importType, this.realTime, this.isStrict,
+  Lecture(
+      int tableId,
+      String name,
+      String weeks,
+      int weekTime,
+      int startTime,
+      int timeCount,
+      int importType,
+      this.lectureId,
+      this.realTime,
+      this.isAccurate,
       {int? id,
       String? classroom,
       String? classNumber,
