@@ -850,6 +850,26 @@ class S {
     );
   }
 
+  /// `自定义课程显示长度`
+  String get class_height_title {
+    return Intl.message(
+      '自定义课程显示长度',
+      name: 'class_height_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `仅当强制缩放关闭时生效`
+  String get class_height_subtitle {
+    return Intl.message(
+      '仅当强制缩放关闭时生效',
+      name: 'class_height_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `讲座列表`
   String get lecture_title {
     return Intl.message(
@@ -910,21 +930,51 @@ class S {
     );
   }
 
-  /// `加入当前课表({num})`
+  /// `搜索讲座`
+  String get lecture_search {
+    return Intl.message(
+      '搜索讲座',
+      name: 'lecture_search',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `主讲人：`
+  String get lecture_teacher_title {
+    return Intl.message(
+      '主讲人：',
+      name: 'lecture_teacher_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `加入当前课表({num}人已添加)`
   String lecture_add(Object num) {
     return Intl.message(
-      '加入当前课表($num)',
+      '加入当前课表($num人已添加)',
       name: 'lecture_add',
       desc: '',
       args: [num],
     );
   }
 
-  /// `已添加({num})`
+  /// `已添加({num}人已添加)`
   String lecture_added(Object num) {
     return Intl.message(
-      '已添加($num)',
+      '已添加($num人已添加)',
       name: 'lecture_added',
+      desc: '',
+      args: [num],
+    );
+  }
+
+  /// `已结束({num}人已添加)`
+  String lecture_expired(Object num) {
+    return Intl.message(
+      '已结束($num人已添加)',
+      name: 'lecture_expired',
       desc: '',
       args: [num],
     );
@@ -985,6 +1035,16 @@ class S {
     return Intl.message(
       '讲座添加失败，可能是学期不对',
       name: 'lecture_add_fail_toast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `讲座已经结束了喵～`
+  String get lecture_add_expired_toast {
+    return Intl.message(
+      '讲座已经结束了喵～',
+      name: 'lecture_add_expired_toast',
       desc: '',
       args: [],
     );

@@ -27,13 +27,15 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m3(num) => "另有 ${num} 节「自由时间」课程 >>";
 
-  static String m4(num) => "加入当前课表(${num})";
+  static String m4(num) => "加入当前课表(${num}人已添加)";
 
-  static String m5(num) => "已添加(${num})";
+  static String m5(num) => "已添加(${num}人已添加)";
 
-  static String m6(num) => "第 ${num} 周";
+  static String m6(num) => "已结束(${num}人已添加)";
 
-  static String m7(start, end) => "${start}-${end} 周";
+  static String m7(num) => "第 ${num} 周";
+
+  static String m8(start, end) => "${start}-${end} 周";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -73,6 +75,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "choose_class_time_dialog_title":
             MessageLookupByLibrary.simpleMessage("选择上课时间"),
         "class_duration": m0,
+        "class_height_subtitle":
+            MessageLookupByLibrary.simpleMessage("仅当强制缩放关闭时生效"),
+        "class_height_title": MessageLookupByLibrary.simpleMessage("自定义课程显示长度"),
         "class_name": MessageLookupByLibrary.simpleMessage("课程名称"),
         "class_name_empty": MessageLookupByLibrary.simpleMessage("请输入课程名称"),
         "class_num_invalid_dialog_content":
@@ -195,11 +200,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_settings_title": MessageLookupByLibrary.simpleMessage("导入课程表"),
         "import_subtitle": MessageLookupByLibrary.simpleMessage("自动导入课程表数据"),
         "import_success_toast": MessageLookupByLibrary.simpleMessage("导入完成"),
-        "import_title": MessageLookupByLibrary.simpleMessage("导入课表"),
+        "import_title": MessageLookupByLibrary.simpleMessage("导入课程表"),
         "importing_toast": MessageLookupByLibrary.simpleMessage("导入中 请稍后"),
         "introduction": MessageLookupByLibrary.simpleMessage(
             "博客：https://idealclover.top\nEmail：idealclover@163.com"),
         "lecture_add": m4,
+        "lecture_add_expired_toast":
+            MessageLookupByLibrary.simpleMessage("讲座已经结束了喵～"),
         "lecture_add_fail_toast":
             MessageLookupByLibrary.simpleMessage("讲座添加失败，可能是学期不对"),
         "lecture_add_success_toast":
@@ -213,6 +220,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "该讲座时间不完全对应课表节数，已为您匹配最近课程时间，请在课程详情中关注该讲座具体时间\n\n确认添加该讲座至当前课表？"),
         "lecture_cast_dialog_title":
             MessageLookupByLibrary.simpleMessage("讲座时间不完全对应"),
+        "lecture_expired": m6,
         "lecture_no_classroom": MessageLookupByLibrary.simpleMessage("暂无地点"),
         "lecture_no_info": MessageLookupByLibrary.simpleMessage("暂无信息"),
         "lecture_no_name": MessageLookupByLibrary.simpleMessage("暂无名称"),
@@ -222,6 +230,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("刷新失败了喵，检查下网络吧"),
         "lecture_refresh_success_toast":
             MessageLookupByLibrary.simpleMessage("讲座列表刷新成功"),
+        "lecture_search": MessageLookupByLibrary.simpleMessage("搜索讲座"),
+        "lecture_teacher_title": MessageLookupByLibrary.simpleMessage("主讲人："),
         "lecture_title": MessageLookupByLibrary.simpleMessage("讲座列表"),
         "love_and_donate": MessageLookupByLibrary.simpleMessage("完美导入！投喂傻翠w"),
         "love_but_no_money": MessageLookupByLibrary.simpleMessage("感谢制作，但我没钱"),
@@ -261,6 +271,11 @@ class MessageLookup extends MessageLookupByLibrary {
             "加入用户群一起愉快地玩耍吧！\n轻触直接加群，长按复制群号"),
         "report_title": MessageLookupByLibrary.simpleMessage("反馈"),
         "settings_title": MessageLookupByLibrary.simpleMessage("设置"),
+        "share_content": MessageLookupByLibrary.simpleMessage(
+            "南哪课表-南大同学的专属课表APP，导课表、蹭好课、找讲座，快来试试吧！ https://app.nju.today"),
+        "share_subtitle":
+            MessageLookupByLibrary.simpleMessage("把南哪课表分享给更多小伙伴吧！"),
+        "share_title": MessageLookupByLibrary.simpleMessage("分享此应用"),
         "show_date_subtitle": MessageLookupByLibrary.simpleMessage("显示当前周的日期"),
         "show_date_title": MessageLookupByLibrary.simpleMessage("显示日期"),
         "show_month_subtitle":
@@ -283,8 +298,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "view_lecture_subtitle":
             MessageLookupByLibrary.simpleMessage("查看南哪最新讲座信息，可一键导入至课表"),
         "view_lecture_title": MessageLookupByLibrary.simpleMessage("查看/添加讲座"),
-        "week": m6,
-        "week_duration": m7,
+        "week": m7,
+        "week_duration": m8,
         "week_num_invalid_dialog_content":
             MessageLookupByLibrary.simpleMessage("课程结束周数应大于起始周数"),
         "week_num_invalid_dialog_title":

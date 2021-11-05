@@ -7,6 +7,7 @@ class Lecture extends Course {
   int lectureId;
   String? realTime;
   bool isAccurate;
+  bool expired;
 
   Lecture(
       int tableId,
@@ -19,6 +20,7 @@ class Lecture extends Course {
       this.lectureId,
       this.realTime,
       this.isAccurate,
+      this.expired,
       {int? id,
       String? classroom,
       String? classNumber,

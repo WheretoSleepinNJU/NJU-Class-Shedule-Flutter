@@ -44,6 +44,7 @@ class CourseTableViewState extends State<CourseTableView> {
   late double _classTitleHeight;
   late double _weekTitleHeight;
   late double _weekTitleWidth;
+  late double _snackbarHeight;
   late String _bgImgPath;
   int _freeCourseNum = 0;
 
@@ -84,13 +85,25 @@ class CourseTableViewState extends State<CourseTableView> {
     _screenHeight = MediaQuery.of(context).size.height;
     _weekTitleHeight = 30;
     _classTitleWidth = 40;
+    _snackbarHeight = 55;
     _weekTitleWidth = (_screenWidth - _classTitleWidth) / _maxShowDays;
-    if (_isForceZoom)
+    int height = await ScopedModel.of<MainStateModel>(context).getClassHeight();
+
+    if (_isForceZoom) if ((!_isShowFreeClass) || (_freeCourseNum == 0))
       _classTitleHeight = (_screenHeight -
               kToolbarHeight -
               MediaQuery.of(context).padding.top -
               (_isShowDate ? _weekTitleHeight * 1.2 : _weekTitleHeight)) /
           _maxShowClasses;
+    else
+      _classTitleHeight = (_screenHeight -
+              kToolbarHeight -
+              _snackbarHeight -
+              MediaQuery.of(context).padding.top -
+              (_isShowDate ? _weekTitleHeight * 1.2 : _weekTitleHeight)) /
+          _maxShowClasses;
+    else if (height.toDouble() != 0)
+      _classTitleHeight = height.toDouble();
     else
       _classTitleHeight = 52;
 
@@ -230,47 +243,52 @@ class CourseTableViewState extends State<CourseTableView> {
                             ]))),
                         ((!_isShowFreeClass) || (_freeCourseNum == 0))
                             ? Container()
-                            : MaterialBanner(
-                                content: FittedBox(
-                                    fit: BoxFit.scaleDown,
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                        S.of(context).free_class_banner(
-                                            _freeCourseNum.toString()),
-                                        style: TextStyle(color: Colors.white))),
-                                backgroundColor: Theme.of(context).primaryColor,
-                                actions: [
-                                  Row(
-                                    children: [
-                                      TextButton(
-                                        child: Text(
-                                            S.of(context).free_class_button,
-                                            style:
-                                                TextStyle(color: Colors.white)),
-                                        onPressed: () =>
-                                            _presenter.showFreeClassDialog(
-                                                context, _nowShowWeekNum),
-                                        style: TextButton.styleFrom(
-                                            minimumSize: Size.zero,
-                                            padding: EdgeInsets.zero),
-                                      ),
-                                      TextButton(
-                                        child: Text(
-                                            S
-                                                .of(context)
-                                                .hide_free_class_button,
-                                            style:
-                                                TextStyle(color: Colors.white)),
-                                        onPressed: () => _presenter
-                                            .showHideFreeCourseDialog(context),
-                                        style: TextButton.styleFrom(
-                                            minimumSize: Size.zero,
-                                            padding: EdgeInsets.zero),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
+                            : Container(
+                                height: _snackbarHeight,
+                                child: MaterialBanner(
+                                  content: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                          S.of(context).free_class_banner(
+                                              _freeCourseNum.toString()),
+                                          style:
+                                              TextStyle(color: Colors.white))),
+                                  backgroundColor:
+                                      Theme.of(context).primaryColor,
+                                  actions: [
+                                    Row(
+                                      children: [
+                                        TextButton(
+                                          child: Text(
+                                              S.of(context).free_class_button,
+                                              style: TextStyle(
+                                                  color: Colors.white)),
+                                          onPressed: () =>
+                                              _presenter.showFreeClassDialog(
+                                                  context, _nowShowWeekNum),
+                                          style: TextButton.styleFrom(
+                                              minimumSize: Size.zero,
+                                              padding: EdgeInsets.zero),
+                                        ),
+                                        TextButton(
+                                          child: Text(
+                                              S
+                                                  .of(context)
+                                                  .hide_free_class_button,
+                                              style: TextStyle(
+                                                  color: Colors.white)),
+                                          onPressed: () => _presenter
+                                              .showHideFreeCourseDialog(
+                                                  context),
+                                          style: TextButton.styleFrom(
+                                              minimumSize: Size.zero,
+                                              padding: EdgeInsets.zero),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                )),
                       ]),
                       // ),
                     ]),

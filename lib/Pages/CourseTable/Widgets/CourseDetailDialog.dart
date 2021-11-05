@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../Models/CourseModel.dart';
 import '../../../Resources/Constant.dart';
 import '../../../Components/Dialog.dart';
+import '../../../Components/Toast.dart';
 
 class CourseDetailDialog extends StatelessWidget {
   final onPressed;
@@ -17,7 +18,7 @@ class CourseDetailDialog extends StatelessWidget {
   String _getWeekListString(BuildContext context) {
     bool flag = true;
     List weekList = json.decode(course.weeks!);
-    if(weekList.length == 1) return S.of(context).week(weekList[0]);
+    if (weekList.length == 1) return S.of(context).week(weekList[0]);
     String base = S.of(context).week_duration(
         weekList[0].toString(), weekList[weekList.length - 1].toString());
     for (int i = 1; i < weekList.length; i++) {
@@ -42,6 +43,23 @@ class CourseDetailDialog extends StatelessWidget {
       return course.weeks!;
   }
 
+  Widget linkifyText(context, String text) {
+    return SelectableLinkify(
+      onOpen: (link) async {
+        String url = link.url.replaceAll(RegExp('[^\x00-\xff]'), '');
+        if (await canLaunch(url)) {
+          await launch(url);
+        } else {
+          Toast.showToast(S.of(context).network_error_toast, context);
+        }
+      },
+      text: text,
+      style: TextStyle(fontSize: 16),
+      linkStyle: TextStyle(color: Theme.of(context).primaryColor),
+      options: LinkifyOptions(humanize: false),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     String weekString = Constant.WEEK_WITH_BIAS[course.weekTime!] +
@@ -54,7 +72,7 @@ class CourseDetailDialog extends StatelessWidget {
     String weekListString = _getWeekListString(context);
 
     String importTypeStr = '';
-    switch(course.importType) {
+    switch (course.importType) {
       case Constant.ADD_BY_IMPORT:
         importTypeStr = S.of(context).import_auto;
         break;
@@ -77,7 +95,7 @@ class CourseDetailDialog extends StatelessWidget {
             Icon(Icons.location_on, color: Theme.of(context).primaryColor),
             Padding(padding: EdgeInsets.only(left: 5)),
             Flexible(
-                child: Text(course.classroom == ""
+                child: linkifyText(context, course.classroom == ""
                     ? S.of(context).unknown_place
                     : course.classroom ?? S.of(context).unknown_place)),
           ]),
@@ -85,49 +103,34 @@ class CourseDetailDialog extends StatelessWidget {
           Row(children: [
             Icon(Icons.account_circle, color: Theme.of(context).primaryColor),
             Padding(padding: EdgeInsets.only(left: 5)),
-            Flexible(child: Text(course.teacher ?? '')),
+            Flexible(child: linkifyText(context, course.teacher ?? '')),
           ]),
           Padding(padding: EdgeInsets.only(bottom: 10)),
           Row(children: [
             Icon(Icons.access_time, color: Theme.of(context).primaryColor),
             Padding(padding: EdgeInsets.only(left: 5)),
-            Flexible(child: Text(weekString)),
+            Flexible(child: linkifyText(context, weekString)),
           ]),
           Padding(padding: EdgeInsets.only(bottom: 10)),
           Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Icon(Icons.event, color: Theme.of(context).primaryColor),
             Padding(padding: EdgeInsets.only(left: 5)),
-            Flexible(child: Text(weekListString)),
+            Flexible(child: linkifyText(context, weekListString)),
           ]),
           Padding(padding: EdgeInsets.only(bottom: 10)),
           Row(children: [
             Icon(Icons.settings_suggest, color: Theme.of(context).primaryColor),
             Padding(padding: EdgeInsets.only(left: 5)),
-            Flexible(
-                child: Text(importTypeStr)
-            ),
+            Flexible(child: linkifyText(context, importTypeStr)),
           ]),
           Padding(padding: EdgeInsets.only(bottom: 10)),
           Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Icon(Icons.description, color: Theme.of(context).primaryColor),
             Padding(padding: EdgeInsets.only(left: 5)),
             Flexible(
-              child: SelectableLinkify(
-                onOpen: (link) async {
-                  String url = link.url.replaceAll(RegExp('[^\x00-\xff]'), '');
-                  if (await canLaunch(url)) {
-                    await launch(url);
-                  } else {
-                    throw 'Could not launch $link';
-                  }
-                },
-                text: course.info == ""
-                    ? S.of(context).unknown_info
-                    : course.info ?? S.of(context).unknown_info,
-                style: TextStyle(fontSize: 16),
-                linkStyle: TextStyle(color: Theme.of(context).primaryColor),
-                options: LinkifyOptions(humanize: false),
-              ),
+              child: linkifyText(context, course.info == ""
+                  ? S.of(context).unknown_info
+                  : course.info ?? S.of(context).unknown_info)
             ),
           ]),
         ],

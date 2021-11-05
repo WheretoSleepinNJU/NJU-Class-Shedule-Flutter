@@ -4,6 +4,7 @@ import '../../generated/l10n.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+// import 'package:flutter_search_bar/flutter_search_bar.dart';
 import '../../Components/Toast.dart';
 import '../../Models/LectureModel.dart';
 import '../../Resources/Constant.dart';
@@ -20,16 +21,37 @@ class LectureView extends StatefulWidget {
 }
 
 class _LectureViewState extends State<LectureView> {
+  // late SearchBar searchBar;
   int totalPages = 1;
   int pageNum = 0;
+  String searchParam = '';
   List<LectureCard> _lectureCards = <LectureCard>[];
   GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
   ScrollController _scrollController = ScrollController();
 
+  AppBar buildAppBar(BuildContext context) {
+    return new AppBar(
+      title: new Text(S.of(context).lecture_title),
+      // actions: [searchBar.getSearchAction(context)]
+    );
+  }
+
   @override
   void initState() {
     super.initState();
+    // searchBar = new SearchBar(
+    //     inBar: true,
+    //     hintText: S.of(context).lecture_search,
+    //     buildDefaultAppBar: buildAppBar,
+    //     setState: setState,
+    //     onSubmitted: _onSearchBarSubmitted,
+    //     onCleared: () {
+    //       print("Search bar has been cleared");
+    //     },
+    //     onClosed: () {
+    //       print("Search bar has been closed");
+    //     });
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       _refreshKey.currentState?.show();
     });
@@ -44,6 +66,10 @@ class _LectureViewState extends State<LectureView> {
         }
       }
     });
+  }
+
+  _onSearchBarSubmitted(String value) {
+    print(value);
   }
 
   Future<bool> _loadLectures() async {
@@ -76,6 +102,9 @@ class _LectureViewState extends State<LectureView> {
     String timeString =
         fullFormatter.format(startTime) + '-' + simpleFormatter.format(endTime);
 
+    DateTime now = new DateTime.now();
+    bool expired = now.isAfter(endTime);
+
     return Lecture(
         0,
         data['title'],
@@ -87,6 +116,7 @@ class _LectureViewState extends State<LectureView> {
         data['id'],
         timeString,
         data['accurate'],
+        expired,
         classroom: data['classroom'],
         teacher: data['teacher'],
         info: data['info']);
@@ -107,7 +137,9 @@ class _LectureViewState extends State<LectureView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar:
+            // searchBar.build(context),
             AppBar(title: Text(S.of(context).lecture_title), actions: <Widget>[
+          // searchBar.getSearchAction(context),
           // IconButton(
           //   icon: Icon(Icons.search),
           //   onPressed: () async {},

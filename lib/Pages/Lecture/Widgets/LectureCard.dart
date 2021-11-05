@@ -69,13 +69,10 @@ class _LectureCardState extends State<LectureCard> {
 
   @override
   Widget build(BuildContext context) {
-    String subtitle =
-        (widget.lecture.realTime ?? S.of(context).lecture_no_time) +
-            '\n' +
-            (widget.lecture.teacher ?? S.of(context).lecture_no_teacher) +
-            ' ' +
-            (widget.lecture.classroom ?? S.of(context).lecture_no_classroom);
-
+    String subtitle = S.of(context).lecture_teacher_title +
+        (widget.lecture.teacher ?? S.of(context).lecture_no_teacher) +
+        '\n' +
+        (widget.lecture.classroom ?? S.of(context).lecture_no_classroom);
     return Padding(
         padding: const EdgeInsets.only(top: 15, left: 5, right: 5),
         child: Card(
@@ -98,11 +95,11 @@ class _LectureCardState extends State<LectureCard> {
                     if (await canLaunch(url)) {
                       await launch(url);
                     } else {
-                      throw 'Could not launch $link';
+                      Toast.showToast(
+                          S.of(context).network_error_toast, context);
                     }
                   },
                   text: widget.lecture.info ?? S.of(context).unknown_info,
-                  style: TextStyle(fontSize: 16),
                   linkStyle: TextStyle(color: Theme.of(context).primaryColor),
                   options: LinkifyOptions(humanize: false),
                 ),
@@ -110,52 +107,64 @@ class _LectureCardState extends State<LectureCard> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  added
+                  widget.lecture.expired
                       ? TextButton(
                           style: TextButton.styleFrom(primary: Colors.grey),
-                          child: Text(S.of(context).lecture_added(count)),
+                          child: Text(S.of(context).lecture_expired(count)),
                           onPressed: () {
                             Toast.showToast(
-                                S.of(context).lecture_added_toast, context);
+                                S.of(context).lecture_add_expired_toast,
+                                context);
                           },
                         )
-                      : TextButton(
-                          style: TextButton.styleFrom(
-                              primary: Theme.of(context).primaryColor),
-                          child: Text(S.of(context).lecture_add(count)),
-                          onPressed: () async {
-                            if (widget.lecture.isAccurate)
-                              addLecture();
-                            else
-                              showDialog<String>(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return mDialog(
-                                      S.of(context).lecture_cast_dialog_title,
-                                      Text(S
-                                          .of(context)
-                                          .lecture_cast_dialog_content),
-                                      <Widget>[
-                                        FlatButton(
-                                          textColor: Colors.grey,
-                                          child: Text(S.of(context).cancel),
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                        FlatButton(
-                                            textColor:
-                                                Theme.of(context).primaryColor,
-                                            child: Text(S.of(context).ok),
-                                            onPressed: () async {
-                                              await addLecture();
-                                              Navigator.of(context).pop();
-                                            }),
-                                      ],
-                                    );
-                                  });
-                          },
-                        ),
+                      : added
+                          ? TextButton(
+                              style: TextButton.styleFrom(primary: Colors.grey),
+                              child: Text(S.of(context).lecture_added(count)),
+                              onPressed: () {
+                                Toast.showToast(
+                                    S.of(context).lecture_added_toast, context);
+                              },
+                            )
+                          : TextButton(
+                              style: TextButton.styleFrom(
+                                  primary: Theme.of(context).primaryColor),
+                              child: Text(S.of(context).lecture_add(count)),
+                              onPressed: () async {
+                                if (widget.lecture.isAccurate)
+                                  addLecture();
+                                else
+                                  showDialog<String>(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return mDialog(
+                                          S
+                                              .of(context)
+                                              .lecture_cast_dialog_title,
+                                          Text(S
+                                              .of(context)
+                                              .lecture_cast_dialog_content),
+                                          <Widget>[
+                                            FlatButton(
+                                              textColor: Colors.grey,
+                                              child: Text(S.of(context).cancel),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                            FlatButton(
+                                                textColor: Theme.of(context)
+                                                    .primaryColor,
+                                                child: Text(S.of(context).ok),
+                                                onPressed: () async {
+                                                  await addLecture();
+                                                  Navigator.of(context).pop();
+                                                }),
+                                          ],
+                                        );
+                                      });
+                              },
+                            ),
                 ],
               ),
             ],

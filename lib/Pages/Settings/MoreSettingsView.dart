@@ -9,6 +9,7 @@ import 'package:scoped_model/scoped_model.dart';
 import '../../Utils/States/MainState.dart';
 import '../../Utils/ColorUtil.dart';
 import '../../Components/Toast.dart';
+import './Widgets/NumChanger.dart';
 
 class MoreSettingsView extends StatefulWidget {
   MoreSettingsView() : super();
@@ -18,9 +19,19 @@ class MoreSettingsView extends StatefulWidget {
 }
 
 class _MoreSettingsViewState extends State<MoreSettingsView> {
+  bool showCustomClassHeight = false;
+
   @override
   void initState() {
     super.initState();
+    init();
+  }
+
+  init() async {
+    bool forceZoom = await _getForceZoom();
+    setState(() {
+      showCustomClassHeight = !forceZoom;
+    });
   }
 
   @override
@@ -53,7 +64,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                 final XFile? image =
                     await ImagePicker().pickImage(source: ImageSource.gallery);
 
-                if(image == null) return;
+                if (image == null) return;
 
                 // delete old picture
                 String oldPath = await ScopedModel.of<MainStateModel>(context)
@@ -250,13 +261,46 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Switch(
                         activeColor: Theme.of(context).primaryColor,
                         value: snapshot.data!,
-                        onChanged: (bool value) =>
-                            ScopedModel.of<MainStateModel>(context)
-                                .setForceZoom(value),
+                        onChanged: (bool value) {
+                          ScopedModel.of<MainStateModel>(context)
+                              .setForceZoom(value);
+                          setState(() {
+                            showCustomClassHeight = !value;
+                          });
+                        }
                       );
                     }
                   }),
             ),
+            showCustomClassHeight ? ListTile(
+              title: Text(S.of(context).class_height_title),
+              subtitle: Text(S.of(context).class_height_subtitle),
+              trailing: FutureBuilder<int>(
+                  future: _getClassHeight(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<int> snapshot) {
+                    if (!snapshot.hasData) {
+                      return Container(width: 0);
+                    } else {
+                      return Container(
+                          width: 102,
+                          child: NumberChangerWidget(
+                            width: 40,
+                            iconWidth: 30,
+                            numText: snapshot.data.toString(),
+                            addValueChanged: (num) {
+                              _setClassHeight(num);
+                            },
+                            removeValueChanged: (num) {
+                              _setClassHeight(num);
+                            },
+                            updateValueChanged: (num) {
+                              _setClassHeight(num);
+                            },
+                          ));
+                    }
+                  }),
+            ) : Container(width: 0),
           ]).toList()))
         ])));
   }
@@ -279,6 +323,14 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
 
   Future<bool> _getShowDate() async {
     return await ScopedModel.of<MainStateModel>(context).getShowDate();
+  }
+
+  Future<int> _getClassHeight() async {
+    return await ScopedModel.of<MainStateModel>(context).getClassHeight();
+  }
+
+  _setClassHeight(int classHeight) async {
+    ScopedModel.of<MainStateModel>(context).setClassHeight(classHeight);
   }
 
   Future<bool> _getForceZoom() async {

@@ -88,7 +88,7 @@ class _ManageTableViewState extends State<ManageTableView> {
   Future<List<Widget>> _getData(BuildContext context) async {
     List courseTables = await courseTableProvider.getAllCourseTable();
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    _selectedIndex = prefs.getInt('tableId') ?? 0;
+    _selectedIndex = prefs.getInt('tableId') ?? 1;
     List<Widget> result = List.generate(
         courseTables.length,
         (int i) => Container(

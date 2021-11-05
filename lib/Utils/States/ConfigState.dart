@@ -6,6 +6,7 @@ abstract class ConfigStateModel extends Model {
   bool _showClassTime = true;
   bool _showFreeClass = true;
   bool _showMonth = true;
+  int _classHeight = 50;
   bool _showDate = true;
   bool _forceZoom = false;
   bool _addButton = false;
@@ -80,6 +81,23 @@ abstract class ConfigStateModel extends Model {
       return showMonth;
     }
     return _showMonth;
+  }
+
+  void setClassHeight(int classHeight) async {
+    _classHeight = classHeight;
+    notifyListeners();
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setInt("classHeight", _classHeight);
+  }
+
+  Future<int> getClassHeight() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    int? classHeight = sp.getInt("classHeight");
+    if (classHeight != null) {
+      _classHeight = classHeight;
+      return classHeight;
+    }
+    return _classHeight;
   }
 
   void setShowDate(bool showDate) async {

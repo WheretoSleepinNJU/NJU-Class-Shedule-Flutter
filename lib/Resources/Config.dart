@@ -10,7 +10,9 @@ class Config {
   static const String ANDROID_GROUP = '569300290';
   static const String IOS_GROUP = '493247215';
 
-  static const int DONATE_DIALOG_DELAY_SECONDS = 15;
+  static const int DONATE_DIALOG_DELAY_SECONDS = 10;
+  static const int REVIEW_DIALOG_DELAY_SECONDS = 10;
+  static const int REVIEW_DIALOG_SHOW_TIME = 2;
 
   static const Map jw_config = {
     "page_title": "统一认证登录",
