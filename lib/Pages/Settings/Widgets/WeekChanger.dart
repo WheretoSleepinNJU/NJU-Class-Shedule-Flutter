@@ -29,7 +29,7 @@ class WeekChanger extends StatelessWidget {
                     return mDialog(
                       S.of(context).change_week_title,
                       Container(
-                          height: 32,
+                          height: 96,
                           child: CupertinoPicker(
                               scrollController: new FixedExtentScrollController(
                                 initialItem: snapshot.data! > Config.MAX_WEEKS

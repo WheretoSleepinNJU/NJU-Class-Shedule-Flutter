@@ -17,8 +17,14 @@ class School extends ISuspensionBean {
   String? tagIndex;
   String? namePinyin;
   Map? config;
+  bool? isGrey;
 
-  School({required this.name, this.tagIndex, this.namePinyin, this.config});
+  School(
+      {required this.name,
+      this.tagIndex,
+      this.namePinyin,
+      this.config,
+      this.isGrey});
 
   School.fromJson(Map<String, dynamic> json)
       : name = json['name'],
@@ -126,7 +132,8 @@ class _ImportViewState extends State<ImportView> {
                               name: data['title'],
                               namePinyin: data['pinyin'],
                               tagIndex: data['pinyin'][0].toUpperCase(),
-                              config: data))
+                              config: data,
+                              isGrey: data['isGrey']))
                           .toList();
                       schoolList.add(School(
                           name: S.of(context).import_more_schools,
@@ -153,6 +160,7 @@ class _ImportViewState extends State<ImportView> {
                                 alignment: Alignment.centerLeft,
                                 child: Text(
                                     schoolList[index].config!['description'])),
+                            enabled: !(schoolList[index].isGrey ?? false),
                             onTap: () async {
                               bool? status = await Navigator.of(context).push(
                                   MaterialPageRoute(
