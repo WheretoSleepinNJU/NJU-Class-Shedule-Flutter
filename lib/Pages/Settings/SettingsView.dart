@@ -11,6 +11,7 @@ import '../Import/ImportView.dart';
 import '../Import/ImportFromJWView.dart';
 import '../Import/ImportFromCerView.dart';
 import '../Import/ImportFromXKView.dart';
+import '../AllCourse/AllCourseView.dart';
 import '../Lecture/LecturesView.dart';
 import '../About/AboutView.dart';
 import '../AddCourse/AddCourseView.dart';
@@ -63,6 +64,17 @@ class _SettingsViewState extends State<SettingsView> {
                   bool? status = await Navigator.of(context).push(
                       MaterialPageRoute(
                           builder: (BuildContext context) => ImportView()));
+                  if (status == true) Navigator.of(context).pop(status);
+                },
+              ),
+              //TODO: 全校课程
+              ListTile(
+                title: Text(S.of(context).import_title),
+                subtitle: Text(S.of(context).import_subtitle),
+                onTap: () async {
+                  bool? status = await Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => AllCourseView()));
                   if (status == true) Navigator.of(context).pop(status);
                 },
               ),

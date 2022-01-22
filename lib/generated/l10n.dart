@@ -420,6 +420,26 @@ class S {
     );
   }
 
+  /// `查看/添加全校课表`
+  String get all_course_title {
+    return Intl.message(
+      '查看/添加全校课表',
+      name: 'all_course_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `查看南哪全校课表，可一键导入至课表`
+  String get all_course_subtitle {
+    return Intl.message(
+      '查看南哪全校课表，可一键导入至课表',
+      name: 'all_course_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `查看/添加讲座`
   String get view_lecture_title {
     return Intl.message(

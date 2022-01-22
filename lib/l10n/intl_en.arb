@@ -38,6 +38,8 @@
   "import_from_NJU_cer_subtitle": "推荐通过统一认证进行登录导入",
   "import_from_NJU_xk_title": "从南京大学选课系统导入课表",
   "import_from_NJU_xk_subtitle": "新选课系统，尚不稳定的备选导入方式",
+  "all_course_title": "查看/添加全校课表",
+  "all_course_subtitle": "查看南哪全校课表，可一键导入至课表",
   "view_lecture_title": "查看/添加讲座",
   "view_lecture_subtitle": "查看南哪最新讲座信息，可一键导入至课表",
   "import_or_export_title": "导入/导出课表",

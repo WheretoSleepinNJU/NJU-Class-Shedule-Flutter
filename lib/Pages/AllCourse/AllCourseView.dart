@@ -7,28 +7,28 @@ import 'package:flutter/material.dart';
 
 // import 'package:flutter_search_bar/flutter_search_bar.dart';
 import '../../Components/Toast.dart';
-import '../../Models/LectureModel.dart';
+import '../../Models/CourseModel.dart';
 import '../../Resources/Constant.dart';
 import '../../Resources/Url.dart';
 import '../../Utils/WeekUtil.dart';
 
-import './Widgets/LectureCard.dart';
+import './Widgets/CourseCard.dart';
 
-//TODO: 课表筛选标签
+//TODO: 全校课程
 
-class LectureView extends StatefulWidget {
-  LectureView() : super();
+class AllCourseView extends StatefulWidget {
+  AllCourseView() : super();
 
   @override
-  _LectureViewState createState() => _LectureViewState();
+  _AllCourseViewState createState() => _AllCourseViewState();
 }
 
-class _LectureViewState extends State<LectureView> {
+class _AllCourseViewState extends State<AllCourseView> {
   // late SearchBar searchBar;
   int totalPages = 1;
   int pageNum = 0;
   String searchParam = '';
-  List<LectureCard> _lectureCards = <LectureCard>[];
+  List<CourseCard> _lectureCards = <CourseCard>[];
   GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
   ScrollController _scrollController = ScrollController();
@@ -66,7 +66,7 @@ class _LectureViewState extends State<LectureView> {
           edge) {
         if (pageNum < totalPages - 1) {
           pageNum++;
-          _loadLectures();
+          _loadAllCourses();
         }
       }
     });
@@ -76,17 +76,17 @@ class _LectureViewState extends State<LectureView> {
     print(value);
   }
 
-  Future<bool> _loadLectures() async {
+  Future<bool> _loadAllCourses() async {
     Dio dio = Dio();
     // print(pageNum);
     var response = await dio.get(Url.URL_BACKEND + '/getAll',
         queryParameters: {'limit': 5, 'page': pageNum + 1});
     totalPages = response.data['total_page'];
 
-    for (Map lectureRow in response.data['data']) {
-      _lectureCards.add(LectureCard(
-          lecture: await _parseLecture(lectureRow),
-          count: lectureRow['count']));
+    for (Map courseRow in response.data['data']) {
+      _lectureCards.add(CourseCard(
+          course: await _parseAllCourse(courseRow),
+          count: courseRow['count']));
     }
 
     setState(() {
@@ -95,7 +95,7 @@ class _LectureViewState extends State<LectureView> {
     return true;
   }
 
-  Future<Lecture> _parseLecture(data) async {
+  Future<Course> _parseAllCourse(data) async {
     DateTime startTime = DateTime.parse(data['startTime']);
     DateTime endTime = DateTime.parse(data['endTime']);
 
@@ -109,7 +109,7 @@ class _LectureViewState extends State<LectureView> {
     DateTime now = new DateTime.now();
     bool expired = now.isAfter(endTime);
 
-    return Lecture(
+    return Course(
         0,
         data['title'],
         weekNum.toString(),
@@ -117,10 +117,6 @@ class _LectureViewState extends State<LectureView> {
         data['startIndex'],
         data['endIndex'] - data['startIndex'],
         Constant.ADD_BY_LECTURE,
-        data['id'],
-        timeString,
-        data['accurate'],
-        expired,
         classroom: data['classroom'],
         teacher: data['teacher'],
         info: data['info']);
@@ -129,8 +125,8 @@ class _LectureViewState extends State<LectureView> {
   Future<Null> _refresh() async {
     totalPages = 1;
     pageNum = 0;
-    _lectureCards = <LectureCard>[];
-    bool rst = await _loadLectures();
+    _lectureCards = <CourseCard>[];
+    bool rst = await _loadAllCourses();
     if (rst)
       Toast.showToast(S.of(context).lecture_refresh_success_toast, context);
     else
