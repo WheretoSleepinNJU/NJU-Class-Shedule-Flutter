@@ -568,9 +568,9 @@ packages:
   umeng_common_sdk:
     dependency: "direct main"
     description:
-      name: umeng_common_sdk
-      url: "https://pub.flutter-io.cn"
-    source: hosted
+      path: "lib/Libs/umeng_common_sdk"
+      relative: true
+    source: path
     version: "1.2.4"
   url_launcher:
     dependency: "direct main"

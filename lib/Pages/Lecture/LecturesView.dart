@@ -198,7 +198,8 @@ class _LectureViewState extends State<LectureView> {
                                       : Colors.black),
                               checkmarkColor: Colors.white,
                               selected: _filterStatus.contains(2),
-                              selectedColor: Theme.of(context).primaryColor,                              onSelected: (bool value) {
+                              selectedColor: Theme.of(context).primaryColor,
+                              onSelected: (bool value) {
                                 setState(() {
                                   if (value)
                                     _filterStatus.add(2);
@@ -218,7 +219,8 @@ class _LectureViewState extends State<LectureView> {
                                       : Colors.black),
                               checkmarkColor: Colors.white,
                               selected: _filterStatus.contains(3),
-                              selectedColor: Theme.of(context).primaryColor,                              onSelected: (bool value) {
+                              selectedColor: Theme.of(context).primaryColor,
+                              onSelected: (bool value) {
                                 setState(() {
                                   if (value)
                                     _filterStatus.add(3);

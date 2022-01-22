@@ -59,8 +59,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("添加成功！>v<"),
         "add_manually_title": MessageLookupByLibrary.simpleMessage("添加课程"),
         "all_course_subtitle":
-            MessageLookupByLibrary.simpleMessage("查看南哪全校课表，可一键导入至课表"),
-        "all_course_title": MessageLookupByLibrary.simpleMessage("查看/添加全校课表"),
+            MessageLookupByLibrary.simpleMessage("查看南哪全校课表，方便添加和蹭课"),
+        "all_course_title": MessageLookupByLibrary.simpleMessage("查看全校课表"),
         "already_newest_version_toast":
             MessageLookupByLibrary.simpleMessage("已经是最新版本了呦～"),
         "app_name": MessageLookupByLibrary.simpleMessage("南哪课表"),

@@ -74,8 +74,8 @@ class _SettingsViewState extends State<SettingsView> {
               ),
               //TODO: 全校课程
               ListTile(
-                title: Text(S.of(context).import_title),
-                subtitle: Text(S.of(context).import_subtitle),
+                title: Text(S.of(context).all_course_title),
+                subtitle: Text(S.of(context).all_course_subtitle),
                 onTap: () async {
                   UmengCommonSdk.onEvent(
                       "class_import", {"type": "all", "action": "show"});
