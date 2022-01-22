@@ -1,6 +1,7 @@
 import '../../../generated/l10n.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../../../Utils/States/MainState.dart';
 import '../../../Utils/WeekUtil.dart';
@@ -22,6 +23,7 @@ class WeekChanger extends StatelessWidget {
               subtitle: Text(S.of(context).change_week_subtitle +
                   S.of(context).week(snapshot.data.toString())),
               onTap: () async {
+                UmengCommonSdk.onEvent("week_change", {"action": "show"});
                 await showDialog<String>(
                   context: context,
                   builder: (BuildContext context) {
@@ -55,6 +57,8 @@ class WeekChanger extends StatelessWidget {
                           textColor: Colors.grey,
                           child: Text(S.of(context).cancel),
                           onPressed: () {
+                            UmengCommonSdk.onEvent(
+                                "week_change", {"action": "cancel"});
                             Navigator.of(context).pop();
                           },
                         ),
@@ -62,6 +66,8 @@ class WeekChanger extends StatelessWidget {
                             textColor: Theme.of(context).primaryColor,
                             child: Text(S.of(context).ok),
                             onPressed: () async {
+                              UmengCommonSdk.onEvent(
+                                  "week_change", {"action": "accept"});
                               await changeWeek(
                                   context, changedWeek, snapshot.data!);
                               Navigator.of(context).pop();
@@ -81,7 +87,8 @@ class WeekChanger extends StatelessWidget {
     return week;
   }
 
-  Future<bool> changeWeek(BuildContext context, int changedWeek, int nowWeek) async {
+  Future<bool> changeWeek(
+      BuildContext context, int changedWeek, int nowWeek) async {
     if (changedWeek == nowWeek - 1) {
       Toast.showToast(S.of(context).nowweek_not_edited_success_toast, context);
     } else {

@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import '../../../generated/l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import '../../../Models/CourseModel.dart';
 import '../../../Models/LectureModel.dart';
 import '../../../Utils/States/MainState.dart';
@@ -149,6 +149,11 @@ class _LectureCardState extends State<LectureCard> {
                                               textColor: Colors.grey,
                                               child: Text(S.of(context).cancel),
                                               onPressed: () {
+                                                UmengCommonSdk.onEvent(
+                                                    "class_import", {
+                                                  "type": "lecture",
+                                                  "action": "cancel"
+                                                });
                                                 Navigator.of(context).pop();
                                               },
                                             ),
@@ -158,6 +163,11 @@ class _LectureCardState extends State<LectureCard> {
                                                 child: Text(S.of(context).ok),
                                                 onPressed: () async {
                                                   await addLecture();
+                                                  UmengCommonSdk.onEvent(
+                                                      "class_import", {
+                                                    "type": "lecture",
+                                                    "action": "success"
+                                                  });
                                                   Navigator.of(context).pop();
                                                 }),
                                           ],

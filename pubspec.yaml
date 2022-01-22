@@ -27,6 +27,11 @@ dependencies:
   # flutter_search_bar: ^3.0.0-dev.1
   # Android iOS Linux macOS web Windows
   webview_flutter: ^2.0.13
+  umeng_common_sdk: ^1.2.4
+#  umeng_common_sdk:
+#    path: ./lib/Libs/umeng_common_sdk
+#  talkingdata_sdk_plugin:
+#    path: ./lib/Libs/TalkingData_SDK_Flutter
   # Android iOS
   qr_code_scanner: ^0.5.2
   # Android iOS

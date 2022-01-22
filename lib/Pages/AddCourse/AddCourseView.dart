@@ -1,6 +1,7 @@
 import '../../generated/l10n.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import '../../Resources/Constant.dart';
 import '../../Resources/Config.dart';
 import '../../Components/Toast.dart';
@@ -186,10 +187,13 @@ class _AddViewState extends State<AddView> {
                               _nameController.text,
                               _teacherController.text,
                               [_node]);
-                          if (result)
+                          if (result){
+                            UmengCommonSdk.onEvent(
+                                "class_import", {"type": "manual", "action": "success"});
                             Toast.showToast(
                                 S.of(context).add_manually_success_toast,
                                 context);
+                          }
                           Navigator.of(context).pop();
                         }))
               ]));

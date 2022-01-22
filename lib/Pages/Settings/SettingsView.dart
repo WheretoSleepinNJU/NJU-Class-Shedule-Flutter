@@ -3,6 +3,7 @@ import '../../generated/l10n.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info/package_info.dart';
@@ -53,6 +54,8 @@ class _SettingsViewState extends State<SettingsView> {
                 title: Text(S.of(context).import_manually_title),
                 subtitle: Text(S.of(context).import_manually_subtitle),
                 onTap: () {
+                  UmengCommonSdk.onEvent(
+                      "class_import", {"type": "manual", "action": "show"});
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) => AddView()));
                 },
@@ -61,6 +64,8 @@ class _SettingsViewState extends State<SettingsView> {
                 title: Text(S.of(context).import_title),
                 subtitle: Text(S.of(context).import_subtitle),
                 onTap: () async {
+                  UmengCommonSdk.onEvent(
+                      "class_import", {"type": "auto", "action": "show"});
                   bool? status = await Navigator.of(context).push(
                       MaterialPageRoute(
                           builder: (BuildContext context) => ImportView()));
@@ -72,6 +77,8 @@ class _SettingsViewState extends State<SettingsView> {
                 title: Text(S.of(context).import_title),
                 subtitle: Text(S.of(context).import_subtitle),
                 onTap: () async {
+                  UmengCommonSdk.onEvent(
+                      "class_import", {"type": "all", "action": "show"});
                   bool? status = await Navigator.of(context).push(
                       MaterialPageRoute(
                           builder: (BuildContext context) => AllCourseView()));
@@ -82,6 +89,8 @@ class _SettingsViewState extends State<SettingsView> {
                 title: Text(S.of(context).view_lecture_title),
                 subtitle: Text(S.of(context).view_lecture_subtitle),
                 onTap: () async {
+                  UmengCommonSdk.onEvent(
+                      "class_import", {"type": "lecture", "action": "show"});
                   bool? status = await Navigator.of(context).push(
                       MaterialPageRoute(
                           builder: (BuildContext context) => LectureView()));
@@ -125,6 +134,7 @@ class _SettingsViewState extends State<SettingsView> {
                 title: Text(S.of(context).import_or_export_title),
                 subtitle: Text(S.of(context).import_or_export_subtitle),
                 onTap: () {
+                  UmengCommonSdk.onEvent("qr_import", {"action": "show"});
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) => ShareView()));
                 },
@@ -133,6 +143,7 @@ class _SettingsViewState extends State<SettingsView> {
                 title: Text(S.of(context).manage_table_title),
                 subtitle: Text(S.of(context).manage_table_subtitle),
                 onTap: () {
+                  UmengCommonSdk.onEvent("schedule_manage", {"action": "show"});
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) => ManageTableView()));
                 },
@@ -143,6 +154,7 @@ class _SettingsViewState extends State<SettingsView> {
                 title: Text(S.of(context).more_settings_title),
                 subtitle: Text(S.of(context).more_settings_subtitle),
                 onTap: () {
+                  UmengCommonSdk.onEvent("more_setting", {"action": "show"});
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) => MoreSettingsView()));
                 },
@@ -152,6 +164,7 @@ class _SettingsViewState extends State<SettingsView> {
                 title: Text(S.of(context).share_title),
                 subtitle: Text(S.of(context).share_subtitle),
                 onTap: () {
+                  UmengCommonSdk.onEvent("app_share", {"action": "show"});
                   ShareExtend.share(S.of(context).share_content, "text");
                 },
               ),
@@ -159,6 +172,7 @@ class _SettingsViewState extends State<SettingsView> {
                 title: Text(S.of(context).report_title),
                 subtitle: Text(S.of(context).report_subtitle),
                 onTap: () async {
+                  UmengCommonSdk.onEvent("group_add", {"action": "show"});
                   bool status = false;
                   if (Platform.isIOS)
                     status = await _launchURL(Url.QQ_GROUP_APPLE_URL);
@@ -168,6 +182,7 @@ class _SettingsViewState extends State<SettingsView> {
                     Toast.showToast(S.of(context).QQ_open_fail_toast, context);
                 },
                 onLongPress: () async {
+                  UmengCommonSdk.onEvent("group_add", {"action": "copy"});
                   if (Platform.isIOS)
                     await Clipboard.setData(
                         new ClipboardData(text: Config.IOS_GROUP));
@@ -181,6 +196,7 @@ class _SettingsViewState extends State<SettingsView> {
                   title: Text(S.of(context).donate_title),
                   subtitle: Text(S.of(context).donate_subtitle),
                   onTap: () async {
+                    UmengCommonSdk.onEvent("donate_click", {"action": "show"});
                     bool status = false;
                     if (Platform.isIOS)
                       status = await _launchURL(Url.URL_APPLE);
@@ -203,6 +219,7 @@ class _SettingsViewState extends State<SettingsView> {
                       }
                     }),
                 onTap: () {
+                  UmengCommonSdk.onEvent("about_click", { "action": "show"});
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) => AboutView()));
                 },

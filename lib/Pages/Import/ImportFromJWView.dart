@@ -1,4 +1,5 @@
 import '../../generated/l10n.dart';
+import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
@@ -191,6 +192,8 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
                         if (_usrController.value.text.toString() == 'admin' &&
                             _pwdController.value.text.toString() == 'admin') {
                           await _presenter.getDemoClasses(context);
+                          UmengCommonSdk.onEvent("class_import",
+                              {"type": "jw", "action": "success"});
                           Toast.showToast(
                               S.of(context).class_parse_toast_success, context);
                           Navigator.of(context).pop(true);

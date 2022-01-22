@@ -47,8 +47,8 @@ class InitUtil {
     Response response = await dio.get(url);
     if (response.statusCode != HttpStatus.ok) return;
 
-    print(response.data['showReview']);
-    print(response.data['reviewTime']);
+    // print(response.data['showReview']);
+    // print(response.data['reviewTime']);
 
     bool showReview = response.data['showReview'] ?? false;
     if (!showReview) return;
@@ -56,7 +56,7 @@ class InitUtil {
     int reviewTime =
         response.data['reviewTime'] ?? Config.REVIEW_DIALOG_SHOW_TIME;
     bool needsShowReview = (openTimes >= reviewTime);
-    if (!needsShowReview) return;
+    // if (!needsShowReview) return;
 
     final InAppReview inAppReview = InAppReview.instance;
     bool hasShowReview = sp.getBool("hasShowReview") ?? false;
