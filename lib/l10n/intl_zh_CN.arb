@@ -106,7 +106,7 @@
   "lecture_add_fail_toast": "讲座添加失败，可能是学期不对",
   "lecture_add_expired_toast": "讲座已经结束了喵～",
   "lecture_added_toast": "这个讲座已经添加过啦～",
-  "lecture_bottom": "讲座列表由NJU助手团队提供与维护",
+  "lecture_bottom": "讲座列表由南哪助手团队提供与维护",
 
   "export_classtable_title": "导出当前课表",
   "export_classtable_subtitle": "导出当前课表为二维码/链接\n使用公共服务 file.io",

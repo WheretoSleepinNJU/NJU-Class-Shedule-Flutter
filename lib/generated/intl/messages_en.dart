@@ -218,7 +218,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "lecture_added_toast":
             MessageLookupByLibrary.simpleMessage("这个讲座已经添加过啦～"),
         "lecture_bottom":
-            MessageLookupByLibrary.simpleMessage("讲座列表由NJU助手团队提供与维护"),
+            MessageLookupByLibrary.simpleMessage("讲座列表由南哪助手团队提供与维护"),
         "lecture_cast_dialog_content": MessageLookupByLibrary.simpleMessage(
             "该讲座时间不完全对应课表节数，已为您匹配最近课程时间，请在课程详情中关注该讲座具体时间\n\n确认添加该讲座至当前课表？"),
         "lecture_cast_dialog_title":

@@ -32,7 +32,8 @@ class _LectureViewState extends State<LectureView> {
   GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
   ScrollController _scrollController = ScrollController();
-  List<int> _filterStatus = [];
+  List<String> _filterNames = [];
+  List<String> _filterStatus = [];
 
   AppBar buildAppBar(BuildContext context) {
     return new AppBar(
@@ -76,11 +77,27 @@ class _LectureViewState extends State<LectureView> {
     print(value);
   }
 
+  Future<bool> _loadFilters() async {
+    Dio dio = Dio();
+    var response = await dio.get(Url.URL_BACKEND + '/getTag');
+
+    for (String filter in response.data['data']) {
+      _filterNames.add(filter);
+    }
+
+    setState(() {
+      _filterNames = _filterNames;
+    });
+    return true;
+  }
+
   Future<bool> _loadLectures() async {
     Dio dio = Dio();
-    // print(pageNum);
-    var response = await dio.get(Url.URL_BACKEND + '/getAll',
-        queryParameters: {'limit': 5, 'page': pageNum + 1});
+
+    var params = {'limit': 5, 'page': pageNum + 1, 'tag': _filterStatus};
+    if (_filterStatus.isEmpty) params.remove('tag');
+    var response =
+        await dio.get(Url.URL_BACKEND + '/getAll', queryParameters: params);
     totalPages = response.data['total_page'];
 
     for (Map lectureRow in response.data['data']) {
@@ -130,7 +147,10 @@ class _LectureViewState extends State<LectureView> {
     totalPages = 1;
     pageNum = 0;
     _lectureCards = <LectureCard>[];
-    bool rst = await _loadLectures();
+
+    bool rst = true;
+    if (_filterNames.isEmpty) rst = await _loadFilters();
+    rst &= await _loadLectures();
     if (rst)
       Toast.showToast(S.of(context).lecture_refresh_success_toast, context);
     else
@@ -166,77 +186,34 @@ class _LectureViewState extends State<LectureView> {
                       padding:
                           const EdgeInsets.only(top: 5, left: 10, right: 10),
                       child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                            child: FilterChip(
-                              label: Text('精选'),
-                              labelStyle: TextStyle(
-                                  color: _filterStatus.contains(1)
-                                      ? Colors.white
-                                      : Colors.black),
-                              checkmarkColor: Colors.white,
-                              selected: _filterStatus.contains(1),
-                              selectedColor: Theme.of(context).primaryColor,
-                              onSelected: (bool value) {
-                                setState(() {
-                                  if (value)
-                                    _filterStatus.add(1);
-                                  else
-                                    _filterStatus.remove(1);
-                                });
-                              },
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                            child: FilterChip(
-                              label: Text('仙林'),
-                              labelStyle: TextStyle(
-                                  color: _filterStatus.contains(2)
-                                      ? Colors.white
-                                      : Colors.black),
-                              checkmarkColor: Colors.white,
-                              selected: _filterStatus.contains(2),
-                              selectedColor: Theme.of(context).primaryColor,                              onSelected: (bool value) {
-                                setState(() {
-                                  if (value)
-                                    _filterStatus.add(2);
-                                  else
-                                    _filterStatus.remove(2);
-                                });
-                              },
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                            child: FilterChip(
-                              label: Text('鼓楼'),
-                              labelStyle: TextStyle(
-                                  color: _filterStatus.contains(3)
-                                      ? Colors.white
-                                      : Colors.black),
-                              checkmarkColor: Colors.white,
-                              selected: _filterStatus.contains(3),
-                              selectedColor: Theme.of(context).primaryColor,                              onSelected: (bool value) {
-                                setState(() {
-                                  if (value)
-                                    _filterStatus.add(3);
-                                  else
-                                    _filterStatus.remove(3);
-                                });
-                              },
-                            ),
-                          ),
-                          // Padding(
-                          //   padding: const EdgeInsets.symmetric(horizontal: 5),
-                          //   child: ChoiceChip(label: Text('仙林'), selected: true,),
-                          // ),
-                          // Padding(
-                          //   padding: const EdgeInsets.symmetric(horizontal: 5),
-                          //   child: ChoiceChip(label: Text('鼓楼'), selected: true,),
-                          // ),
-                        ],
+                        children: List<Padding>.generate(
+                            _filterNames.length,
+                            (int i) => Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 5),
+                                  child: FilterChip(
+                                    label: Text(_filterNames[i]),
+                                    labelStyle: TextStyle(
+                                        color: _filterStatus
+                                                .contains(_filterNames[i])
+                                            ? Colors.white
+                                            : Colors.black),
+                                    checkmarkColor: Colors.white,
+                                    selected:
+                                        _filterStatus.contains(_filterNames[i]),
+                                    selectedColor:
+                                        Theme.of(context).primaryColor,
+                                    onSelected: (bool value) {
+                                      setState(() {
+                                        if (value)
+                                          _filterStatus.add(_filterNames[i]);
+                                        else
+                                          _filterStatus.remove(_filterNames[i]);
+                                        _refresh();
+                                      });
+                                    },
+                                  ),
+                                )),
                       )))
               ..add(Column(
                 children: [

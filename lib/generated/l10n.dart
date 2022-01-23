@@ -1080,10 +1080,10 @@ class S {
     );
   }
 
-  /// `讲座列表由NJU助手团队提供与维护`
+  /// `讲座列表由南哪助手团队提供与维护`
   String get lecture_bottom {
     return Intl.message(
-      '讲座列表由NJU助手团队提供与维护',
+      '讲座列表由南哪助手团队提供与维护',
       name: 'lecture_bottom',
       desc: '',
       args: [],
