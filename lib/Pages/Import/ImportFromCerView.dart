@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../generated/l10n.dart';
@@ -113,9 +114,11 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
     int rst = await cp.addCourseTable(courseTableName, context);
     try {
       await cp.parseCourse(rst);
+      UmengCommonSdk.onEvent("class_import", {"type": "cer", "action": "success"});
       Toast.showToast(S.of(context).class_parse_toast_success, context);
       Navigator.of(context).pop(true);
     } catch (e) {
+      UmengCommonSdk.onEvent("class_import", {"type": "cer", "action": "fail"});
       Toast.showToast(S.of(context).class_parse_error_toast, context);
     }
   }

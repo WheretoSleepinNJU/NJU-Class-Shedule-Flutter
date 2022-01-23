@@ -3,6 +3,7 @@ import 'dart:math';
 import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -50,6 +51,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
               subtitle: Text(S.of(context).shuffle_color_pool_subtitle),
               onTap: () {
                 ColorPool.shuffleColorPool();
+                UmengCommonSdk.onEvent("more_setting", {"type": 1});
                 Toast.showToast(
                     S.of(context).shuffle_color_pool_success_toast, context);
                 Navigator.of(context).pop();
@@ -60,6 +62,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
               title: Text(S.of(context).add_backgound_picture_title),
               subtitle: Text(S.of(context).add_backgound_picture_subtitle),
               onTap: () async {
+                UmengCommonSdk.onEvent("more_setting", {"type": 2});
                 // using your method of getting an image
                 final XFile? image =
                     await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -94,6 +97,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
               title: Text(S.of(context).delete_backgound_picture_title),
               subtitle: Text(S.of(context).delete_backgound_picture_subtitle),
               onTap: () async {
+                UmengCommonSdk.onEvent("more_setting", {"type": 3});
                 // delete old picture
                 String oldPath = await ScopedModel.of<MainStateModel>(context)
                     .getBgImgPath();
@@ -121,12 +125,15 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                         return Container(width: 0);
                       } else {
                         return Switch(
-                          activeColor: Theme.of(context).primaryColor,
-                          value: snapshot.data!,
-                          onChanged: (bool value) =>
+                            activeColor: Theme.of(context).primaryColor,
+                            value: snapshot.data!,
+                            onChanged: (bool value) {
+                              UmengCommonSdk.onEvent(
+                                  "more_setting", {"type": 4,
+                                "result": value.toString()});
                               ScopedModel.of<MainStateModel>(context)
-                                  .setWhiteMode(value),
-                        );
+                                  .setWhiteMode(value);
+                            });
                       }
                     })),
             ListTile(
@@ -140,12 +147,14 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                         return Container(width: 0);
                       } else {
                         return Switch(
-                          activeColor: Theme.of(context).primaryColor,
-                          value: !snapshot.data!,
-                          onChanged: (bool value) =>
+                            activeColor: Theme.of(context).primaryColor,
+                            value: !snapshot.data!,
+                            onChanged: (bool value) {
+                              UmengCommonSdk.onEvent(
+                                  "more_setting", {"type": 5, "result": value.toString()});
                               ScopedModel.of<MainStateModel>(context)
-                                  .setAddButton(!value),
-                        );
+                                  .setAddButton(!value);
+                            });
                       }
                     })),
             ListTile(
@@ -159,12 +168,14 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                        activeColor: Theme.of(context).primaryColor,
-                        value: snapshot.data!,
-                        onChanged: (bool value) =>
+                          activeColor: Theme.of(context).primaryColor,
+                          value: snapshot.data!,
+                          onChanged: (bool value) {
+                            UmengCommonSdk.onEvent(
+                                "more_setting", {"type": 6, "result": value.toString()});
                             ScopedModel.of<MainStateModel>(context)
-                                .setShowWeekend(value),
-                      );
+                                .setShowWeekend(value);
+                          });
                     }
                   }),
             ),
@@ -179,12 +190,14 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                        activeColor: Theme.of(context).primaryColor,
-                        value: snapshot.data!,
-                        onChanged: (bool value) =>
+                          activeColor: Theme.of(context).primaryColor,
+                          value: snapshot.data!,
+                          onChanged: (bool value) {
+                            UmengCommonSdk.onEvent(
+                                "more_setting", {"type": 7, "result": value.toString()});
                             ScopedModel.of<MainStateModel>(context)
-                                .setShowClassTime(value),
-                      );
+                                .setShowClassTime(value);
+                          });
                     }
                   }),
             ),
@@ -199,12 +212,14 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                        activeColor: Theme.of(context).primaryColor,
-                        value: snapshot.data!,
-                        onChanged: (bool value) =>
+                          activeColor: Theme.of(context).primaryColor,
+                          value: snapshot.data!,
+                          onChanged: (bool value) {
+                            UmengCommonSdk.onEvent(
+                                "more_setting", {"type": 8, "result": value.toString()});
                             ScopedModel.of<MainStateModel>(context)
-                                .setShowFreeClass(value),
-                      );
+                                .setShowFreeClass(value);
+                          });
                     }
                   }),
             ),
@@ -219,12 +234,14 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                        activeColor: Theme.of(context).primaryColor,
-                        value: snapshot.data!,
-                        onChanged: (bool value) =>
+                          activeColor: Theme.of(context).primaryColor,
+                          value: snapshot.data!,
+                          onChanged: (bool value) {
+                            UmengCommonSdk.onEvent(
+                                "more_setting", {"type": 9, "result": value.toString()});
                             ScopedModel.of<MainStateModel>(context)
-                                .setShowMonth(value),
-                      );
+                                .setShowMonth(value);
+                          });
                     }
                   }),
             ),
@@ -239,12 +256,14 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                        activeColor: Theme.of(context).primaryColor,
-                        value: snapshot.data!,
-                        onChanged: (bool value) =>
+                          activeColor: Theme.of(context).primaryColor,
+                          value: snapshot.data!,
+                          onChanged: (bool value) {
+                            UmengCommonSdk.onEvent(
+                                "more_setting", {"type": 10, "result": value.toString()});
                             ScopedModel.of<MainStateModel>(context)
-                                .setShowDate(value),
-                      );
+                                .setShowDate(value);
+                          });
                     }
                   }),
             ),
@@ -259,48 +278,51 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                        activeColor: Theme.of(context).primaryColor,
-                        value: snapshot.data!,
-                        onChanged: (bool value) {
-                          ScopedModel.of<MainStateModel>(context)
-                              .setForceZoom(value);
-                          setState(() {
-                            showCustomClassHeight = !value;
+                          activeColor: Theme.of(context).primaryColor,
+                          value: snapshot.data!,
+                          onChanged: (bool value) {
+                            ScopedModel.of<MainStateModel>(context)
+                                .setForceZoom(value);
+                            UmengCommonSdk.onEvent(
+                                "more_setting", {"type": 11, "result": value.toString()});
+                            setState(() {
+                              showCustomClassHeight = !value;
+                            });
                           });
-                        }
-                      );
                     }
                   }),
             ),
-            showCustomClassHeight ? ListTile(
-              title: Text(S.of(context).class_height_title),
-              subtitle: Text(S.of(context).class_height_subtitle),
-              trailing: FutureBuilder<int>(
-                  future: _getClassHeight(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<int> snapshot) {
-                    if (!snapshot.hasData) {
-                      return Container(width: 0);
-                    } else {
-                      return Container(
-                          width: 102,
-                          child: NumberChangerWidget(
-                            width: 40,
-                            iconWidth: 30,
-                            numText: snapshot.data.toString(),
-                            addValueChanged: (num) {
-                              _setClassHeight(num);
-                            },
-                            removeValueChanged: (num) {
-                              _setClassHeight(num);
-                            },
-                            updateValueChanged: (num) {
-                              _setClassHeight(num);
-                            },
-                          ));
-                    }
-                  }),
-            ) : Container(width: 0),
+            showCustomClassHeight
+                ? ListTile(
+                    title: Text(S.of(context).class_height_title),
+                    subtitle: Text(S.of(context).class_height_subtitle),
+                    trailing: FutureBuilder<int>(
+                        future: _getClassHeight(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<int> snapshot) {
+                          if (!snapshot.hasData) {
+                            return Container(width: 0);
+                          } else {
+                            return Container(
+                                width: 102,
+                                child: NumberChangerWidget(
+                                  width: 40,
+                                  iconWidth: 30,
+                                  numText: snapshot.data.toString(),
+                                  addValueChanged: (num) {
+                                    _setClassHeight(num);
+                                  },
+                                  removeValueChanged: (num) {
+                                    _setClassHeight(num);
+                                  },
+                                  updateValueChanged: (num) {
+                                    _setClassHeight(num);
+                                  },
+                                ));
+                          }
+                        }),
+                  )
+                : Container(width: 0),
           ]).toList()))
         ])));
   }

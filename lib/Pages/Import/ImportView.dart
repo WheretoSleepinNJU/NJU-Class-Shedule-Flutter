@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:azlistview/azlistview.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import '../Import/ImportFromJWView.dart';
@@ -83,6 +84,8 @@ class _ImportViewState extends State<ImportView> {
                 alignment: Alignment.centerLeft,
                 child: Text(S.of(context).import_from_NJU_cer_subtitle)),
             onTap: () async {
+              UmengCommonSdk.onEvent(
+                  "class_import", {"type": "cer", "action": "show"});
               bool? status = await Navigator.of(context).push(MaterialPageRoute(
                   builder: (BuildContext context) =>
                       ImportFromCerView(config: Config.jw_config)));
@@ -96,6 +99,8 @@ class _ImportViewState extends State<ImportView> {
                 alignment: Alignment.centerLeft,
                 child: Text(S.of(context).import_from_NJU_subtitle)),
             onTap: () async {
+              UmengCommonSdk.onEvent(
+                  "class_import", {"type": "jw", "action": "show"});
               bool? status = await Navigator.of(context).push(MaterialPageRoute(
                   builder: (BuildContext context) => ImportFromJWView()));
               if (status == true) Navigator.of(context).pop(status);
@@ -108,6 +113,8 @@ class _ImportViewState extends State<ImportView> {
                 alignment: Alignment.centerLeft,
                 child: Text(S.of(context).import_from_NJU_xk_subtitle)),
             onTap: () async {
+              UmengCommonSdk.onEvent(
+                  "class_import", {"type": "xk", "action": "show"});
               bool? status = await Navigator.of(context).push(MaterialPageRoute(
                   builder: (BuildContext context) =>
                       ImportFromXKView(config: Config.xk_config)));
@@ -162,6 +169,8 @@ class _ImportViewState extends State<ImportView> {
                                     schoolList[index].config!['description'])),
                             enabled: !(schoolList[index].isGrey ?? false),
                             onTap: () async {
+                              UmengCommonSdk.onEvent("class_import",
+                                  {"type": "be", "action": "show"});
                               bool? status = await Navigator.of(context).push(
                                   MaterialPageRoute(
                                       builder: (BuildContext context) =>
@@ -204,6 +213,10 @@ class _ImportViewState extends State<ImportView> {
                 style: TextStyle(color: Theme.of(context).primaryColor)),
             alignment: Alignment.topCenter,
             padding: const EdgeInsets.only(top: 5.0, bottom: 5.0)),
-        onTap: () => launch(Url.OPEN_SOURCE_URL));
+        onTap: () {
+          UmengCommonSdk.onEvent(
+              "class_import", {"type": "be", "action": "more"});
+          launch(Url.OPEN_SOURCE_URL);
+        });
   }
 }

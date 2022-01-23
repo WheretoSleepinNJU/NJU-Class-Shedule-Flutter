@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
+import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -116,6 +117,7 @@ class CourseTablePresenter {
 
   void showDonateDialog(BuildContext context, String welcome_title,
       String welcome_content) async {
+    UmengCommonSdk.onEvent("import_dialog", {"action": "show"});
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -168,6 +170,8 @@ class CourseTablePresenter {
                             primary: Theme.of(context).primaryColor),
                         child: Text(S.of(context).love_and_donate),
                         onPressed: () async {
+                          UmengCommonSdk.onEvent(
+                              "import_dialog", {"action": "donate"});
                           if (Platform.isIOS)
                             launch(Url.URL_APPLE);
                           else if (Platform.isAndroid) launch(Url.URL_ANDROID);
@@ -181,6 +185,8 @@ class CourseTablePresenter {
                             style: TextStyle(
                                 color: Theme.of(context).primaryColor)),
                         onPressed: () {
+                          UmengCommonSdk.onEvent(
+                              "import_dialog", {"action": "bug"});
                           if (Platform.isIOS)
                             launch(Url.QQ_GROUP_APPLE_URL);
                           else if (Platform.isAndroid)
@@ -194,6 +200,8 @@ class CourseTablePresenter {
                         child: Text(S.of(context).love_but_no_money,
                             style: TextStyle(color: Colors.grey)),
                         onPressed: () async {
+                          UmengCommonSdk.onEvent(
+                              "import_dialog", {"action": "noMoney"});
                           Navigator.of(context).pop();
                         }),
                   ])),
@@ -233,6 +241,7 @@ class CourseTablePresenter {
     return showDialog<String>(
         context: context,
         builder: (BuildContext context) {
+          UmengCommonSdk.onEvent("class_click", {"type": "single"});
           return CourseDetailDialog(course, isActive, () {
             Navigator.of(context).pop();
           });
@@ -244,7 +253,7 @@ class CourseTablePresenter {
         context: context,
         builder: (BuildContext context) {
           // 设计失误，其实应该把是不是当前周传进来的
-
+          UmengCommonSdk.onEvent("class_click", {"type": "multi"});
           return Swiper(
             itemBuilder: (BuildContext context, int index) {
               return CourseDetailDialog(
@@ -268,6 +277,7 @@ class CourseTablePresenter {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
+          UmengCommonSdk.onEvent("class_click", {"type": "free"});
           return Swiper(
             itemBuilder: (BuildContext context, int index) {
               return CourseDetailDialog(
@@ -289,6 +299,7 @@ class CourseTablePresenter {
   }
 
   showDeleteDialog(BuildContext context, Course course) {
+    UmengCommonSdk.onEvent("class_delete", {"action": "show"});
     return showDialog<String>(
       context: context,
       builder: (BuildContext context) {
