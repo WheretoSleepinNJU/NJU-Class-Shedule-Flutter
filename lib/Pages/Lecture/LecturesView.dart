@@ -214,7 +214,6 @@ class _LectureViewState extends State<LectureView> {
                                     },
                                   ),
                                 )),
-        ],
                       )))
               ..add(Column(
                 children: [
