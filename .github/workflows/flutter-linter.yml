@@ -24,7 +24,7 @@ jobs:
       - name: flutter pub get
         run: flutter pub get
       - name: flutter analyze
-        run: flutter analyze > flutter_analyze_report.txt
+        run: flutter analyze  --no-fatal-infos --no-fatal-warnings > flutter_analyze_report.txt
       - name: setup ruby
         if: ${{ failure() }}
         uses: actions/setup-ruby@v1
