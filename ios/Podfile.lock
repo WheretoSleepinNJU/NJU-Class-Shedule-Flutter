@@ -33,7 +33,7 @@ PODS:
     - Flutter
     - UMCommon
     - UMDevice
-  - url_launcher (0.0.1):
+  - url_launcher_ios (0.0.1):
     - Flutter
   - video_player (0.0.1):
     - Flutter
@@ -54,7 +54,7 @@ DEPENDENCIES:
   - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - umeng_common_sdk (from `.symlinks/plugins/umeng_common_sdk/ios`)
-  - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
+  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - video_player (from `.symlinks/plugins/video_player/ios`)
   - wakelock (from `.symlinks/plugins/wakelock/ios`)
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
@@ -90,8 +90,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/sqflite/ios"
   umeng_common_sdk:
     :path: ".symlinks/plugins/umeng_common_sdk/ios"
-  url_launcher:
-    :path: ".symlinks/plugins/url_launcher/ios"
+  url_launcher_ios:
+    :path: ".symlinks/plugins/url_launcher_ios/ios"
   video_player:
     :path: ".symlinks/plugins/video_player/ios"
   wakelock:
@@ -116,7 +116,7 @@ SPEC CHECKSUMS:
   UMCommon: ab4d875ddefe1b06c60b577e4a58bc4d433ee067
   UMDevice: c13bbb2e8ca6c67d1e23e03162553e3ec5a8b5b0
   umeng_common_sdk: a8abd7f86dfd013dbbeeae587ee143760c6582f2
-  url_launcher: b6e016d912f04be9f5bf6e8e82dc599b7ba59649
+  url_launcher_ios: 02f1989d4e14e998335b02b67a7590fa34f971af
   video_player: ecd305f42e9044793efd34846e1ce64c31ea6fcb
   wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
   webview_flutter_wkwebview: 005fbd90c888a42c5690919a1527ecc6649e1162
