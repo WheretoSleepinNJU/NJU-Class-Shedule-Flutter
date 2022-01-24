@@ -13,7 +13,7 @@ import 'Resources/Themes.dart';
 import 'Utils/States/MainState.dart';
 import 'Utils/InitUtil.dart';
 
-void main() async { 
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   //Initialize the app config.
   int themeIndex = await InitUtil.Initialize();
