@@ -1,6 +1,7 @@
 import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 
 //import 'package:text_view/text_view.dart';
 import './CourseTablePresenter.dart';
@@ -139,6 +140,7 @@ class CourseTableViewState extends State<CourseTableView> {
         model: MainStateModel(),
         child: ScopedModelDescendant<MainStateModel>(
             builder: (context, child, model) {
+          UmengCommonSdk.onEvent("course_refresh", {"action": "refresh"});
           print('CourseTableView refreshed.');
 
           return FutureBuilder<List<Widget>>(
@@ -175,17 +177,23 @@ class CourseTableViewState extends State<CourseTableView> {
 //                          TextView(),
                           Text(S.of(context).app_name),
                           GestureDetector(
-                            child:
-                                Text((nowWeek), style: TextStyle(fontSize: 14)),
-                            onTap: () => setState(() {
-                              weekSelectorVisibility = !weekSelectorVisibility;
-                            }),
-                          )
+                              child: Text((nowWeek),
+                                  style: TextStyle(fontSize: 14)),
+                              onTap: () {
+                                setState(() {
+                                  weekSelectorVisibility =
+                                      !weekSelectorVisibility;
+                                });
+                                UmengCommonSdk.onEvent(
+                                    "week_choose", {"action": "tap"});
+                              })
                         ]),
                         actions: <Widget>[
                           IconButton(
                             icon: Icon(Icons.settings),
                             onPressed: () async {
+                              UmengCommonSdk.onEvent(
+                                  "setting_click", {"action": "success"});
                               bool? status = await Navigator.of(context).push(
                                   MaterialPageRoute(
                                       builder: (BuildContext context) =>
@@ -264,9 +272,10 @@ class CourseTableViewState extends State<CourseTableView> {
                                               S.of(context).free_class_button,
                                               style: TextStyle(
                                                   color: Colors.white)),
-                                          onPressed: () =>
-                                              _presenter.showFreeClassDialog(
-                                                  context, _nowShowWeekNum),
+                                          onPressed: () {
+                                            _presenter.showFreeClassDialog(
+                                                context, _nowShowWeekNum);
+                                          },
                                           style: TextButton.styleFrom(
                                               minimumSize: Size.zero,
                                               padding: EdgeInsets.zero),

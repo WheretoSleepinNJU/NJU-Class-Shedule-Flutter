@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_html/flutter_html.dart';
 import '../../Models/CourseModel.dart';
@@ -20,7 +21,8 @@ class PrivacyUtil {
       int privacyVersion = sp.getInt("privacyVersion") ?? 0;
       int targetVersion = response.data['version'] ?? 0;
       if (isForce || targetVersion > privacyVersion) {
-        return await showPrivacyDialog(response.data, targetVersion, isForce, context);
+        return await showPrivacyDialog(
+            response.data, targetVersion, isForce, context);
       } else {
         return false;
       }
@@ -35,12 +37,15 @@ class PrivacyUtil {
     CourseProvider courseProvider = new CourseProvider();
     int courseNum = await courseProvider.getCourseNum();
     bool firstInstall = (courseNum == 0);
+    UmengCommonSdk.onEvent("privacy_dialog", {"action": "show"});
     widgets = isForce
         ? <Widget>[
             TextButton(
                 child: Text(S.of(context).ok,
                     style: TextStyle(color: Theme.of(context).primaryColor)),
                 onPressed: () {
+                  UmengCommonSdk.onEvent(
+                      "privacy_dialog", {"action": "forceAccept"});
                   Navigator.of(context).pop(false);
                 })
           ]
@@ -48,8 +53,12 @@ class PrivacyUtil {
             TextButton(
                 child: Text(info['cancel_text'],
                     style: TextStyle(color: Colors.grey)),
-                onPressed: () => SystemChannels.platform
-                    .invokeMethod<void>('SystemNavigator.pop', true)),
+                onPressed: () {
+                  UmengCommonSdk.onEvent(
+                      "privacy_dialog", {"action": "cancel"});
+                  SystemChannels.platform
+                      .invokeMethod<void>('SystemNavigator.pop', true);
+                }),
             firstInstall
                 ? TextButton(
                     child: Text(info['confirm_text_first_install'],
@@ -59,6 +68,8 @@ class PrivacyUtil {
                       SharedPreferences sp =
                           await SharedPreferences.getInstance();
                       await sp.setInt("privacyVersion", version);
+                      UmengCommonSdk.onEvent(
+                          "privacy_dialog", {"action": "accept"});
                       Navigator.of(context).pop(true);
                     })
                 : TextButton(
@@ -69,6 +80,8 @@ class PrivacyUtil {
                       SharedPreferences sp =
                           await SharedPreferences.getInstance();
                       await sp.setInt("privacyVersion", version);
+                      UmengCommonSdk.onEvent(
+                          "privacy_dialog", {"action": "acceptUpgrade"});
                       Navigator.of(context).pop(false);
                     }),
           ];

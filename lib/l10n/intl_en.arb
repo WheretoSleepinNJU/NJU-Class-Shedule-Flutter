@@ -38,6 +38,8 @@
   "import_from_NJU_cer_subtitle": "推荐通过统一认证进行登录导入",
   "import_from_NJU_xk_title": "从南京大学选课系统导入课表",
   "import_from_NJU_xk_subtitle": "新选课系统，尚不稳定的备选导入方式",
+  "all_course_title": "查看全校课表",
+  "all_course_subtitle": "查看南哪全校课表，方便添加和蹭课",
   "view_lecture_title": "查看/添加讲座",
   "view_lecture_subtitle": "查看南哪最新讲座信息，可一键导入至课表",
   "import_or_export_title": "导入/导出课表",
@@ -104,7 +106,7 @@
   "lecture_add_fail_toast": "讲座添加失败，可能是学期不对",
   "lecture_add_expired_toast": "讲座已经结束了喵～",
   "lecture_added_toast": "这个讲座已经添加过啦～",
-  "lecture_bottom": "讲座列表由NJU助手团队提供与维护",
+  "lecture_bottom": "讲座列表由南哪助手团队提供与维护",
 
   "export_classtable_title": "导出当前课表",
   "export_classtable_subtitle": "导出当前课表为二维码/链接\n使用公共服务 file.io",

@@ -1,5 +1,6 @@
 import 'CourseModel.dart';
 import 'dart:convert';
+import '../Resources/Constant.dart';
 
 class ScheduleModel {
   int nowWeek;
@@ -10,16 +11,16 @@ class ScheduleModel {
   List<Course> freeCourses = [];
 
   //TODO: multiCourses
- // List<List<Course>> multiCourses = [
- //  List<Course> freeCourses = [
- //     new Course(0, "微积分", "[1,2,3,4,5,6,7]", 1, 7, 2, 0,
- //         color: '#8AD297', classroom: 'QAQ'),
- //     new Course(0, "还是微积分", "[1,2,3,4,5,6,7]", 1, 7, 2, 0,
- //         color: '#F9A883', classroom: 'QAQ'),
- //     new Course(0, "又是微积分", "[1,2,3,4,5,6,7]", 1, 7, 2, 0,
- //         color: '#F9A883', classroom: 'QAQ')
- //   ];
- // ];
+  // List<List<Course>> multiCourses = [
+  //  List<Course> freeCourses = [
+  //     new Course(0, "微积分", "[1,2,3,4,5,6,7]", 1, 7, 2, 0,
+  //         color: '#8AD297', classroom: 'QAQ'),
+  //     new Course(0, "还是微积分", "[1,2,3,4,5,6,7]", 1, 7, 2, 0,
+  //         color: '#F9A883', classroom: 'QAQ'),
+  //     new Course(0, "又是微积分", "[1,2,3,4,5,6,7]", 1, 7, 2, 0,
+  //         color: '#F9A883', classroom: 'QAQ')
+  //   ];
+  // ];
 
   ScheduleModel(this.courses, this.nowWeek);
 
@@ -31,10 +32,13 @@ class ScheduleModel {
   void classify() {
     for (Course course in courses) {
       List weeks = json.decode(course.weeks!);
-      if(course.weekTime == 0)
+      if (course.weekTime == 0)
         freeCourses.add(course);
       else if (weeks.contains(nowWeek))
         activeCourses.add(course);
+      else if (course.importType == Constant.ADD_BY_LECTURE &&
+          weeks[0] < nowWeek)
+        continue;
       else
         hideCourses.add(course);
     }

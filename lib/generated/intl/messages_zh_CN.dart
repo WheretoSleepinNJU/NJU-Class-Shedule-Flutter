@@ -58,6 +58,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "add_manually_success_toast":
             MessageLookupByLibrary.simpleMessage("添加成功！>v<"),
         "add_manually_title": MessageLookupByLibrary.simpleMessage("添加课程"),
+        "all_course_subtitle":
+            MessageLookupByLibrary.simpleMessage("查看南哪全校课表，方便添加和蹭课"),
+        "all_course_title": MessageLookupByLibrary.simpleMessage("查看全校课表"),
         "already_newest_version_toast":
             MessageLookupByLibrary.simpleMessage("已经是最新版本了呦～"),
         "app_name": MessageLookupByLibrary.simpleMessage("南哪课表"),
@@ -215,7 +218,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "lecture_added_toast":
             MessageLookupByLibrary.simpleMessage("这个讲座已经添加过啦～"),
         "lecture_bottom":
-            MessageLookupByLibrary.simpleMessage("讲座列表由NJU助手团队提供与维护"),
+            MessageLookupByLibrary.simpleMessage("讲座列表由南哪助手团队提供与维护"),
         "lecture_cast_dialog_content": MessageLookupByLibrary.simpleMessage(
             "该讲座时间不完全对应课表节数，已为您匹配最近课程时间，请在课程详情中关注该讲座具体时间\n\n确认添加该讲座至当前课表？"),
         "lecture_cast_dialog_title":

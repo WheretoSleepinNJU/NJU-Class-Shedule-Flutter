@@ -420,6 +420,26 @@ class S {
     );
   }
 
+  /// `查看全校课表`
+  String get all_course_title {
+    return Intl.message(
+      '查看全校课表',
+      name: 'all_course_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `查看南哪全校课表，方便添加和蹭课`
+  String get all_course_subtitle {
+    return Intl.message(
+      '查看南哪全校课表，方便添加和蹭课',
+      name: 'all_course_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `查看/添加讲座`
   String get view_lecture_title {
     return Intl.message(
@@ -1060,10 +1080,10 @@ class S {
     );
   }
 
-  /// `讲座列表由NJU助手团队提供与维护`
+  /// `讲座列表由南哪助手团队提供与维护`
   String get lecture_bottom {
     return Intl.message(
-      '讲座列表由NJU助手团队提供与维护',
+      '讲座列表由南哪助手团队提供与维护',
       name: 'lecture_bottom',
       desc: '',
       args: [],

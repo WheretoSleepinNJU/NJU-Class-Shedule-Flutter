@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -132,9 +133,11 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
         Course course = new Course.fromMap(courseMap);
         courseProvider.insert(course);
       });
+      UmengCommonSdk.onEvent("class_import", {"type": "be", "action": "success"});
       Toast.showToast(S.of(context).class_parse_toast_success, context);
       Navigator.of(context).pop(true);
     } catch (e) {
+      UmengCommonSdk.onEvent("class_import", {"type": "be", "action": "fail"});
       Toast.showToast(S.of(context).online_parse_error_toast, context);
       return;
     }
