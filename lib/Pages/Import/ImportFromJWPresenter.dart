@@ -8,7 +8,7 @@ import '../../Models/CourseTableModel.dart';
 import '../../Models/CourseModel.dart';
 
 class ImportFromJWPresenter {
-  HttpUtil httpUtil = new HttpUtil();
+  HttpUtil httpUtil = HttpUtil();
 
   Future<Image> getCaptcha(double num) async {
     await httpUtil.getWithCookie(Url.URL_NJU_HOST);
@@ -29,14 +29,15 @@ class ImportFromJWPresenter {
       'ValidateCode': captcha,
     });
 //    print(response);
-    if (response.contains('验证码错误！') || response.contains('验证码已过期，请重新登录！'))
+    if (response.contains('验证码错误！') || response.contains('验证码已过期，请重新登录！')) {
       return Constant.CAPTCHA_ERROR;
-    else if (response.contains('密码错误！'))
+    } else if (response.contains('密码错误！')) {
       return Constant.PASSWORD_ERROR;
-    else if (response.contains('用户名错误！'))
+    } else if (response.contains('用户名错误！')) {
       return Constant.USERNAME_ERROR;
-    else
+    } else {
       return Constant.LOGIN_CORRECT;
+    }
 //    response.then((String response) {
 ////      print(response);
 //    }, onError: (e) {
@@ -48,7 +49,7 @@ class ImportFromJWPresenter {
     String url = Url.URL_NJU_HOST + Url.ClassInfo;
     String response = await httpUtil.get(url);
 //    print(response);
-    CourseParser cp = new CourseParser(response);
+    CourseParser cp = CourseParser(response);
     String courseTableName = cp.parseCourseName();
     int rst = await cp.addCourseTable(courseTableName, context);
     try {
@@ -68,19 +69,19 @@ class ImportFromJWPresenter {
 
   Future<bool> getDemoClasses(BuildContext context) async {
     // same in CourseParser.dart
-    CourseTableProvider courseTableProvider = new CourseTableProvider();
+    CourseTableProvider courseTableProvider = CourseTableProvider();
     CourseTable courseTable =
-        await courseTableProvider.insert(new CourseTable('Demo课表'));
+        await courseTableProvider.insert(CourseTable('Demo课表'));
     // 减1的原因：SQL中id从1开始计
     MainStateModel.of(context).changeclassTable(courseTable.id!);
-    CourseProvider courseProvider = new CourseProvider();
-    await courseProvider.insert(new Course(
+    CourseProvider courseProvider = CourseProvider();
+    await courseProvider.insert(Course(
         courseTable.id, "自动导入", "[1,2,3,4,5,6,7]", 3, 5, 2, 0,
         classroom: 'QAQ'));
-    await courseProvider.insert(new Course(
+    await courseProvider.insert(Course(
         courseTable.id, "手动导入", "[1,2,3,4,5,6,7]", 4, 2, 3, 1,
         classroom: '仙林校区不知道哪个教室'));
-    await courseProvider.insert(new Course(
+    await courseProvider.insert(Course(
         courseTable.id, "并不是线性代数", "[1,2,3,4,5,6,7]", 4, 2, 3, 0,
         classroom: 'QAQ'));
     return true;

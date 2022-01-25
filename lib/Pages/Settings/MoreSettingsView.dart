@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:math';
 import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:image_picker/image_picker.dart';
@@ -13,7 +12,7 @@ import '../../Components/Toast.dart';
 import './Widgets/NumChanger.dart';
 
 class MoreSettingsView extends StatefulWidget {
-  MoreSettingsView() : super();
+  const MoreSettingsView({Key? key}) : super(key: key);
 
   @override
   _MoreSettingsViewState createState() => _MoreSettingsViewState();
@@ -75,7 +74,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                 File oldImg = File(oldPath);
                 if (oldImg.existsSync()) {
                   oldImg.deleteSync(recursive: true);
-                  print('Old image deleted.');
+                  // print('Old image deleted.');
                 }
 
                 // add new picture
@@ -86,7 +85,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                 await image.saveTo(fileName);
                 await ScopedModel.of<MainStateModel>(context)
                     .setBgImgPath(fileName);
-                print('New image added.');
+                // print('New image added.');
                 Toast.showToast(
                     S.of(context).add_backgound_picture_success_toast, context);
                 Navigator.of(context).pop();
@@ -104,7 +103,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                 File oldImg = File(oldPath);
                 if (oldImg.existsSync()) {
                   oldImg.deleteSync(recursive: true);
-                  print('Old image deleted.');
+                  // print('Old image deleted.');
                 }
                 await ScopedModel.of<MainStateModel>(context).removeBgImgPath();
                 Toast.showToast(
@@ -303,7 +302,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                           if (!snapshot.hasData) {
                             return Container(width: 0);
                           } else {
-                            return Container(
+                            return SizedBox(
                                 width: 102,
                                 child: NumberChangerWidget(
                                   width: 40,

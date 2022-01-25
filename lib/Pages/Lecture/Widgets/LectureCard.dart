@@ -18,7 +18,7 @@ class LectureCard extends StatefulWidget {
   final Lecture lecture;
   final int count;
 
-  LectureCard({Key? key, required this.lecture, required this.count})
+  const LectureCard({Key? key, required this.lecture, required this.count})
       : super(key: key);
 
   @override
@@ -39,13 +39,14 @@ class _LectureCardState extends State<LectureCard> {
   checkAdded() async {
     widget.lecture.tableId =
         await ScopedModel.of<MainStateModel>(context).getClassTable();
-    CourseProvider courseProvider = new CourseProvider();
+    CourseProvider courseProvider = CourseProvider();
     bool rst = await courseProvider.checkHasClassByName(
         widget.lecture.tableId ?? 0, widget.lecture.name ?? '');
-    if (rst)
+    if (rst) {
       setState(() {
         added = true;
       });
+    }
   }
 
   addLecture() async {
@@ -54,12 +55,12 @@ class _LectureCardState extends State<LectureCard> {
       Toast.showToast(S.of(context).lecture_add_fail_toast, context);
       return;
     }
-    CourseProvider courseProvider = new CourseProvider();
+    CourseProvider courseProvider = CourseProvider();
     await courseProvider.insert(widget.lecture);
     Dio dio = Dio();
-    var response = await dio.get(Url.URL_BACKEND + '/addCount',
+    await dio.get(Url.URL_BACKEND + '/addCount',
         queryParameters: {'id': widget.lecture.lectureId});
-    print(response);
+    // print(response);
     Toast.showToast(S.of(context).lecture_add_success_toast, context);
     setState(() {
       added = true;
@@ -101,7 +102,7 @@ class _LectureCardState extends State<LectureCard> {
                   },
                   text: widget.lecture.info ?? S.of(context).unknown_info,
                   linkStyle: TextStyle(color: Theme.of(context).primaryColor),
-                  options: LinkifyOptions(humanize: false),
+                  options: const LinkifyOptions(humanize: false),
                 ),
               ),
               Row(
@@ -131,13 +132,13 @@ class _LectureCardState extends State<LectureCard> {
                                   primary: Theme.of(context).primaryColor),
                               child: Text(S.of(context).lecture_add(count)),
                               onPressed: () async {
-                                if (widget.lecture.isAccurate)
+                                if (widget.lecture.isAccurate) {
                                   addLecture();
-                                else
+                                } else {
                                   showDialog<String>(
                                       context: context,
                                       builder: (BuildContext context) {
-                                        return mDialog(
+                                        return MDialog(
                                           S
                                               .of(context)
                                               .lecture_cast_dialog_title,
@@ -173,6 +174,7 @@ class _LectureCardState extends State<LectureCard> {
                                           ],
                                         );
                                       });
+                                }
                               },
                             ),
                 ],

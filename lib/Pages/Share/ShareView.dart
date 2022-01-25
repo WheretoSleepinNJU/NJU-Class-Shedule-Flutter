@@ -1,9 +1,7 @@
-import 'dart:io';
 import 'dart:convert';
 import '../../generated/l10n.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../../Utils/States/MainState.dart';
@@ -15,7 +13,7 @@ import 'QRShareView.dart';
 import 'QRScanView.dart';
 
 class ShareView extends StatefulWidget {
-  ShareView() : super();
+  const ShareView({Key? key}) : super(key: key);
 
   @override
   _ShareViewState createState() => _ShareViewState();
@@ -44,29 +42,28 @@ class _ShareViewState extends State<ShareView> {
               onTap: () async {
                 int index = await ScopedModel.of<MainStateModel>(context)
                     .getClassTable();
-                CourseProvider courseProvider = new CourseProvider();
-                List allCoursesMap =
-                    await courseProvider.getAllCourses(index);
-                CourseTableProvider courseTableProvider =
-                    new CourseTableProvider();
+                CourseProvider courseProvider = CourseProvider();
+                List allCoursesMap = await courseProvider.getAllCourses(index);
+                CourseTableProvider courseTableProvider = CourseTableProvider();
                 CourseTable? courseTable =
                     await courseTableProvider.getCourseTable(index);
                 Map rst = {'name': courseTable!.name, 'courses': allCoursesMap};
-                String rstStr = json.encode(rst).toString();
+                // String rstStr = json.encode(rst).toString();
                 // print(rstStr);
 
-                try{
-                  Dio dio = new Dio();
-                  Response response = await dio.post("https://file.io/?expires=1w",
-                      data: {"text": json.encode(rst)},
-                      options: Options(
-                        contentType: Headers.formUrlEncodedContentType,
-                      ));
+                try {
+                  Dio dio = Dio();
+                  Response response =
+                      await dio.post("https://file.io/?expires=1w",
+                          data: {"text": json.encode(rst)},
+                          options: Options(
+                            contentType: Headers.formUrlEncodedContentType,
+                          ));
                   // print(response.data);
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) =>
                           QRShareView(response.data['link'])));
-                }catch(e) {
+                } catch (e) {
                   Toast.showToast(S.of(context).network_error_toast, context);
                 }
               },
@@ -75,9 +72,9 @@ class _ShareViewState extends State<ShareView> {
               title: Text(S.of(context).import_from_qrcode_title),
               subtitle: Text(S.of(context).import_from_qrcode_subtitle),
               onTap: () async {
-                String? str = await Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) =>
-                        QRScanView()));
+                String? str = await Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => const QRScanView()));
                 // var str = null;
                 // String str = await _scan();
                 if (str == null) return;
@@ -85,7 +82,7 @@ class _ShareViewState extends State<ShareView> {
                 Map courseTableMap;
 
                 try {
-                  Dio dio = new Dio();
+                  Dio dio = Dio();
                   Response response = await dio.get(str);
                   // print(response.data.toString());
                   courseTableMap = json.decode(response.data.toString());
@@ -95,32 +92,31 @@ class _ShareViewState extends State<ShareView> {
                   return;
                 }
 
-                CourseTableProvider courseTableProvider =
-                    new CourseTableProvider();
+                CourseTableProvider courseTableProvider = CourseTableProvider();
                 int index;
 
                 try {
                   CourseTable courseTable = await courseTableProvider
-                      .insert(new CourseTable(courseTableMap['name']));
+                      .insert(CourseTable(courseTableMap['name']));
                   index = (courseTable.id!);
                 } catch (e) {
                   Toast.showToast(
                       S.of(context).qrcode_name_error_toast, context);
                   return;
                 }
-                CourseProvider courseProvider = new CourseProvider();
+                CourseProvider courseProvider = CourseProvider();
                 await ScopedModel.of<MainStateModel>(context)
                     .changeclassTable(index);
 
                 List<Map<String, dynamic>> coursesMap =
-                    new List<Map<String, dynamic>>.from(courseTableMap['courses']);
+                    List<Map<String, dynamic>>.from(courseTableMap['courses']);
                 try {
-                  coursesMap.forEach((Map<String, dynamic> courseMap) {
+                  for (var courseMap in coursesMap) {
                     // courseMap.remove('id');
                     courseMap['tableid'] = index;
-                    Course course = new Course.fromMap(courseMap);
+                    Course course = Course.fromMap(courseMap);
                     courseProvider.insert(course);
-                  });
+                  }
                 } catch (e) {
                   Toast.showToast(
                       S.of(context).qrcode_read_error_toast, context);
@@ -136,16 +132,16 @@ class _ShareViewState extends State<ShareView> {
         ])));
   }
 
-  Future<String> _scan() async {
-    String? barcode = null;
-    try {
-      // barcode = await BarcodeScanner.scan();
-//    } on PlatformException catch (e) {
-//      if (e.code == BarcodeScanner.CameraAccessDenied) {
-//      } else {
-//      }
-//    } on FormatException{
-    } catch (e) {}
-    return "barcode";
-  }
+//   Future<String> _scan() async {
+//     String? barcode;
+//     try {
+//       // barcode = await BarcodeScanner.scan();
+// //    } on PlatformException catch (e) {
+// //      if (e.code == BarcodeScanner.CameraAccessDenied) {
+// //      } else {
+// //      }
+// //    } on FormatException{
+//     } catch (e) {}
+//     return "barcode";
+//   }
 }

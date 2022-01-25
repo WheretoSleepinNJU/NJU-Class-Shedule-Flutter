@@ -10,6 +10,8 @@ import '../../../Components/Dialog.dart';
 import '../../../Resources/Config.dart';
 
 class WeekChanger extends StatelessWidget {
+  const WeekChanger({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<int>(
@@ -28,12 +30,12 @@ class WeekChanger extends StatelessWidget {
                   context: context,
                   builder: (BuildContext context) {
                     int changedWeek = snapshot.data! - 1;
-                    return mDialog(
+                    return MDialog(
                       S.of(context).change_week_title,
-                      Container(
+                      SizedBox(
                           height: 96,
                           child: CupertinoPicker(
-                              scrollController: new FixedExtentScrollController(
+                              scrollController: FixedExtentScrollController(
                                 initialItem: snapshot.data! > Config.MAX_WEEKS
                                     ? -1
                                     : snapshot.data! - 1,
@@ -43,12 +45,12 @@ class WeekChanger extends StatelessWidget {
                               onSelectedItemChanged: (int index) {
                                 changedWeek = index;
                               },
-                              children: new List<Widget>.generate(
+                              children: List<Widget>.generate(
                                   Config.MAX_WEEKS, (int index) {
-                                return new Center(
-                                  child: new Text(
+                                return Center(
+                                  child: Text(
                                     S.of(context).week((index + 1).toString()),
-                                    style: TextStyle(fontSize: 16),
+                                    style: const TextStyle(fontSize: 16),
                                   ),
                                 );
                               }))),

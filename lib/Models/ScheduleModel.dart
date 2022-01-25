@@ -32,15 +32,16 @@ class ScheduleModel {
   void classify() {
     for (Course course in courses) {
       List weeks = json.decode(course.weeks!);
-      if (course.weekTime == 0)
+      if (course.weekTime == 0) {
         freeCourses.add(course);
-      else if (weeks.contains(nowWeek))
+      } else if (weeks.contains(nowWeek)) {
         activeCourses.add(course);
-      else if (course.importType == Constant.ADD_BY_LECTURE &&
-          weeks[0] < nowWeek)
+      } else if (course.importType == Constant.ADD_BY_LECTURE &&
+          weeks[0] < nowWeek) {
         continue;
-      else
+      } else {
         hideCourses.add(course);
+      }
     }
   }
 
@@ -73,7 +74,9 @@ class ScheduleModel {
       }
       if (!isOverlapped) deduplicateResult.add(course);
     }
-    for (Course item in needToDelete) activeCourses.remove(item);
+    for (Course item in needToDelete) {
+      activeCourses.remove(item);
+    }
     needToDelete.clear();
     for (Course course in hideCourses) {
       isOverlapped = false;
@@ -100,10 +103,11 @@ class ScheduleModel {
       if (!isOverlapped) deduplicateResult.add(course);
     }
     for (Course item in needToDelete) {
-      if (hideCourses.contains(item))
+      if (hideCourses.contains(item)) {
         activeCourses.remove(item);
-      else
+      } else {
         activeCourses.remove(item);
+      }
     }
   }
 
@@ -119,19 +123,19 @@ class ScheduleModel {
 
   // TODO: Shit codes, may have bugs here.
   void _checkMultiCousesElement(List<Course> multiCoursesElement) {
-    int max_count = 0;
-    int max_index = 0;
+    int maxCount = 0;
+    int maxIndex = 0;
     for (int i = 0; i < multiCoursesElement.length; i++) {
       List weeks = json.decode(multiCoursesElement[i].weeks!);
-      if (multiCoursesElement[i].timeCount! > max_count &&
+      if (multiCoursesElement[i].timeCount! > maxCount &&
           weeks.contains(nowWeek)) {
-        max_count = multiCoursesElement[i].timeCount!;
-        max_index = i;
+        maxCount = multiCoursesElement[i].timeCount!;
+        maxIndex = i;
       }
     }
-    if (max_index != 0) {
-      Course tmp = multiCoursesElement[max_index];
-      multiCoursesElement[max_index] = multiCoursesElement[0];
+    if (maxIndex != 0) {
+      Course tmp = multiCoursesElement[maxIndex];
+      multiCoursesElement[maxIndex] = multiCoursesElement[0];
       multiCoursesElement[0] = tmp;
     }
   }

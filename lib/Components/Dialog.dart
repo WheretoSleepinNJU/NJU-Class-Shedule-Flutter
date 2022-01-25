@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 // import 'package:auto_size_text/auto_size_text.dart';
 
-class mDialog extends StatelessWidget {
+class MDialog extends StatelessWidget {
   final String title;
   final Widget content;
   final List<Widget> actions;
 
-  mDialog(this.title, this.content, this.actions);
+  const MDialog(this.title, this.content, this.actions, {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(20.0))),
       title:
           // Column(

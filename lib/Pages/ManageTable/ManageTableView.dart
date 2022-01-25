@@ -9,14 +9,14 @@ import 'Widgets/AddDialog.dart';
 import 'Widgets/DelDialog.dart';
 
 class ManageTableView extends StatefulWidget {
-  ManageTableView() : super();
+  const ManageTableView({Key? key}) : super(key: key);
 
   @override
   _ManageTableViewState createState() => _ManageTableViewState();
 }
 
 class _ManageTableViewState extends State<ManageTableView> {
-  CourseTableProvider courseTableProvider = new CourseTableProvider();
+  CourseTableProvider courseTableProvider = CourseTableProvider();
   int _selectedIndex = 0;
 
   @override
@@ -26,17 +26,18 @@ class _ManageTableViewState extends State<ManageTableView> {
             title: Text(S.of(context).class_table_manage_title),
             actions: <Widget>[
               IconButton(
-                icon: Icon(Icons.add),
+                icon: const Icon(Icons.add),
                 onPressed: () async {
                   String str = await _addTableDialog(context);
                   if (str != '') {
                     CourseTable courseTable =
-                        await courseTableProvider.insert(new CourseTable(str));
+                        await courseTableProvider.insert(CourseTable(str));
                     Toast.showToast(
                         S.of(context).add_class_table_success_toast, context);
-                    if (courseTable.id != 0)
+                    if (courseTable.id != 0) {
                       ScopedModel.of<MainStateModel>(context)
                           .changeclassTable(courseTable.id!);
+                    }
                     Navigator.of(context).pop();
                   }
                 },
@@ -64,7 +65,7 @@ class _ManageTableViewState extends State<ManageTableView> {
       barrierDismissible: false,
       // dialog is dismissible with a tap on the barrier
       builder: (BuildContext context) {
-        return AddDialog();
+        return const AddDialog();
       },
     );
     return tableName!;
@@ -76,13 +77,14 @@ class _ManageTableViewState extends State<ManageTableView> {
       barrierDismissible: false,
       // dialog is dismissible with a tap on the barrier
       builder: (BuildContext context) {
-        return DelDialog();
+        return const DelDialog();
       },
     );
     if (result == "true") {
       return true;
-    } else
+    } else {
       return false;
+    }
   }
 
   Future<List<Widget>> _getData(BuildContext context) async {
@@ -105,7 +107,7 @@ class _ManageTableViewState extends State<ManageTableView> {
               trailing: _selectedIndex == courseTables[i]['id']
                   ? null
                   : IconButton(
-                      icon: Icon(Icons.delete),
+                      icon: const Icon(Icons.delete),
                       onPressed: () async {
                         bool rst = await _delTableDialog(context);
                         if (rst) {

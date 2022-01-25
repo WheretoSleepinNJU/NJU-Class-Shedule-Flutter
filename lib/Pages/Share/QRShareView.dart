@@ -5,7 +5,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 class QRShareView extends StatelessWidget {
   final String url;
 
-  QRShareView(this.url);
+  const QRShareView(this.url, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,11 +23,11 @@ class QRShareView extends StatelessWidget {
               version: QrVersions.auto,
               size: 200.0,
             ),
-            Padding(padding: EdgeInsets.all(10)),
+            const Padding(padding: EdgeInsets.all(10)),
             Text(
               S.of(context).import_from_qrcode_content,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             )
           ],
         )));

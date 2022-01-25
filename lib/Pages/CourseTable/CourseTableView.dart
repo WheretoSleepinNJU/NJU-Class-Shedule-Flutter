@@ -21,12 +21,14 @@ import 'Widgets/ClassTitle.dart';
 import 'Widgets/WeekTitle.dart';
 
 class CourseTableView extends StatefulWidget {
+  const CourseTableView({Key? key}) : super(key: key);
+
   @override
-  CourseTableViewState createState() => new CourseTableViewState();
+  CourseTableViewState createState() => CourseTableViewState();
 }
 
 class CourseTableViewState extends State<CourseTableView> {
-  CourseTablePresenter _presenter = new CourseTablePresenter();
+  final CourseTablePresenter _presenter = CourseTablePresenter();
   late bool _isShowWeekend;
   late bool _isShowClassTime;
   late bool _isShowFreeClass;
@@ -90,23 +92,26 @@ class CourseTableViewState extends State<CourseTableView> {
     _weekTitleWidth = (_screenWidth - _classTitleWidth) / _maxShowDays;
     int height = await ScopedModel.of<MainStateModel>(context).getClassHeight();
 
-    if (_isForceZoom) if ((!_isShowFreeClass) || (_freeCourseNum == 0))
-      _classTitleHeight = (_screenHeight -
-              kToolbarHeight -
-              MediaQuery.of(context).padding.top -
-              (_isShowDate ? _weekTitleHeight * 1.2 : _weekTitleHeight)) /
-          _maxShowClasses;
-    else
-      _classTitleHeight = (_screenHeight -
-              kToolbarHeight -
-              _snackbarHeight -
-              MediaQuery.of(context).padding.top -
-              (_isShowDate ? _weekTitleHeight * 1.2 : _weekTitleHeight)) /
-          _maxShowClasses;
-    else if (height.toDouble() != 0)
+    if (_isForceZoom) {
+      if ((!_isShowFreeClass) || (_freeCourseNum == 0)) {
+        _classTitleHeight = (_screenHeight -
+                kToolbarHeight -
+                MediaQuery.of(context).padding.top -
+                (_isShowDate ? _weekTitleHeight * 1.2 : _weekTitleHeight)) /
+            _maxShowClasses;
+      } else {
+        _classTitleHeight = (_screenHeight -
+                kToolbarHeight -
+                _snackbarHeight -
+                MediaQuery.of(context).padding.top -
+                (_isShowDate ? _weekTitleHeight * 1.2 : _weekTitleHeight)) /
+            _maxShowClasses;
+      }
+    } else if (height.toDouble() != 0) {
       _classTitleHeight = height.toDouble();
-    else
+    } else {
       _classTitleHeight = 52;
+    }
 
     List<Widget>? classWidgets = await _presenter.getClassesWidgetList(
         context, _classTitleHeight, _weekTitleWidth, _nowShowWeekNum);
@@ -115,13 +120,13 @@ class CourseTableViewState extends State<CourseTableView> {
   }
 
   basicCheck() async {
-    UpdateUtil updateUtil = new UpdateUtil();
+    UpdateUtil updateUtil = UpdateUtil();
     await updateUtil.checkUpdate(context, false);
-    PrivacyUtil privacyUtil = new PrivacyUtil();
+    PrivacyUtil privacyUtil = PrivacyUtil();
     bool privacyRst = await privacyUtil.checkPrivacy(context, false);
     if (!privacyRst) return;
     bool rst = await Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) => ImportView())) ??
+            builder: (BuildContext context) => const ImportView())) ??
         false;
     if (!rst) return;
     await _presenter.showAfterImport(context);
@@ -141,7 +146,7 @@ class CourseTableViewState extends State<CourseTableView> {
         child: ScopedModelDescendant<MainStateModel>(
             builder: (context, child, model) {
           UmengCommonSdk.onEvent("course_refresh", {"action": "refresh"});
-          print('CourseTableView refreshed.');
+          // print('CourseTableView refreshed.');
 
           return FutureBuilder<List<Widget>>(
               future: _getData(context),
@@ -151,13 +156,13 @@ class CourseTableViewState extends State<CourseTableView> {
                   return Container(color: Colors.white);
                 } else {
                   // TODO: fix bug in stack
-                  List<Widget> _divider = new List.generate(
+                  List<Widget> _divider = List.generate(
                       _maxShowClasses,
-                      (int i) => new Container(
+                      (int i) => Container(
                             margin: EdgeInsets.only(
                                 top: (i + 1) * _classTitleHeight),
                             width: _weekTitleWidth * _maxShowDays,
-                            child: Separator(color: Colors.grey),
+                            child: const Separator(color: Colors.grey),
                           ));
 
                   String nowWeek =
@@ -178,7 +183,7 @@ class CourseTableViewState extends State<CourseTableView> {
                           Text(S.of(context).app_name),
                           GestureDetector(
                               child: Text((nowWeek),
-                                  style: TextStyle(fontSize: 14)),
+                                  style: const TextStyle(fontSize: 14)),
                               onTap: () {
                                 setState(() {
                                   weekSelectorVisibility =
@@ -190,14 +195,14 @@ class CourseTableViewState extends State<CourseTableView> {
                         ]),
                         actions: <Widget>[
                           IconButton(
-                            icon: Icon(Icons.settings),
+                            icon: const Icon(Icons.settings),
                             onPressed: () async {
                               UmengCommonSdk.onEvent(
                                   "setting_click", {"action": "success"});
                               bool? status = await Navigator.of(context).push(
                                   MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          SettingsView()));
+                                          const SettingsView()));
                               if (status == true) {
                                 await _presenter.showAfterImport(context);
                               }
@@ -241,17 +246,17 @@ class CourseTableViewState extends State<CourseTableView> {
                                   _classTitleWidth,
                                   _isShowClassTime,
                                   _isWhiteMode),
-                              Container(
+                              SizedBox(
                                   height: _classTitleHeight * _maxShowClasses,
                                   width: _screenWidth - _classTitleWidth,
                                   // TODO: fix bug in stack
                                   child: Stack(
-                                      children: _divider + snapshot.data!,
-                                      overflow: Overflow.visible))
+                                      clipBehavior: Clip.none,
+                                      children: _divider + snapshot.data!))
                             ]))),
                         ((!_isShowFreeClass) || (_freeCourseNum == 0))
                             ? Container()
-                            : Container(
+                            : SizedBox(
                                 height: _snackbarHeight,
                                 child: MaterialBanner(
                                   content: FittedBox(
@@ -260,8 +265,8 @@ class CourseTableViewState extends State<CourseTableView> {
                                       child: Text(
                                           S.of(context).free_class_banner(
                                               _freeCourseNum.toString()),
-                                          style:
-                                              TextStyle(color: Colors.white))),
+                                          style: const TextStyle(
+                                              color: Colors.white))),
                                   backgroundColor:
                                       Theme.of(context).primaryColor,
                                   actions: [
@@ -270,7 +275,7 @@ class CourseTableViewState extends State<CourseTableView> {
                                         TextButton(
                                           child: Text(
                                               S.of(context).free_class_button,
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                   color: Colors.white)),
                                           onPressed: () {
                                             _presenter.showFreeClassDialog(
@@ -285,7 +290,7 @@ class CourseTableViewState extends State<CourseTableView> {
                                               S
                                                   .of(context)
                                                   .hide_free_class_button,
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                   color: Colors.white)),
                                           onPressed: () => _presenter
                                               .showHideFreeCourseDialog(
@@ -310,8 +315,8 @@ class CourseTableViewState extends State<CourseTableView> {
                               onPressed: () => Navigator.of(context).push(
                                   MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          AddView())),
-                              child: Icon(
+                                          const AddView())),
+                              child: const Icon(
                                 Icons.add,
                                 color: Colors.white,
                               ),

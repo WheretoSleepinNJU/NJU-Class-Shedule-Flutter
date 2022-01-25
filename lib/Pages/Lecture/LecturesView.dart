@@ -1,5 +1,3 @@
-import 'dart:io';
-import 'dart:convert';
 import '../../generated/l10n.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
@@ -17,7 +15,8 @@ import './Widgets/LectureCard.dart';
 //TODO: 课表筛选标签
 
 class LectureView extends StatefulWidget {
-  LectureView() : super();
+  const LectureView({Key? key}) : super(key: key);
+
 
   @override
   _LectureViewState createState() => _LectureViewState();
@@ -29,15 +28,15 @@ class _LectureViewState extends State<LectureView> {
   int pageNum = 0;
   String searchParam = '';
   List<LectureCard> _lectureCards = <LectureCard>[];
-  GlobalKey<RefreshIndicatorState> _refreshKey =
+  final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
   List<String> _filterNames = [];
-  List<String> _filterStatus = [];
+  final List<String> _filterStatus = [];
 
   AppBar buildAppBar(BuildContext context) {
-    return new AppBar(
-      title: new Text(S.of(context).lecture_title),
+    return AppBar(
+      title: Text(S.of(context).lecture_title),
       // actions: [searchBar.getSearchAction(context)]
     );
   }
@@ -73,9 +72,9 @@ class _LectureViewState extends State<LectureView> {
     });
   }
 
-  _onSearchBarSubmitted(String value) {
-    print(value);
-  }
+  // _onSearchBarSubmitted(String value) {
+  //   // print(value);
+  // }
 
   Future<bool> _loadFilters() async {
     Dio dio = Dio();
@@ -118,12 +117,12 @@ class _LectureViewState extends State<LectureView> {
 
     List<int> weekNum = [await WeekUtil.getWeekNumOfDay(startTime)];
 
-    var fullFormatter = new DateFormat('yyyy-MM-dd HH:mm');
-    var simpleFormatter = new DateFormat('HH:mm');
+    var fullFormatter = DateFormat('yyyy-MM-dd HH:mm');
+    var simpleFormatter = DateFormat('HH:mm');
     String timeString =
         fullFormatter.format(startTime) + '-' + simpleFormatter.format(endTime);
 
-    DateTime now = new DateTime.now();
+    DateTime now = DateTime.now();
     bool expired = now.isAfter(endTime);
 
     return Lecture(
@@ -143,7 +142,7 @@ class _LectureViewState extends State<LectureView> {
         info: data['info']);
   }
 
-  Future<Null> _refresh() async {
+  Future<void> _refresh() async {
     totalPages = 1;
     pageNum = 0;
     _lectureCards = <LectureCard>[];
@@ -151,10 +150,11 @@ class _LectureViewState extends State<LectureView> {
     bool rst = true;
     if (_filterNames.isEmpty) rst = await _loadFilters();
     rst &= await _loadLectures();
-    if (rst)
+    if (rst) {
       Toast.showToast(S.of(context).lecture_refresh_success_toast, context);
-    else
+    } else {
       Toast.showToast(S.of(context).lecture_refresh_fail_toast, context);
+    }
   }
 
   @override
@@ -162,7 +162,7 @@ class _LectureViewState extends State<LectureView> {
     return Scaffold(
         appBar:
             // searchBar.build(context),
-            AppBar(title: Text(S.of(context).lecture_title), actions: <Widget>[
+            AppBar(title: Text(S.of(context).lecture_title), actions: const <Widget>[
           // searchBar.getSearchAction(context),
           // IconButton(
           //   icon: Icon(Icons.search),
@@ -205,10 +205,11 @@ class _LectureViewState extends State<LectureView> {
                                         Theme.of(context).primaryColor,
                                     onSelected: (bool value) {
                                       setState(() {
-                                        if (value)
+                                        if (value) {
                                           _filterStatus.add(_filterNames[i]);
-                                        else
+                                        } else {
                                           _filterStatus.remove(_filterNames[i]);
+                                        }
                                         _refresh();
                                       });
                                     },
@@ -223,7 +224,7 @@ class _LectureViewState extends State<LectureView> {
                       child: FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(S.of(context).lecture_bottom,
-                              style: TextStyle(color: Colors.grey))))
+                              style: const TextStyle(color: Colors.grey))))
                 ],
               )),
             controller: _scrollController,

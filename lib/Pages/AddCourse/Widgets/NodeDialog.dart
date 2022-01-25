@@ -16,7 +16,7 @@ class NodeDialog extends StatefulWidget {
     'endWeek': Config.MAX_WEEKS - 1,
     'weekType': Constant.FULL_WEEKS
   };
-  NodeDialog({this.node = map}) : super();
+  const NodeDialog({this.node = map, Key? key}) : super(key: key);
 
   @override
   _NodeDialogState createState() => _NodeDialogState();
@@ -29,203 +29,201 @@ class _NodeDialogState extends State<NodeDialog> {
     Map _node = widget.node;
     TextEditingController _classroomController = TextEditingController();
     _classroomController.text = _node['classroom'];
-    return mDialog(
+    return MDialog(
       S.of(context).choose_class_time_dialog_title,
-      Container(
-        child: new Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              decoration: InputDecoration(
-                // contentPadding: const EdgeInsets.only(top: 10.0),
-                icon: Icon(Icons.code, color: Theme.of(context).primaryColor),
-                hintText: S.of(context).class_room,
-              ),
-              controller: _classroomController,
-              onChanged: (String text) {
-                _node['classroom'] = text;
-              },
+      Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            decoration: InputDecoration(
+              // contentPadding: const EdgeInsets.only(top: 10.0),
+              icon: Icon(Icons.code, color: Theme.of(context).primaryColor),
+              hintText: S.of(context).class_room,
             ),
-            Padding(padding: EdgeInsets.only(bottom: 30)),
-            Container(
-              height: 32,
-              child: Flex(
-                  mainAxisSize: MainAxisSize.min,
-                  direction: Axis.horizontal,
-                  children: <Widget>[
-                    Flexible(
+            controller: _classroomController,
+            onChanged: (String text) {
+              _node['classroom'] = text;
+            },
+          ),
+          const Padding(padding: EdgeInsets.only(bottom: 30)),
+          SizedBox(
+            height: 32,
+            child: Flex(
+                mainAxisSize: MainAxisSize.min,
+                direction: Axis.horizontal,
+                children: <Widget>[
+                  Flexible(
+                    flex: 2,
+                    child: CupertinoPicker(
+                        scrollController: FixedExtentScrollController(
+                          initialItem: _node['weekTime'],
+                        ),
+                        itemExtent: 32.0,
+                        backgroundColor: Colors.white,
+                        onSelectedItemChanged: (int index) {
+                          setState(() {
+                            _node['weekTime'] = index;
+                          });
+                        },
+                        children: List<Widget>.generate(
+                            Constant.WEEK_WITHOUT_BIAS.length, (int index) {
+                          return Center(
+                            child: Text(
+                              Constant.WEEK_WITHOUT_BIAS[index],
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          );
+                        })),
+                  ),
+                  Flexible(
+                    flex: 1,
+                    child: Container(),
+                  ),
+                  Flexible(
+                    flex: 2,
+                    child: CupertinoPicker(
+                        scrollController: FixedExtentScrollController(
+                          initialItem: _node['startTime'],
+                        ),
+                        itemExtent: 32.0,
+                        backgroundColor: Colors.white,
+                        onSelectedItemChanged: (int index) {
+                          setState(() {
+                            _node['startTime'] = index;
+                          });
+                        },
+                        children: List<Widget>.generate(
+                            Config.MAX_CLASSES, (int index) {
+                          return Center(
+                            child: Text(
+                              S
+                                  .of(context)
+                                  .class_single((index + 1).toString()),
+                              style: const TextStyle(fontSize: 13),
+                            ),
+                          );
+                        })),
+                  ),
+                  Flexible(
+                    flex: 1,
+                    child: Center(child: Text(S.of(context).to)),
+                  ),
+                  Flexible(
                       flex: 2,
                       child: CupertinoPicker(
-                          scrollController: new FixedExtentScrollController(
-                            initialItem: _node['weekTime'],
+                          scrollController: FixedExtentScrollController(
+                            initialItem: _node['endTime'],
                           ),
                           itemExtent: 32.0,
                           backgroundColor: Colors.white,
                           onSelectedItemChanged: (int index) {
                             setState(() {
-                              _node['weekTime'] = index;
+                              _node['endTime'] = index;
                             });
                           },
-                          children: new List<Widget>.generate(
-                              Constant.WEEK_WITHOUT_BIAS.length, (int index) {
-                            return new Center(
-                              child: new Text(
-                                Constant.WEEK_WITHOUT_BIAS[index],
-                                style: TextStyle(fontSize: 16),
-                              ),
-                            );
-                          })),
-                    ),
-                    Flexible(
-                      flex: 1,
-                      child: Container(),
-                    ),
-                    Flexible(
-                      flex: 2,
-                      child: CupertinoPicker(
-                          scrollController: new FixedExtentScrollController(
-                            initialItem: _node['startTime'],
-                          ),
-                          itemExtent: 32.0,
-                          backgroundColor: Colors.white,
-                          onSelectedItemChanged: (int index) {
-                            setState(() {
-                              _node['startTime'] = index;
-                            });
-                          },
-                          children: new List<Widget>.generate(
-                              Config.MAX_CLASSES, (int index) {
-                            return new Center(
-                              child: new Text(
+                          children:
+                              List<Widget>.generate(Config.MAX_CLASSES,
+//                              - _node['startTime'],
+                                  (int index) {
+                            return Center(
+                              child: Text(
                                 S
                                     .of(context)
                                     .class_single((index + 1).toString()),
-                                style: TextStyle(fontSize: 13),
+                                style: const TextStyle(fontSize: 13),
                               ),
                             );
-                          })),
-                    ),
-                    Flexible(
-                      flex: 1,
-                      child: Center(child: Text(S.of(context).to)),
-                    ),
-                    Flexible(
-                        flex: 2,
-                        child: CupertinoPicker(
-                            scrollController: new FixedExtentScrollController(
-                              initialItem: _node['endTime'],
+                          })))
+                ]),
+          ),
+          const Padding(padding: EdgeInsets.all(8.0)),
+          SizedBox(
+            height: 32,
+            child: Flex(
+                mainAxisSize: MainAxisSize.min,
+                direction: Axis.horizontal,
+                children: <Widget>[
+                  Flexible(
+                    flex: 2,
+                    child: CupertinoPicker(
+                        scrollController: FixedExtentScrollController(
+                          initialItem: _node['weekType'],
+                        ),
+                        itemExtent: 32.0,
+                        backgroundColor: Colors.white,
+                        onSelectedItemChanged: (int index) {
+                          setState(() {
+                            _node['weekType'] = index;
+                          });
+                        },
+                        children: List<Widget>.generate(
+                            Constant.WEEK_TYPES.length, (int index) {
+                          return Center(
+                            child: Text(
+                              Constant.WEEK_TYPES[index],
+                              style: const TextStyle(fontSize: 16),
                             ),
-                            itemExtent: 32.0,
-                            backgroundColor: Colors.white,
-                            onSelectedItemChanged: (int index) {
-                              setState(() {
-                                _node['endTime'] = index;
-                              });
-                            },
-                            children:
-                                new List<Widget>.generate(Config.MAX_CLASSES,
-//                              - _node['startTime'],
-                                    (int index) {
-                              return new Center(
-                                child: new Text(
-                                  S
-                                      .of(context)
-                                      .class_single((index + 1).toString()),
-                                  style: TextStyle(fontSize: 13),
-                                ),
-                              );
-                            })))
-                  ]),
-            ),
-            Padding(padding: EdgeInsets.all(8.0)),
-            Container(
-              height: 32,
-              child: Flex(
-                  mainAxisSize: MainAxisSize.min,
-                  direction: Axis.horizontal,
-                  children: <Widget>[
-                    Flexible(
+                          );
+                        })),
+                  ),
+                  Flexible(
+                    flex: 1,
+                    child: Container(),
+                  ),
+                  Flexible(
+                    flex: 2,
+                    child: CupertinoPicker(
+                        scrollController: FixedExtentScrollController(
+                          initialItem: _node['startWeek'],
+                        ),
+                        itemExtent: 32.0,
+                        backgroundColor: Colors.white,
+                        onSelectedItemChanged: (int index) {
+                          setState(() {
+                            _node['startWeek'] = index;
+                          });
+                        },
+                        children: List<Widget>.generate(Config.MAX_WEEKS,
+                            (int index) {
+                          return Center(
+                            child: Text(
+                              S.of(context).week((index + 1).toString()),
+                              style: const TextStyle(fontSize: 13),
+                            ),
+                          );
+                        })),
+                  ),
+                  Flexible(
+                    flex: 1,
+                    child: Center(child: Text(S.of(context).to)),
+                  ),
+                  Flexible(
                       flex: 2,
                       child: CupertinoPicker(
-                          scrollController: new FixedExtentScrollController(
-                            initialItem: _node['weekType'],
+                          scrollController: FixedExtentScrollController(
+                            initialItem: _node['endWeek'],
                           ),
                           itemExtent: 32.0,
                           backgroundColor: Colors.white,
                           onSelectedItemChanged: (int index) {
                             setState(() {
-                              _node['weekType'] = index;
+                              _node['endWeek'] = index;
                             });
                           },
-                          children: new List<Widget>.generate(
-                              Constant.WEEK_TYPES.length, (int index) {
-                            return new Center(
-                              child: new Text(
-                                Constant.WEEK_TYPES[index],
-                                style: TextStyle(fontSize: 16),
-                              ),
-                            );
-                          })),
-                    ),
-                    Flexible(
-                      flex: 1,
-                      child: Container(),
-                    ),
-                    Flexible(
-                      flex: 2,
-                      child: CupertinoPicker(
-                          scrollController: new FixedExtentScrollController(
-                            initialItem: _node['startWeek'],
-                          ),
-                          itemExtent: 32.0,
-                          backgroundColor: Colors.white,
-                          onSelectedItemChanged: (int index) {
-                            setState(() {
-                              _node['startWeek'] = index;
-                            });
-                          },
-                          children: new List<Widget>.generate(Config.MAX_WEEKS,
-                              (int index) {
-                            return new Center(
-                              child: new Text(
-                                S.of(context).week((index + 1).toString()),
-                                style: TextStyle(fontSize: 13),
-                              ),
-                            );
-                          })),
-                    ),
-                    Flexible(
-                      flex: 1,
-                      child: Center(child: Text(S.of(context).to)),
-                    ),
-                    Flexible(
-                        flex: 2,
-                        child: CupertinoPicker(
-                            scrollController: new FixedExtentScrollController(
-                              initialItem: _node['endWeek'],
-                            ),
-                            itemExtent: 32.0,
-                            backgroundColor: Colors.white,
-                            onSelectedItemChanged: (int index) {
-                              setState(() {
-                                _node['endWeek'] = index;
-                              });
-                            },
-                            children:
-                                new List<Widget>.generate(Config.MAX_WEEKS,
+                          children:
+                              List<Widget>.generate(Config.MAX_WEEKS,
 //                                                          - _node['startTime'],
-                                    (int index) {
-                              return new Center(
-                                child: new Text(
-                                  S.of(context).week((index + 1).toString()),
-                                  style: TextStyle(fontSize: 13),
-                                ),
-                              );
-                            })))
-                  ]),
-            ),
-          ],
-        ),
+                                  (int index) {
+                            return Center(
+                              child: Text(
+                                S.of(context).week((index + 1).toString()),
+                                style: const TextStyle(fontSize: 13),
+                              ),
+                            );
+                          })))
+                ]),
+          ),
+        ],
       ),
       <Widget>[
         FlatButton(

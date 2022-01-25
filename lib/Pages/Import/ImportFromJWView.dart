@@ -11,18 +11,19 @@ import 'ImportFromJWPresenter.dart';
 import 'dart:math';
 
 class ImportFromJWView extends StatefulWidget {
-  ImportFromJWView() : super();
+  const ImportFromJWView({Key? key}) : super(key: key);
+
 
   @override
   _ImportFromJWViewState createState() => _ImportFromJWViewState();
 }
 
 class _ImportFromJWViewState extends State<ImportFromJWView> {
-  ImportFromJWPresenter _presenter = new ImportFromJWPresenter();
+  final ImportFromJWPresenter _presenter = ImportFromJWPresenter();
 
-  TextEditingController _usrController = new TextEditingController();
-  TextEditingController _pwdController = new TextEditingController();
-  TextEditingController _captchaController = new TextEditingController();
+  final TextEditingController _usrController = TextEditingController();
+  final TextEditingController _pwdController = TextEditingController();
+  final TextEditingController _captchaController = TextEditingController();
   final FocusNode usrTextFieldNode = FocusNode();
   final FocusNode pwdTextFieldNode = FocusNode();
   final FocusNode captchaTextFieldNode = FocusNode();
@@ -40,9 +41,9 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
     SharedPreferences sp = await SharedPreferences.getInstance();
     String? username = sp.getString('username');
     String? password = sp.getString('password');
-    if (username == null || password == null)
+    if (username == null || password == null) {
       _checkboxSelected = false;
-    else {
+    } else {
       setState(() {
         _checkboxSelected = true;
         _usrController.text = username;
@@ -72,7 +73,7 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
         body: Builder(builder: (BuildContext context) {
           return Container(
               width: double.infinity,
-              margin: EdgeInsets.all(10),
+              margin: const EdgeInsets.all(10),
               child: Column(children: <Widget>[
                 MaterialBanner(
                   forceActionsBelow: true,
@@ -80,7 +81,7 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
                       fit: BoxFit.scaleDown,
                       alignment: Alignment.centerLeft,
                       child: Text(S.of(context).import_banner,
-                          style: TextStyle(color: Colors.white))),
+                          style: const TextStyle(color: Colors.white))),
                   backgroundColor: Theme.of(context).primaryColor,
                   actions: [
                     TextButton(
@@ -133,7 +134,7 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
                     ),
                   )),
                   Container(
-                    padding: EdgeInsets.all(5),
+                    padding: const EdgeInsets.all(5),
                     child: InkWell(
                       child: FutureBuilder(
                           future: _presenter.getCaptcha(randomNumForCaptcha),
@@ -142,7 +143,7 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
                             if (image.hasData) {
                               return image.data!;
                             } else {
-                              return new Container();
+                              return Container();
                             }
                           }),
                       onTap: () => setState(() {
@@ -151,7 +152,7 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
                     ),
                   ),
                   Container(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                       child: InkWell(
                         child: Text(
                           S.of(context).tap_to_refresh,
@@ -177,7 +178,7 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
                     Text(S.of(context).remember_password),
                   ],
                 ),
-                Container(
+                SizedBox(
                   width: double.infinity,
                   child: FlatButton(
                       color: Theme.of(context).primaryColor,
@@ -185,10 +186,11 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
                       textColor: Colors.white,
                       onPressed: () async {
                         // 这里没必要同步，异步处理即可
-                        if (_checkboxSelected)
+                        if (_checkboxSelected) {
                           _saveUserInfo();
-                        else
+                        } else {
                           _clearUserInfo();
+                        }
                         if (_usrController.value.text.toString() == 'admin' &&
                             _pwdController.value.text.toString() == 'admin') {
                           await _presenter.getDemoClasses(context);
@@ -222,13 +224,14 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
                               S.of(context).username_error_toast, context);
                         } else if (status == Constant.LOGIN_CORRECT) {
                           bool isSuccess = await _presenter.getClasses(context);
-                          if (!isSuccess)
+                          if (!isSuccess) {
                             Toast.showToast(
                                 S.of(context).class_parse_error_toast, context);
-                          else
+                          } else {
                             Toast.showToast(
                                 S.of(context).class_parse_toast_success,
                                 context);
+                          }
                           Navigator.of(context).pop(true);
                         } else {
                           Toast.showToast(

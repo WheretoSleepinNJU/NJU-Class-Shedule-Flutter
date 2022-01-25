@@ -13,7 +13,7 @@ class AddCoursePresenter {
       await MainStateModel.of(context).changeclassTable(1);
     }
     for (Map node in nodes) {
-      Course course = new Course(
+      Course course = Course(
           tableId,
           name,
           _generateWeekSeries(
@@ -24,7 +24,7 @@ class AddCoursePresenter {
           Constant.ADD_MANUALLY,
           classroom: node['classroom'] == '' ? null : node['classroom'],
           teacher: teacher == '' ? null : teacher);
-      CourseProvider courseProvider = new CourseProvider();
+      CourseProvider courseProvider = CourseProvider();
       course = await courseProvider.insert(course);
       if (course.id == null) return false;
     }
@@ -32,14 +32,15 @@ class AddCoursePresenter {
   }
 
   String _generateWeekSeries(int start, int end, int weekType) {
-    if (weekType == Constant.FULL_WEEKS)
+    if (weekType == Constant.FULL_WEEKS) {
       return _getWeekSeries(start, end);
-    else if (weekType == Constant.SINGLE_WEEKS)
+    } else if (weekType == Constant.SINGLE_WEEKS) {
       return _getSingleWeekSeries(start, end);
-    else if (weekType == Constant.DOUBLE_WEEKS)
+    } else if (weekType == Constant.DOUBLE_WEEKS) {
       return _getDoubleWeekSeries(start, end);
-    else
+    } else {
       return '';
+    }
   }
 
   String _getWeekSeries(int start, int end) {

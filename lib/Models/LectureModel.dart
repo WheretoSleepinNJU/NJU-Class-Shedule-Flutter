@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'package:sqflite/sqflite.dart';
-import '../Resources/Colors.dart';
 import './CourseModel.dart';
 
 class Lecture extends Course {

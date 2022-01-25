@@ -2,9 +2,9 @@ import 'package:sqflite/sqflite.dart';
 import './CourseModel.dart';
 import './Db/DbHelper.dart';
 
-final String tableName = DbHelper.COURSETABLE_TABLE_NAME;
-final String columnId = DbHelper.COURSETABLE_COLUMN_ID;
-final String columnName = DbHelper.COURSETABLE_COLUMN_NAME;
+const String tableName = DbHelper.COURSETABLE_TABLE_NAME;
+const String columnId = DbHelper.COURSETABLE_COLUMN_ID;
+const String columnName = DbHelper.COURSETABLE_COLUMN_NAME;
 
 class CourseTable {
   int? id;
@@ -35,7 +35,7 @@ class CourseTable {
 
 class CourseTableProvider {
   Database? db;
-  DbHelper dbHelper = new DbHelper();
+  DbHelper dbHelper = DbHelper();
 
   Future open() async {
     db = await dbHelper.open();
@@ -56,7 +56,7 @@ class CourseTableProvider {
         columns: [columnId, columnName],
         where: '$columnId = ?',
         whereArgs: [id]);
-    if (maps.length > 0) {
+    if (maps.isNotEmpty) {
       return CourseTable.fromMap(maps.first);
     }
 //    await close();
@@ -73,7 +73,7 @@ class CourseTableProvider {
 
   Future<int> delete(int id) async {
     await open();
-    CourseProvider courseProvider = new CourseProvider();
+    CourseProvider courseProvider = CourseProvider();
     await courseProvider.deleteByTable(id);
     int rst = await db!.delete(tableName, where: '$columnId = ?', whereArgs: [id]);
 //    await close();

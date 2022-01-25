@@ -14,24 +14,18 @@ class CourseWidget extends StatelessWidget {
   final onTap;
   final onLongPress;
 
-  CourseWidget(
-    this.course,
-    this.color,
-    this.height,
-    this.width,
-    this.isActive,
-    this.setFlag,
-    this.onTap,
-    this.onLongPress,
-  );
+  const CourseWidget(this.course, this.color, this.height, this.width,
+      this.isActive, this.setFlag, this.onTap, this.onLongPress,
+      {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return new Container(
+    return Container(
       margin: EdgeInsets.only(
           top: (course.startTime! - 1) * height,
           left: (course.weekTime! - 1) * width),
-      padding: EdgeInsets.all(0.5),
+      padding: const EdgeInsets.all(0.5),
       height: (course.timeCount! + 1) * height,
       width: width,
       child: Container(
@@ -40,30 +34,30 @@ class CourseWidget extends StatelessWidget {
               .withOpacity(0.9),
           // TODO: Needs to be improved
           borderRadius: setFlag
-              ? BorderRadius.only(
+              ? const BorderRadius.only(
                   topLeft: Radius.circular(7),
                   bottomLeft: Radius.circular(7),
                   bottomRight: Radius.circular(7))
-              : BorderRadius.all(Radius.circular(7)),
+              : const BorderRadius.all(Radius.circular(7)),
 //          boxShadow: setFlag? [BoxShadow(color: HexColor(Config.HIDE_CLASS_COLOR), offset: Offset(2.0, 2.0))]:[]
         ),
         child: InkWell(
-            borderRadius: BorderRadius.all(Radius.circular(5)),
+            borderRadius: const BorderRadius.all(Radius.circular(5)),
             highlightColor: Colors.black,
             onLongPress: onLongPress,
             onTap: onTap,
-            child: new RichText(
-              text: new TextSpan(
-                style: new TextStyle(
+            child: RichText(
+              text: TextSpan(
+                style: const TextStyle(
                   fontSize: 12.0,
                   color: Colors.white,
                 ),
                 children: <TextSpan>[
-                  new TextSpan(
+                  TextSpan(
                       text: (isActive ? '' : S.of(context).not_this_week) +
                           course.name!,
-                      style: new TextStyle(fontWeight: FontWeight.bold)),
-                  new TextSpan(
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                  TextSpan(
                       text: S.of(context).at +
                           (course.classroom ?? S.of(context).unknown_place)),
                 ],

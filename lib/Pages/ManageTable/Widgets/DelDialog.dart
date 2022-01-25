@@ -1,11 +1,10 @@
 import '../../../generated/l10n.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../Components/Dialog.dart';
 
 class DelDialog extends StatefulWidget {
-  DelDialog() : super();
+  const DelDialog({Key? key}) : super(key: key);
 
   @override
   _DelDialogState createState() => _DelDialogState();
@@ -15,7 +14,7 @@ class _DelDialogState extends State<DelDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return mDialog(
+    return MDialog(
       S.of(context).del_class_table_dialog_title,
       Text(S.of(context).del_class_table_dialog_content),
       <Widget>[

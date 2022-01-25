@@ -9,20 +9,21 @@ class WeekSelector extends StatelessWidget {
   final bool weekSelectorVisibility;
   final MainStateModel model;
 
-  WeekSelector(this.model, this.weekSelectorVisibility);
+  const WeekSelector(this.model, this.weekSelectorVisibility, {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return weekSelectorVisibility
         ? SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            physics: ClampingScrollPhysics(),
+            physics: const ClampingScrollPhysics(),
             child: Row(
                 children: List.generate(
                     Config.MAX_WEEKS,
-                    (int i) => new Container(
+                    (int i) => Container(
                         color: Theme.of(context).primaryColor,
-                        padding: EdgeInsets.only(
+                        padding: const EdgeInsets.only(
                             left: 5, top: 10, right: 5, bottom: 10),
                         child: InkWell(
                             onTap: () {
@@ -34,8 +35,8 @@ class WeekSelector extends StatelessWidget {
                             },
                             child: Text(
                               S.of(context).week((i + 1).toString()),
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 15),
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 15),
                             ))))))
         : Container();
   }

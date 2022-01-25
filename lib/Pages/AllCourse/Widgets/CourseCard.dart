@@ -5,12 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import '../../../Models/CourseModel.dart';
-import '../../../Models/LectureModel.dart';
 import '../../../Utils/States/MainState.dart';
 import '../../../Components/Toast.dart';
-import '../../../Components/Dialog.dart';
 import '../../../Resources/Config.dart';
 import '../../../Resources/Url.dart';
 
@@ -20,7 +17,7 @@ class CourseCard extends StatefulWidget {
   final Course course;
   final int count;
 
-  CourseCard({Key? key, required this.course, required this.count})
+  const CourseCard({Key? key, required this.course, required this.count})
       : super(key: key);
 
   @override
@@ -41,13 +38,14 @@ class _CourseCardState extends State<CourseCard> {
   checkAdded() async {
     widget.course.tableId =
         await ScopedModel.of<MainStateModel>(context).getClassTable();
-    CourseProvider courseProvider = new CourseProvider();
+    CourseProvider courseProvider = CourseProvider();
     bool rst = await courseProvider.checkHasClassByName(
         widget.course.tableId ?? 0, widget.course.name ?? '');
-    if (rst)
+    if (rst) {
       setState(() {
         added = true;
       });
+    }
   }
 
   addCourse() async {
@@ -56,12 +54,12 @@ class _CourseCardState extends State<CourseCard> {
       Toast.showToast(S.of(context).lecture_add_fail_toast, context);
       return;
     }
-    CourseProvider courseProvider = new CourseProvider();
+    CourseProvider courseProvider = CourseProvider();
     await courseProvider.insert(widget.course);
     Dio dio = Dio();
     var response = await dio.get(Url.URL_BACKEND + '/addCount',
         queryParameters: {'id': widget.course.courseId});
-    print(response);
+    // print(response);
     Toast.showToast(S.of(context).lecture_add_success_toast, context);
     setState(() {
       added = true;
@@ -103,7 +101,7 @@ class _CourseCardState extends State<CourseCard> {
                   },
                   text: widget.course.info ?? S.of(context).unknown_info,
                   linkStyle: TextStyle(color: Theme.of(context).primaryColor),
-                  options: LinkifyOptions(humanize: false),
+                  options: const LinkifyOptions(humanize: false),
                 ),
               ),
               Row(

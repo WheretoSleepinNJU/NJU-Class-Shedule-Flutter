@@ -13,7 +13,7 @@ import '../Resources/Url.dart';
 class PrivacyUtil {
   Future<bool> checkPrivacy(BuildContext context, bool isForce) async {
     try {
-      Dio dio = new Dio();
+      Dio dio = Dio();
       String url = Url.UPDATE_ROOT + '/privacy.json';
       Response response = await dio.get(url);
       if (response.statusCode != HttpStatus.ok) return false;
@@ -34,7 +34,7 @@ class PrivacyUtil {
   Future<bool> showPrivacyDialog(
       Map info, int version, bool isForce, BuildContext context) async {
     List<Widget> widgets;
-    CourseProvider courseProvider = new CourseProvider();
+    CourseProvider courseProvider = CourseProvider();
     int courseNum = await courseProvider.getCourseNum();
     bool firstInstall = (courseNum == 0);
     UmengCommonSdk.onEvent("privacy_dialog", {"action": "show"});
@@ -52,7 +52,7 @@ class PrivacyUtil {
         : <Widget>[
             TextButton(
                 child: Text(info['cancel_text'],
-                    style: TextStyle(color: Colors.grey)),
+                    style: const TextStyle(color: Colors.grey)),
                 onPressed: () {
                   UmengCommonSdk.onEvent(
                       "privacy_dialog", {"action": "cancel"});
@@ -88,7 +88,7 @@ class PrivacyUtil {
     return await showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => mDialog(
+        builder: (context) => MDialog(
               info['title'],
               SingleChildScrollView(child: Html(data: info['content'])),
               widgets,

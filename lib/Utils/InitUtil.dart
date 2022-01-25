@@ -29,10 +29,11 @@ class InitUtil {
   }
 
   static checkDataBase() async {
-    CourseTableProvider courseTableProvider = new CourseTableProvider();
+    CourseTableProvider courseTableProvider = CourseTableProvider();
     List c = await courseTableProvider.getAllCourseTable();
-    if (c.isEmpty)
-      courseTableProvider.insert(new CourseTable(Config.default_class_table));
+    if (c.isEmpty) {
+      courseTableProvider.insert(CourseTable(Config.default_class_table));
+    }
   }
 
   static showReview() async {
@@ -42,7 +43,7 @@ class InitUtil {
 
     if (!Platform.isIOS) return;
 
-    Dio dio = new Dio();
+    Dio dio = Dio();
     String url = Url.UPDATE_ROOT + '/showiOSReview.json';
     Response response = await dio.get(url);
     if (response.statusCode != HttpStatus.ok) return;
@@ -65,7 +66,7 @@ class InitUtil {
     bool inAppReviewAvailable = await inAppReview.isAvailable();
     if (!inAppReviewAvailable) return;
 
-    Timer(Duration(seconds: Config.REVIEW_DIALOG_DELAY_SECONDS), () {
+    Timer(const Duration(seconds: Config.REVIEW_DIALOG_DELAY_SECONDS), () {
       inAppReview.requestReview();
       sp.setBool("hasShowReview", true);
     });

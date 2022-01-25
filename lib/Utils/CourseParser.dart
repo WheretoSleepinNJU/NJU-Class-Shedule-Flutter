@@ -7,10 +7,10 @@ import '../Models/CourseModel.dart';
 import '../Resources/Constant.dart';
 
 class CourseParser {
-  final RegExp patten1 = new RegExp(r"第(\d{1,2})-(\d{1,2})节");
-  final RegExp patten2 = new RegExp(r"^(\d{1,2})-(\d{1,2})周$");
-  final RegExp patten3 = new RegExp(r"从第(\d{1,2})周开始");
-  final RegExp patten4 = new RegExp(r"^第(\d{1,2})周$");
+  final RegExp patten1 = RegExp(r"第(\d{1,2})-(\d{1,2})节");
+  final RegExp patten2 = RegExp(r"^(\d{1,2})-(\d{1,2})周$");
+  final RegExp patten3 = RegExp(r"从第(\d{1,2})周开始");
+  final RegExp patten4 = RegExp(r"^第(\d{1,2})周$");
 
   String html;
   Document? document;
@@ -22,7 +22,7 @@ class CourseParser {
   String parseCourseName() {
     // Element? element = document!.querySelector(
     //     "body > div:nth-child(10) > table > tbody > tr:nth-child(2) > td");
-    final RegExp nameExp = new RegExp("[0-9]+-[0-9]+学年第(一|二)学期");
+    final RegExp nameExp = RegExp("[0-9]+-[0-9]+学年第(一|二)学期");
     String name = nameExp.stringMatch(html).toString();
     //    print(element.innerHtml);
     return name;
@@ -94,7 +94,7 @@ class CourseParser {
         String classRoom = strs[strs.length - 1];
         // print(classRoom);
 
-        Course course = new Course(
+        Course course = Course(
             tableId, courseName, weekSeries, weekTime, startTime, timeCount, 1,
             classroom: classRoom,
             teacher: courseTeacher,
@@ -106,7 +106,7 @@ class CourseParser {
       }
       // new Course(tableId, e.children[2].innerHtml, "[1,2,3,4,5,6,7]", 3, 5, 2, 0, '#8AD297', classroom: e.children[3].innerHtml)
     }
-    CourseProvider courseProvider = new CourseProvider();
+    CourseProvider courseProvider = CourseProvider();
     for (Course course in rst) {
       await courseProvider.insert(course);
     }
@@ -114,9 +114,9 @@ class CourseParser {
   }
 
   Future<int> addCourseTable(String name, BuildContext context) async {
-    CourseTableProvider courseTableProvider = new CourseTableProvider();
+    CourseTableProvider courseTableProvider = CourseTableProvider();
     CourseTable courseTable =
-        await courseTableProvider.insert(new CourseTable(name));
+        await courseTableProvider.insert(CourseTable(name));
     int id = courseTable.id!;
     MainStateModel.of(context).changeclassTable(id);
     return id;
@@ -148,8 +148,9 @@ class CourseParser {
             break;
           }
         }
-        if (flag == false)
+        if (flag == false) {
           weekList = weekList + _getWeekSeries(startWeek, endWeek);
+        }
       }
 
       // 从第x周开始：(单周|双周)
@@ -166,24 +167,26 @@ class CourseParser {
               _getDoubleWeekSeries(startWeek, Constant.DEFAULT_WEEK_END);
           flag = true;
         }
-        if (flag == false)
+        if (flag == false) {
           weekList =
               weekList + _getWeekSeries(startWeek, Constant.DEFAULT_WEEK_END);
+        }
       }
     }
 
-    if (weekList.length == 0) {
+    if (weekList.isEmpty) {
       // 有些课程只有单周/双周显示，无周数，故会出现找不到周数的情况
       // "周二 第3-4节 单周 逸B-101"
-      if (info.contains('单周'))
+      if (info.contains('单周')) {
         weekList = _getSingleWeekSeries(
             Constant.DEFAULT_WEEK_START, Constant.DEFAULT_WEEK_END);
-      else if (info.contains('双周'))
+      } else if (info.contains('双周')) {
         weekList = _getDoubleWeekSeries(
             Constant.DEFAULT_WEEK_START, Constant.DEFAULT_WEEK_END);
-      else
+      } else {
         weekList = _getWeekSeries(
             Constant.DEFAULT_WEEK_START, Constant.DEFAULT_WEEK_END);
+      }
     }
 
     return weekList.toString();

@@ -9,11 +9,11 @@ import '../../../Components/Dialog.dart';
 class CourseDeleteDialog extends StatelessWidget {
   final Course course;
 
-  CourseDeleteDialog(this.course);
+  const CourseDeleteDialog(this.course, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return mDialog(
+    return MDialog(
       S.of(context).delete_class_dialog_title,
       Text(S.of(context).delete_class_dialog_content(course.name!)),
       <Widget>[
@@ -30,7 +30,7 @@ class CourseDeleteDialog extends StatelessWidget {
           child: Text(S.of(context).ok),
           onPressed: () async {
             UmengCommonSdk.onEvent("class_delete", {"action": "accept"});
-            CourseProvider courseProvider = new CourseProvider();
+            CourseProvider courseProvider = CourseProvider();
             await courseProvider.delete(course.id!);
             ScopedModel.of<MainStateModel>(context).refresh();
             Navigator.of(context).pop();

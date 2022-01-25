@@ -2,16 +2,12 @@ import 'dart:io';
 import '../../generated/l10n.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info/package_info.dart';
 import '../ManageTable/ManageTableView.dart';
 import '../Import/ImportView.dart';
-import '../Import/ImportFromJWView.dart';
-import '../Import/ImportFromCerView.dart';
-import '../Import/ImportFromXKView.dart';
 import '../AllCourse/AllCourseView.dart';
 import '../Lecture/LecturesView.dart';
 import '../About/AboutView.dart';
@@ -26,7 +22,7 @@ import 'Widgets/WeekChanger.dart';
 import 'Widgets/ThemeChanger.dart';
 
 class SettingsView extends StatefulWidget {
-  SettingsView() : super();
+  const SettingsView({Key? key}) : super(key: key);
 
   @override
   _SettingsViewState createState() => _SettingsViewState();
@@ -57,7 +53,7 @@ class _SettingsViewState extends State<SettingsView> {
                   UmengCommonSdk.onEvent(
                       "class_import", {"type": "manual", "action": "show"});
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => AddView()));
+                      builder: (BuildContext context) => const AddView()));
                 },
               ),
               ListTile(
@@ -68,7 +64,7 @@ class _SettingsViewState extends State<SettingsView> {
                       "class_import", {"type": "auto", "action": "show"});
                   bool? status = await Navigator.of(context).push(
                       MaterialPageRoute(
-                          builder: (BuildContext context) => ImportView()));
+                          builder: (BuildContext context) => const ImportView()));
                   if (status == true) Navigator.of(context).pop(status);
                 },
               ),
@@ -81,7 +77,7 @@ class _SettingsViewState extends State<SettingsView> {
                       "class_import", {"type": "all", "action": "show"});
                   bool? status = await Navigator.of(context).push(
                       MaterialPageRoute(
-                          builder: (BuildContext context) => AllCourseView()));
+                          builder: (BuildContext context) => const AllCourseView()));
                   if (status == true) Navigator.of(context).pop(status);
                 },
               ),
@@ -93,7 +89,7 @@ class _SettingsViewState extends State<SettingsView> {
                       "class_import", {"type": "lecture", "action": "show"});
                   bool? status = await Navigator.of(context).push(
                       MaterialPageRoute(
-                          builder: (BuildContext context) => LectureView()));
+                          builder: (BuildContext context) => const LectureView()));
                   if (status == true) Navigator.of(context).pop(status);
                 },
               ),
@@ -136,7 +132,7 @@ class _SettingsViewState extends State<SettingsView> {
                 onTap: () {
                   UmengCommonSdk.onEvent("qr_import", {"action": "show"});
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => ShareView()));
+                      builder: (BuildContext context) => const ShareView()));
                 },
               ),
               ListTile(
@@ -145,21 +141,21 @@ class _SettingsViewState extends State<SettingsView> {
                 onTap: () {
                   UmengCommonSdk.onEvent("schedule_manage", {"action": "show"});
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => ManageTableView()));
+                      builder: (BuildContext context) => const ManageTableView()));
                 },
               ),
               // TODO: Refresh multi times when changing themes.
-              ThemeChanger(),
+              const ThemeChanger(),
               ListTile(
                 title: Text(S.of(context).more_settings_title),
                 subtitle: Text(S.of(context).more_settings_subtitle),
                 onTap: () {
                   UmengCommonSdk.onEvent("more_setting", {"action": "show"});
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => MoreSettingsView()));
+                      builder: (BuildContext context) => const MoreSettingsView()));
                 },
               ),
-              WeekChanger(),
+              const WeekChanger(),
               ListTile(
                 title: Text(S.of(context).share_title),
                 subtitle: Text(S.of(context).share_subtitle),
@@ -174,21 +170,24 @@ class _SettingsViewState extends State<SettingsView> {
                 onTap: () async {
                   UmengCommonSdk.onEvent("group_add", {"action": "show"});
                   bool status = false;
-                  if (Platform.isIOS)
+                  if (Platform.isIOS) {
                     status = await _launchURL(Url.QQ_GROUP_APPLE_URL);
-                  else if (Platform.isAndroid)
+                  } else if (Platform.isAndroid) {
                     status = await _launchURL(Url.QQ_GROUP_ANDROID_URL);
-                  if (!status)
+                  }
+                  if (!status) {
                     Toast.showToast(S.of(context).QQ_open_fail_toast, context);
+                  }
                 },
                 onLongPress: () async {
                   UmengCommonSdk.onEvent("group_add", {"action": "copy"});
-                  if (Platform.isIOS)
+                  if (Platform.isIOS) {
                     await Clipboard.setData(
-                        new ClipboardData(text: Config.IOS_GROUP));
-                  else if (Platform.isAndroid)
+                        const ClipboardData(text: Config.IOS_GROUP));
+                  } else if (Platform.isAndroid) {
                     await Clipboard.setData(
-                        new ClipboardData(text: Config.ANDROID_GROUP));
+                        const ClipboardData(text: Config.ANDROID_GROUP));
+                  }
                   Toast.showToast(S.of(context).QQ_copy_success_toast, context);
                 },
               ),
@@ -198,13 +197,15 @@ class _SettingsViewState extends State<SettingsView> {
                   onTap: () async {
                     UmengCommonSdk.onEvent("donate_click", {"action": "show"});
                     bool status = false;
-                    if (Platform.isIOS)
+                    if (Platform.isIOS) {
                       status = await _launchURL(Url.URL_APPLE);
-                    else if (Platform.isAndroid)
+                    } else if (Platform.isAndroid) {
                       status = await _launchURL(Url.URL_ANDROID);
-                    if (!status)
+                    }
+                    if (!status) {
                       Toast.showToast(
                           S.of(context).pay_open_fail_toast, context);
+                    }
                   }),
               ListTile(
                 title: Text(S.of(context).about_title),
@@ -221,7 +222,7 @@ class _SettingsViewState extends State<SettingsView> {
                 onTap: () {
                   UmengCommonSdk.onEvent("about_click", { "action": "show"});
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => AboutView()));
+                      builder: (BuildContext context) => const AboutView()));
                 },
               )
             ]).toList())),

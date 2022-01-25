@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QRScanView extends StatefulWidget {
+  const QRScanView({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _QRScanViewState();
 }
@@ -51,6 +53,7 @@ class _QRScanViewState extends State<QRScanView> {
 
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
+    // ignore: prefer_typing_uninitialized_variables
     var scannedDataStream;
     scannedDataStream = controller.scannedDataStream.listen((scanData) {
       controller.pauseCamera();

@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:async';
 import 'package:dio/dio.dart';
 
@@ -8,7 +7,7 @@ class HttpUtil {
   Dio? dio;
 
   HttpUtil() {
-    dio = new Dio();
+    dio = Dio();
     //TODO: built-in CookieJar
 //    dio.interceptors.add(CookieManager(CookieJar()));
   }
@@ -18,7 +17,7 @@ class HttpUtil {
   }
 
   setCookies(String cookies) {
-    this._Cookies = cookies;
+    _Cookies = cookies;
   }
 
   Future<String> getWithCookie(String url) async {

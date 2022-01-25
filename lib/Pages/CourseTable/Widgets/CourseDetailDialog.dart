@@ -13,7 +13,9 @@ class CourseDetailDialog extends StatelessWidget {
   final Course course;
   final bool isActive;
 
-  CourseDetailDialog(this.course, this.isActive, this.onPressed);
+  const CourseDetailDialog(this.course, this.isActive, this.onPressed,
+      {Key? key})
+      : super(key: key);
 
   String _getWeekListString(BuildContext context) {
     bool flag = true;
@@ -35,12 +37,15 @@ class CourseDetailDialog extends StatelessWidget {
         break;
       }
     }
-    if (flag) if (weekList[0] % 2 == 0)
-      return base + " " + S.of(context).double_week;
-    else
-      return base + " " + S.of(context).single_week;
-    else
+    if (flag) {
+      if (weekList[0] % 2 == 0) {
+        return base + " " + S.of(context).double_week;
+      } else {
+        return base + " " + S.of(context).single_week;
+      }
+    } else {
       return course.weeks!;
+    }
   }
 
   Widget linkifyText(context, String text) {
@@ -54,9 +59,9 @@ class CourseDetailDialog extends StatelessWidget {
         }
       },
       text: text,
-      style: TextStyle(fontSize: 16),
+      style: const TextStyle(fontSize: 16),
       linkStyle: TextStyle(color: Theme.of(context).primaryColor),
-      options: LinkifyOptions(humanize: false),
+      options: const LinkifyOptions(humanize: false),
     );
   }
 
@@ -66,8 +71,9 @@ class CourseDetailDialog extends StatelessWidget {
         ' ' +
         S.of(context).class_duration(course.startTime.toString(),
             (course.startTime! + course.timeCount!).toString());
-    if (course.startTime == 0 && course.timeCount == 0)
+    if (course.startTime == 0 && course.timeCount == 0) {
       weekString = S.of(context).free_time;
+    }
 
     String weekListString = _getWeekListString(context);
 
@@ -84,54 +90,57 @@ class CourseDetailDialog extends StatelessWidget {
         break;
     }
 
-    return mDialog(
+    return MDialog(
       (isActive ? '' : S.of(context).not_this_week) + course.name!,
-      new SingleChildScrollView(
+      SingleChildScrollView(
           child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Row(children: [
             Icon(Icons.location_on, color: Theme.of(context).primaryColor),
-            Padding(padding: EdgeInsets.only(left: 5)),
+            const Padding(padding: EdgeInsets.only(left: 5)),
             Flexible(
-                child: linkifyText(context, course.classroom == ""
-                    ? S.of(context).unknown_place
-                    : course.classroom ?? S.of(context).unknown_place)),
+                child: linkifyText(
+                    context,
+                    course.classroom == ""
+                        ? S.of(context).unknown_place
+                        : course.classroom ?? S.of(context).unknown_place)),
           ]),
-          Padding(padding: EdgeInsets.only(bottom: 10)),
+          const Padding(padding: EdgeInsets.only(bottom: 10)),
           Row(children: [
             Icon(Icons.account_circle, color: Theme.of(context).primaryColor),
-            Padding(padding: EdgeInsets.only(left: 5)),
+            const Padding(padding: EdgeInsets.only(left: 5)),
             Flexible(child: linkifyText(context, course.teacher ?? '')),
           ]),
-          Padding(padding: EdgeInsets.only(bottom: 10)),
+          const Padding(padding: EdgeInsets.only(bottom: 10)),
           Row(children: [
             Icon(Icons.access_time, color: Theme.of(context).primaryColor),
-            Padding(padding: EdgeInsets.only(left: 5)),
+            const Padding(padding: EdgeInsets.only(left: 5)),
             Flexible(child: linkifyText(context, weekString)),
           ]),
-          Padding(padding: EdgeInsets.only(bottom: 10)),
+          const Padding(padding: EdgeInsets.only(bottom: 10)),
           Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Icon(Icons.event, color: Theme.of(context).primaryColor),
-            Padding(padding: EdgeInsets.only(left: 5)),
+            const Padding(padding: EdgeInsets.only(left: 5)),
             Flexible(child: linkifyText(context, weekListString)),
           ]),
-          Padding(padding: EdgeInsets.only(bottom: 10)),
+          const Padding(padding: EdgeInsets.only(bottom: 10)),
           Row(children: [
             Icon(Icons.settings_suggest, color: Theme.of(context).primaryColor),
-            Padding(padding: EdgeInsets.only(left: 5)),
+            const Padding(padding: EdgeInsets.only(left: 5)),
             Flexible(child: linkifyText(context, importTypeStr)),
           ]),
-          Padding(padding: EdgeInsets.only(bottom: 10)),
+          const Padding(padding: EdgeInsets.only(bottom: 10)),
           Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Icon(Icons.description, color: Theme.of(context).primaryColor),
-            Padding(padding: EdgeInsets.only(left: 5)),
+            const Padding(padding: EdgeInsets.only(left: 5)),
             Flexible(
-              child: linkifyText(context, course.info == ""
-                  ? S.of(context).unknown_info
-                  : course.info ?? S.of(context).unknown_info)
-            ),
+                child: linkifyText(
+                    context,
+                    course.info == ""
+                        ? S.of(context).unknown_info
+                        : course.info ?? S.of(context).unknown_info)),
           ]),
         ],
       )),
