@@ -180,16 +180,17 @@ abstract class ConfigStateModel extends Model {
     SharedPreferences sp = await SharedPreferences.getInstance();
     String? bgImgPath = sp.getString("bgImgPath");
     if (bgImgPath != null) {
-      _bgImgPath = bgImgPath;
+      // _bgImgPath = bgImgPath;
       return bgImgPath;
     }
     return _bgImgPath!;
   }
 
   Future<bool> removeBgImgPath() async {
-    notifyListeners();
     SharedPreferences sp = await SharedPreferences.getInstance();
-    sp.remove("bgImgPath");
+    await sp.remove("bgImgPath");
+    String? bgImgPath = sp.getString("bgImgPath");
+    notifyListeners();
     return true;
   }
 

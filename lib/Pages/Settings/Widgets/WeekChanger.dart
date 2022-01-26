@@ -54,27 +54,18 @@ class WeekChanger extends StatelessWidget {
                                   ),
                                 );
                               }))),
-                      <Widget>[
-                        FlatButton(
-                          textColor: Colors.grey,
-                          child: Text(S.of(context).cancel),
-                          onPressed: () {
-                            UmengCommonSdk.onEvent(
-                                "week_change", {"action": "cancel"});
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        FlatButton(
-                            textColor: Theme.of(context).primaryColor,
-                            child: Text(S.of(context).ok),
-                            onPressed: () async {
-                              UmengCommonSdk.onEvent(
-                                  "week_change", {"action": "accept"});
-                              await changeWeek(
-                                  context, changedWeek, snapshot.data!);
-                              Navigator.of(context).pop();
-                            }),
-                      ],
+                      widgetCancelAction: () {
+                        UmengCommonSdk.onEvent(
+                            "week_change", {"action": "cancel"});
+                        Navigator.of(context).pop();
+                      },
+                      widgetOKAction: () async {
+                        UmengCommonSdk.onEvent(
+                            "week_change", {"action": "accept"});
+                        await changeWeek(
+                            context, changedWeek, snapshot.data!);
+                        Navigator.of(context).pop();
+                      }
                     );
                   },
                 );

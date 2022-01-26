@@ -29,7 +29,7 @@ JavascriptChannel snackbarJavascriptChannel(BuildContext context) {
   return JavascriptChannel(
     name: 'SnackbarJSChannel',
     onMessageReceived: (JavascriptMessage message) {
-      Scaffold.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(message.message),
       ));
     },
@@ -110,11 +110,11 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
     try {
       CourseTableProvider courseTableProvider = CourseTableProvider();
       Toast.showToast(S.of(context).class_parse_toast_importing, context);
-      await controller.evaluateJavascript(widget.config['preExtractJS'] ?? '');
+      await controller.runJavascript(widget.config['preExtractJS'] ?? '');
       await Future.delayed(Duration(seconds: widget.config['delayTime'] ?? 0));
 
       String response =
-          await controller.evaluateJavascript(widget.config['extractJS']);
+          await controller.runJavascriptReturningResult(widget.config['extractJS']);
       response = response.replaceAll('\\u003C', '<').replaceAll('\\"', '"');
 
       Map courseTableMap = json.decode(response);

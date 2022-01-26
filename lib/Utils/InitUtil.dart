@@ -10,7 +10,7 @@ import '../Utils/ColorUtil.dart';
 import '../Utils/WeekUtil.dart';
 
 class InitUtil {
-  static Future<int> Initialize() async {
+  static Future<int> initialize() async {
     int themeIndex = await getTheme();
     await checkDataBase();
     await WeekUtil.checkWeek();
@@ -57,7 +57,7 @@ class InitUtil {
     int reviewTime =
         response.data['reviewTime'] ?? Config.REVIEW_DIALOG_SHOW_TIME;
     bool needsShowReview = (openTimes >= reviewTime);
-    // if (!needsShowReview) return;
+    if (!needsShowReview) return;
 
     final InAppReview inAppReview = InAppReview.instance;
     bool hasShowReview = sp.getBool("hasShowReview") ?? false;

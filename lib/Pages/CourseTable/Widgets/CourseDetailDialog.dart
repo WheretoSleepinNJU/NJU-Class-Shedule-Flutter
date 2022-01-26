@@ -9,7 +9,7 @@ import '../../../Components/Dialog.dart';
 import '../../../Components/Toast.dart';
 
 class CourseDetailDialog extends StatelessWidget {
-  final onPressed;
+  final VoidCallback? onPressed;
   final Course course;
   final bool isActive;
 
@@ -144,13 +144,7 @@ class CourseDetailDialog extends StatelessWidget {
           ]),
         ],
       )),
-      <Widget>[
-        FlatButton(
-          child: Text(S.of(context).ok),
-          textColor: Theme.of(context).primaryColor,
-          onPressed: onPressed,
-        ),
-      ],
+      widgetOKAction: onPressed,
     );
   }
 }

@@ -4,9 +4,6 @@ linter:
   rules:
     file_names: false
     avoid_types_as_parameter_names: false
-    dead_null_aware_expression: false
-    unnecessary_null_comparison: false
-    non_constant_identifier_names: false
     constant_identifier_names: false
 
 analyzer:

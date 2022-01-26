@@ -60,7 +60,7 @@ class _NumberChangerWidgetState extends State<NumberChangerWidget> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               //减号
-              CoustomIconButton(icon: Icons.remove, isAdd: false),
+              coustomIconButton(icon: Icons.remove, isAdd: false),
               //输入框
               Container(
                 width: widget.width,
@@ -88,7 +88,7 @@ class _NumberChangerWidgetState extends State<NumberChangerWidget> {
                 ),
               ),
               //加号
-              CoustomIconButton(icon: Icons.add, isAdd: true),
+              coustomIconButton(icon: Icons.add, isAdd: true),
             ],
           ),
         )
@@ -96,7 +96,7 @@ class _NumberChangerWidgetState extends State<NumberChangerWidget> {
     );
   }
 
-  Widget CoustomIconButton({required IconData icon, required bool isAdd}) {
+  Widget coustomIconButton({required IconData icon, required bool isAdd}) {
     return SizedBox(
       width: widget.iconWidth,
       child: IconButton(

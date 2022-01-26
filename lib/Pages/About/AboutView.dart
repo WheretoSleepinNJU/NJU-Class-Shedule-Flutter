@@ -50,9 +50,8 @@ class _AboutViewState extends State<AboutView> {
                     return Text(snapshot.data!);
                   }
                 }),
-            FlatButton(
+            TextButton(
               child: Text(S.of(context).check_update_button),
-              color: Colors.white,
               onPressed: () {
                 UpdateUtil updateUtil = UpdateUtil();
                 updateUtil.checkUpdate(context, true);
@@ -60,7 +59,8 @@ class _AboutViewState extends State<AboutView> {
             ),
             TextButton(
               style: TextButton.styleFrom(
-                  primary: Theme.of(context).primaryColor),
+                  primary: Theme.of(context).primaryColor,
+                  backgroundColor: Colors.transparent),
               child: Text(S.of(context).check_privacy_button),
               onPressed: () {
                 PrivacyUtil privacyUtil = PrivacyUtil();

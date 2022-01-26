@@ -180,10 +180,8 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
                 ),
                 SizedBox(
                   width: double.infinity,
-                  child: FlatButton(
-                      color: Theme.of(context).primaryColor,
+                  child: TextButton(
                       child: Text(S.of(context).import),
-                      textColor: Colors.white,
                       onPressed: () async {
                         // 这里没必要同步，异步处理即可
                         if (_checkboxSelected) {

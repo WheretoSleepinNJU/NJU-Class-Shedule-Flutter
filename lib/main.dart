@@ -17,7 +17,7 @@ import 'Utils/InitUtil.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   //Initialize the app config.
-  int themeIndex = await InitUtil.Initialize();
+  int themeIndex = await InitUtil.initialize();
   //初始化组件化基础库, 所有友盟业务SDK都必须调用此初始化接口。
   UmengCommonSdk.initCommon(
       '5f8ef217fac90f1c19a7b0f3', '5f9e1efa1c520d30739d2737', 'Umeng');

@@ -57,7 +57,7 @@ class _CourseCardState extends State<CourseCard> {
     CourseProvider courseProvider = CourseProvider();
     await courseProvider.insert(widget.course);
     Dio dio = Dio();
-    var response = await dio.get(Url.URL_BACKEND + '/addCount',
+    await dio.get(Url.URL_BACKEND + '/addCount',
         queryParameters: {'id': widget.course.courseId});
     // print(response);
     Toast.showToast(S.of(context).lecture_add_success_toast, context);

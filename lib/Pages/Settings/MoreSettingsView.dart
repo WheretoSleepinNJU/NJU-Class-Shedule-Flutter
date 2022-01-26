@@ -101,14 +101,16 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                 String oldPath = await ScopedModel.of<MainStateModel>(context)
                     .getBgImgPath();
                 File oldImg = File(oldPath);
-                if (oldImg.existsSync()) {
-                  oldImg.deleteSync(recursive: true);
+                if (await oldImg.exists()) {
+                  await oldImg.delete(recursive: true);
                   // print('Old image deleted.');
                 }
                 await ScopedModel.of<MainStateModel>(context).removeBgImgPath();
                 Toast.showToast(
                     S.of(context).delete_backgound_picture_success_toast,
                     context);
+                // String thePath = await ScopedModel.of<MainStateModel>(context)
+                //     .getBgImgPath();
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
@@ -127,11 +129,11 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                             activeColor: Theme.of(context).primaryColor,
                             value: snapshot.data!,
                             onChanged: (bool value) {
-                              UmengCommonSdk.onEvent(
-                                  "more_setting", {"type": 4,
-                                "result": value.toString()});
+                              UmengCommonSdk.onEvent("more_setting",
+                                  {"type": 4, "result": value.toString()});
                               ScopedModel.of<MainStateModel>(context)
                                   .setWhiteMode(value);
+                              setState(() {});
                             });
                       }
                     })),
@@ -149,10 +151,11 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                             activeColor: Theme.of(context).primaryColor,
                             value: !snapshot.data!,
                             onChanged: (bool value) {
-                              UmengCommonSdk.onEvent(
-                                  "more_setting", {"type": 5, "result": value.toString()});
+                              UmengCommonSdk.onEvent("more_setting",
+                                  {"type": 5, "result": value.toString()});
                               ScopedModel.of<MainStateModel>(context)
                                   .setAddButton(!value);
+                              setState(() {});
                             });
                       }
                     })),
@@ -170,10 +173,11 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                           activeColor: Theme.of(context).primaryColor,
                           value: snapshot.data!,
                           onChanged: (bool value) {
-                            UmengCommonSdk.onEvent(
-                                "more_setting", {"type": 6, "result": value.toString()});
+                            UmengCommonSdk.onEvent("more_setting",
+                                {"type": 6, "result": value.toString()});
                             ScopedModel.of<MainStateModel>(context)
                                 .setShowWeekend(value);
+                            setState(() {});
                           });
                     }
                   }),
@@ -192,10 +196,11 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                           activeColor: Theme.of(context).primaryColor,
                           value: snapshot.data!,
                           onChanged: (bool value) {
-                            UmengCommonSdk.onEvent(
-                                "more_setting", {"type": 7, "result": value.toString()});
+                            UmengCommonSdk.onEvent("more_setting",
+                                {"type": 7, "result": value.toString()});
                             ScopedModel.of<MainStateModel>(context)
                                 .setShowClassTime(value);
+                            setState(() {});
                           });
                     }
                   }),
@@ -214,10 +219,11 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                           activeColor: Theme.of(context).primaryColor,
                           value: snapshot.data!,
                           onChanged: (bool value) {
-                            UmengCommonSdk.onEvent(
-                                "more_setting", {"type": 8, "result": value.toString()});
+                            UmengCommonSdk.onEvent("more_setting",
+                                {"type": 8, "result": value.toString()});
                             ScopedModel.of<MainStateModel>(context)
                                 .setShowFreeClass(value);
+                            setState(() {});
                           });
                     }
                   }),
@@ -236,10 +242,11 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                           activeColor: Theme.of(context).primaryColor,
                           value: snapshot.data!,
                           onChanged: (bool value) {
-                            UmengCommonSdk.onEvent(
-                                "more_setting", {"type": 9, "result": value.toString()});
+                            UmengCommonSdk.onEvent("more_setting",
+                                {"type": 9, "result": value.toString()});
                             ScopedModel.of<MainStateModel>(context)
                                 .setShowMonth(value);
+                            setState(() {});
                           });
                     }
                   }),
@@ -258,10 +265,11 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                           activeColor: Theme.of(context).primaryColor,
                           value: snapshot.data!,
                           onChanged: (bool value) {
-                            UmengCommonSdk.onEvent(
-                                "more_setting", {"type": 10, "result": value.toString()});
+                            UmengCommonSdk.onEvent("more_setting",
+                                {"type": 10, "result": value.toString()});
                             ScopedModel.of<MainStateModel>(context)
                                 .setShowDate(value);
+                            setState(() {});
                           });
                     }
                   }),
@@ -282,8 +290,8 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                           onChanged: (bool value) {
                             ScopedModel.of<MainStateModel>(context)
                                 .setForceZoom(value);
-                            UmengCommonSdk.onEvent(
-                                "more_setting", {"type": 11, "result": value.toString()});
+                            UmengCommonSdk.onEvent("more_setting",
+                                {"type": 11, "result": value.toString()});
                             setState(() {
                               showCustomClassHeight = !value;
                             });

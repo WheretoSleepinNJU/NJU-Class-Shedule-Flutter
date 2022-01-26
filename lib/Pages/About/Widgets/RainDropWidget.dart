@@ -11,6 +11,8 @@ class RainDropWidget extends StatefulWidget {
   final double height;
 
   @override
+  //TODO: needs to be fixed
+  // ignore: no_logic_in_create_state
   State<StatefulWidget> createState() => RainDropState(width, height);
 }
 

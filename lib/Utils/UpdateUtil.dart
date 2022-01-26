@@ -9,6 +9,7 @@ import '../generated/l10n.dart';
 import '../Utils/States/MainState.dart';
 import '../Components/Dialog.dart';
 import '../Components/Toast.dart';
+import '../Components/TransBgTextButton.dart';
 import '../Resources/Url.dart';
 
 class UpdateUtil {
@@ -56,9 +57,9 @@ class UpdateUtil {
     List<Widget> widgets;
     if (info['isForce']) {
       widgets = <Widget>[
-        FlatButton(
+        TransBgTextButton(
             child: Text(info['confirm_text']),
-            textColor: Theme.of(context).primaryColor,
+            color: Theme.of(context).primaryColor,
             onPressed: () async {
               UmengCommonSdk.onEvent(
                   "update_dialog", {"action": "forceAccept"});
@@ -67,18 +68,18 @@ class UpdateUtil {
       ];
     } else {
       widgets = <Widget>[
-        FlatButton(
+        TransBgTextButton(
           child: Text(info['cancel_text']),
-          textColor: Colors.grey,
+          color: Colors.grey,
           onPressed: () {
             UmengCommonSdk.onEvent(
                 "update_dialog", {"action": "cancel"});
             Navigator.of(context).pop();
           },
         ),
-        FlatButton(
+        TransBgTextButton(
             child: Text(info['confirm_text']),
-            textColor: Theme.of(context).primaryColor,
+            color: Theme.of(context).primaryColor,
             onPressed: () async {
               UmengCommonSdk.onEvent(
                   "update_dialog", {"action": "accept"});
@@ -92,7 +93,7 @@ class UpdateUtil {
         builder: (context) => MDialog(
               info['title'],
               Text(info['content']),
-              widgets,
+              overrideActions: widgets,
             ));
   }
 }

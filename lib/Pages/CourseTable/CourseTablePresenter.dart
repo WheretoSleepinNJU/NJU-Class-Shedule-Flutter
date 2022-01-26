@@ -18,6 +18,7 @@ import '../../Utils/ColorUtil.dart';
 import '../../Utils/WeekUtil.dart';
 import '../../Components/Dialog.dart';
 import '../../Components/Toast.dart';
+import '../../Components/TransBgTextButton.dart';
 
 import 'Widgets/CourseDetailDialog.dart';
 import 'Widgets/HideFreeCourseDialog.dart';
@@ -116,48 +117,12 @@ class CourseTablePresenter {
     return true;
   }
 
-  void showDonateDialog(BuildContext context, String welcomeTitle,
-      String welcomeContent) async {
+  void showDonateDialog(
+      BuildContext context, String welcomeTitle, String welcomeContent) async {
     UmengCommonSdk.onEvent("import_dialog", {"action": "show"});
     showDialog(
         context: context,
         barrierDismissible: false,
-        // builder: (context) => mDialog(
-        //       welcome_title,
-        //       SingleChildScrollView(child: Text(welcome_content)),
-        //       <Widget>[
-        //         Column(
-        //           mainAxisSize: MainAxisSize.min,
-        //           children: <Widget>[
-        //             TextButton(
-        //                 // textColor: Theme.of(context).primaryColor,
-        //                 child: Text(S.of(context).love_and_donate),
-        //                 onPressed: () async {
-        //                   if (Platform.isIOS)
-        //                     launch(Url.URL_APPLE);
-        //                   else if (Platform.isAndroid) launch(Url.URL_ANDROID);
-        //                   Navigator.of(context).pop();
-        //                 }),
-        //             TextButton(
-        //                 // textColor: Theme.of(context).primaryColor,
-        //                 child: Text(S.of(context).bug_and_report),
-        //                 onPressed: () {
-        //                   if (Platform.isIOS)
-        //                     launch(Url.QQ_GROUP_APPLE_URL);
-        //                   else if (Platform.isAndroid)
-        //                     launch(Url.QQ_GROUP_ANDROID_URL);
-        //                   Navigator.of(context).pop();
-        //                 }),
-        //             TextButton(
-        //                 // textColor: Colors.grey,
-        //                 child: Text(S.of(context).love_but_no_money),
-        //                 onPressed: () async {
-        //                   Navigator.of(context).pop();
-        //                 }),
-        //           ],
-        //         )
-        //       ],
-        //     ));
         builder: (context) => MDialog(
               welcomeTitle,
               SingleChildScrollView(
@@ -165,51 +130,51 @@ class CourseTablePresenter {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
                     Html(data: welcomeContent),
-                    TextButton(
-                        style: TextButton.styleFrom(
-                            alignment: Alignment.centerRight,
-                            primary: Theme.of(context).primaryColor),
-                        child: Text(S.of(context).love_and_donate),
-                        onPressed: () async {
-                          UmengCommonSdk.onEvent(
-                              "import_dialog", {"action": "donate"});
-                          if (Platform.isIOS) {
-                            launch(Url.URL_APPLE);
-                          } else if (Platform.isAndroid) {
-                            launch(Url.URL_ANDROID);
-                          }
-                          Navigator.of(context).pop();
-                        }),
-                    TextButton(
-                        style: TextButton.styleFrom(
-                            alignment: Alignment.centerRight,
-                            primary: Theme.of(context).primaryColor),
-                        child: Text(S.of(context).bug_and_report,
-                            style: TextStyle(
-                                color: Theme.of(context).primaryColor)),
-                        onPressed: () {
-                          UmengCommonSdk.onEvent(
-                              "import_dialog", {"action": "bug"});
-                          if (Platform.isIOS) {
-                            launch(Url.QQ_GROUP_APPLE_URL);
-                          } else if (Platform.isAndroid) {
-                            launch(Url.QQ_GROUP_ANDROID_URL);
-                          }
-                          Navigator.of(context).pop();
-                        }),
-                    TextButton(
-                        style: TextButton.styleFrom(
-                            alignment: Alignment.centerRight,
-                            primary: Colors.grey),
-                        child: Text(S.of(context).love_but_no_money,
-                            style: const TextStyle(color: Colors.grey)),
-                        onPressed: () async {
-                          UmengCommonSdk.onEvent(
-                              "import_dialog", {"action": "noMoney"});
-                          Navigator.of(context).pop();
-                        }),
+                    Container(
+                        alignment: Alignment.centerRight,
+                        child: TransBgTextButton(
+                            color: Theme.of(context).primaryColor,
+                            child: Text(S.of(context).love_and_donate),
+                            onPressed: () async {
+                              UmengCommonSdk.onEvent(
+                                  "import_dialog", {"action": "donate"});
+                              if (Platform.isIOS) {
+                                launch(Url.URL_APPLE);
+                              } else if (Platform.isAndroid) {
+                                launch(Url.URL_ANDROID);
+                              }
+                              Navigator.of(context).pop();
+                            })),
+                    Container(
+                        alignment: Alignment.centerRight,
+                        child: TransBgTextButton(
+                            color: Theme.of(context).primaryColor,
+                            child: Text(S.of(context).bug_and_report,
+                                style: TextStyle(
+                                    color: Theme.of(context).primaryColor)),
+                            onPressed: () {
+                              UmengCommonSdk.onEvent(
+                                  "import_dialog", {"action": "bug"});
+                              if (Platform.isIOS) {
+                                launch(Url.QQ_GROUP_APPLE_URL);
+                              } else if (Platform.isAndroid) {
+                                launch(Url.QQ_GROUP_ANDROID_URL);
+                              }
+                              Navigator.of(context).pop();
+                            })),
+                    Container(
+                        alignment: Alignment.centerRight,
+                        child: TransBgTextButton(
+                            color: Colors.grey,
+                            child: Text(S.of(context).love_but_no_money,
+                                style: const TextStyle(color: Colors.grey)),
+                            onPressed: () async {
+                              UmengCommonSdk.onEvent(
+                                  "import_dialog", {"action": "noMoney"});
+                              Navigator.of(context).pop();
+                            })),
                   ])),
-              const <Widget>[],
+              overrideActions: const [],
             ));
   }
 
@@ -219,24 +184,14 @@ class CourseTablePresenter {
       context: context,
       barrierDismissible: false,
       builder: (context) => MDialog(S.of(context).fix_week_dialog_title,
-          Text(S.of(context).fix_week_dialog_content), <Widget>[
-        FlatButton(
-          textColor: Colors.grey,
-          child: Text(S.of(context).cancel),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        FlatButton(
-            textColor: Theme.of(context).primaryColor,
-            child: Text(S.of(context).ok),
-            onPressed: () async {
-              await WeekUtil.initWeek(semesterStartMonday, 1);
-              ScopedModel.of<MainStateModel>(context).refresh();
-              Toast.showToast(S.of(context).fix_week_toast_success, context);
-              Navigator.of(context).pop(true);
-            }),
-      ]),
+          Text(S.of(context).fix_week_dialog_content), widgetCancelAction: () {
+        Navigator.of(context).pop();
+      }, widgetOKAction: () async {
+        await WeekUtil.initWeek(semesterStartMonday, 1);
+        ScopedModel.of<MainStateModel>(context).refresh();
+        Toast.showToast(S.of(context).fix_week_toast_success, context);
+        Navigator.of(context).pop(true);
+      }),
     );
     return true;
   }
@@ -309,7 +264,7 @@ class CourseTablePresenter {
       builder: (BuildContext context) {
         return CourseDeleteDialog(course);
       },
-    );
+    ).then((val) => ScopedModel.of<MainStateModel>(context).refresh());
   }
 
   showHideFreeCourseDialog(BuildContext context) {
@@ -318,7 +273,7 @@ class CourseTablePresenter {
       builder: (BuildContext context) {
         return const HideFreeCourseDialog();
       },
-    );
+    ).then((val) => ScopedModel.of<MainStateModel>(context).refresh());
   }
 
   bool isThisWeek(Course course, int nowWeek) {

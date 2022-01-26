@@ -8,6 +8,7 @@ import 'package:flutter_html/flutter_html.dart';
 import '../../Models/CourseModel.dart';
 import '../generated/l10n.dart';
 import '../Components/Dialog.dart';
+import '../Components/TransBgTextButton.dart';
 import '../Resources/Url.dart';
 
 class PrivacyUtil {
@@ -40,9 +41,9 @@ class PrivacyUtil {
     UmengCommonSdk.onEvent("privacy_dialog", {"action": "show"});
     widgets = isForce
         ? <Widget>[
-            TextButton(
-                child: Text(S.of(context).ok,
-                    style: TextStyle(color: Theme.of(context).primaryColor)),
+            TransBgTextButton(
+                color: Theme.of(context).primaryColor,
+                child: Text(S.of(context).ok),
                 onPressed: () {
                   UmengCommonSdk.onEvent(
                       "privacy_dialog", {"action": "forceAccept"});
@@ -50,9 +51,9 @@ class PrivacyUtil {
                 })
           ]
         : <Widget>[
-            TextButton(
-                child: Text(info['cancel_text'],
-                    style: const TextStyle(color: Colors.grey)),
+            TransBgTextButton(
+                color: Colors.grey,
+                child: Text(info['cancel_text']),
                 onPressed: () {
                   UmengCommonSdk.onEvent(
                       "privacy_dialog", {"action": "cancel"});
@@ -60,10 +61,9 @@ class PrivacyUtil {
                       .invokeMethod<void>('SystemNavigator.pop', true);
                 }),
             firstInstall
-                ? TextButton(
-                    child: Text(info['confirm_text_first_install'],
-                        style:
-                            TextStyle(color: Theme.of(context).primaryColor)),
+                ? TransBgTextButton(
+                    color: Theme.of(context).primaryColor,
+                    child: Text(info['confirm_text_first_install']),
                     onPressed: () async {
                       SharedPreferences sp =
                           await SharedPreferences.getInstance();
@@ -72,10 +72,9 @@ class PrivacyUtil {
                           "privacy_dialog", {"action": "accept"});
                       Navigator.of(context).pop(true);
                     })
-                : TextButton(
-                    child: Text(info['confirm_text_for_upgrade'],
-                        style:
-                            TextStyle(color: Theme.of(context).primaryColor)),
+                : TransBgTextButton(
+                    color: Theme.of(context).primaryColor,
+                    child: Text(info['confirm_text_for_upgrade']),
                     onPressed: () async {
                       SharedPreferences sp =
                           await SharedPreferences.getInstance();
@@ -91,7 +90,7 @@ class PrivacyUtil {
         builder: (context) => MDialog(
               info['title'],
               SingleChildScrollView(child: Html(data: info['content'])),
-              widgets,
+              overrideActions: widgets,
             ));
   }
 }

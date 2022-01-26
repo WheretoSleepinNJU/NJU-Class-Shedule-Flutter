@@ -1,6 +1,6 @@
 import '../../generated/l10n.dart';
 import 'package:dio/dio.dart';
-import 'package:intl/intl.dart';
+// import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
 // import 'package:flutter_search_bar/flutter_search_bar.dart';
@@ -96,17 +96,17 @@ class _AllCourseViewState extends State<AllCourseView> {
 
   Future<Course> _parseAllCourse(data) async {
     DateTime startTime = DateTime.parse(data['startTime']);
-    DateTime endTime = DateTime.parse(data['endTime']);
+    // DateTime endTime = DateTime.parse(data['endTime']);
 
     List<int> weekNum = [await WeekUtil.getWeekNumOfDay(startTime)];
 
-    var fullFormatter = DateFormat('yyyy-MM-dd HH:mm');
-    var simpleFormatter = DateFormat('HH:mm');
-    String timeString =
-        fullFormatter.format(startTime) + '-' + simpleFormatter.format(endTime);
+    // var fullFormatter = DateFormat('yyyy-MM-dd HH:mm');
+    // var simpleFormatter = DateFormat('HH:mm');
+    // String timeString =
+    //     fullFormatter.format(startTime) + '-' + simpleFormatter.format(endTime);
 
-    DateTime now = DateTime.now();
-    bool expired = now.isAfter(endTime);
+    // DateTime now = DateTime.now();
+    // bool expired = now.isAfter(endTime);
 
     return Course(
         0,

@@ -1,5 +1,4 @@
 import '../../generated/l10n.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import '../../Resources/Constant.dart';
@@ -127,10 +126,8 @@ class _AddViewState extends State<AddView> {
                 ),
                 SizedBox(
                     width: double.infinity,
-                    child: FlatButton(
-                        color: Theme.of(context).primaryColor,
+                    child: TextButton(
                         child: Text(S.of(context).add_class),
-                        textColor: Colors.white,
                         onPressed: () async {
                           if (_nameController.text == '') {
                             setState(() {
@@ -149,14 +146,9 @@ class _AddViewState extends State<AddView> {
                                     Text(S
                                         .of(context)
                                         .class_num_invalid_dialog_content),
-                                    <Widget>[
-                                      FlatButton(
-                                        child: Text(S.of(context).ok),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                    ],
+                                    widgetOKAction: () {
+                                      Navigator.of(context).pop();
+                                    },
                                   );
                                 });
                             return;
@@ -170,14 +162,9 @@ class _AddViewState extends State<AddView> {
                                     Text(S
                                         .of(context)
                                         .week_num_invalid_dialog_content),
-                                    <Widget>[
-                                      FlatButton(
-                                        child: Text(S.of(context).ok),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                    ],
+                                    widgetOKAction: () {
+                                      Navigator.of(context).pop();
+                                    },
                                   );
                                 });
                             return;
@@ -187,14 +174,14 @@ class _AddViewState extends State<AddView> {
                               _nameController.text,
                               _teacherController.text,
                               [_node]);
-                          if (result){
-                            UmengCommonSdk.onEvent(
-                                "class_import", {"type": "manual", "action": "success"});
+                          if (result) {
+                            UmengCommonSdk.onEvent("class_import",
+                                {"type": "manual", "action": "success"});
                             Toast.showToast(
                                 S.of(context).add_manually_success_toast,
                                 context);
                           }
-                          Navigator.of(context).pop();
+                          Navigator.of(context).pop(true);
                         }))
               ]));
         }));

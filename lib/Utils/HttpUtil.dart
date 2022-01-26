@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 
 class HttpUtil {
 //  List _Cookies = [];
-  String _Cookies = '';
+  String _cookies = '';
   Dio? dio;
 
   HttpUtil() {
@@ -13,11 +13,11 @@ class HttpUtil {
   }
 
   String getCookies() {
-    return _Cookies;
+    return _cookies;
   }
 
   setCookies(String cookies) {
-    _Cookies = cookies;
+    _cookies = cookies;
   }
 
   Future<String> getWithCookie(String url) async {
@@ -25,7 +25,7 @@ class HttpUtil {
 
     //TODO: WHY HERE WILL BE CALLED TWICE?
     if (response.headers['set-cookie'] != null) {
-      _Cookies = response.headers['set-cookie'].toString();
+      _cookies = response.headers['set-cookie'].toString();
     }
     return response.data.toString();
   }
@@ -38,7 +38,7 @@ class HttpUtil {
   Future<Response> _get(String url) async {
     Response response = await dio!.get(url,
         options: Options(
-          headers: {'Cookie': _Cookies},
+          headers: {'Cookie': _cookies},
         ));
     return response;
   }
@@ -48,7 +48,7 @@ class HttpUtil {
         data: jsonMap,
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
-          headers: {'Cookie': _Cookies},
+          headers: {'Cookie': _cookies},
         ));
     return response.data.toString();
   }

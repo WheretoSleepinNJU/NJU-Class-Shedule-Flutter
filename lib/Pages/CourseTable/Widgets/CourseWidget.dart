@@ -11,8 +11,8 @@ class CourseWidget extends StatelessWidget {
   final double width;
   final bool isActive;
   final bool setFlag;
-  final onTap;
-  final onLongPress;
+  final GestureTapCallback? onTap;
+  final GestureLongPressCallback? onLongPress;
 
   const CourseWidget(this.course, this.color, this.height, this.width,
       this.isActive, this.setFlag, this.onTap, this.onLongPress,

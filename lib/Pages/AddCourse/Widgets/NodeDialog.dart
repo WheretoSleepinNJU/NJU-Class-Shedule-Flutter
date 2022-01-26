@@ -225,15 +225,10 @@ class _NodeDialogState extends State<NodeDialog> {
           ),
         ],
       ),
-      <Widget>[
-        FlatButton(
-          textColor: Theme.of(context).primaryColor,
-          child: Text(S.of(context).ok),
-          onPressed: () {
-            Navigator.of(context).pop(_node);
-          },
-        ),
-      ],
+      widgetOK: Text(S.of(context).ok),
+      widgetOKAction: () {
+        Navigator.of(context).pop(_node);
+      },
     );
   }
 }

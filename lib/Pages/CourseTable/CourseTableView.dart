@@ -146,7 +146,7 @@ class CourseTableViewState extends State<CourseTableView> {
         child: ScopedModelDescendant<MainStateModel>(
             builder: (context, child, model) {
           UmengCommonSdk.onEvent("course_refresh", {"action": "refresh"});
-          // print('CourseTableView refreshed.');
+          debugPrint('CourseTableView refreshed.');
 
           return FutureBuilder<List<Widget>>(
               future: _getData(context),
@@ -173,7 +173,7 @@ class CourseTableViewState extends State<CourseTableView> {
                   } else if (_nowWeekNum != _nowShowWeekNum) {
                     nowWeek = S.of(context).not_this_week + ' ' + nowWeek;
                   }
-                  double height = MediaQuery.of(context).size.height;
+                  // double height = MediaQuery.of(context).size.height;
 
                   return Scaffold(
                     appBar: AppBar(
@@ -211,9 +211,10 @@ class CourseTableViewState extends State<CourseTableView> {
                           )
                         ]),
                     body: Stack(children: [
-                      _bgImgPath == null
-                          ? Container()
-                          : BackgroundImage(_bgImgPath),
+                      // _bgImgPath == null
+                      //     ? Container()
+                      //     :
+                      BackgroundImage(_bgImgPath),
                       //   Container(
                       // decoration: _bgImgPath == ""
                       //     ? BoxDecoration()
@@ -274,9 +275,8 @@ class CourseTableViewState extends State<CourseTableView> {
                                       children: [
                                         TextButton(
                                           child: Text(
-                                              S.of(context).free_class_button,
-                                              style: const TextStyle(
-                                                  color: Colors.white)),
+                                            S.of(context).free_class_button,
+                                          ),
                                           onPressed: () {
                                             _presenter.showFreeClassDialog(
                                                 context, _nowShowWeekNum);
@@ -287,11 +287,10 @@ class CourseTableViewState extends State<CourseTableView> {
                                         ),
                                         TextButton(
                                           child: Text(
-                                              S
-                                                  .of(context)
-                                                  .hide_free_class_button,
-                                              style: const TextStyle(
-                                                  color: Colors.white)),
+                                            S
+                                                .of(context)
+                                                .hide_free_class_button,
+                                          ),
                                           onPressed: () => _presenter
                                               .showHideFreeCourseDialog(
                                                   context),
@@ -312,10 +311,15 @@ class CourseTableViewState extends State<CourseTableView> {
                                 const EdgeInsets.only(bottom: 50.0, left: 10.0),
                             child: FloatingActionButton(
                               backgroundColor: Theme.of(context).primaryColor,
-                              onPressed: () => Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          const AddView())),
+                              onPressed: () async {
+                                Navigator.of(context)
+                                    .push(MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            const AddView()))
+                                    .then((val) =>
+                                        ScopedModel.of<MainStateModel>(context)
+                                            .refresh());
+                              },
                               child: const Icon(
                                 Icons.add,
                                 color: Colors.white,
