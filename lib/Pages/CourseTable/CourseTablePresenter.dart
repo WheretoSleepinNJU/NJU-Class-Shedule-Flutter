@@ -18,6 +18,7 @@ import '../../Utils/ColorUtil.dart';
 import '../../Utils/WeekUtil.dart';
 import '../../Components/Dialog.dart';
 import '../../Components/Toast.dart';
+import '../../Components/TransBgTextButton.dart';
 
 import 'Widgets/CourseDetailDialog.dart';
 import 'Widgets/HideFreeCourseDialog.dart';
@@ -25,7 +26,7 @@ import 'Widgets/CourseDeleteDialog.dart';
 import 'Widgets/CourseWidget.dart';
 
 class CourseTablePresenter {
-  CourseProvider courseProvider = new CourseProvider();
+  CourseProvider courseProvider = CourseProvider();
   List<Course> activeCourses = [];
   List<Course> hideCourses = [];
   List<List<Course>> multiCourses = [];
@@ -35,9 +36,9 @@ class CourseTablePresenter {
     List allCoursesMap = await courseProvider.getAllCourses(tableId);
     List<Course> allCourses = [];
     for (Map<String, dynamic> courseMap in allCoursesMap) {
-      allCourses.add(new Course.fromMap(courseMap));
+      allCourses.add(Course.fromMap(courseMap));
     }
-    ScheduleModel scheduleModel = new ScheduleModel(allCourses, nowWeek);
+    ScheduleModel scheduleModel = ScheduleModel(allCourses, nowWeek);
     scheduleModel.init();
 
     activeCourses = scheduleModel.activeCourses;
@@ -91,148 +92,106 @@ class CourseTablePresenter {
   }
 
   Future<bool> showAfterImport(BuildContext context) async {
-    Dio dio = new Dio();
+    Dio dio = Dio();
     String url = Url.UPDATE_ROOT + '/complete.json';
     Response response = await dio.get(url);
-    String welcome_title = '';
-    String welcome_content = '';
-    int delay_seconds = Config.DONATE_DIALOG_DELAY_SECONDS;
+    String welcomeTitle = '';
+    String welcomeContent = '';
+    int delaySeconds = Config.DONATE_DIALOG_DELAY_SECONDS;
     if (response.statusCode == HttpStatus.ok) {
-      welcome_title = response.data['title'];
-      welcome_content = response.data['content_html'];
-      delay_seconds = response.data['delay'];
+      welcomeTitle = response.data['title'];
+      welcomeContent = response.data['content_html'];
+      delaySeconds = response.data['delay'];
       bool isSameWeek = await WeekUtil.isSameWeek(
           (response.data['semester_start_monday']), 1);
-      if (!isSameWeek)
+      if (!isSameWeek) {
         await changeWeek(context, response.data['semester_start_monday']);
+      }
     } else {
-      welcome_title = S.of(context).welcome_title;
-      welcome_content = S.of(context).welcome_content_html;
+      welcomeTitle = S.of(context).welcome_title;
+      welcomeContent = S.of(context).welcome_content_html;
     }
-    Timer(Duration(seconds: delay_seconds), () {
-      showDonateDialog(context, welcome_title, welcome_content);
+    Timer(Duration(seconds: delaySeconds), () {
+      showDonateDialog(context, welcomeTitle, welcomeContent);
     });
     return true;
   }
 
-  void showDonateDialog(BuildContext context, String welcome_title,
-      String welcome_content) async {
+  void showDonateDialog(
+      BuildContext context, String welcomeTitle, String welcomeContent) async {
     UmengCommonSdk.onEvent("import_dialog", {"action": "show"});
     showDialog(
         context: context,
         barrierDismissible: false,
-        // builder: (context) => mDialog(
-        //       welcome_title,
-        //       SingleChildScrollView(child: Text(welcome_content)),
-        //       <Widget>[
-        //         Column(
-        //           mainAxisSize: MainAxisSize.min,
-        //           children: <Widget>[
-        //             TextButton(
-        //                 // textColor: Theme.of(context).primaryColor,
-        //                 child: Text(S.of(context).love_and_donate),
-        //                 onPressed: () async {
-        //                   if (Platform.isIOS)
-        //                     launch(Url.URL_APPLE);
-        //                   else if (Platform.isAndroid) launch(Url.URL_ANDROID);
-        //                   Navigator.of(context).pop();
-        //                 }),
-        //             TextButton(
-        //                 // textColor: Theme.of(context).primaryColor,
-        //                 child: Text(S.of(context).bug_and_report),
-        //                 onPressed: () {
-        //                   if (Platform.isIOS)
-        //                     launch(Url.QQ_GROUP_APPLE_URL);
-        //                   else if (Platform.isAndroid)
-        //                     launch(Url.QQ_GROUP_ANDROID_URL);
-        //                   Navigator.of(context).pop();
-        //                 }),
-        //             TextButton(
-        //                 // textColor: Colors.grey,
-        //                 child: Text(S.of(context).love_but_no_money),
-        //                 onPressed: () async {
-        //                   Navigator.of(context).pop();
-        //                 }),
-        //           ],
-        //         )
-        //       ],
-        //     ));
-        builder: (context) => mDialog(
-              welcome_title,
+        builder: (context) => MDialog(
+              welcomeTitle,
               SingleChildScrollView(
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
-                    Html(data: welcome_content),
-                    TextButton(
-                        style: TextButton.styleFrom(
-                            alignment: Alignment.centerRight,
-                            primary: Theme.of(context).primaryColor),
-                        child: Text(S.of(context).love_and_donate),
-                        onPressed: () async {
-                          UmengCommonSdk.onEvent(
-                              "import_dialog", {"action": "donate"});
-                          if (Platform.isIOS)
-                            launch(Url.URL_APPLE);
-                          else if (Platform.isAndroid) launch(Url.URL_ANDROID);
-                          Navigator.of(context).pop();
-                        }),
-                    TextButton(
-                        style: TextButton.styleFrom(
-                            alignment: Alignment.centerRight,
-                            primary: Theme.of(context).primaryColor),
-                        child: Text(S.of(context).bug_and_report,
-                            style: TextStyle(
-                                color: Theme.of(context).primaryColor)),
-                        onPressed: () {
-                          UmengCommonSdk.onEvent(
-                              "import_dialog", {"action": "bug"});
-                          if (Platform.isIOS)
-                            launch(Url.QQ_GROUP_APPLE_URL);
-                          else if (Platform.isAndroid)
-                            launch(Url.QQ_GROUP_ANDROID_URL);
-                          Navigator.of(context).pop();
-                        }),
-                    TextButton(
-                        style: TextButton.styleFrom(
-                            alignment: Alignment.centerRight,
-                            primary: Colors.grey),
-                        child: Text(S.of(context).love_but_no_money,
-                            style: TextStyle(color: Colors.grey)),
-                        onPressed: () async {
-                          UmengCommonSdk.onEvent(
-                              "import_dialog", {"action": "noMoney"});
-                          Navigator.of(context).pop();
-                        }),
+                    Html(data: welcomeContent),
+                    Container(
+                        alignment: Alignment.centerRight,
+                        child: TransBgTextButton(
+                            color: Theme.of(context).primaryColor,
+                            child: Text(S.of(context).love_and_donate),
+                            onPressed: () async {
+                              UmengCommonSdk.onEvent(
+                                  "import_dialog", {"action": "donate"});
+                              if (Platform.isIOS) {
+                                launch(Url.URL_APPLE);
+                              } else if (Platform.isAndroid) {
+                                launch(Url.URL_ANDROID);
+                              }
+                              Navigator.of(context).pop();
+                            })),
+                    Container(
+                        alignment: Alignment.centerRight,
+                        child: TransBgTextButton(
+                            color: Theme.of(context).primaryColor,
+                            child: Text(S.of(context).bug_and_report,
+                                style: TextStyle(
+                                    color: Theme.of(context).primaryColor)),
+                            onPressed: () {
+                              UmengCommonSdk.onEvent(
+                                  "import_dialog", {"action": "bug"});
+                              if (Platform.isIOS) {
+                                launch(Url.QQ_GROUP_APPLE_URL);
+                              } else if (Platform.isAndroid) {
+                                launch(Url.QQ_GROUP_ANDROID_URL);
+                              }
+                              Navigator.of(context).pop();
+                            })),
+                    Container(
+                        alignment: Alignment.centerRight,
+                        child: TransBgTextButton(
+                            color: Colors.grey,
+                            child: Text(S.of(context).love_but_no_money,
+                                style: const TextStyle(color: Colors.grey)),
+                            onPressed: () async {
+                              UmengCommonSdk.onEvent(
+                                  "import_dialog", {"action": "noMoney"});
+                              Navigator.of(context).pop();
+                            })),
                   ])),
-              <Widget>[],
+              overrideActions: const [],
             ));
   }
 
   Future<bool> changeWeek(
-      BuildContext context, String semester_start_monday) async {
+      BuildContext context, String semesterStartMonday) async {
     await showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => mDialog(S.of(context).fix_week_dialog_title,
-          Text(S.of(context).fix_week_dialog_content), <Widget>[
-        FlatButton(
-          textColor: Colors.grey,
-          child: Text(S.of(context).cancel),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        FlatButton(
-            textColor: Theme.of(context).primaryColor,
-            child: Text(S.of(context).ok),
-            onPressed: () async {
-              await WeekUtil.initWeek(semester_start_monday, 1);
-              ScopedModel.of<MainStateModel>(context).refresh();
-              Toast.showToast(S.of(context).fix_week_toast_success, context);
-              Navigator.of(context).pop(true);
-            }),
-      ]),
+      builder: (context) => MDialog(S.of(context).fix_week_dialog_title,
+          Text(S.of(context).fix_week_dialog_content), widgetCancelAction: () {
+        Navigator.of(context).pop();
+      }, widgetOKAction: () async {
+        await WeekUtil.initWeek(semesterStartMonday, 1);
+        ScopedModel.of<MainStateModel>(context).refresh();
+        Toast.showToast(S.of(context).fix_week_toast_success, context);
+        Navigator.of(context).pop(true);
+      }),
     );
     return true;
   }
@@ -262,9 +221,9 @@ class CourseTablePresenter {
                   () => Navigator.of(context).pop());
             },
             itemCount: multiCourses[i].length,
-            pagination: new SwiperPagination(
-                margin: new EdgeInsets.only(bottom: 100),
-                builder: new DotSwiperPaginationBuilder(
+            pagination: SwiperPagination(
+                margin: const EdgeInsets.only(bottom: 100),
+                builder: DotSwiperPaginationBuilder(
                     color: Colors.grey,
                     activeColor: Theme.of(context).primaryColor)),
             viewportFraction: 1,
@@ -286,9 +245,9 @@ class CourseTablePresenter {
                   () => Navigator.of(context).pop());
             },
             itemCount: freeCourses.length,
-            pagination: new SwiperPagination(
-                margin: new EdgeInsets.only(bottom: 100),
-                builder: new DotSwiperPaginationBuilder(
+            pagination: SwiperPagination(
+                margin: const EdgeInsets.only(bottom: 100),
+                builder: DotSwiperPaginationBuilder(
                     color: Colors.grey,
                     activeColor: Theme.of(context).primaryColor)),
             loop: freeCourses.length > 1,
@@ -305,16 +264,16 @@ class CourseTablePresenter {
       builder: (BuildContext context) {
         return CourseDeleteDialog(course);
       },
-    );
+    ).then((val) => ScopedModel.of<MainStateModel>(context).refresh());
   }
 
   showHideFreeCourseDialog(BuildContext context) {
     return showDialog<String>(
       context: context,
       builder: (BuildContext context) {
-        return HideFreeCourseDialog();
+        return const HideFreeCourseDialog();
       },
-    );
+    ).then((val) => ScopedModel.of<MainStateModel>(context).refresh());
   }
 
   bool isThisWeek(Course course, int nowWeek) {

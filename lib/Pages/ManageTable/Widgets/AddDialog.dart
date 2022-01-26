@@ -1,47 +1,37 @@
 import '../../../generated/l10n.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../Components/Dialog.dart';
 
 class AddDialog extends StatefulWidget {
-  AddDialog() : super();
+  const AddDialog({Key? key}) : super(key: key);
 
   @override
   _AddDialogState createState() => _AddDialogState();
 }
 
 class _AddDialogState extends State<AddDialog> {
-  TextEditingController _controller = new TextEditingController();
+  final TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return mDialog(
+    return MDialog(
       S.of(context).add_class_table_dialog_title,
       Row(
         children: <Widget>[
-          new Expanded(
-              child: new TextField(autofocus: true, controller: _controller))
+          Expanded(child: TextField(autofocus: true, controller: _controller))
         ],
       ),
-      <Widget>[
-        FlatButton(
-          child: Text(S.of(context).cancel),
-          onPressed: () {
-            UmengCommonSdk.onEvent(
-                "schedule_manage", {"type": "add", "action": "cancel"});
-            Navigator.of(context).pop('');
-          },
-        ),
-        FlatButton(
-          child: Text(S.of(context).ok),
-          onPressed: () {
-            UmengCommonSdk.onEvent(
-                "schedule_manage", {"type": "add", "action": "accept"});
-            Navigator.of(context).pop(_controller.text);
-          },
-        ),
-      ],
+      widgetCancelAction: () {
+        UmengCommonSdk.onEvent(
+            "schedule_manage", {"type": "add", "action": "cancel"});
+        Navigator.of(context).pop('');
+      },
+      widgetOKAction: () {
+        UmengCommonSdk.onEvent(
+            "schedule_manage", {"type": "add", "action": "accept"});
+        Navigator.of(context).pop(_controller.text);
+      },
     );
   }
 }

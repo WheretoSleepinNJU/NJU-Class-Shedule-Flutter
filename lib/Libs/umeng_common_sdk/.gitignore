@@ -1,0 +1,15 @@
+.DS_Store
+.dart_tool/
+
+.packages
+.pub/
+example/.flutter-plugins-dependencies
+example/ios/Flutter/flutter_export_environment.sh
+**/pubspec.lock
+
+build/
+.idea/
+**/.idea/
+**/gradle/
+**/gradlew
+**/gradlew.bat

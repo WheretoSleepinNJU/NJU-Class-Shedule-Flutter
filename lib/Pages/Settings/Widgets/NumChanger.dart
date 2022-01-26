@@ -22,28 +22,29 @@ class NumberChangerWidget extends StatefulWidget {
   //点击减号任意一个回调 数量
   final ValueChanged? updateValueChanged;
 
-  NumberChangerWidget({
-    this.height = 30,
-    this.width = 40,
-    this.iconWidth = 40,
-    this.numText = '0',
-    this.addValueChanged,
-    this.removeValueChanged,
-    this.updateValueChanged,
-  });
+  const NumberChangerWidget(
+      {this.height = 30,
+      this.width = 40,
+      this.iconWidth = 40,
+      this.numText = '0',
+      this.addValueChanged,
+      this.removeValueChanged,
+      this.updateValueChanged,
+      Key? key})
+      : super(key: key);
 
   @override
   _NumberChangerWidgetState createState() => _NumberChangerWidgetState();
 }
 
 class _NumberChangerWidgetState extends State<NumberChangerWidget> {
-  var textController = new TextEditingController();
+  var textController = TextEditingController();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    this.textController.text = widget.numText;
+    textController.text = widget.numText;
   }
 
   @override
@@ -59,11 +60,11 @@ class _NumberChangerWidgetState extends State<NumberChangerWidget> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               //减号
-              CoustomIconButton(icon: Icons.remove, isAdd: false),
+              coustomIconButton(icon: Icons.remove, isAdd: false),
               //输入框
               Container(
                 width: widget.width,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                     border: Border(
                         left: BorderSide(width: 1, color: Colors.black12),
                         right: BorderSide(width: 1, color: Colors.black12))),
@@ -71,12 +72,12 @@ class _NumberChangerWidgetState extends State<NumberChangerWidget> {
                   controller: textController,
                   keyboardType: TextInputType.number,
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 16),
                   enableInteractiveSelection: false,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     contentPadding:
                         EdgeInsets.only(left: 0, top: 2, bottom: 2, right: 0),
-                    border: const OutlineInputBorder(
+                    border: OutlineInputBorder(
                       gapPadding: 0,
                       borderSide: BorderSide(
                         width: 0,
@@ -87,7 +88,7 @@ class _NumberChangerWidgetState extends State<NumberChangerWidget> {
                 ),
               ),
               //加号
-              CoustomIconButton(icon: Icons.add, isAdd: true),
+              coustomIconButton(icon: Icons.add, isAdd: true),
             ],
           ),
         )
@@ -95,11 +96,11 @@ class _NumberChangerWidgetState extends State<NumberChangerWidget> {
     );
   }
 
-  Widget CoustomIconButton({required IconData icon, required bool isAdd}) {
-    return Container(
+  Widget coustomIconButton({required IconData icon, required bool isAdd}) {
+    return SizedBox(
       width: widget.iconWidth,
       child: IconButton(
-        padding: EdgeInsets.all(0),
+        padding: const EdgeInsets.all(0),
         icon: Icon(icon),
         onPressed: () {
           var num = int.parse(textController.text);
@@ -109,12 +110,14 @@ class _NumberChangerWidgetState extends State<NumberChangerWidget> {
             if (widget.addValueChanged != null) widget.addValueChanged!(num);
           } else {
             num--;
-            if (widget.removeValueChanged != null)
+            if (widget.removeValueChanged != null) {
               widget.removeValueChanged!(num);
+            }
           }
           textController.text = '$num';
-          if (widget.updateValueChanged != null)
+          if (widget.updateValueChanged != null) {
             widget.updateValueChanged!(num);
+          }
         },
       ),
     );

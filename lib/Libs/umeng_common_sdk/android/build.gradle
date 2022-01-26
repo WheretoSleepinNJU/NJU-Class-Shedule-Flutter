@@ -1,0 +1,40 @@
+group 'com.umeng.umeng_common_sdk'
+version '1.0'
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+        maven { url 'https://repo1.maven.org/maven2/'}
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.5.0'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven { url 'https://repo1.maven.org/maven2/'}
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 29
+
+    defaultConfig {
+        minSdkVersion 16
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+}
+
+dependencies {
+    api  'com.umeng.umsdk:common:9.4.2'// 必选
+    api  'com.umeng.umsdk:asms:1.4.1'// 必选
+}

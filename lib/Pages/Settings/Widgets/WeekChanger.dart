@@ -10,6 +10,8 @@ import '../../../Components/Dialog.dart';
 import '../../../Resources/Config.dart';
 
 class WeekChanger extends StatelessWidget {
+  const WeekChanger({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<int>(
@@ -28,12 +30,12 @@ class WeekChanger extends StatelessWidget {
                   context: context,
                   builder: (BuildContext context) {
                     int changedWeek = snapshot.data! - 1;
-                    return mDialog(
+                    return MDialog(
                       S.of(context).change_week_title,
-                      Container(
+                      SizedBox(
                           height: 96,
                           child: CupertinoPicker(
-                              scrollController: new FixedExtentScrollController(
+                              scrollController: FixedExtentScrollController(
                                 initialItem: snapshot.data! > Config.MAX_WEEKS
                                     ? -1
                                     : snapshot.data! - 1,
@@ -43,36 +45,27 @@ class WeekChanger extends StatelessWidget {
                               onSelectedItemChanged: (int index) {
                                 changedWeek = index;
                               },
-                              children: new List<Widget>.generate(
+                              children: List<Widget>.generate(
                                   Config.MAX_WEEKS, (int index) {
-                                return new Center(
-                                  child: new Text(
+                                return Center(
+                                  child: Text(
                                     S.of(context).week((index + 1).toString()),
-                                    style: TextStyle(fontSize: 16),
+                                    style: const TextStyle(fontSize: 16),
                                   ),
                                 );
                               }))),
-                      <Widget>[
-                        FlatButton(
-                          textColor: Colors.grey,
-                          child: Text(S.of(context).cancel),
-                          onPressed: () {
-                            UmengCommonSdk.onEvent(
-                                "week_change", {"action": "cancel"});
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        FlatButton(
-                            textColor: Theme.of(context).primaryColor,
-                            child: Text(S.of(context).ok),
-                            onPressed: () async {
-                              UmengCommonSdk.onEvent(
-                                  "week_change", {"action": "accept"});
-                              await changeWeek(
-                                  context, changedWeek, snapshot.data!);
-                              Navigator.of(context).pop();
-                            }),
-                      ],
+                      widgetCancelAction: () {
+                        UmengCommonSdk.onEvent(
+                            "week_change", {"action": "cancel"});
+                        Navigator.of(context).pop();
+                      },
+                      widgetOKAction: () async {
+                        UmengCommonSdk.onEvent(
+                            "week_change", {"action": "accept"});
+                        await changeWeek(
+                            context, changedWeek, snapshot.data!);
+                        Navigator.of(context).pop();
+                      }
                     );
                   },
                 );

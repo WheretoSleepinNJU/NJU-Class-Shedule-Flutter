@@ -1,8 +1,6 @@
-import 'dart:io';
-import 'dart:convert';
 import '../../generated/l10n.dart';
 import 'package:dio/dio.dart';
-import 'package:intl/intl.dart';
+// import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
 // import 'package:flutter_search_bar/flutter_search_bar.dart';
@@ -17,7 +15,8 @@ import './Widgets/CourseCard.dart';
 //TODO: 全校课程
 
 class AllCourseView extends StatefulWidget {
-  AllCourseView() : super();
+  const AllCourseView({Key? key}) : super(key: key);
+
 
   @override
   _AllCourseViewState createState() => _AllCourseViewState();
@@ -29,14 +28,14 @@ class _AllCourseViewState extends State<AllCourseView> {
   int pageNum = 0;
   String searchParam = '';
   List<CourseCard> _lectureCards = <CourseCard>[];
-  GlobalKey<RefreshIndicatorState> _refreshKey =
+  final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
-  ScrollController _scrollController = ScrollController();
-  List<int> _filterStatus = [];
+  final ScrollController _scrollController = ScrollController();
+  final List<int> _filterStatus = [];
 
   AppBar buildAppBar(BuildContext context) {
-    return new AppBar(
-      title: new Text(S.of(context).lecture_title),
+    return AppBar(
+      title: Text(S.of(context).lecture_title),
       // actions: [searchBar.getSearchAction(context)]
     );
   }
@@ -72,9 +71,9 @@ class _AllCourseViewState extends State<AllCourseView> {
     });
   }
 
-  _onSearchBarSubmitted(String value) {
-    print(value);
-  }
+  // _onSearchBarSubmitted(String value) {
+  //   print(value);
+  // }
 
   Future<bool> _loadAllCourses() async {
     Dio dio = Dio();
@@ -97,17 +96,17 @@ class _AllCourseViewState extends State<AllCourseView> {
 
   Future<Course> _parseAllCourse(data) async {
     DateTime startTime = DateTime.parse(data['startTime']);
-    DateTime endTime = DateTime.parse(data['endTime']);
+    // DateTime endTime = DateTime.parse(data['endTime']);
 
     List<int> weekNum = [await WeekUtil.getWeekNumOfDay(startTime)];
 
-    var fullFormatter = new DateFormat('yyyy-MM-dd HH:mm');
-    var simpleFormatter = new DateFormat('HH:mm');
-    String timeString =
-        fullFormatter.format(startTime) + '-' + simpleFormatter.format(endTime);
+    // var fullFormatter = DateFormat('yyyy-MM-dd HH:mm');
+    // var simpleFormatter = DateFormat('HH:mm');
+    // String timeString =
+    //     fullFormatter.format(startTime) + '-' + simpleFormatter.format(endTime);
 
-    DateTime now = new DateTime.now();
-    bool expired = now.isAfter(endTime);
+    // DateTime now = DateTime.now();
+    // bool expired = now.isAfter(endTime);
 
     return Course(
         0,
@@ -122,15 +121,16 @@ class _AllCourseViewState extends State<AllCourseView> {
         info: data['info']);
   }
 
-  Future<Null> _refresh() async {
+  Future<void> _refresh() async {
     totalPages = 1;
     pageNum = 0;
     _lectureCards = <CourseCard>[];
     bool rst = await _loadAllCourses();
-    if (rst)
+    if (rst) {
       Toast.showToast(S.of(context).lecture_refresh_success_toast, context);
-    else
+    } else {
       Toast.showToast(S.of(context).lecture_refresh_fail_toast, context);
+    }
   }
 
   @override
@@ -138,7 +138,7 @@ class _AllCourseViewState extends State<AllCourseView> {
     return Scaffold(
         appBar:
             // searchBar.build(context),
-            AppBar(title: Text(S.of(context).lecture_title), actions: <Widget>[
+            AppBar(title: Text(S.of(context).lecture_title), actions: const <Widget>[
           // searchBar.getSearchAction(context),
           // IconButton(
           //   icon: Icon(Icons.search),
@@ -166,7 +166,7 @@ class _AllCourseViewState extends State<AllCourseView> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 5),
                             child: FilterChip(
-                              label: Text('精选'),
+                              label: const Text('精选'),
                               labelStyle: TextStyle(
                                   color: _filterStatus.contains(1)
                                       ? Colors.white
@@ -176,10 +176,11 @@ class _AllCourseViewState extends State<AllCourseView> {
                               selectedColor: Theme.of(context).primaryColor,
                               onSelected: (bool value) {
                                 setState(() {
-                                  if (value)
+                                  if (value) {
                                     _filterStatus.add(1);
-                                  else
+                                  } else {
                                     _filterStatus.remove(1);
+                                  }
                                 });
                               },
                             ),
@@ -187,7 +188,7 @@ class _AllCourseViewState extends State<AllCourseView> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 5),
                             child: FilterChip(
-                              label: Text('仙林'),
+                              label: const Text('仙林'),
                               labelStyle: TextStyle(
                                   color: _filterStatus.contains(2)
                                       ? Colors.white
@@ -196,10 +197,11 @@ class _AllCourseViewState extends State<AllCourseView> {
                               selected: _filterStatus.contains(2),
                               selectedColor: Theme.of(context).primaryColor,                              onSelected: (bool value) {
                                 setState(() {
-                                  if (value)
+                                  if (value) {
                                     _filterStatus.add(2);
-                                  else
+                                  } else {
                                     _filterStatus.remove(2);
+                                  }
                                 });
                               },
                             ),
@@ -207,7 +209,7 @@ class _AllCourseViewState extends State<AllCourseView> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 5),
                             child: FilterChip(
-                              label: Text('鼓楼'),
+                              label: const Text('鼓楼'),
                               labelStyle: TextStyle(
                                   color: _filterStatus.contains(3)
                                       ? Colors.white
@@ -216,10 +218,11 @@ class _AllCourseViewState extends State<AllCourseView> {
                               selected: _filterStatus.contains(3),
                               selectedColor: Theme.of(context).primaryColor,                              onSelected: (bool value) {
                                 setState(() {
-                                  if (value)
+                                  if (value) {
                                     _filterStatus.add(3);
-                                  else
+                                  } else {
                                     _filterStatus.remove(3);
+                                  }
                                 });
                               },
                             ),
@@ -242,7 +245,7 @@ class _AllCourseViewState extends State<AllCourseView> {
                       child: FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(S.of(context).lecture_bottom,
-                              style: TextStyle(color: Colors.grey))))
+                              style: const TextStyle(color: Colors.grey))))
                 ],
               )),
             controller: _scrollController,

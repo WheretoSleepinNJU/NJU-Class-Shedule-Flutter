@@ -8,7 +8,7 @@ import '../../Resources/Url.dart';
 import 'Widgets/RainDropWidget.dart';
 
 class AboutView extends StatefulWidget {
-  AboutView() : super();
+  const AboutView({Key? key}) : super(key: key);
 
   @override
   _AboutViewState createState() => _AboutViewState();
@@ -23,7 +23,7 @@ class _AboutViewState extends State<AboutView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xffeeeeee),
+        backgroundColor: const Color(0xffeeeeee),
         appBar: AppBar(
           title: Text(S.of(context).about_title),
         ),
@@ -32,47 +32,40 @@ class _AboutViewState extends State<AboutView> {
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height),
           SingleChildScrollView(
-              child: new Column(children: <Widget>[
-            new Container(
+              child: Column(children: <Widget>[
+            Container(
               child: Image.asset("res/icon.png"),
               padding: const EdgeInsets.all(10.0),
               alignment: Alignment.center,
               width: 150,
             ),
-            new Container(
-              child: Text(S.of(context).app_name),
+            Text(S.of(context).app_name),
+            FutureBuilder<String>(
+                future: _getVersion(),
+                builder:
+                    (BuildContext context, AsyncSnapshot<String> snapshot) {
+                  if (!snapshot.hasData) {
+                    return Container();
+                  } else {
+                    return Text(snapshot.data!);
+                  }
+                }),
+            TextButton(
+              child: Text(S.of(context).check_update_button),
+              onPressed: () {
+                UpdateUtil updateUtil = UpdateUtil();
+                updateUtil.checkUpdate(context, true);
+              },
             ),
-            new Container(
-                child: FutureBuilder<String>(
-                    future: _getVersion(),
-                    builder:
-                        (BuildContext context, AsyncSnapshot<String> snapshot) {
-                      if (!snapshot.hasData) {
-                        return Container();
-                      } else {
-                        return Text(snapshot.data!);
-                      }
-                    })),
-            new Container(
-              child: FlatButton(
-                child: Text(S.of(context).check_update_button),
-                color: Colors.white,
-                onPressed: () {
-                  UpdateUtil updateUtil = new UpdateUtil();
-                  updateUtil.checkUpdate(context, true);
-                },
-              ),
-            ),
-            new Container(
-              child: TextButton(
-                style: TextButton.styleFrom(
-                    primary: Theme.of(context).primaryColor),
-                child: Text(S.of(context).check_privacy_button),
-                onPressed: () {
-                  PrivacyUtil privacyUtil = new PrivacyUtil();
-                  privacyUtil.checkPrivacy(context, true);
-                },
-              ),
+            TextButton(
+              style: TextButton.styleFrom(
+                  primary: Theme.of(context).primaryColor,
+                  backgroundColor: Colors.transparent),
+              child: Text(S.of(context).check_privacy_button),
+              onPressed: () {
+                PrivacyUtil privacyUtil = PrivacyUtil();
+                privacyUtil.checkPrivacy(context, true);
+              },
             ),
             _generateTitle(S.of(context).github_open_source),
             _generateContent(Url.OPEN_SOURCE_URL,
@@ -93,7 +86,7 @@ class _AboutViewState extends State<AboutView> {
   }
 
   Widget _generateTitle(String text) {
-    return new Container(
+    return Container(
       padding: const EdgeInsets.all(15.0),
       child: Text(text),
       alignment: Alignment.centerLeft,
@@ -101,7 +94,7 @@ class _AboutViewState extends State<AboutView> {
   }
 
   Widget _generateContent(String text, {onTap}) {
-    return new InkWell(
+    return InkWell(
       child: Container(
         margin: const EdgeInsets.all(15.0),
         padding: const EdgeInsets.all(10.0),

@@ -8,14 +8,16 @@ class ClassTitle extends StatelessWidget {
   final bool _isShowWeekTime;
   final bool _isWhiteMode;
 
-  ClassTitle(this._maxShowClasses, this._classTitleHeight,
-      this._classTitleWidth, this._isShowWeekTime, this._isWhiteMode);
+  const ClassTitle(this._maxShowClasses, this._classTitleHeight,
+      this._classTitleWidth, this._isShowWeekTime, this._isWhiteMode,
+      {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> _classTitle = new List.generate(
+    List<Widget> _classTitle = List.generate(
       _maxShowClasses,
-      (int i) => new Container(
+      (int i) => SizedBox(
           height: _classTitleHeight,
           width: _classTitleWidth,
           child: Center(
@@ -47,6 +49,6 @@ class ClassTitle extends StatelessWidget {
                       style: TextStyle(
                           color: _isWhiteMode ? Colors.white : Colors.black)))),
     );
-    return Container(child: Column(children: _classTitle));
+    return Column(children: _classTitle);
   }
 }

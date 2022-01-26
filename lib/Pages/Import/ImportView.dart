@@ -5,7 +5,6 @@ import 'package:azlistview/azlistview.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import '../Import/ImportFromJWView.dart';
 import '../Import/ImportFromCerView.dart';
 import '../Import/ImportFromXKView.dart';
@@ -48,7 +47,7 @@ class School extends ISuspensionBean {
 }
 
 class ImportView extends StatefulWidget {
-  ImportView() : super();
+  const ImportView({Key? key}) : super(key: key);
 
   @override
   _ImportViewState createState() => _ImportViewState();
@@ -72,10 +71,10 @@ class _ImportViewState extends State<ImportView> {
             Column(
                 children: ListTile.divideTiles(context: context, tiles: [
           Container(
-            child: Text(S.of(context).import_inline, style: TextStyle()),
+            child: Text(S.of(context).import_inline, style: const TextStyle()),
             padding: const EdgeInsets.only(left: 15.0, top: 10.0, bottom: 5.0),
             alignment: Alignment.centerLeft,
-            color: Color(0xffeeeeee),
+            color: const Color(0xffeeeeee),
           ),
           ListTile(
             title: Text(S.of(context).import_from_NJU_cer_title),
@@ -88,7 +87,7 @@ class _ImportViewState extends State<ImportView> {
                   "class_import", {"type": "cer", "action": "show"});
               bool? status = await Navigator.of(context).push(MaterialPageRoute(
                   builder: (BuildContext context) =>
-                      ImportFromCerView(config: Config.jw_config)));
+                      const ImportFromCerView(config: Config.jw_config)));
               if (status == true) Navigator.of(context).pop(status);
             },
           ),
@@ -102,7 +101,7 @@ class _ImportViewState extends State<ImportView> {
               UmengCommonSdk.onEvent(
                   "class_import", {"type": "jw", "action": "show"});
               bool? status = await Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => ImportFromJWView()));
+                  builder: (BuildContext context) => const ImportFromJWView()));
               if (status == true) Navigator.of(context).pop(status);
             },
           ),
@@ -117,15 +116,15 @@ class _ImportViewState extends State<ImportView> {
                   "class_import", {"type": "xk", "action": "show"});
               bool? status = await Navigator.of(context).push(MaterialPageRoute(
                   builder: (BuildContext context) =>
-                      ImportFromXKView(config: Config.xk_config)));
+                      const ImportFromXKView(config: Config.xk_config)));
               if (status == true) Navigator.of(context).pop(status);
             },
           ),
           Container(
-            child: Text(S.of(context).import_online, style: TextStyle()),
+            child: Text(S.of(context).import_online, style: const TextStyle()),
             padding: const EdgeInsets.only(left: 15.0, top: 5.0, bottom: 5.0),
             alignment: Alignment.centerLeft,
-            color: Color(0xffeeeeee),
+            color: const Color(0xffeeeeee),
           ),
           Expanded(
               child: FutureBuilder<List>(
@@ -177,8 +176,9 @@ class _ImportViewState extends State<ImportView> {
                                           ImportFromBEView(
                                               config:
                                                   schoolList[index].config!)));
-                              if (status == true)
+                              if (status == true) {
                                 Navigator.of(context).pop(status);
+                              }
                             },
                           );
                         },
@@ -196,7 +196,7 @@ class _ImportViewState extends State<ImportView> {
 
   Future<List> getOnlineConfig() async {
     try {
-      Dio dio = new Dio();
+      Dio dio = Dio();
       String url = Url.UPDATE_ROOT + '/schoolList.json';
       Response response = await dio.get(url);
       List rst = response.data['data'];

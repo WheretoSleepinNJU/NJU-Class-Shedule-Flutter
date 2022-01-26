@@ -1,26 +1,25 @@
-import 'dart:convert';
 import 'package:sqflite/sqflite.dart';
 import '../Resources/Colors.dart';
 import './Db/DbHelper.dart';
 
-final String tableName = DbHelper.COURSE_TABLE_NAME;
-final String columnId = DbHelper.COURSE_COLUMN_ID;
-final String columnName = DbHelper.COURSE_COLUMN_NAME;
-final String columnTableId = DbHelper.COURSE_COLUMN_COURSETABLEID;
-final String columnClassroom = DbHelper.COURSE_COLUMN_CLASS_ROOM;
-final String columnClassNumber = DbHelper.COURSE_COLUMN_CLASS_NUMBER;
-final String columnTeacher = DbHelper.COURSE_COLUMN_TEACHER;
-final String columnTestTime = DbHelper.COURSE_COLUMN_TEST_TIME;
-final String columnTestLocation = DbHelper.COURSE_COLUMN_TEST_LOCATION;
-final String columnLink = DbHelper.COURSE_COLUMN_INFO_LINK;
-final String columnInfo = DbHelper.COURSE_COLUMN_INFO;
-final String columnWeeks = DbHelper.COURSE_COLUMN_WEEKS;
-final String columnWeekTime = DbHelper.COURSE_COLUMN_WEEK_TIME;
-final String columnStartTime = DbHelper.COURSE_COLUMN_START_TIME;
-final String columnTimeCount = DbHelper.COURSE_COLUMN_TIME_COUNT;
-final String columnImportType = DbHelper.COURSE_COLUMN_IMPORT_TYPE;
-final String columnColor = DbHelper.COURSE_COLUMN_COLOR;
-final String columnCourseId = DbHelper.COURSE_COLUMN_COURSE_ID;
+const String tableName = DbHelper.COURSE_TABLE_NAME;
+const String columnId = DbHelper.COURSE_COLUMN_ID;
+const String columnName = DbHelper.COURSE_COLUMN_NAME;
+const String columnTableId = DbHelper.COURSE_COLUMN_COURSETABLEID;
+const String columnClassroom = DbHelper.COURSE_COLUMN_CLASS_ROOM;
+const String columnClassNumber = DbHelper.COURSE_COLUMN_CLASS_NUMBER;
+const String columnTeacher = DbHelper.COURSE_COLUMN_TEACHER;
+const String columnTestTime = DbHelper.COURSE_COLUMN_TEST_TIME;
+const String columnTestLocation = DbHelper.COURSE_COLUMN_TEST_LOCATION;
+const String columnLink = DbHelper.COURSE_COLUMN_INFO_LINK;
+const String columnInfo = DbHelper.COURSE_COLUMN_INFO;
+const String columnWeeks = DbHelper.COURSE_COLUMN_WEEKS;
+const String columnWeekTime = DbHelper.COURSE_COLUMN_WEEK_TIME;
+const String columnStartTime = DbHelper.COURSE_COLUMN_START_TIME;
+const String columnTimeCount = DbHelper.COURSE_COLUMN_TIME_COUNT;
+const String columnImportType = DbHelper.COURSE_COLUMN_IMPORT_TYPE;
+const String columnColor = DbHelper.COURSE_COLUMN_COLOR;
+const String columnCourseId = DbHelper.COURSE_COLUMN_COURSE_ID;
 
 class Course {
   int? id;
@@ -102,14 +101,14 @@ class Course {
   }
 
   String? getColor(List colorPool) {
-    if (this.color != null) return this.color;
-    return colorList[colorPool[this.courseId! % colorPool.length] as int];
+    if (color != null) return color;
+    return colorList[colorPool[courseId! % colorPool.length] as int];
   }
 }
 
 class CourseProvider {
   Database? db;
-  DbHelper dbHelper = new DbHelper();
+  DbHelper dbHelper = DbHelper();
 
   Future open() async {
     db = await dbHelper.open();
@@ -119,7 +118,7 @@ class CourseProvider {
 
   Future<Course> insert(Course course) async {
     await open();
-    if (course.courseId == null) course.courseId = await getCourseId(course);
+    course.courseId ??= await getCourseId(course);
 //    print(course.toMap());
     course.id = await db!.insert(tableName, course.toMap());
 //    await close();
@@ -133,7 +132,7 @@ class CourseProvider {
         where: '$columnId = ?',
         whereArgs: [id]);
 //    await close();
-    if (maps.length > 0) {
+    if (maps.isNotEmpty) {
       return Course.fromMap(maps.first);
     }
     return null;
@@ -184,7 +183,7 @@ class CourseProvider {
     List<Map> rst = await db!.query(tableName,
         where: '$columnTableId = ? and $columnName = ?',
         whereArgs: [tableId, name]);
-    return !rst.isEmpty;
+    return rst.isNotEmpty;
   }
 
   //获取课程 courseid，如果存在已有课程则为已有课程，否则指定新id
@@ -192,16 +191,15 @@ class CourseProvider {
     List<Map> rst = await db!.query(tableName,
         where: '$columnName = ? and $columnTableId = ?',
         whereArgs: [course.name, course.tableId]);
-    if (!rst.isEmpty) return rst[0]['$columnCourseId'];
+    if (rst.isNotEmpty) return rst[0][columnCourseId];
     var maxId =
         await db!.rawQuery('SELECT MAX($columnCourseId) FROM $tableName');
     List maxIdList = maxId.toList();
 //    print(maxIdList);
-    if (maxIdList == null ||
-        maxIdList.isEmpty ||
-        maxIdList[0]['MAX($columnCourseId)'] == null)
+    if (maxIdList.isEmpty ||
+        maxIdList[0]['MAX($columnCourseId)'] == null) {
       return 0;
-    else {
+    } else {
       return maxIdList[0]['MAX($columnCourseId)'] + 1;
     }
   }

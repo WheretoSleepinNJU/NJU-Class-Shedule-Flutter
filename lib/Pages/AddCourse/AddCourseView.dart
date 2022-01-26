@@ -1,5 +1,4 @@
 import '../../generated/l10n.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import '../../Resources/Constant.dart';
@@ -11,17 +10,17 @@ import 'AddCoursePresenter.dart';
 import 'Widgets/NodeDialog.dart';
 
 class AddView extends StatefulWidget {
-  AddView() : super();
+  const AddView({Key? key}) : super(key: key);
 
   @override
   _AddViewState createState() => _AddViewState();
 }
 
 class _AddViewState extends State<AddView> {
-  AddCoursePresenter _presenter = new AddCoursePresenter();
+  final AddCoursePresenter _presenter = AddCoursePresenter();
 
-  TextEditingController _nameController = new TextEditingController();
-  TextEditingController _teacherController = new TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _teacherController = TextEditingController();
 
   final FocusNode nameTextFieldNode = FocusNode();
   final FocusNode teacherTextFieldNode = FocusNode();
@@ -47,9 +46,9 @@ class _AddViewState extends State<AddView> {
         body: Builder(builder: (BuildContext context) {
           return Container(
               width: double.infinity,
-              margin: EdgeInsets.all(10),
+              margin: const EdgeInsets.all(10),
               child: Column(children: <Widget>[
-                Padding(
+                const Padding(
                   padding: EdgeInsets.all(5),
                 ),
                 TextField(
@@ -68,7 +67,7 @@ class _AddViewState extends State<AddView> {
                   onEditingComplete: () =>
                       FocusScope.of(context).requestFocus(teacherTextFieldNode),
                 ),
-                Padding(
+                const Padding(
                   padding: EdgeInsets.all(5),
                 ),
                 TextField(
@@ -84,7 +83,7 @@ class _AddViewState extends State<AddView> {
                     hintText: S.of(context).class_teacher,
                   ),
                 ),
-                Padding(
+                const Padding(
                   padding: EdgeInsets.all(10),
                 ),
                 Row(children: <Widget>[
@@ -92,7 +91,7 @@ class _AddViewState extends State<AddView> {
                     Icons.code,
                     color: Theme.of(context).primaryColor,
                   ),
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.all(8),
                   ),
                   InkWell(
@@ -111,26 +110,24 @@ class _AddViewState extends State<AddView> {
                             color: Theme.of(context).primaryColor),
                       ),
                       onTap: () async {
-                        Map new_node = (await showDialog<Map>(
+                        Map newNode = (await showDialog<Map>(
                             context: context,
                             barrierDismissible: false,
                             builder: (BuildContext context) {
                               return NodeDialog(node: _node);
                             }))!;
                         setState(() {
-                          _node = new_node;
+                          _node = newNode;
                         });
                       })
                 ]),
-                Padding(
+                const Padding(
                   padding: EdgeInsets.all(10),
                 ),
-                Container(
+                SizedBox(
                     width: double.infinity,
-                    child: FlatButton(
-                        color: Theme.of(context).primaryColor,
+                    child: TextButton(
                         child: Text(S.of(context).add_class),
-                        textColor: Colors.white,
                         onPressed: () async {
                           if (_nameController.text == '') {
                             setState(() {
@@ -142,21 +139,16 @@ class _AddViewState extends State<AddView> {
                             showDialog<String>(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return mDialog(
+                                  return MDialog(
                                     S
                                         .of(context)
                                         .class_num_invalid_dialog_title,
                                     Text(S
                                         .of(context)
                                         .class_num_invalid_dialog_content),
-                                    <Widget>[
-                                      FlatButton(
-                                        child: Text(S.of(context).ok),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                    ],
+                                    widgetOKAction: () {
+                                      Navigator.of(context).pop();
+                                    },
                                   );
                                 });
                             return;
@@ -165,19 +157,14 @@ class _AddViewState extends State<AddView> {
                             showDialog<String>(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return mDialog(
+                                  return MDialog(
                                     S.of(context).week_num_invalid_dialog_title,
                                     Text(S
                                         .of(context)
                                         .week_num_invalid_dialog_content),
-                                    <Widget>[
-                                      FlatButton(
-                                        child: Text(S.of(context).ok),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                    ],
+                                    widgetOKAction: () {
+                                      Navigator.of(context).pop();
+                                    },
                                   );
                                 });
                             return;
@@ -187,14 +174,14 @@ class _AddViewState extends State<AddView> {
                               _nameController.text,
                               _teacherController.text,
                               [_node]);
-                          if (result){
-                            UmengCommonSdk.onEvent(
-                                "class_import", {"type": "manual", "action": "success"});
+                          if (result) {
+                            UmengCommonSdk.onEvent("class_import",
+                                {"type": "manual", "action": "success"});
                             Toast.showToast(
                                 S.of(context).add_manually_success_toast,
                                 context);
                           }
-                          Navigator.of(context).pop();
+                          Navigator.of(context).pop(true);
                         }))
               ]));
         }));

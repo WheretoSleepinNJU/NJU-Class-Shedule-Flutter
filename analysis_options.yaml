@@ -1,5 +1,11 @@
 include: package:flutter_lints/flutter.yaml
 
+linter:
+  rules:
+    file_names: false
+    avoid_types_as_parameter_names: false
+    constant_identifier_names: false
+
 analyzer:
 #  strong-mode: true
 #  language:

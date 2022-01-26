@@ -9,6 +9,7 @@ import '../generated/l10n.dart';
 import '../Utils/States/MainState.dart';
 import '../Components/Dialog.dart';
 import '../Components/Toast.dart';
+import '../Components/TransBgTextButton.dart';
 import '../Resources/Url.dart';
 
 class UpdateUtil {
@@ -18,9 +19,9 @@ class UpdateUtil {
     int coolDownTime =
         await ScopedModel.of<MainStateModel>(context).getCoolDownTime();
 
-    DateTime now = new DateTime.now();
+    DateTime now = DateTime.now();
     DateTime last =
-        new DateTime.fromMillisecondsSinceEpoch(lastCheckUpdateTime);
+        DateTime.fromMillisecondsSinceEpoch(lastCheckUpdateTime);
     var difference = now.difference(last);
 //    print(difference.inSeconds);
 //    print(now.millisecondsSinceEpoch);
@@ -28,19 +29,21 @@ class UpdateUtil {
         .setLastCheckUpdateTime(now.millisecondsSinceEpoch);
     if (!isForce && difference.inSeconds < coolDownTime) return;
 
-    Dio dio = new Dio();
+    Dio dio = Dio();
     String url;
-    if (Platform.isIOS)
+    if (Platform.isIOS) {
       url = Url.UPDATE_ROOT + '/ios.json';
-    else if (Platform.isAndroid)
+    } else if (Platform.isAndroid) {
       url = Url.UPDATE_ROOT + '/android.json';
-    else
+    } else {
       return;
+    }
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     Response response = await dio.get(url);
     if (response.statusCode == HttpStatus.ok) {
-      if (response.data['coolDownTime'] != null)
+      if (response.data['coolDownTime'] != null) {
         ScopedModel.of<MainStateModel>(context).setCoolDownTime(coolDownTime);
+      }
       if (response.data['version'] > int.parse(packageInfo.buildNumber)) {
         await showUpdateDialog(response.data, context);
       } else if (isForce) {
@@ -54,9 +57,9 @@ class UpdateUtil {
     List<Widget> widgets;
     if (info['isForce']) {
       widgets = <Widget>[
-        FlatButton(
+        TransBgTextButton(
             child: Text(info['confirm_text']),
-            textColor: Theme.of(context).primaryColor,
+            color: Theme.of(context).primaryColor,
             onPressed: () async {
               UmengCommonSdk.onEvent(
                   "update_dialog", {"action": "forceAccept"});
@@ -65,18 +68,18 @@ class UpdateUtil {
       ];
     } else {
       widgets = <Widget>[
-        FlatButton(
+        TransBgTextButton(
           child: Text(info['cancel_text']),
-          textColor: Colors.grey,
+          color: Colors.grey,
           onPressed: () {
             UmengCommonSdk.onEvent(
                 "update_dialog", {"action": "cancel"});
             Navigator.of(context).pop();
           },
         ),
-        FlatButton(
+        TransBgTextButton(
             child: Text(info['confirm_text']),
-            textColor: Theme.of(context).primaryColor,
+            color: Theme.of(context).primaryColor,
             onPressed: () async {
               UmengCommonSdk.onEvent(
                   "update_dialog", {"action": "accept"});
@@ -87,10 +90,10 @@ class UpdateUtil {
     await showDialog(
         context: context,
         barrierDismissible: !info['isForce'],
-        builder: (context) => mDialog(
+        builder: (context) => MDialog(
               info['title'],
               Text(info['content']),
-              widgets,
+              overrideActions: widgets,
             ));
   }
 }

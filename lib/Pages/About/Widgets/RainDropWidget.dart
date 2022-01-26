@@ -1,4 +1,3 @@
-import 'package:flutter/rendering.dart';
 import 'package:flutter/material.dart';
 import '../../../Resources/Colors.dart';
 import '../../../Utils/ColorUtil.dart';
@@ -6,12 +5,14 @@ import 'dart:async';
 import 'dart:math';
 
 class RainDropWidget extends StatefulWidget {
-  RainDropWidget({Key? key, this.width = 300, this.height = 300}) : super(key: key);
+  const RainDropWidget({Key? key, this.width = 300, this.height = 300}) : super(key: key);
 
   final double width;
   final double height;
 
   @override
+  //TODO: needs to be fixed
+  // ignore: no_logic_in_create_state
   State<StatefulWidget> createState() => RainDropState(width, height);
 }
 
@@ -32,7 +33,7 @@ class RainDropState extends State<RainDropWidget>
   void initState() {
     super.initState();
     _rainList = [];
-    _animation = new AnimationController(
+    _animation = AnimationController(
         // 因为是repeat的，这里的duration其实不care
         duration: const Duration(milliseconds: 200),
         vsync: this)
@@ -42,9 +43,9 @@ class RainDropState extends State<RainDropWidget>
         }
         setState(() {});
       });
-    Random random = new Random();
-    _timer = Timer.periodic(Duration(milliseconds: 500), (timer) {
-      print('Rain drop.');
+    Random random = Random();
+    _timer = Timer.periodic(const Duration(milliseconds: 500), (timer) {
+      // print('Rain drop.');
       var rainDrop = RainDropDrawer(
           random.nextDouble() * _width,
           random.nextDouble() * _height,
@@ -63,7 +64,7 @@ class RainDropState extends State<RainDropWidget>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: _width,
       height: _height,
       child: CustomPaint(
@@ -77,15 +78,15 @@ class RainDrop extends CustomPainter {
   RainDrop(this.rainList);
 
   List<RainDropDrawer> rainList = [];
-  Paint _paint = new Paint()
+  final Paint _paint = Paint()
     ..style = PaintingStyle.stroke
     ..strokeWidth = 3;
 
   @override
   void paint(Canvas canvas, Size size) {
-    rainList.forEach((item) {
+    for (var item in rainList) {
       item.drawRainDrop(canvas, _paint);
-    });
+    }
     rainList.removeWhere((item) {
       return !item.isValid();
     });

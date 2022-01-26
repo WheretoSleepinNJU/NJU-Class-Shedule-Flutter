@@ -4,14 +4,15 @@ class Separator extends StatelessWidget {
   final double height;
   final Color color;
 
-  const Separator({this.height = 0.2, this.color = Colors.black});
+  const Separator({this.height = 0.2, this.color = Colors.black, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         final boxWidth = constraints.constrainWidth();
-        final dashWidth = 3.0;
+        const dashWidth = 3.0;
         final dashHeight = height;
         final dashCount = (boxWidth / (2 * dashWidth)).floor();
         return Flex(

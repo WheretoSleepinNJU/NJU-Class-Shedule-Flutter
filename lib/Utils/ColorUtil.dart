@@ -14,7 +14,7 @@ class HexColor extends Color {
   }
 
   static String getRandomColor() {
-    final _random = new Random();
+    final _random = Random();
     return colorList[_random.nextInt(colorList.length)];
   }
 
@@ -31,7 +31,7 @@ class ColorPool {
 
   static Future<List> getColorPool() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
-    String? colorPoolString = await sp.getString('colorPool');
+    String? colorPoolString = sp.getString('colorPool');
 //    print(colorPoolString);
     List colorPool = json.decode(colorPoolString!);
     return colorPool;
@@ -39,7 +39,7 @@ class ColorPool {
 
 
   static shuffleColorPool() async {
-    List<int> colorPool = new List<int>.generate(colorList.length, (i) => i);
+    List<int> colorPool = List<int>.generate(colorList.length, (i) => i);
     colorPool.shuffle();
     SharedPreferences sp = await SharedPreferences.getInstance();
     sp.setString('colorPool', colorPool.toString());

@@ -11,6 +11,7 @@ import '../../../Models/LectureModel.dart';
 import '../../../Utils/States/MainState.dart';
 import '../../../Components/Toast.dart';
 import '../../../Components/Dialog.dart';
+import '../../../Components/TransBgTextButton.dart';
 import '../../../Resources/Config.dart';
 import '../../../Resources/Url.dart';
 
@@ -18,7 +19,7 @@ class LectureCard extends StatefulWidget {
   final Lecture lecture;
   final int count;
 
-  LectureCard({Key? key, required this.lecture, required this.count})
+  const LectureCard({Key? key, required this.lecture, required this.count})
       : super(key: key);
 
   @override
@@ -39,13 +40,14 @@ class _LectureCardState extends State<LectureCard> {
   checkAdded() async {
     widget.lecture.tableId =
         await ScopedModel.of<MainStateModel>(context).getClassTable();
-    CourseProvider courseProvider = new CourseProvider();
+    CourseProvider courseProvider = CourseProvider();
     bool rst = await courseProvider.checkHasClassByName(
         widget.lecture.tableId ?? 0, widget.lecture.name ?? '');
-    if (rst)
+    if (rst) {
       setState(() {
         added = true;
       });
+    }
   }
 
   addLecture() async {
@@ -54,12 +56,12 @@ class _LectureCardState extends State<LectureCard> {
       Toast.showToast(S.of(context).lecture_add_fail_toast, context);
       return;
     }
-    CourseProvider courseProvider = new CourseProvider();
+    CourseProvider courseProvider = CourseProvider();
     await courseProvider.insert(widget.lecture);
     Dio dio = Dio();
-    var response = await dio.get(Url.URL_BACKEND + '/addCount',
+    await dio.get(Url.URL_BACKEND + '/addCount',
         queryParameters: {'id': widget.lecture.lectureId});
-    print(response);
+    // print(response);
     Toast.showToast(S.of(context).lecture_add_success_toast, context);
     setState(() {
       added = true;
@@ -101,78 +103,65 @@ class _LectureCardState extends State<LectureCard> {
                   },
                   text: widget.lecture.info ?? S.of(context).unknown_info,
                   linkStyle: TextStyle(color: Theme.of(context).primaryColor),
-                  options: LinkifyOptions(humanize: false),
+                  options: const LinkifyOptions(humanize: false),
                 ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   widget.lecture.expired
-                      ? TextButton(
-                          style: TextButton.styleFrom(primary: Colors.grey),
-                          child: Text(S.of(context).lecture_expired(count)),
+                      ? TransBgTextButton(
+                          color: Colors.grey,
                           onPressed: () {
                             Toast.showToast(
                                 S.of(context).lecture_add_expired_toast,
                                 context);
                           },
-                        )
+                          child: Text(S.of(context).lecture_expired(count)))
                       : added
-                          ? TextButton(
-                              style: TextButton.styleFrom(primary: Colors.grey),
+                          ? TransBgTextButton(
+                              color: Colors.grey,
                               child: Text(S.of(context).lecture_added(count)),
                               onPressed: () {
                                 Toast.showToast(
                                     S.of(context).lecture_added_toast, context);
                               },
                             )
-                          : TextButton(
-                              style: TextButton.styleFrom(
-                                  primary: Theme.of(context).primaryColor),
+                          : TransBgTextButton(
+                              color: Theme.of(context).primaryColor,
                               child: Text(S.of(context).lecture_add(count)),
                               onPressed: () async {
-                                if (widget.lecture.isAccurate)
+                                if (widget.lecture.isAccurate) {
                                   addLecture();
-                                else
+                                } else {
                                   showDialog<String>(
                                       context: context,
                                       builder: (BuildContext context) {
-                                        return mDialog(
-                                          S
-                                              .of(context)
-                                              .lecture_cast_dialog_title,
-                                          Text(S
-                                              .of(context)
-                                              .lecture_cast_dialog_content),
-                                          <Widget>[
-                                            FlatButton(
-                                              textColor: Colors.grey,
-                                              child: Text(S.of(context).cancel),
-                                              onPressed: () {
-                                                UmengCommonSdk.onEvent(
-                                                    "class_import", {
-                                                  "type": "lecture",
-                                                  "action": "cancel"
-                                                });
-                                                Navigator.of(context).pop();
-                                              },
-                                            ),
-                                            FlatButton(
-                                                textColor: Theme.of(context)
-                                                    .primaryColor,
-                                                child: Text(S.of(context).ok),
-                                                onPressed: () async {
-                                                  await addLecture();
-                                                  UmengCommonSdk.onEvent(
-                                                      "class_import", {
-                                                    "type": "lecture",
-                                                    "action": "success"
-                                                  });
-                                                  Navigator.of(context).pop();
-                                                }),
-                                          ],
-                                        );
+                                        return MDialog(
+                                            S
+                                                .of(context)
+                                                .lecture_cast_dialog_title,
+                                            Text(S
+                                                .of(context)
+                                                .lecture_cast_dialog_content),
+                                            widgetCancelAction: () {
+                                          UmengCommonSdk.onEvent(
+                                              "class_import", {
+                                            "type": "lecture",
+                                            "action": "cancel"
+                                          });
+                                          Navigator.of(context).pop();
+                                        }, widgetOKAction: () async {
+                                          await addLecture();
+                                          UmengCommonSdk.onEvent(
+                                              "class_import", {
+                                            "type": "lecture",
+                                            "action": "success"
+                                          });
+                                          Navigator.of(context).pop();
+                                        });
                                       });
+                                }
                               },
                             ),
                 ],

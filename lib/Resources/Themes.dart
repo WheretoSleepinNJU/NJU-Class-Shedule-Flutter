@@ -78,6 +78,12 @@ final List<ThemeData> themeDataList = [
     appBarTheme: AppBarTheme(
       color: HexColor('#0095F9'),
     ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        primary: Colors.white,
+        backgroundColor: HexColor('#0095F9'),
+      ),
+    ),
   ),
   ThemeData(
     primaryColor: HexColor('#4CAF50'),
@@ -86,6 +92,12 @@ final List<ThemeData> themeDataList = [
         ColorScheme.fromSwatch().copyWith(secondary: HexColor('#8BC34A')),
     appBarTheme: AppBarTheme(
       color: HexColor('#4CAF50'),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        primary: Colors.white,
+        backgroundColor: HexColor('#4CAF50'),
+      ),
     ),
   ),
   ThemeData(
@@ -96,6 +108,12 @@ final List<ThemeData> themeDataList = [
     appBarTheme: AppBarTheme(
       color: HexColor('#002B82'),
     ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        primary: Colors.white,
+        backgroundColor: HexColor('#002B82'),
+      ),
+    ),
   ),
   ThemeData(
     primaryColor: HexColor('#872574'),
@@ -104,6 +122,12 @@ final List<ThemeData> themeDataList = [
         ColorScheme.fromSwatch().copyWith(secondary: HexColor('#9A4C8D')),
     appBarTheme: AppBarTheme(
       color: HexColor('#872574'),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        primary: Colors.white,
+        backgroundColor: HexColor('#872574'),
+      ),
     ),
   ),
   ThemeData(
@@ -114,6 +138,12 @@ final List<ThemeData> themeDataList = [
     appBarTheme: AppBarTheme(
       color: HexColor('#C52830'),
     ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        primary: Colors.white,
+        backgroundColor: HexColor('#C52830'),
+      ),
+    ),
   ),
   ThemeData(
     primaryColor: HexColor('#DDA3B2'),
@@ -122,6 +152,12 @@ final List<ThemeData> themeDataList = [
         ColorScheme.fromSwatch().copyWith(secondary: HexColor('#EAC8D1')),
     appBarTheme: AppBarTheme(
       color: HexColor('#DDA3B2'),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        primary: Colors.white,
+        backgroundColor: HexColor('#DDA3B2'),
+      ),
     ),
   ),
   ThemeData(
@@ -132,6 +168,12 @@ final List<ThemeData> themeDataList = [
     appBarTheme: AppBarTheme(
       color: HexColor('#2D7D93'),
     ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        primary: Colors.white,
+        backgroundColor: HexColor('#2D7D93'),
+      ),
+    ),
   ),
   ThemeData(
     primaryColor: HexColor('#919FC5'),
@@ -141,6 +183,12 @@ final List<ThemeData> themeDataList = [
     appBarTheme: AppBarTheme(
       color: HexColor('#919FC5'),
     ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        primary: Colors.white,
+        backgroundColor: HexColor('#919FC5'),
+      ),
+    ),
   ),
   ThemeData(
     primaryColor: HexColor('#638190'),
@@ -149,6 +197,12 @@ final List<ThemeData> themeDataList = [
         ColorScheme.fromSwatch().copyWith(secondary: HexColor('#9E9E9E')),
     appBarTheme: AppBarTheme(
       color: HexColor('#638190'),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        primary: Colors.white,
+        backgroundColor: HexColor('#638190'),
+      ),
     ),
   ),
 ];

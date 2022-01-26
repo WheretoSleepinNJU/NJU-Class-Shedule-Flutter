@@ -10,7 +10,7 @@ import '../Utils/ColorUtil.dart';
 import '../Utils/WeekUtil.dart';
 
 class InitUtil {
-  static Future<int> Initialize() async {
+  static Future<int> initialize() async {
     int themeIndex = await getTheme();
     await checkDataBase();
     await WeekUtil.checkWeek();
@@ -29,10 +29,11 @@ class InitUtil {
   }
 
   static checkDataBase() async {
-    CourseTableProvider courseTableProvider = new CourseTableProvider();
+    CourseTableProvider courseTableProvider = CourseTableProvider();
     List c = await courseTableProvider.getAllCourseTable();
-    if (c.isEmpty)
-      courseTableProvider.insert(new CourseTable(Config.default_class_table));
+    if (c.isEmpty) {
+      courseTableProvider.insert(CourseTable(Config.default_class_table));
+    }
   }
 
   static showReview() async {
@@ -42,7 +43,7 @@ class InitUtil {
 
     if (!Platform.isIOS) return;
 
-    Dio dio = new Dio();
+    Dio dio = Dio();
     String url = Url.UPDATE_ROOT + '/showiOSReview.json';
     Response response = await dio.get(url);
     if (response.statusCode != HttpStatus.ok) return;
@@ -56,7 +57,7 @@ class InitUtil {
     int reviewTime =
         response.data['reviewTime'] ?? Config.REVIEW_DIALOG_SHOW_TIME;
     bool needsShowReview = (openTimes >= reviewTime);
-    // if (!needsShowReview) return;
+    if (!needsShowReview) return;
 
     final InAppReview inAppReview = InAppReview.instance;
     bool hasShowReview = sp.getBool("hasShowReview") ?? false;
@@ -65,7 +66,7 @@ class InitUtil {
     bool inAppReviewAvailable = await inAppReview.isAvailable();
     if (!inAppReviewAvailable) return;
 
-    Timer(Duration(seconds: Config.REVIEW_DIALOG_DELAY_SECONDS), () {
+    Timer(const Duration(seconds: Config.REVIEW_DIALOG_DELAY_SECONDS), () {
       inAppReview.requestReview();
       sp.setBool("hasShowReview", true);
     });

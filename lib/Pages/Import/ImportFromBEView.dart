@@ -16,7 +16,7 @@ class ImportFromBEView extends StatefulWidget {
   final String? title;
   final Map config;
 
-  ImportFromBEView({Key? key, this.title, required this.config})
+  const ImportFromBEView({Key? key, this.title, required this.config})
       : super(key: key);
 
   @override
@@ -29,7 +29,7 @@ JavascriptChannel snackbarJavascriptChannel(BuildContext context) {
   return JavascriptChannel(
     name: 'SnackbarJSChannel',
     onMessageReceived: (JavascriptMessage message) {
-      Scaffold.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(message.message),
       ));
     },
@@ -48,9 +48,9 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text(widget.config['page_title']),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.config['page_title']),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -72,7 +72,7 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
                         fit: BoxFit.scaleDown,
                         alignment: Alignment.centerLeft,
                         child: Text(widget.config['banner_content'],
-                            style: TextStyle(color: Colors.white))),
+                            style: const TextStyle(color: Colors.white))),
                     backgroundColor: Theme.of(context).primaryColor,
                     actions: [
                       TextButton(
@@ -88,9 +88,9 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
               onWebViewCreated: (WebViewController webViewController) async {
                 _webViewController = webViewController;
               },
-              javascriptChannels: <JavascriptChannel>[
+              javascriptChannels: <JavascriptChannel>{
                 snackbarJavascriptChannel(context),
-              ].toSet(),
+              },
               onPageFinished: (url) {
                 if (widget.config['redirectUrl'] != '' &&
                     url.startsWith(widget.config['redirectUrl'])) {
@@ -108,31 +108,31 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
 
   import(WebViewController controller, BuildContext context) async {
     try {
-      CourseTableProvider courseTableProvider = new CourseTableProvider();
+      CourseTableProvider courseTableProvider = CourseTableProvider();
       Toast.showToast(S.of(context).class_parse_toast_importing, context);
-      await controller.evaluateJavascript(widget.config['preExtractJS'] ?? '');
+      await controller.runJavascript(widget.config['preExtractJS'] ?? '');
       await Future.delayed(Duration(seconds: widget.config['delayTime'] ?? 0));
 
       String response =
-          await controller.evaluateJavascript(widget.config['extractJS']);
-      response = response.replaceAll('\\u003C', '<').replaceAll('\\\"', '\"');
+          await controller.runJavascriptReturningResult(widget.config['extractJS']);
+      response = response.replaceAll('\\u003C', '<').replaceAll('\\"', '"');
 
       Map courseTableMap = json.decode(response);
       CourseTable courseTable = await courseTableProvider
-          .insert(new CourseTable(courseTableMap['name']));
+          .insert(CourseTable(courseTableMap['name']));
       int index = (courseTable.id!);
-      CourseProvider courseProvider = new CourseProvider();
+      CourseProvider courseProvider = CourseProvider();
       await ScopedModel.of<MainStateModel>(context).changeclassTable(index);
 
       Iterable courses = json.decode(courseTableMap['courses']);
       List<Map<String, dynamic>> coursesMap =
-          new List<Map<String, dynamic>>.from(courses);
-      coursesMap.forEach((courseMap) {
+          List<Map<String, dynamic>>.from(courses);
+      for (var courseMap in coursesMap) {
         courseMap.remove('id');
         courseMap['tableid'] = index;
-        Course course = new Course.fromMap(courseMap);
+        Course course = Course.fromMap(courseMap);
         courseProvider.insert(course);
-      });
+      }
       UmengCommonSdk.onEvent("class_import", {"type": "be", "action": "success"});
       Toast.showToast(S.of(context).class_parse_toast_success, context);
       Navigator.of(context).pop(true);
