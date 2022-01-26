@@ -189,7 +189,6 @@ abstract class ConfigStateModel extends Model {
   Future<bool> removeBgImgPath() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     await sp.remove("bgImgPath");
-    String? bgImgPath = sp.getString("bgImgPath");
     notifyListeners();
     return true;
   }
