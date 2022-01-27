@@ -8,31 +8,34 @@ class BackgroundImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-//    return Container(child: Image.file(File(_bgImgPath)));
-//      Image.file(File(_bgImgPath));
-    if (_bgImgPath == '') {
-      return Container();
+    Future<File?> checkImg() async {
+      if (_bgImgPath == '') {
+        return null;
+      }
+      File file = File(_bgImgPath);
+      if (await file.exists()) {
+        return file;
+      } else {
+        return null;
+      }
     }
-    File file = File(_bgImgPath);
-    // if(file == null)
-    //   return Container();
-    return Container(
-        decoration: BoxDecoration(
-      image: DecorationImage(
-        colorFilter:
-            ColorFilter.mode(Colors.white.withOpacity(0.8), BlendMode.dstATop),
-        image: FileImage(file),
-        fit: BoxFit.cover,
-      ),
-    ));
-//    Container(
-//        decoration: BoxDecoration(
-//      image: DecorationImage(
-//        colorFilter: new ColorFilter.mode(
-//            Colors.white.withOpacity(0.8), BlendMode.dstATop),
-//        image: AssetImage(_bgImgPath),
-//        fit: BoxFit.cover,
-//      ),
-//    ));
+
+    return FutureBuilder(
+        future: checkImg(),
+        builder: (BuildContext context, AsyncSnapshot<File?> snapshot) {
+          if (!snapshot.hasData || snapshot.data == null) {
+            return Container();
+          } else {
+            return Container(
+                decoration: BoxDecoration(
+              image: DecorationImage(
+                colorFilter: ColorFilter.mode(
+                    Colors.white.withOpacity(0.8), BlendMode.dstATop),
+                image: FileImage(snapshot.data!),
+                fit: BoxFit.cover,
+              ),
+            ));
+          }
+        });
   }
 }
