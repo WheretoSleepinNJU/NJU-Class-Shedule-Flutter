@@ -38,7 +38,8 @@ class MDialog extends StatelessWidget {
               widgetCancelAction == null
                   ? Container()
                   : TransBgTextButton(
-                      color: Theme.of(context).primaryColor,
+                      // color: Theme.of(context).primaryColor,
+                      color: Colors.grey,
                       onPressed: widgetCancelAction,
                       child: widgetCancel ?? Text(S.of(context).cancel)),
               TransBgTextButton(

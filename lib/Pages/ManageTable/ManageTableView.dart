@@ -72,7 +72,7 @@ class _ManageTableViewState extends State<ManageTableView> {
   }
 
   Future<bool> _delTableDialog(BuildContext context) async {
-    String? result = await showDialog<String>(
+    bool? result = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
       // dialog is dismissible with a tap on the barrier
@@ -80,11 +80,7 @@ class _ManageTableViewState extends State<ManageTableView> {
         return const DelDialog();
       },
     );
-    if (result == "true") {
-      return true;
-    } else {
-      return false;
-    }
+    return result ?? false;
   }
 
   Future<List<Widget>> _getData(BuildContext context) async {

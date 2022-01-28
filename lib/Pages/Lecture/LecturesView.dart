@@ -12,11 +12,10 @@ import '../../Utils/WeekUtil.dart';
 
 import './Widgets/LectureCard.dart';
 
-//TODO: 课表筛选标签
+//TODO: 讲座搜索
 
 class LectureView extends StatefulWidget {
   const LectureView({Key? key}) : super(key: key);
-
 
   @override
   _LectureViewState createState() => _LectureViewState();
@@ -162,17 +161,19 @@ class _LectureViewState extends State<LectureView> {
     return Scaffold(
         appBar:
             // searchBar.build(context),
-            AppBar(title: Text(S.of(context).lecture_title), actions: const <Widget>[
-          // searchBar.getSearchAction(context),
-          // IconButton(
-          //   icon: Icon(Icons.search),
-          //   onPressed: () async {},
-          // ),
-          // IconButton(
-          //   icon: Icon(Icons.filter_list),
-          //   onPressed: () async {},
-          // ),
-        ]),
+            AppBar(
+                title: Text(S.of(context).lecture_title),
+                actions: const <Widget>[
+              // searchBar.getSearchAction(context),
+              // IconButton(
+              //   icon: Icon(Icons.search),
+              //   onPressed: () async {},
+              // ),
+              // IconButton(
+              //   icon: Icon(Icons.filter_list),
+              //   onPressed: () async {},
+              // ),
+            ]),
         body: RefreshIndicator(
           color: Theme.of(context).primaryColor,
           key: _refreshKey,

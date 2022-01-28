@@ -1,5 +1,6 @@
 import '../../generated/l10n.dart';
 import 'package:dio/dio.dart';
+
 // import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +17,6 @@ import './Widgets/CourseCard.dart';
 
 class AllCourseView extends StatefulWidget {
   const AllCourseView({Key? key}) : super(key: key);
-
 
   @override
   _AllCourseViewState createState() => _AllCourseViewState();
@@ -79,13 +79,12 @@ class _AllCourseViewState extends State<AllCourseView> {
     Dio dio = Dio();
     // print(pageNum);
     var response = await dio.get(Url.URL_BACKEND + '/getAll',
-        queryParameters: {'limit': 5, 'page': pageNum + 1});
+        queryParameters: {'limit': 10, 'page': pageNum + 1});
     totalPages = response.data['total_page'];
 
     for (Map courseRow in response.data['data']) {
       _lectureCards.add(CourseCard(
-          course: await _parseAllCourse(courseRow),
-          count: courseRow['count']));
+          course: await _parseAllCourse(courseRow), count: courseRow['count']));
     }
 
     setState(() {
@@ -138,17 +137,19 @@ class _AllCourseViewState extends State<AllCourseView> {
     return Scaffold(
         appBar:
             // searchBar.build(context),
-            AppBar(title: Text(S.of(context).lecture_title), actions: const <Widget>[
-          // searchBar.getSearchAction(context),
-          // IconButton(
-          //   icon: Icon(Icons.search),
-          //   onPressed: () async {},
-          // ),
-          // IconButton(
-          //   icon: Icon(Icons.filter_list),
-          //   onPressed: () async {},
-          // ),
-        ]),
+            AppBar(
+                title: Text(S.of(context).all_course_title),
+                actions: const <Widget>[
+              // searchBar.getSearchAction(context),
+              // IconButton(
+              //   icon: Icon(Icons.search),
+              //   onPressed: () async {},
+              // ),
+              // IconButton(
+              //   icon: Icon(Icons.filter_list),
+              //   onPressed: () async {},
+              // ),
+            ]),
         body: RefreshIndicator(
           color: Theme.of(context).primaryColor,
           key: _refreshKey,
@@ -195,7 +196,8 @@ class _AllCourseViewState extends State<AllCourseView> {
                                       : Colors.black),
                               checkmarkColor: Colors.white,
                               selected: _filterStatus.contains(2),
-                              selectedColor: Theme.of(context).primaryColor,                              onSelected: (bool value) {
+                              selectedColor: Theme.of(context).primaryColor,
+                              onSelected: (bool value) {
                                 setState(() {
                                   if (value) {
                                     _filterStatus.add(2);
@@ -216,7 +218,8 @@ class _AllCourseViewState extends State<AllCourseView> {
                                       : Colors.black),
                               checkmarkColor: Colors.white,
                               selected: _filterStatus.contains(3),
-                              selectedColor: Theme.of(context).primaryColor,                              onSelected: (bool value) {
+                              selectedColor: Theme.of(context).primaryColor,
+                              onSelected: (bool value) {
                                 setState(() {
                                   if (value) {
                                     _filterStatus.add(3);
