@@ -69,18 +69,18 @@ class _SettingsViewState extends State<SettingsView> {
                 },
               ),
               //TODO: 全校课程
-              ListTile(
-                title: Text(S.of(context).all_course_title),
-                subtitle: Text(S.of(context).all_course_subtitle),
-                onTap: () async {
-                  UmengCommonSdk.onEvent(
-                      "class_import", {"type": "all", "action": "show"});
-                  bool? status = await Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => const AllCourseView()));
-                  if (status == true) Navigator.of(context).pop(status);
-                },
-              ),
+              // ListTile(
+              //   title: Text(S.of(context).all_course_title),
+              //   subtitle: Text(S.of(context).all_course_subtitle),
+              //   onTap: () async {
+              //     UmengCommonSdk.onEvent(
+              //         "class_import", {"type": "all", "action": "show"});
+              //     bool? status = await Navigator.of(context).push(
+              //         MaterialPageRoute(
+              //             builder: (BuildContext context) => const AllCourseView()));
+              //     if (status == true) Navigator.of(context).pop(status);
+              //   },
+              // ),
               ListTile(
                 title: Text(S.of(context).view_lecture_title),
                 subtitle: Text(S.of(context).view_lecture_subtitle),

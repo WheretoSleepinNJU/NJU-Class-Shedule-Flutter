@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:async';
 import 'package:dio/dio.dart';
+import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:in_app_review/in_app_review.dart';
 import '../Models/CourseTableModel.dart';
@@ -61,12 +62,22 @@ class InitUtil {
 
     final InAppReview inAppReview = InAppReview.instance;
     bool hasShowReview = sp.getBool("hasShowReview") ?? false;
-    if (!hasShowReview) return;
+    int delaySeconds = Config.REVIEW_DIALOG_DELAY_SECONDS;
+
+    // for test
+    // print(openTimes);
+    // print(reviewTime);
+    // print(hasShowReview);
+    // hasShowReview = false;
+    // delaySeconds = 1;
+
+    if (hasShowReview) return;
 
     bool inAppReviewAvailable = await inAppReview.isAvailable();
     if (!inAppReviewAvailable) return;
 
-    Timer(const Duration(seconds: Config.REVIEW_DIALOG_DELAY_SECONDS), () {
+    Timer(Duration(seconds: delaySeconds), () {
+      UmengCommonSdk.onEvent("review_dialog", {"action": "show"});
       inAppReview.requestReview();
       sp.setBool("hasShowReview", true);
     });
