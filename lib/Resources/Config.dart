@@ -12,7 +12,7 @@ class Config {
 
   static const int DONATE_DIALOG_DELAY_SECONDS = 10;
   static const int REVIEW_DIALOG_DELAY_SECONDS = 10;
-  static const int REVIEW_DIALOG_SHOW_TIME = 2;
+  static const int REVIEW_DIALOG_SHOW_TIME = 10;
 
   static const Map jw_config = {
     "page_title": "统一认证登录",

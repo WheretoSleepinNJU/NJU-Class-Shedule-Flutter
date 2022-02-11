@@ -20,12 +20,12 @@ class _DelDialogState extends State<DelDialog> {
       widgetCancelAction: () {
         UmengCommonSdk.onEvent(
             "schedule_manage", {"type": "del", "action": "cancel"});
-        Navigator.of(context).pop('false');
+        Navigator.of(context).pop(false);
       },
       widgetOKAction: () {
         UmengCommonSdk.onEvent(
             "schedule_manage", {"type": "del", "action": "accept"});
-        Navigator.of(context).pop('true');
+        Navigator.of(context).pop(true);
       },
     );
   }
