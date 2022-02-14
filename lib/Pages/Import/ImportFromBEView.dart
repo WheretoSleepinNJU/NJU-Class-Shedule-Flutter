@@ -1,12 +1,13 @@
 import 'dart:io';
+import 'dart:async';
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../../Utils/States/MainState.dart';
-import 'dart:async';
 import '../../generated/l10n.dart';
 import '../../Components/Toast.dart';
 import '../../Models/CourseModel.dart';
@@ -112,18 +113,23 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
       Toast.showToast(S.of(context).class_parse_toast_importing, context);
       await controller.runJavascript(widget.config['preExtractJS'] ?? '');
       await Future.delayed(Duration(seconds: widget.config['delayTime'] ?? 0));
-
-      String response =
-          await controller.runJavascriptReturningResult(widget.config['extractJS']);
-      response = response.replaceAll('\\u003C', '<').replaceAll('\\"', '"');
-
+      Dio dio = Dio();
+      String url = widget.config['extractJSfile'];
+      Response rsp = await dio.get(url);
+      String js = rsp.data;
+      String response = await controller.runJavascriptReturningResult(js);
+      // 他妈的，安卓屁事真多
+      response = response
+          // .replaceAll('\\"', '"')
+          // .replaceAll('\\"', '"')
+          .replaceAll('\\u003C', '<');
+      // response = response.substring(1, response.length - 1);
       Map courseTableMap = json.decode(response);
-      CourseTable courseTable = await courseTableProvider
-          .insert(CourseTable(courseTableMap['name']));
+      CourseTable courseTable =
+          await courseTableProvider.insert(CourseTable(courseTableMap['name']));
       int index = (courseTable.id!);
       CourseProvider courseProvider = CourseProvider();
       await ScopedModel.of<MainStateModel>(context).changeclassTable(index);
-
       Iterable courses = json.decode(courseTableMap['courses']);
       List<Map<String, dynamic>> coursesMap =
           List<Map<String, dynamic>>.from(courses);
@@ -131,12 +137,14 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
         courseMap.remove('id');
         courseMap['tableid'] = index;
         Course course = Course.fromMap(courseMap);
-        courseProvider.insert(course);
+        await courseProvider.insert(course);
       }
-      UmengCommonSdk.onEvent("class_import", {"type": "be", "action": "success"});
+      UmengCommonSdk.onEvent(
+          "class_import", {"type": "be", "action": "success"});
       Toast.showToast(S.of(context).class_parse_toast_success, context);
       Navigator.of(context).pop(true);
     } catch (e) {
+      print(e);
       UmengCommonSdk.onEvent("class_import", {"type": "be", "action": "fail"});
       Toast.showToast(S.of(context).online_parse_error_toast, context);
       return;

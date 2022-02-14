@@ -360,10 +360,10 @@ class S {
     );
   }
 
-  /// `从南京大学教务系统导入课表`
+  /// `南京大学本科生教务系统`
   String get import_from_NJU_title {
     return Intl.message(
-      '从南京大学教务系统导入课表',
+      '南京大学本科生教务系统',
       name: 'import_from_NJU_title',
       desc: '',
       args: [],
@@ -380,10 +380,10 @@ class S {
     );
   }
 
-  /// `从南京大学统一认证导入课表`
+  /// `南京大学本科生统一认证`
   String get import_from_NJU_cer_title {
     return Intl.message(
-      '从南京大学统一认证导入课表',
+      '南京大学本科生统一认证',
       name: 'import_from_NJU_cer_title',
       desc: '',
       args: [],
@@ -400,10 +400,10 @@ class S {
     );
   }
 
-  /// `从南京大学选课系统导入课表`
+  /// `南京大学本科生选课系统`
   String get import_from_NJU_xk_title {
     return Intl.message(
-      '从南京大学选课系统导入课表',
+      '南京大学本科生选课系统',
       name: 'import_from_NJU_xk_title',
       desc: '',
       args: [],
@@ -610,10 +610,10 @@ class S {
     );
   }
 
-  /// `南哪课表-南大同学的专属课表APP，导课表、蹭好课、找讲座，快来试试吧！ https://app.nju.today`
+  /// `南哪课表-南大同学的专属课表APP，导课表、蹭好课、找讲座，快来试试吧！ https://nju.app`
   String get share_content {
     return Intl.message(
-      '南哪课表-南大同学的专属课表APP，导课表、蹭好课、找讲座，快来试试吧！ https://app.nju.today',
+      '南哪课表-南大同学的专属课表APP，导课表、蹭好课、找讲座，快来试试吧！ https://nju.app',
       name: 'share_content',
       desc: '',
       args: [],

@@ -171,15 +171,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_from_NJU_cer_subtitle":
             MessageLookupByLibrary.simpleMessage("推荐通过统一认证进行登录导入"),
         "import_from_NJU_cer_title":
-            MessageLookupByLibrary.simpleMessage("从南京大学统一认证导入课表"),
+            MessageLookupByLibrary.simpleMessage("南京大学本科生统一认证"),
         "import_from_NJU_subtitle":
             MessageLookupByLibrary.simpleMessage("20级前同学可使用此方法登录导入"),
         "import_from_NJU_title":
-            MessageLookupByLibrary.simpleMessage("从南京大学教务系统导入课表"),
+            MessageLookupByLibrary.simpleMessage("南京大学本科生教务系统"),
         "import_from_NJU_xk_subtitle":
             MessageLookupByLibrary.simpleMessage("新选课系统，尚不稳定的备选导入方式"),
         "import_from_NJU_xk_title":
-            MessageLookupByLibrary.simpleMessage("从南京大学选课系统导入课表"),
+            MessageLookupByLibrary.simpleMessage("南京大学本科生选课系统"),
         "import_from_lecture": MessageLookupByLibrary.simpleMessage("讲座导入"),
         "import_from_qrcode_content": MessageLookupByLibrary.simpleMessage(
             "扫描二维码导入此课表\n南哪课表-设置-导入/导出课表-二维码导入课表\n有效期一周，扫描一次后过期"),
@@ -276,7 +276,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "report_title": MessageLookupByLibrary.simpleMessage("反馈"),
         "settings_title": MessageLookupByLibrary.simpleMessage("设置"),
         "share_content": MessageLookupByLibrary.simpleMessage(
-            "南哪课表-南大同学的专属课表APP，导课表、蹭好课、找讲座，快来试试吧！ https://app.nju.today"),
+            "南哪课表-南大同学的专属课表APP，导课表、蹭好课、找讲座，快来试试吧！ https://nju.app"),
         "share_subtitle":
             MessageLookupByLibrary.simpleMessage("把南哪课表分享给更多小伙伴吧！"),
         "share_title": MessageLookupByLibrary.simpleMessage("分享此应用"),
