@@ -86,6 +86,6 @@ function scheduleHtmlParser() {
       });
     });
   });
-  return JSON.stringify(rst);
+  return encodeURIComponent(JSON.stringify(rst));
 }
 scheduleHtmlParser();

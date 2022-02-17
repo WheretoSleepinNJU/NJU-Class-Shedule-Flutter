@@ -10,7 +10,7 @@ function scheduleHtmlParser() {
     '日',
   ];
 
-  data = JSON.parse(document.body.innerText.replaceAll('\n', ''));
+  data = JSON.parse(document.body.innerText.replace(/\n/g, ''));
   let name = data['results'][data['results'].length - 1]['XNXQMC'];
   let rst = { name: name, courses: []};
   data['results'].forEach((e) => {
@@ -76,6 +76,6 @@ function scheduleHtmlParser() {
     });
   });
   rst['courses'] = JSON.stringify(rst['courses']);
-  return JSON.stringify(rst);
+  return encodeURIComponent(JSON.stringify(rst));
 }
 scheduleHtmlParser();

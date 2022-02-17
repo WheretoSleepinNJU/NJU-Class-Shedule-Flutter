@@ -114,23 +114,32 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
       await controller.runJavascript(widget.config['preExtractJS'] ?? '');
       await Future.delayed(Duration(seconds: widget.config['delayTime'] ?? 0));
       Dio dio = Dio();
-      String url = widget.config['extractJSfile'];
+      // 他妈的，屁事真多
+      String url = '';
+      if(Platform.isIOS) {
+        url = widget.config['extractJSfileiOS'];
+      } else if(Platform.isAndroid) {
+        url = widget.config['extractJSfileAndroid'];
+      }
       Response rsp = await dio.get(url);
       String js = rsp.data;
       String response = await controller.runJavascriptReturningResult(js);
-      // 他妈的，安卓屁事真多
-      response = response
-          // .replaceAll('\\"', '"')
-          // .replaceAll('\\"', '"')
-          .replaceAll('\\u003C', '<');
-      // response = response.substring(1, response.length - 1);
+      response = Uri.decodeComponent(response.replaceAll('"', ''));
       Map courseTableMap = json.decode(response);
       CourseTable courseTable =
           await courseTableProvider.insert(CourseTable(courseTableMap['name']));
       int index = (courseTable.id!);
       CourseProvider courseProvider = CourseProvider();
       await ScopedModel.of<MainStateModel>(context).changeclassTable(index);
-      Iterable courses = json.decode(courseTableMap['courses']);
+      Iterable courses;
+      // 因为这里有的可能会被encode有的不会 所以做下特殊处理...
+      if(courseTableMap['courses'].runtimeType != String) {
+        courses = courseTableMap['courses'];
+      } else if(json.decode(courseTableMap['courses']).runtimeType != String) {
+        courses = json.decode(courseTableMap['courses']);
+      } else {
+        courses = json.decode(json.decode(courseTableMap['courses']));
+      }
       List<Map<String, dynamic>> coursesMap =
           List<Map<String, dynamic>>.from(courses);
       for (var courseMap in coursesMap) {
@@ -144,7 +153,6 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
       Toast.showToast(S.of(context).class_parse_toast_success, context);
       Navigator.of(context).pop(true);
     } catch (e) {
-      print(e);
       UmengCommonSdk.onEvent("class_import", {"type": "be", "action": "fail"});
       Toast.showToast(S.of(context).online_parse_error_toast, context);
       return;

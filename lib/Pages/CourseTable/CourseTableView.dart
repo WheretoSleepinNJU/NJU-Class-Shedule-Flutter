@@ -130,7 +130,9 @@ class CourseTableViewState extends State<CourseTableView> {
         false;
     if (!rst) return;
     await _presenter.showAfterImport(context);
-    ScopedModel.of<MainStateModel>(context).refresh();
+    setState(() {
+      ScopedModel.of<MainStateModel>(context).refresh();
+    });
   }
 
   @override
