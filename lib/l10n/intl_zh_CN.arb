@@ -47,6 +47,8 @@
   "manage_table_title": "课表管理",
   "manage_table_subtitle": "添加或删除课表数据",
   "change_theme_title": "修改主题",
+  "change_theme_mode_title": "浅色/深色模式切换",
+  "change_theme_mode_subtitle": "是否跟随系统切换模式",
   "shuffle_color_pool_title": "重置课程颜色",
   "shuffle_color_pool_subtitle": "重置课程颜色池",
   "change_week_title": "修改当前周",

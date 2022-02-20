@@ -71,6 +71,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "captcha": MessageLookupByLibrary.simpleMessage("验证码"),
         "captcha_error_toast":
             MessageLookupByLibrary.simpleMessage("验证码错误 > <"),
+        "change_theme_mode_subtitle":
+            MessageLookupByLibrary.simpleMessage("是否跟随系统切换模式"),
+        "change_theme_mode_title":
+            MessageLookupByLibrary.simpleMessage("浅色/深色模式切换"),
         "change_theme_title": MessageLookupByLibrary.simpleMessage("修改主题"),
         "change_week_subtitle": MessageLookupByLibrary.simpleMessage("当前周数："),
         "change_week_title": MessageLookupByLibrary.simpleMessage("修改当前周"),

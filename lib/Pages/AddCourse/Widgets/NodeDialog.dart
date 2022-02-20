@@ -37,7 +37,7 @@ class _NodeDialogState extends State<NodeDialog> {
           TextField(
             decoration: InputDecoration(
               // contentPadding: const EdgeInsets.only(top: 10.0),
-              icon: Icon(Icons.code, color: Theme.of(context).primaryColor),
+              icon: const Icon(Icons.code),
               hintText: S.of(context).class_room,
             ),
             controller: _classroomController,
@@ -59,7 +59,7 @@ class _NodeDialogState extends State<NodeDialog> {
                           initialItem: _node['weekTime'],
                         ),
                         itemExtent: 32.0,
-                        backgroundColor: Colors.white,
+                        // backgroundColor: Colors.white,
                         onSelectedItemChanged: (int index) {
                           setState(() {
                             _node['weekTime'] = index;
@@ -86,7 +86,7 @@ class _NodeDialogState extends State<NodeDialog> {
                           initialItem: _node['startTime'],
                         ),
                         itemExtent: 32.0,
-                        backgroundColor: Colors.white,
+                        // backgroundColor: Colors.white,
                         onSelectedItemChanged: (int index) {
                           setState(() {
                             _node['startTime'] = index;
@@ -115,7 +115,7 @@ class _NodeDialogState extends State<NodeDialog> {
                             initialItem: _node['endTime'],
                           ),
                           itemExtent: 32.0,
-                          backgroundColor: Colors.white,
+                          // backgroundColor: Colors.white,
                           onSelectedItemChanged: (int index) {
                             setState(() {
                               _node['endTime'] = index;
@@ -150,7 +150,7 @@ class _NodeDialogState extends State<NodeDialog> {
                           initialItem: _node['weekType'],
                         ),
                         itemExtent: 32.0,
-                        backgroundColor: Colors.white,
+                        // backgroundColor: Colors.white,
                         onSelectedItemChanged: (int index) {
                           setState(() {
                             _node['weekType'] = index;
@@ -177,7 +177,7 @@ class _NodeDialogState extends State<NodeDialog> {
                           initialItem: _node['startWeek'],
                         ),
                         itemExtent: 32.0,
-                        backgroundColor: Colors.white,
+                        // backgroundColor: Colors.white,
                         onSelectedItemChanged: (int index) {
                           setState(() {
                             _node['startWeek'] = index;
@@ -204,7 +204,7 @@ class _NodeDialogState extends State<NodeDialog> {
                             initialItem: _node['endWeek'],
                           ),
                           itemExtent: 32.0,
-                          backgroundColor: Colors.white,
+                          // backgroundColor: Colors.white,
                           onSelectedItemChanged: (int index) {
                             setState(() {
                               _node['endWeek'] = index;

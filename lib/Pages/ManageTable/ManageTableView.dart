@@ -92,14 +92,13 @@ class _ManageTableViewState extends State<ManageTableView> {
         (int i) => Container(
             color: _selectedIndex == courseTables[i]['id']
                 ? Theme.of(context).primaryColor
-                : Colors.white,
+                : Theme.of(context).backgroundColor,
             child: ListTile(
               title: Text(courseTables[i]['name'],
                   style: TextStyle(
-                    color: _selectedIndex == courseTables[i]['id']
-                        ? Colors.white
-                        : Colors.black,
-                  )),
+                      color: _selectedIndex == courseTables[i]['id']
+                          ? Colors.white
+                          : null)),
               trailing: _selectedIndex == courseTables[i]['id']
                   ? null
                   : IconButton(

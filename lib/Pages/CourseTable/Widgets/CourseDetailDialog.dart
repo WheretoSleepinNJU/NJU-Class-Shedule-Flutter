@@ -60,7 +60,10 @@ class CourseDetailDialog extends StatelessWidget {
       },
       text: text,
       style: const TextStyle(fontSize: 16),
-      linkStyle: TextStyle(color: Theme.of(context).primaryColor),
+      linkStyle: TextStyle(
+          color: Theme.of(context).brightness == Brightness.light
+              ? Theme.of(context).primaryColor
+              : Colors.white),
       options: const LinkifyOptions(humanize: false),
     );
   }
@@ -98,7 +101,7 @@ class CourseDetailDialog extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Row(children: [
-            Icon(Icons.location_on, color: Theme.of(context).primaryColor),
+            const Icon(Icons.location_on),
             const Padding(padding: EdgeInsets.only(left: 5)),
             Flexible(
                 child: linkifyText(
@@ -109,31 +112,31 @@ class CourseDetailDialog extends StatelessWidget {
           ]),
           const Padding(padding: EdgeInsets.only(bottom: 10)),
           Row(children: [
-            Icon(Icons.account_circle, color: Theme.of(context).primaryColor),
+            const Icon(Icons.account_circle),
             const Padding(padding: EdgeInsets.only(left: 5)),
             Flexible(child: linkifyText(context, course.teacher ?? '')),
           ]),
           const Padding(padding: EdgeInsets.only(bottom: 10)),
           Row(children: [
-            Icon(Icons.access_time, color: Theme.of(context).primaryColor),
+            const Icon(Icons.access_time),
             const Padding(padding: EdgeInsets.only(left: 5)),
             Flexible(child: linkifyText(context, weekString)),
           ]),
           const Padding(padding: EdgeInsets.only(bottom: 10)),
           Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Icon(Icons.event, color: Theme.of(context).primaryColor),
+            const Icon(Icons.event),
             const Padding(padding: EdgeInsets.only(left: 5)),
             Flexible(child: linkifyText(context, weekListString)),
           ]),
           const Padding(padding: EdgeInsets.only(bottom: 10)),
           Row(children: [
-            Icon(Icons.settings_suggest, color: Theme.of(context).primaryColor),
+            const Icon(Icons.settings_suggest),
             const Padding(padding: EdgeInsets.only(left: 5)),
             Flexible(child: linkifyText(context, importTypeStr)),
           ]),
           const Padding(padding: EdgeInsets.only(bottom: 10)),
           Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Icon(Icons.description, color: Theme.of(context).primaryColor),
+            const Icon(Icons.description),
             const Padding(padding: EdgeInsets.only(left: 5)),
             Flexible(
                 child: linkifyText(

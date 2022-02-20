@@ -20,6 +20,7 @@ class MoreSettingsView extends StatefulWidget {
 
 class _MoreSettingsViewState extends State<MoreSettingsView> {
   bool showCustomClassHeight = false;
+  bool showWhiteTitleMode = false;
 
   @override
   void initState() {
@@ -29,8 +30,10 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
 
   init() async {
     bool forceZoom = await _getForceZoom();
+    bool hasPic = await _getHasImgPath();
     setState(() {
       showCustomClassHeight = !forceZoom;
+      showWhiteTitleMode = hasPic;
     });
   }
 
@@ -45,6 +48,48 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
           SingleChildScrollView(
               child: Column(
                   children: ListTile.divideTiles(context: context, tiles: [
+            ListTile(
+                title: Text(S.of(context).change_theme_mode_title),
+                subtitle: Text(S.of(context).change_theme_mode_subtitle),
+                trailing: FutureBuilder<int>(
+                    future: _getThemeIndex(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<int> snapshot) {
+                      if (!snapshot.hasData) {
+                        return Container(width: 0);
+                      } else {
+                        // return DropdownButton(items: items, onChanged: onChanged)
+                        return DropdownButton<int>(
+                            value: snapshot.data,
+                            items: [
+                              DropdownMenuItem(
+                                  child: Row(children: const [
+                                    Icon(Icons.settings),
+                                    Text('跟随系统')
+                                  ]),
+                                  value: 0),
+                              DropdownMenuItem(
+                                  child: Row(children: const [
+                                    Icon(Icons.wb_sunny),
+                                    Text('浅色模式')
+                                  ]),
+                                  value: 1),
+                              DropdownMenuItem(
+                                  child: Row(children: const [
+                                    Icon(Icons.shield_moon),
+                                    Text('深色模式')
+                                  ]),
+                                  value: 2)
+                            ],
+                            onChanged: (value) {
+                              UmengCommonSdk.onEvent("more_setting",
+                                  {"type": 12, "result": value.toString()});
+                              ScopedModel.of<MainStateModel>(context)
+                                  .changeThemeMode(value ?? 0);
+                              setState(() {});
+                            });
+                      }
+                    })),
             ListTile(
               title: Text(S.of(context).shuffle_color_pool_title),
               subtitle: Text(S.of(context).shuffle_color_pool_subtitle),
@@ -115,28 +160,32 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                 Navigator.of(context).pop();
               },
             ),
-            ListTile(
-                title: Text(S.of(context).white_title_mode_title),
-                subtitle: Text(S.of(context).white_title_mode_subtitle),
-                trailing: FutureBuilder<bool>(
-                    future: _getWhiteMode(),
-                    builder:
-                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                      if (!snapshot.hasData) {
-                        return Container(width: 0);
-                      } else {
-                        return Switch(
-                            activeColor: Theme.of(context).primaryColor,
-                            value: snapshot.data!,
-                            onChanged: (bool value) {
-                              UmengCommonSdk.onEvent("more_setting",
-                                  {"type": 4, "result": value.toString()});
-                              ScopedModel.of<MainStateModel>(context)
-                                  .setWhiteMode(value);
-                              setState(() {});
-                            });
-                      }
-                    })),
+            showWhiteTitleMode
+                ? ListTile(
+                    title: Text(S.of(context).white_title_mode_title),
+                    subtitle: Text(S.of(context).white_title_mode_subtitle),
+                    trailing: FutureBuilder<bool>(
+                        future: _getWhiteMode(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<bool> snapshot) {
+                          if (!snapshot.hasData) {
+                            return Container(width: 0);
+                          } else {
+                            return Switch(
+                                activeColor: Theme.of(context)
+                                    .appBarTheme
+                                    .backgroundColor,
+                                value: snapshot.data!,
+                                onChanged: (bool value) {
+                                  UmengCommonSdk.onEvent("more_setting",
+                                      {"type": 4, "result": value.toString()});
+                                  ScopedModel.of<MainStateModel>(context)
+                                      .setWhiteMode(value);
+                                  setState(() {});
+                                });
+                          }
+                        }))
+                : Container(width: 0),
             ListTile(
                 title: Text(S.of(context).hide_add_button_title),
                 subtitle: Text(S.of(context).hide_add_button_subtitle),
@@ -148,7 +197,8 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                         return Container(width: 0);
                       } else {
                         return Switch(
-                            activeColor: Theme.of(context).primaryColor,
+                            activeColor:
+                                Theme.of(context).appBarTheme.backgroundColor,
                             value: !snapshot.data!,
                             onChanged: (bool value) {
                               UmengCommonSdk.onEvent("more_setting",
@@ -170,7 +220,8 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                          activeColor: Theme.of(context).primaryColor,
+                          activeColor:
+                              Theme.of(context).appBarTheme.backgroundColor,
                           value: snapshot.data!,
                           onChanged: (bool value) {
                             UmengCommonSdk.onEvent("more_setting",
@@ -193,7 +244,8 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                          activeColor: Theme.of(context).primaryColor,
+                          activeColor:
+                              Theme.of(context).appBarTheme.backgroundColor,
                           value: snapshot.data!,
                           onChanged: (bool value) {
                             UmengCommonSdk.onEvent("more_setting",
@@ -216,7 +268,8 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                          activeColor: Theme.of(context).primaryColor,
+                          activeColor:
+                              Theme.of(context).appBarTheme.backgroundColor,
                           value: snapshot.data!,
                           onChanged: (bool value) {
                             UmengCommonSdk.onEvent("more_setting",
@@ -239,7 +292,8 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                          activeColor: Theme.of(context).primaryColor,
+                          activeColor:
+                              Theme.of(context).appBarTheme.backgroundColor,
                           value: snapshot.data!,
                           onChanged: (bool value) {
                             UmengCommonSdk.onEvent("more_setting",
@@ -262,7 +316,8 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                          activeColor: Theme.of(context).primaryColor,
+                          activeColor:
+                              Theme.of(context).appBarTheme.backgroundColor,
                           value: snapshot.data!,
                           onChanged: (bool value) {
                             UmengCommonSdk.onEvent("more_setting",
@@ -285,7 +340,8 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                          activeColor: Theme.of(context).primaryColor,
+                          activeColor:
+                              Theme.of(context).appBarTheme.backgroundColor,
                           value: snapshot.data!,
                           onChanged: (bool value) {
                             ScopedModel.of<MainStateModel>(context)
@@ -334,6 +390,10 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
         ])));
   }
 
+  Future<int> _getThemeIndex() async {
+    return await ScopedModel.of<MainStateModel>(context).getThemeMode();
+  }
+
   Future<bool> _getShowWeekend() async {
     return await ScopedModel.of<MainStateModel>(context).getShowWeekend();
   }
@@ -370,7 +430,15 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
     return await ScopedModel.of<MainStateModel>(context).getAddButton();
   }
 
+  Future<bool> _getHasImgPath() async {
+    String imgPath =
+        await ScopedModel.of<MainStateModel>(context).getBgImgPath();
+    return imgPath != "";
+  }
+
   Future<bool> _getWhiteMode() async {
-    return await ScopedModel.of<MainStateModel>(context).getWhiteMode();
+    bool whiteMode =
+        await ScopedModel.of<MainStateModel>(context).getWhiteMode();
+    return whiteMode;
   }
 }

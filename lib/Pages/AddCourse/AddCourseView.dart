@@ -58,8 +58,7 @@ class _AddViewState extends State<AddView> {
                         borderSide:
                             BorderSide(color: Theme.of(context).primaryColor),
                       ),
-                      icon: Icon(Icons.book,
-                          color: Theme.of(context).primaryColor),
+                      icon: const Icon(Icons.book),
                       hintText: S.of(context).class_name,
                       errorText: _classNameIsValid
                           ? null
@@ -78,8 +77,7 @@ class _AddViewState extends State<AddView> {
                       borderSide:
                           BorderSide(color: Theme.of(context).primaryColor),
                     ),
-                    icon: Icon(Icons.account_circle,
-                        color: Theme.of(context).primaryColor),
+                    icon: const Icon(Icons.account_circle),
                     hintText: S.of(context).class_teacher,
                   ),
                 ),
@@ -87,10 +85,7 @@ class _AddViewState extends State<AddView> {
                   padding: EdgeInsets.all(10),
                 ),
                 Row(children: <Widget>[
-                  Icon(
-                    Icons.code,
-                    color: Theme.of(context).primaryColor,
-                  ),
+                  const Icon(Icons.code),
                   const Padding(
                     padding: EdgeInsets.all(8),
                   ),
@@ -105,9 +100,7 @@ class _AddViewState extends State<AddView> {
                             (_node['classroom']) +
                             ' ' +
                             Constant.WEEK_TYPES[_node['weekType']],
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Theme.of(context).primaryColor),
+                        style: const TextStyle(fontSize: 16),
                       ),
                       onTap: () async {
                         Map newNode = (await showDialog<Map>(

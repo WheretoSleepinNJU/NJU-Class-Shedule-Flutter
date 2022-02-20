@@ -41,7 +41,7 @@ class WeekChanger extends StatelessWidget {
                                     : snapshot.data! - 1,
                               ),
                               itemExtent: 32.0,
-                              backgroundColor: Colors.white,
+                              // backgroundColor: Colors.white,
                               onSelectedItemChanged: (int index) {
                                 changedWeek = index;
                               },

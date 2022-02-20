@@ -510,6 +510,26 @@ class S {
     );
   }
 
+  /// `浅色/深色模式切换`
+  String get change_theme_mode_title {
+    return Intl.message(
+      '浅色/深色模式切换',
+      name: 'change_theme_mode_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `是否跟随系统切换模式`
+  String get change_theme_mode_subtitle {
+    return Intl.message(
+      '是否跟随系统切换模式',
+      name: 'change_theme_mode_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `重置课程颜色`
   String get shuffle_color_pool_title {
     return Intl.message(
