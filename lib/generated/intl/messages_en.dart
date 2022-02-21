@@ -257,7 +257,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "online_parse_error_toast":
             MessageLookupByLibrary.simpleMessage("导入课表失败，可能是 bug"),
         "open_source_library_content": MessageLookupByLibrary.simpleMessage(
-            "shared_preferences: ^2.0.7\nflutter_swiper_null_safety: ^1.0.2\nscoped_model: ^2.0.0-nullsafety.0\nazlistview: ^2.0.0-nullsafety.0\nwebview_flutter: ^2.0.13\nflutter_linkify: ^5.0.2\nimage_picker: ^0.8.4\npackage_info: ^2.0.2\npath_provider: ^2.0.3\nurl_launcher: ^6.0.10\nflutter_html: ^2.1.3\nfluttertoast: ^8.0.1\nsqflite: ^2.0.0+4\nhtml: ^0.15.0\ndio: ^4.0.0"),
+            "shared_preferences: ^2.0.7\nflutter_swiper_null_safety: ^1.0.2\nscoped_model: ^2.0.0-nullsafety.0\nazlistview: ^2.0.0-nullsafety.0\nwebview_flutter: ^2.0.13\nflutter_linkify: ^5.0.2\nimage_picker: ^0.8.4\npackage_info: ^2.0.2\npath_provider: ^2.0.3\nurl_launcher: ^6.0.10\nflutter_html: ^2.1.3\nfluttertoast: ^8.0.1\nsqflite: ^2.0.0+4\nhtml: ^0.15.0\ndio: ^4.0.0\nhome_widget: ^0.1.5\nworkmanager: ^0.4.1"),
         "open_source_library_title":
             MessageLookupByLibrary.simpleMessage("所使用到的开源库"),
         "password": MessageLookupByLibrary.simpleMessage("密码"),

@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:workmanager/workmanager.dart';
 
+import 'Utils/HomeWidgetUtil.dart';
 import 'generated/l10n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
@@ -14,7 +16,15 @@ import 'Resources/Themes.dart';
 import 'Utils/States/MainState.dart';
 import 'Utils/InitUtil.dart';
 
+void callbackDispatcher() {
+  Workmanager().executeTask((taskName, inputData) async {
+    return await HomeWidgetUtil().updateWidget();
+  });
+}
+
 void main() async {
+  bool isInDebugMode = false;
+
   WidgetsFlutterBinding.ensureInitialized();
   //Initialize the app config.
   int themeIndex = await InitUtil.initialize();
@@ -23,12 +33,20 @@ void main() async {
       '5f8ef217fac90f1c19a7b0f3', '5f9e1efa1c520d30739d2737', 'Umeng');
   UmengCommonSdk.setPageCollectionModeAuto();
   // UmengCommonSdk.onEvent("privacy_accept", {"result":"accept"});
+  Workmanager().initialize(
+      callbackDispatcher, // The top level function, aka callbackDispatcher
+      isInDebugMode:
+      isInDebugMode // If enabled it will post a notification whenever the task is running. Handy for debugging tasks
+  );
 
-  /// 原生安卓上去除状态栏遮罩
   if (Platform.isAndroid) {
+    /// 原生安卓上去除状态栏遮罩
     SystemChrome.setSystemUIOverlayStyle(
         const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
   }
+  Workmanager().registerPeriodicTask("1", "simplePeriodicTask",
+      frequency: const Duration(minutes: 15));
+  isInDebugMode ? Workmanager().registerOneOffTask("2", "simpleTask") : null;
   runApp(MyApp(themeIndex));
 }
 

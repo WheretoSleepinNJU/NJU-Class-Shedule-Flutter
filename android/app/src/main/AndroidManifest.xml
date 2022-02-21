@@ -30,6 +30,25 @@
         android:usesCleartextTraffic="true"
         android:extractNativeLibs="true">
         <!-- CNM 这也太吓人了 升级个gradle 6.5 包体积直接从25M翻倍到50+M 就nm离谱... -->
+        <!--小部件-->
+        <receiver android:name="SingleCourseWidgetProvider"
+                  android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                       android:resource="@xml/single_course_widget" />
+        </receiver>
+        <!--                           Used for Background Work -->
+        <receiver android:name="es.antonborri.home_widget.HomeWidgetBackgroundReceiver"
+                  android:exported="true">
+            <intent-filter>
+                <action android:name="com.lilystudio.wheretosleepinnju.action.BACKGROUND" />
+            </intent-filter>
+        </receiver>
+        <service android:name="es.antonborri.home_widget.HomeWidgetBackgroundService"
+                 android:permission="android.permission.BIND_JOB_SERVICE" android:exported="true"/>
+        <!--小部件End-->
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
