@@ -5,10 +5,11 @@ import '../../Resources/Constant.dart';
 
 class AddCoursePresenter {
   Future<bool> addCourse(BuildContext context, String name, String teacher,
+      String info,
       List<Map> nodes) async {
     int tableId = await MainStateModel.of(context).getClassTable();
     // initialize
-    if(tableId == 0) {
+    if (tableId == 0) {
       tableId = 1;
       await MainStateModel.of(context).changeclassTable(1);
     }
@@ -23,7 +24,8 @@ class AddCoursePresenter {
           node['endTime'] - node['startTime'],
           Constant.ADD_MANUALLY,
           classroom: node['classroom'] == '' ? null : node['classroom'],
-          teacher: teacher == '' ? null : teacher);
+          teacher: teacher == '' ? null : teacher,
+          info: info);
       CourseProvider courseProvider = CourseProvider();
       course = await courseProvider.insert(course);
       if (course.id == null) return false;
