@@ -8,7 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info/package_info.dart';
 import '../ManageTable/ManageTableView.dart';
 import '../Import/ImportView.dart';
-import '../AllCourse/AllCourseView.dart';
+// import '../AllCourse/AllCourseView.dart';
 import '../Lecture/LecturesView.dart';
 import '../About/AboutView.dart';
 import '../AddCourse/AddCourseView.dart';
@@ -64,7 +64,8 @@ class _SettingsViewState extends State<SettingsView> {
                       "class_import", {"type": "auto", "action": "show"});
                   bool? status = await Navigator.of(context).push(
                       MaterialPageRoute(
-                          builder: (BuildContext context) => const ImportView()));
+                          builder: (BuildContext context) =>
+                              const ImportView()));
                   if (status == true) Navigator.of(context).pop(status);
                 },
               ),
@@ -89,7 +90,8 @@ class _SettingsViewState extends State<SettingsView> {
                       "class_import", {"type": "lecture", "action": "show"});
                   bool? status = await Navigator.of(context).push(
                       MaterialPageRoute(
-                          builder: (BuildContext context) => const LectureView()));
+                          builder: (BuildContext context) =>
+                              const LectureView()));
                   if (status == true) Navigator.of(context).pop(status);
                 },
               ),
@@ -141,7 +143,8 @@ class _SettingsViewState extends State<SettingsView> {
                 onTap: () {
                   UmengCommonSdk.onEvent("schedule_manage", {"action": "show"});
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => const ManageTableView()));
+                      builder: (BuildContext context) =>
+                          const ManageTableView()));
                 },
               ),
               // TODO: Refresh multi times when changing themes.
@@ -152,7 +155,8 @@ class _SettingsViewState extends State<SettingsView> {
                 onTap: () {
                   UmengCommonSdk.onEvent("more_setting", {"action": "show"});
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => const MoreSettingsView()));
+                      builder: (BuildContext context) =>
+                          const MoreSettingsView()));
                 },
               ),
               const WeekChanger(),
@@ -220,7 +224,7 @@ class _SettingsViewState extends State<SettingsView> {
                       }
                     }),
                 onTap: () {
-                  UmengCommonSdk.onEvent("about_click", { "action": "show"});
+                  UmengCommonSdk.onEvent("about_click", {"action": "show"});
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) => const AboutView()));
                 },

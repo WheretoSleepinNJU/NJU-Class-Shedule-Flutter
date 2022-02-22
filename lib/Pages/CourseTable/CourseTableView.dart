@@ -74,10 +74,11 @@ class CourseTableViewState extends State<CourseTableView> {
 
     _bgImgPath = await ScopedModel.of<MainStateModel>(context).getBgImgPath();
 
-    if(_bgImgPath == '') {
+    if (_bgImgPath == '') {
       _isWhiteMode = null;
     } else {
-      _isWhiteMode = await ScopedModel.of<MainStateModel>(context).getWhiteMode();
+      _isWhiteMode =
+          await ScopedModel.of<MainStateModel>(context).getWhiteMode();
     }
 
     _maxShowClasses = Config.MAX_CLASSES;

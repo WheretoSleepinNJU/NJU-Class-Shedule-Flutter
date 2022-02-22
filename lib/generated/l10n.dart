@@ -1370,6 +1370,16 @@ class S {
     );
   }
 
+  /// `备注`
+  String get class_info {
+    return Intl.message(
+      '备注',
+      name: 'class_info',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `上课地点`
   String get class_room {
     return Intl.message(

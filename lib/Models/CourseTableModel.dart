@@ -32,7 +32,6 @@ class CourseTable {
   }
 }
 
-
 class CourseTableProvider {
   Database? db;
   DbHelper dbHelper = DbHelper();
@@ -65,8 +64,7 @@ class CourseTableProvider {
 
   Future<List> getAllCourseTable() async {
     await open();
-    List<Map> rst = await db!.query(tableName,
-        columns: [columnId, columnName]);
+    List<Map> rst = await db!.query(tableName, columns: [columnId, columnName]);
 //    await close();
     return rst.toList();
   }
@@ -75,7 +73,8 @@ class CourseTableProvider {
     await open();
     CourseProvider courseProvider = CourseProvider();
     await courseProvider.deleteByTable(id);
-    int rst = await db!.delete(tableName, where: '$columnId = ?', whereArgs: [id]);
+    int rst =
+        await db!.delete(tableName, where: '$columnId = ?', whereArgs: [id]);
 //    await close();
     return rst;
   }

@@ -68,5 +68,9 @@ class Constant {
   //TODO: add 自定义
   static const List<String> WEEK_TYPES = ['全部', '单周', '双周'];
 
-  static const themeModeList = [ThemeMode.system, ThemeMode.light, ThemeMode.dark];
+  static const themeModeList = [
+    ThemeMode.system,
+    ThemeMode.light,
+    ThemeMode.dark
+  ];
 }

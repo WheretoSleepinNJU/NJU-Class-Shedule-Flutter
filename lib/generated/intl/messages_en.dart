@@ -86,6 +86,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "class_height_subtitle":
             MessageLookupByLibrary.simpleMessage("仅当强制缩放关闭时生效"),
         "class_height_title": MessageLookupByLibrary.simpleMessage("自定义课程显示长度"),
+        "class_info": MessageLookupByLibrary.simpleMessage("备注"),
         "class_name": MessageLookupByLibrary.simpleMessage("课程名称"),
         "class_name_empty": MessageLookupByLibrary.simpleMessage("请输入课程名称"),
         "class_num_invalid_dialog_content":

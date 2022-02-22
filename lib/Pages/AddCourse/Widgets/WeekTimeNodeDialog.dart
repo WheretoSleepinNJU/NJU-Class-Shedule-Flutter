@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
+
 import '../../../generated/l10n.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import '../../../Resources/Constant.dart';
 import '../../../Resources/Config.dart';
 import '../../../Components/Dialog.dart';
@@ -61,7 +62,12 @@ class _WeekTimeNodeDialogState extends State<WeekTimeNodeDialog> {
                           return Center(
                             child: Text(
                               Constant.WEEK_WITHOUT_BIAS[index],
-                              style: const TextStyle(fontSize: 16),
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? Colors.black
+                                      : Colors.white),
                             ),
                           );
                         })),
@@ -93,7 +99,12 @@ class _WeekTimeNodeDialogState extends State<WeekTimeNodeDialog> {
                               S
                                   .of(context)
                                   .class_single((index + 1).toString()),
-                              style: const TextStyle(fontSize: 13),
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? Colors.black
+                                      : Colors.white),
                             ),
                           );
                         })),
@@ -125,7 +136,12 @@ class _WeekTimeNodeDialogState extends State<WeekTimeNodeDialog> {
                                 S
                                     .of(context)
                                     .class_single((index + 1).toString()),
-                                style: const TextStyle(fontSize: 13),
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: Theme.of(context).brightness ==
+                                            Brightness.light
+                                        ? Colors.black
+                                        : Colors.white),
                               ),
                             );
                           })))

@@ -88,7 +88,12 @@ class _WeekNodeDialogState extends State<WeekNodeDialog> {
                           return Center(
                             child: Text(
                               Constant.WEEK_TYPES[index],
-                              style: const TextStyle(fontSize: 16),
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? Colors.black
+                                      : Colors.white),
                             ),
                           );
                         })),
@@ -113,14 +118,17 @@ class _WeekNodeDialogState extends State<WeekNodeDialog> {
                             _node['startWeek'] = index;
                           });
                         },
-                        children: List<Widget>.generate(Config.MAX_CLASSES,
+                        children: List<Widget>.generate(Config.MAX_WEEKS,
                             (int index) {
                           return Center(
                             child: Text(
-                              S
-                                  .of(context)
-                                  .week((index + 1).toString()),
-                              style: const TextStyle(fontSize: 13),
+                              S.of(context).week((index + 1).toString()),
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? Colors.black
+                                      : Colors.white),
                             ),
                           );
                         })),
@@ -149,10 +157,13 @@ class _WeekNodeDialogState extends State<WeekNodeDialog> {
                               (int index) {
                             return Center(
                               child: Text(
-                                S
-                                    .of(context)
-                                    .week((index + 1).toString()),
-                                style: const TextStyle(fontSize: 13),
+                                S.of(context).week((index + 1).toString()),
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: Theme.of(context).brightness ==
+                                            Brightness.light
+                                        ? Colors.black
+                                        : Colors.white),
                               ),
                             );
                           })))

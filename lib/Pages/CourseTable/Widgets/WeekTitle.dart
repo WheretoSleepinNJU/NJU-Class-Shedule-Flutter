@@ -58,16 +58,14 @@ class WeekTitle extends StatelessWidget {
                               ),
                               Text(
                                 _dayList[i],
-                                style: TextStyle(
-                                    fontSize: 10,
-                                    color: getColor()),
+                                style:
+                                    TextStyle(fontSize: 10, color: getColor()),
                               )
                             ])
                       : Center(
                           child: Text(
                             Constant.WEEK_WITHOUT_BIAS_WITHOUT_PRE[i],
-                            style: TextStyle(
-                                color:getColor()),
+                            style: TextStyle(color: getColor()),
                           ),
                         ),
                 ),
@@ -97,9 +95,7 @@ class WeekTitle extends StatelessWidget {
                             Text(
 //                              WeekUtil.getNowMonthName() + '.',
                               WeekUtil.getTmpMonthName(_biasWeek) + '.',
-                              style: TextStyle(
-                                  fontSize: 10,
-                                  color: getColor()),
+                              style: TextStyle(fontSize: 10, color: getColor()),
                             )
                           ]),
                     )

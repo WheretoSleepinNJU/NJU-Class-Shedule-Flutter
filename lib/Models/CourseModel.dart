@@ -164,8 +164,8 @@ class CourseProvider {
 
   Future<int> deleteByTable(int id) async {
     await open();
-    int rst =
-    await db!.delete(tableName, where: '$columnTableId = ?', whereArgs: [id]);
+    int rst = await db!
+        .delete(tableName, where: '$columnTableId = ?', whereArgs: [id]);
 //    await close();
     return rst;
   }
@@ -196,8 +196,7 @@ class CourseProvider {
         await db!.rawQuery('SELECT MAX($columnCourseId) FROM $tableName');
     List maxIdList = maxId.toList();
 //    print(maxIdList);
-    if (maxIdList.isEmpty ||
-        maxIdList[0]['MAX($columnCourseId)'] == null) {
+    if (maxIdList.isEmpty || maxIdList[0]['MAX($columnCourseId)'] == null) {
       return 0;
     } else {
       return maxIdList[0]['MAX($columnCourseId)'] + 1;

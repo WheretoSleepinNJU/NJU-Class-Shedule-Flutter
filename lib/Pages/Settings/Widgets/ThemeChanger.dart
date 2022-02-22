@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scoped_model/scoped_model.dart';
+// import 'package:scoped_model/scoped_model.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import '../../../Utils/States/MainState.dart';
 import '../../../Resources/Themes.dart';

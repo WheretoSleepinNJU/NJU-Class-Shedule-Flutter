@@ -133,9 +133,10 @@ class CourseTablePresenter {
                     Container(
                         alignment: Alignment.centerRight,
                         child: TransBgTextButton(
-                            color: Theme.of(context).brightness == Brightness.light
-                                ? Theme.of(context).primaryColor
-                                : Colors.white,
+                            color:
+                                Theme.of(context).brightness == Brightness.light
+                                    ? Theme.of(context).primaryColor
+                                    : Colors.white,
                             child: Text(S.of(context).love_and_donate),
                             onPressed: () async {
                               UmengCommonSdk.onEvent(
@@ -150,9 +151,10 @@ class CourseTablePresenter {
                     Container(
                         alignment: Alignment.centerRight,
                         child: TransBgTextButton(
-                            color: Theme.of(context).brightness == Brightness.light
-                                ? Theme.of(context).primaryColor
-                                : Colors.white,
+                            color:
+                                Theme.of(context).brightness == Brightness.light
+                                    ? Theme.of(context).primaryColor
+                                    : Colors.white,
                             child: Text(S.of(context).bug_and_report,
                                 style: TextStyle(
                                     color: Theme.of(context).primaryColor)),

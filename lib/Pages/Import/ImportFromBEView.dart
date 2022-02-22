@@ -116,9 +116,9 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
       Dio dio = Dio();
       // 他妈的，屁事真多
       String url = '';
-      if(Platform.isIOS) {
+      if (Platform.isIOS) {
         url = widget.config['extractJSfileiOS'];
-      } else if(Platform.isAndroid) {
+      } else if (Platform.isAndroid) {
         url = widget.config['extractJSfileAndroid'];
       }
       Response rsp = await dio.get(url);
@@ -133,9 +133,9 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
       await ScopedModel.of<MainStateModel>(context).changeclassTable(index);
       Iterable courses;
       // 因为这里有的可能会被encode有的不会 所以做下特殊处理...
-      if(courseTableMap['courses'].runtimeType != String) {
+      if (courseTableMap['courses'].runtimeType != String) {
         courses = courseTableMap['courses'];
-      } else if(json.decode(courseTableMap['courses']).runtimeType != String) {
+      } else if (json.decode(courseTableMap['courses']).runtimeType != String) {
         courses = json.decode(courseTableMap['courses']);
       } else {
         courses = json.decode(json.decode(courseTableMap['courses']));

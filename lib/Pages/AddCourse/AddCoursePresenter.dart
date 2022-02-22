@@ -5,8 +5,7 @@ import '../../Resources/Constant.dart';
 
 class AddCoursePresenter {
   Future<bool> addCourse(BuildContext context, String name, String teacher,
-      String info,
-      List<Map> nodes) async {
+      String info, List<Map> nodes) async {
     int tableId = await MainStateModel.of(context).getClassTable();
     // initialize
     if (tableId == 0) {

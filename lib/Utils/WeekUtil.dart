@@ -10,7 +10,7 @@ class WeekUtil {
     // print(lastMondayString);
     if (lastMondayString == null) {
       await _initWeek(thisMondayString, 1);
-    } else{
+    } else {
       DateTime lastMonday = DateTime.parse(lastMondayString);
       int weekBias = thisMonday.difference(lastMonday).inDays ~/ 7;
       if (weekBias != 0) await _setWeek(thisMondayString, weekBias);

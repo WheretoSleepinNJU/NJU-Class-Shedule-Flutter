@@ -7,7 +7,6 @@ import '../../Components/Toast.dart';
 import '../../Components/Dialog.dart';
 import 'AddCoursePresenter.dart';
 
-import 'Widgets/NodeDialog.dart';
 import 'Widgets/WeekNodeDialog.dart';
 import 'Widgets/WeekTimeNodeDialog.dart';
 
@@ -98,10 +97,10 @@ class _AddViewState extends State<AddView> {
                   decoration: InputDecoration(
                     focusedBorder: UnderlineInputBorder(
                       borderSide:
-                      BorderSide(color: Theme.of(context).primaryColor),
+                          BorderSide(color: Theme.of(context).primaryColor),
                     ),
                     icon: const Icon(Icons.sticky_note_2),
-                    hintText: '备注',
+                    hintText: S.of(context).class_info,
                   ),
                 ),
                 const Padding(

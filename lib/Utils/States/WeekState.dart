@@ -6,6 +6,7 @@ abstract class WeekStateModel extends Model {
   int? _tmpWeekIndex;
 
   get wekIndex => _weekIndex;
+
   get tmpWeekIndex => _tmpWeekIndex;
 
   void changeWeek(int weekIndex) async {
@@ -42,6 +43,4 @@ abstract class WeekStateModel extends Model {
     // 默认给 weekIndex
     return getWeek();
   }
-
-
 }

@@ -82,8 +82,7 @@ class CourseParser {
 
         Course course = Course(
             tableId, courseName, weekSeries, weekTime, startTime, timeCount, 1,
-            classroom: classRoom, teacher: courseTeacher, info: courseInfo
-            );
+            classroom: classRoom, teacher: courseTeacher, info: courseInfo);
 
         rst.add(course);
       }
@@ -111,7 +110,7 @@ class CourseParser {
     try {
       info = info.split(' ')[2];
       strs = info.split(',');
-    } catch (e){
+    } catch (e) {
       return '[]';
     }
 
@@ -170,7 +169,6 @@ class CourseParser {
     }
 
     return weekList.toString();
-
 
     // // x-x周 (单周|双周)
     // var weeksResult = patten2.firstMatch(info);
