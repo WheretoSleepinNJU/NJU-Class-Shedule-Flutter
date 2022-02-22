@@ -36,7 +36,7 @@ class CourseTableViewState extends State<CourseTableView> {
   late bool _isShowDate;
   late bool _isForceZoom;
   late bool _isShowAddButton;
-  late bool _isWhiteMode;
+  late bool? _isWhiteMode;
   late int _maxShowClasses;
   late int _maxShowDays;
   late int _nowWeekNum;
@@ -71,9 +71,16 @@ class CourseTableViewState extends State<CourseTableView> {
 
     _isShowAddButton =
         await ScopedModel.of<MainStateModel>(context).getAddButton();
-    _isWhiteMode = await ScopedModel.of<MainStateModel>(context).getWhiteMode();
 
     _bgImgPath = await ScopedModel.of<MainStateModel>(context).getBgImgPath();
+
+    if (_bgImgPath == '') {
+      _isWhiteMode = null;
+    } else {
+      _isWhiteMode =
+          await ScopedModel.of<MainStateModel>(context).getWhiteMode();
+    }
+
     _maxShowClasses = Config.MAX_CLASSES;
     _maxShowDays = _isShowWeekend ? 7 : 5;
     int index = await ScopedModel.of<MainStateModel>(context).getClassTable();

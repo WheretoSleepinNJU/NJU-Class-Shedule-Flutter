@@ -71,11 +71,12 @@ class _ImportViewState extends State<ImportView> {
             Column(
                 children: ListTile.divideTiles(context: context, tiles: [
           Container(
-            child: Text(S.of(context).import_inline, style: const TextStyle()),
-            padding: const EdgeInsets.only(left: 15.0, top: 10.0, bottom: 5.0),
-            alignment: Alignment.centerLeft,
-            color: const Color(0xffeeeeee),
-          ),
+              child:
+                  Text(S.of(context).import_inline, style: const TextStyle()),
+              padding:
+                  const EdgeInsets.only(left: 15.0, top: 10.0, bottom: 5.0),
+              alignment: Alignment.centerLeft,
+              color: Theme.of(context).hoverColor),
           ListTile(
             title: Text(S.of(context).import_from_NJU_cer_title),
             subtitle: FittedBox(
@@ -121,11 +122,11 @@ class _ImportViewState extends State<ImportView> {
             },
           ),
           Container(
-            child: Text(S.of(context).import_online, style: const TextStyle()),
-            padding: const EdgeInsets.only(left: 15.0, top: 5.0, bottom: 5.0),
-            alignment: Alignment.centerLeft,
-            color: const Color(0xffeeeeee),
-          ),
+              child:
+                  Text(S.of(context).import_online, style: const TextStyle()),
+              padding: const EdgeInsets.only(left: 15.0, top: 5.0, bottom: 5.0),
+              alignment: Alignment.centerLeft,
+              color: Theme.of(context).hoverColor),
           Expanded(
               child: FutureBuilder<List>(
                   future: getOnlineConfig(),

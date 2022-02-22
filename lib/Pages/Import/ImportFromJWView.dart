@@ -13,7 +13,6 @@ import 'dart:math';
 class ImportFromJWView extends StatefulWidget {
   const ImportFromJWView({Key? key}) : super(key: key);
 
-
   @override
   _ImportFromJWViewState createState() => _ImportFromJWViewState();
 }

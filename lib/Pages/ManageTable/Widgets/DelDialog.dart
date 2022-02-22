@@ -11,7 +11,6 @@ class DelDialog extends StatefulWidget {
 }
 
 class _DelDialogState extends State<DelDialog> {
-
   @override
   Widget build(BuildContext context) {
     return MDialog(

@@ -7,7 +7,8 @@ import '../../Components/Toast.dart';
 import '../../Components/Dialog.dart';
 import 'AddCoursePresenter.dart';
 
-import 'Widgets/NodeDialog.dart';
+import 'Widgets/WeekNodeDialog.dart';
+import 'Widgets/WeekTimeNodeDialog.dart';
 
 class AddView extends StatefulWidget {
   const AddView({Key? key}) : super(key: key);
@@ -21,9 +22,13 @@ class _AddViewState extends State<AddView> {
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _teacherController = TextEditingController();
+  final TextEditingController _noteController = TextEditingController();
+  final TextEditingController _placeController = TextEditingController();
 
   final FocusNode nameTextFieldNode = FocusNode();
   final FocusNode teacherTextFieldNode = FocusNode();
+  final FocusNode noteTextFieldNode = FocusNode();
+  final FocusNode placeTextFieldNode = FocusNode();
   bool _classNameIsValid = true;
 
   // TODO: add multi node in one Widget
@@ -58,8 +63,7 @@ class _AddViewState extends State<AddView> {
                         borderSide:
                             BorderSide(color: Theme.of(context).primaryColor),
                       ),
-                      icon: Icon(Icons.book,
-                          color: Theme.of(context).primaryColor),
+                      icon: const Icon(Icons.book),
                       hintText: S.of(context).class_name,
                       errorText: _classNameIsValid
                           ? null
@@ -78,19 +82,64 @@ class _AddViewState extends State<AddView> {
                       borderSide:
                           BorderSide(color: Theme.of(context).primaryColor),
                     ),
-                    icon: Icon(Icons.account_circle,
-                        color: Theme.of(context).primaryColor),
+                    icon: const Icon(Icons.account_circle),
                     hintText: S.of(context).class_teacher,
                   ),
                 ),
                 const Padding(
                   padding: EdgeInsets.all(10),
                 ),
-                Row(children: <Widget>[
-                  Icon(
-                    Icons.code,
-                    color: Theme.of(context).primaryColor,
+                TextField(
+                  controller: _noteController,
+                  focusNode: noteTextFieldNode,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  decoration: InputDecoration(
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Theme.of(context).primaryColor),
+                    ),
+                    icon: const Icon(Icons.sticky_note_2),
+                    hintText: S.of(context).class_info,
                   ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.all(10),
+                ),
+                const Divider(),
+                const Padding(
+                  padding: EdgeInsets.all(10),
+                ),
+                Row(children: <Widget>[
+                  const Icon(Icons.calendar_month, color: Colors.grey),
+                  const Padding(
+                    padding: EdgeInsets.all(8),
+                  ),
+                  InkWell(
+                      child: Text(
+                        S.of(context).week_duration(
+                                _node['startWeek'] + 1, _node['endWeek'] + 1) +
+                            ' ' +
+                            Constant.WEEK_TYPES[_node['weekType']],
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      onTap: () async {
+                        Map newNode = (await showDialog<Map>(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (BuildContext context) {
+                              return WeekNodeDialog(node: _node);
+                            }))!;
+                        setState(() {
+                          _node = newNode;
+                        });
+                      })
+                ]),
+                const Padding(
+                  padding: EdgeInsets.all(10),
+                ),
+                Row(children: <Widget>[
+                  const Icon(Icons.access_time, color: Colors.grey),
                   const Padding(
                     padding: EdgeInsets.all(8),
                   ),
@@ -102,25 +151,42 @@ class _AddViewState extends State<AddView> {
                                 (_node['startTime'] + 1).toString(),
                                 (_node['endTime'] + 1).toString()) +
                             ' ' +
-                            (_node['classroom']) +
-                            ' ' +
-                            Constant.WEEK_TYPES[_node['weekType']],
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Theme.of(context).primaryColor),
+                            (_node['classroom']),
+                        style: const TextStyle(fontSize: 16),
                       ),
                       onTap: () async {
                         Map newNode = (await showDialog<Map>(
                             context: context,
                             barrierDismissible: false,
                             builder: (BuildContext context) {
-                              return NodeDialog(node: _node);
+                              return WeekTimeNodeDialog(node: _node);
                             }))!;
                         setState(() {
                           _node = newNode;
                         });
                       })
                 ]),
+                const Padding(
+                  padding: EdgeInsets.all(5),
+                ),
+                TextField(
+                  controller: _placeController,
+                  focusNode: placeTextFieldNode,
+                  decoration: InputDecoration(
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Theme.of(context).primaryColor),
+                    ),
+                    icon: const Icon(Icons.place),
+                    hintText: S.of(context).class_room,
+                  ),
+                  onChanged: (val) {
+                    _node['classroom'] = val;
+                  },
+                ),
+                const Padding(
+                  padding: EdgeInsets.all(10),
+                ),
                 const Padding(
                   padding: EdgeInsets.all(10),
                 ),
@@ -173,6 +239,7 @@ class _AddViewState extends State<AddView> {
                               context,
                               _nameController.text,
                               _teacherController.text,
+                              _noteController.text,
                               [_node]);
                           if (result) {
                             UmengCommonSdk.onEvent("class_import",

@@ -71,6 +71,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "captcha": MessageLookupByLibrary.simpleMessage("验证码"),
         "captcha_error_toast":
             MessageLookupByLibrary.simpleMessage("验证码错误 > <"),
+        "change_theme_mode_subtitle":
+            MessageLookupByLibrary.simpleMessage("是否跟随系统切换模式"),
+        "change_theme_mode_title":
+            MessageLookupByLibrary.simpleMessage("浅色/深色模式切换"),
         "change_theme_title": MessageLookupByLibrary.simpleMessage("修改主题"),
         "change_week_subtitle": MessageLookupByLibrary.simpleMessage("当前周数："),
         "change_week_title": MessageLookupByLibrary.simpleMessage("修改当前周"),
@@ -82,6 +86,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "class_height_subtitle":
             MessageLookupByLibrary.simpleMessage("仅当强制缩放关闭时生效"),
         "class_height_title": MessageLookupByLibrary.simpleMessage("自定义课程显示长度"),
+        "class_info": MessageLookupByLibrary.simpleMessage("备注"),
         "class_name": MessageLookupByLibrary.simpleMessage("课程名称"),
         "class_name_empty": MessageLookupByLibrary.simpleMessage("请输入课程名称"),
         "class_num_invalid_dialog_content":

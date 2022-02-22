@@ -105,8 +105,8 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
     Toast.showToast(S.of(context).class_parse_toast_importing, context);
     await controller.runJavascript(widget.config['preExtractJS'] ?? '');
     await Future.delayed(Duration(seconds: widget.config['delayTime'] ?? 0));
-    String response =
-        await controller.runJavascriptReturningResult(widget.config['extractJS']);
+    String response = await controller
+        .runJavascriptReturningResult(widget.config['extractJS']);
     response = response.replaceAll('\\u003C', '<').replaceAll('\\"', '"');
 
     CourseParser cp = CourseParser(response);
@@ -114,7 +114,8 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
     int rst = await cp.addCourseTable(courseTableName, context);
     try {
       await cp.parseCourse(rst);
-      UmengCommonSdk.onEvent("class_import", {"type": "cer", "action": "success"});
+      UmengCommonSdk.onEvent(
+          "class_import", {"type": "cer", "action": "success"});
       Toast.showToast(S.of(context).class_parse_toast_success, context);
       Navigator.of(context).pop(true);
     } catch (e) {

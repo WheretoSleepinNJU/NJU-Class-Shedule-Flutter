@@ -32,6 +32,7 @@
         <!-- CNM 这也太吓人了 升级个gradle 6.5 包体积直接从25M翻倍到50+M 就nm离谱... -->
         <activity
             android:name=".MainActivity"
+            android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"

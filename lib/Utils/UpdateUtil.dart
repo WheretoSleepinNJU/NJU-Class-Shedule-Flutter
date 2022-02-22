@@ -20,8 +20,7 @@ class UpdateUtil {
         await ScopedModel.of<MainStateModel>(context).getCoolDownTime();
 
     DateTime now = DateTime.now();
-    DateTime last =
-        DateTime.fromMillisecondsSinceEpoch(lastCheckUpdateTime);
+    DateTime last = DateTime.fromMillisecondsSinceEpoch(lastCheckUpdateTime);
     var difference = now.difference(last);
 //    print(difference.inSeconds);
 //    print(now.millisecondsSinceEpoch);
@@ -72,8 +71,7 @@ class UpdateUtil {
           child: Text(info['cancel_text']),
           color: Colors.grey,
           onPressed: () {
-            UmengCommonSdk.onEvent(
-                "update_dialog", {"action": "cancel"});
+            UmengCommonSdk.onEvent("update_dialog", {"action": "cancel"});
             Navigator.of(context).pop();
           },
         ),
@@ -81,8 +79,7 @@ class UpdateUtil {
             child: Text(info['confirm_text']),
             color: Theme.of(context).primaryColor,
             onPressed: () async {
-              UmengCommonSdk.onEvent(
-                  "update_dialog", {"action": "accept"});
+              UmengCommonSdk.onEvent("update_dialog", {"action": "accept"});
               if (info['url'] != '') await launch(info['url']);
             }),
       ];

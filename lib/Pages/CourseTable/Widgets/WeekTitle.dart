@@ -9,7 +9,7 @@ class WeekTitle extends StatelessWidget {
   final double _classTitleWidth;
   final bool _isShowMonth;
   final bool _isShowDate;
-  final bool _isWhiteMode;
+  final bool? _isWhiteMode;
   final int _biasWeek;
 
   const WeekTitle(
@@ -22,6 +22,14 @@ class WeekTitle extends StatelessWidget {
       this._biasWeek,
       {Key? key})
       : super(key: key);
+
+  Color? getColor() {
+    if (_isWhiteMode == null) {
+      return null;
+    } else {
+      return _isWhiteMode! ? Colors.white : Colors.black;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,25 +54,18 @@ class WeekTitle extends StatelessWidget {
                                 style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
-                                    color: _isWhiteMode
-                                        ? Colors.white
-                                        : Colors.black),
+                                    color: getColor()),
                               ),
                               Text(
                                 _dayList[i],
-                                style: TextStyle(
-                                    fontSize: 10,
-                                    color: _isWhiteMode
-                                        ? Colors.white
-                                        : Colors.black),
+                                style:
+                                    TextStyle(fontSize: 10, color: getColor()),
                               )
                             ])
                       : Center(
                           child: Text(
                             Constant.WEEK_WITHOUT_BIAS_WITHOUT_PRE[i],
-                            style: TextStyle(
-                                color:
-                                    _isWhiteMode ? Colors.white : Colors.black),
+                            style: TextStyle(color: getColor()),
                           ),
                         ),
                 ),
@@ -89,18 +90,12 @@ class WeekTitle extends StatelessWidget {
                               style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
-                                  color: _isWhiteMode
-                                      ? Colors.white
-                                      : Colors.black),
+                                  color: getColor()),
                             ),
                             Text(
 //                              WeekUtil.getNowMonthName() + '.',
                               WeekUtil.getTmpMonthName(_biasWeek) + '.',
-                              style: TextStyle(
-                                  fontSize: 10,
-                                  color: _isWhiteMode
-                                      ? Colors.white
-                                      : Colors.black),
+                              style: TextStyle(fontSize: 10, color: getColor()),
                             )
                           ]),
                     )
@@ -109,8 +104,7 @@ class WeekTitle extends StatelessWidget {
                         WeekUtil.getTmpMonth(_biasWeek).toString() +
                             S.of(context).month,
 //                        WeekUtil.getNowMonth().toString() + S.of(context).month,
-                        style: TextStyle(
-                            color: _isWhiteMode ? Colors.white : Colors.black),
+                        style: TextStyle(color: getColor()),
                       ),
                     ))
               : Container(width: _classTitleWidth),
