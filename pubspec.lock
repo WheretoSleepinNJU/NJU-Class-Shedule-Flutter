@@ -196,6 +196,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "8.0.8"
+  home_widget:
+    dependency: "direct main"
+    description:
+      name: home_widget
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.5"
   html:
     dependency: "direct main"
     description:
@@ -796,6 +803,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.4.1"
+  workmanager:
+    dependency: "direct main"
+    description:
+      name: workmanager
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.4.1"
   xdg_directories:
     dependency: transitive
     description:

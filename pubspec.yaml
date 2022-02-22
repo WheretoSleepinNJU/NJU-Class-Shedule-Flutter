@@ -16,7 +16,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  shared_preferences: ^2.0.7
+  shared_preferences: 2.0.7
   # Android iOS Linux macOS web Windows
   flutter_swiper_null_safety: ^1.0.2
   # Android iOS Linux macOS web Windows
@@ -64,6 +64,10 @@ dependencies:
   # Android iOS Linux macOS web Windows
   dio: ^4.0.0
   # Android iOS Linux macOS web Windows
+  home_widget: ^0.1.5
+  # Android iOS
+  workmanager: ^0.4.1
+  # Android iOS
 
 dev_dependencies:
   flutter_lints: ^1.0.4
