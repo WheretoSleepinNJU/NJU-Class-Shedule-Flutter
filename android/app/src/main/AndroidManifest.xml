@@ -32,7 +32,7 @@
         <!-- CNM 这也太吓人了 升级个gradle 6.5 包体积直接从25M翻倍到50+M 就nm离谱... -->
         <!--小部件-->
         <receiver android:name="SingleCourseWidgetProvider"
-                  android:exported="true">
+                  android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -41,7 +41,7 @@
         </receiver>
         <!--                           Used for Background Work -->
         <receiver android:name="es.antonborri.home_widget.HomeWidgetBackgroundReceiver"
-                  android:exported="true">
+                  android:exported="false">
             <intent-filter>
                 <action android:name="com.lilystudio.wheretosleepinnju.action.BACKGROUND" />
             </intent-filter>

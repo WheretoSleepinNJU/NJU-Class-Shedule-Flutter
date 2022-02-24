@@ -399,6 +399,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.5"
+  pedantic:
+    dependency: transitive
+    description:
+      name: pedantic
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.11.1"
   petitparser:
     dependency: transitive
     description:
@@ -489,21 +496,7 @@ packages:
       name: shared_preferences
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.13"
-  shared_preferences_android:
-    dependency: transitive
-    description:
-      name: shared_preferences_android
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "2.0.11"
-  shared_preferences_ios:
-    dependency: transitive
-    description:
-      name: shared_preferences_ios
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "2.1.0"
+    version: "2.0.7"
   shared_preferences_linux:
     dependency: transitive
     description:
@@ -809,7 +802,7 @@ packages:
       name: workmanager
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.4.1"
+    version: "0.5.0-dev.8"
   xdg_directories:
     dependency: transitive
     description:
