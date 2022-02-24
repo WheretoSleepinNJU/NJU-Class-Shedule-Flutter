@@ -42,7 +42,9 @@ class PrivacyUtil {
     widgets = isForce
         ? <Widget>[
             TransBgTextButton(
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Theme.of(context).primaryColor
+                    : Colors.white,
                 child: Text(S.of(context).ok),
                 onPressed: () {
                   UmengCommonSdk.onEvent(
@@ -62,7 +64,9 @@ class PrivacyUtil {
                 }),
             firstInstall
                 ? TransBgTextButton(
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).brightness == Brightness.light
+                        ? Theme.of(context).primaryColor
+                        : Colors.white,
                     child: Text(info['confirm_text_first_install']),
                     onPressed: () async {
                       SharedPreferences sp =
@@ -73,7 +77,9 @@ class PrivacyUtil {
                       Navigator.of(context).pop(true);
                     })
                 : TransBgTextButton(
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).brightness == Brightness.light
+                      ? Theme.of(context).primaryColor
+                      : Colors.white,
                     child: Text(info['confirm_text_for_upgrade']),
                     onPressed: () async {
                       SharedPreferences sp =

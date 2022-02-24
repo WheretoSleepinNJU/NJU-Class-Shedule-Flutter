@@ -175,7 +175,9 @@ class _LectureViewState extends State<LectureView> {
               // ),
             ]),
         body: RefreshIndicator(
-          color: Theme.of(context).primaryColor,
+          color: Theme.of(context).brightness == Brightness.light
+              ? Theme.of(context).primaryColor
+              : Colors.white,
           key: _refreshKey,
           onRefresh: _refresh,
           child: ListView(
@@ -195,15 +197,21 @@ class _LectureViewState extends State<LectureView> {
                                   child: FilterChip(
                                     label: Text(_filterNames[i]),
                                     labelStyle: TextStyle(
-                                        color: _filterStatus
-                                                .contains(_filterNames[i])
-                                            ? Colors.white
-                                            : Colors.black),
+                                        color: Theme.of(context).brightness ==
+                                                Brightness.light
+                                            ? (_filterStatus
+                                                    .contains(_filterNames[i])
+                                                ? Colors.white
+                                                : Colors.black)
+                                            : Colors.white),
                                     checkmarkColor: Colors.white,
                                     selected:
                                         _filterStatus.contains(_filterNames[i]),
                                     selectedColor:
-                                        Theme.of(context).primaryColor,
+                                        Theme.of(context).brightness ==
+                                                Brightness.light
+                                            ? Theme.of(context).primaryColor
+                                            : Colors.grey,
                                     onSelected: (bool value) {
                                       setState(() {
                                         if (value) {

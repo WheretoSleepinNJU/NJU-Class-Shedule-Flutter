@@ -77,7 +77,9 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
                     backgroundColor: Theme.of(context).primaryColor,
                     actions: [
                       TextButton(
-                          style: TextButton.styleFrom(primary: Colors.white),
+                          style: TextButton.styleFrom(
+                              primary: Colors.white,
+                              backgroundColor: Theme.of(context).primaryColor),
                           child: Text(widget.config['banner_action']),
                           onPressed: () => launch(widget.config['banner_url'])),
                     ],

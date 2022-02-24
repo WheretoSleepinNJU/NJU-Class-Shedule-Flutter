@@ -151,7 +151,9 @@ class _AllCourseViewState extends State<AllCourseView> {
               // ),
             ]),
         body: RefreshIndicator(
-          color: Theme.of(context).primaryColor,
+          color: Theme.of(context).brightness == Brightness.light
+                      ? Theme.of(context).primaryColor
+                      : Colors.white,
           key: _refreshKey,
           onRefresh: _refresh,
           child: ListView(
@@ -174,7 +176,9 @@ class _AllCourseViewState extends State<AllCourseView> {
                                       : Colors.black),
                               checkmarkColor: Colors.white,
                               selected: _filterStatus.contains(1),
-                              selectedColor: Theme.of(context).primaryColor,
+                              selectedColor: Theme.of(context).brightness == Brightness.light
+                      ? Theme.of(context).primaryColor
+                      : Colors.white,
                               onSelected: (bool value) {
                                 setState(() {
                                   if (value) {
@@ -196,7 +200,9 @@ class _AllCourseViewState extends State<AllCourseView> {
                                       : Colors.black),
                               checkmarkColor: Colors.white,
                               selected: _filterStatus.contains(2),
-                              selectedColor: Theme.of(context).primaryColor,
+                              selectedColor: Theme.of(context).brightness == Brightness.light
+                      ? Theme.of(context).primaryColor
+                      : Colors.white,
                               onSelected: (bool value) {
                                 setState(() {
                                   if (value) {
@@ -218,7 +224,9 @@ class _AllCourseViewState extends State<AllCourseView> {
                                       : Colors.black),
                               checkmarkColor: Colors.white,
                               selected: _filterStatus.contains(3),
-                              selectedColor: Theme.of(context).primaryColor,
+                              selectedColor: Theme.of(context).brightness == Brightness.light
+                      ? Theme.of(context).primaryColor
+                      : Colors.white,
                               onSelected: (bool value) {
                                 setState(() {
                                   if (value) {

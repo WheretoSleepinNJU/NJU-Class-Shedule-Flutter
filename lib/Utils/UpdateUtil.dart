@@ -58,7 +58,9 @@ class UpdateUtil {
       widgets = <Widget>[
         TransBgTextButton(
             child: Text(info['confirm_text']),
-            color: Theme.of(context).primaryColor,
+            color: Theme.of(context).brightness == Brightness.light
+                ? Theme.of(context).primaryColor
+                : Colors.white,
             onPressed: () async {
               UmengCommonSdk.onEvent(
                   "update_dialog", {"action": "forceAccept"});
@@ -77,7 +79,9 @@ class UpdateUtil {
         ),
         TransBgTextButton(
             child: Text(info['confirm_text']),
-            color: Theme.of(context).primaryColor,
+            color: Theme.of(context).brightness == Brightness.light
+                ? Theme.of(context).primaryColor
+                : Colors.white,
             onPressed: () async {
               UmengCommonSdk.onEvent("update_dialog", {"action": "accept"});
               if (info['url'] != '') await launch(info['url']);

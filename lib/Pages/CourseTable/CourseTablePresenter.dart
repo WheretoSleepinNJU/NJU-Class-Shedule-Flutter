@@ -155,9 +155,7 @@ class CourseTablePresenter {
                                 Theme.of(context).brightness == Brightness.light
                                     ? Theme.of(context).primaryColor
                                     : Colors.white,
-                            child: Text(S.of(context).bug_and_report,
-                                style: TextStyle(
-                                    color: Theme.of(context).primaryColor)),
+                            child: Text(S.of(context).bug_and_report),
                             onPressed: () {
                               UmengCommonSdk.onEvent(
                                   "import_dialog", {"action": "bug"});

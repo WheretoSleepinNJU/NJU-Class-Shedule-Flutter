@@ -88,7 +88,9 @@ class _CourseCardState extends State<CourseCard> {
             onExpansionChanged: (val) => setState(() {
               collapsed = !collapsed;
             }),
-            // textColor: Theme.of(context).primaryColor,
+            // textColor: Theme.of(context).brightness == Brightness.light
+            //           ? Theme.of(context).primaryColor
+            //           : Colors.white,
             textColor: Colors.black,
             iconColor: Colors.grey,
             title: Column(
@@ -141,7 +143,9 @@ class _CourseCardState extends State<CourseCard> {
                           },
                         )
                       : TransBgTextButton(
-                          color: Theme.of(context).primaryColor,
+                          color: Theme.of(context).brightness == Brightness.light
+                              ? Theme.of(context).primaryColor
+                              : Colors.white,
                           child: Text(S.of(context).lecture_add(count)),
                           onPressed: () async {
                             addCourse();

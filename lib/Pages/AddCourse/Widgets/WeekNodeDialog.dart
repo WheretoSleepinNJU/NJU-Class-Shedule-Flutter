@@ -28,7 +28,9 @@ class _WeekNodeDialogState extends State<WeekNodeDialog> {
     return ChoiceChip(
       selected: weeks.contains(i),
       // backgroundColor: Colors.white,
-      selectedColor: Theme.of(context).primaryColor,
+      selectedColor: Theme.of(context).brightness == Brightness.light
+                      ? Theme.of(context).primaryColor
+                      : Colors.white,
       shadowColor: Colors.grey,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(10))),

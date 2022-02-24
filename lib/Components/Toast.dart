@@ -9,7 +9,9 @@ class Toast {
         textColor: Colors.white);
 //    Scaffold.of(context).showSnackBar(SnackBar(
 //      content: Text(text),
-//      backgroundColor: Theme.of(context).primaryColor,
+//      backgroundColor: Theme.of(context).brightness == Brightness.light
+//                      ? Theme.of(context).primaryColor
+//                      : Colors.white,
 //    ));
   }
 }

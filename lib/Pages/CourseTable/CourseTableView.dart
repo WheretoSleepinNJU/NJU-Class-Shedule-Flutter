@@ -2,6 +2,7 @@ import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 //import 'package:text_view/text_view.dart';
 import './CourseTablePresenter.dart';
@@ -183,7 +184,7 @@ class CourseTableViewState extends State<CourseTableView> {
                     nowWeek = S.of(context).not_this_week + ' ' + nowWeek;
                   }
                   // double height = MediaQuery.of(context).size.height;
-
+                  FlutterNativeSplash.remove();
                   return Scaffold(
                     appBar: AppBar(
                         centerTitle: true,
@@ -292,7 +293,9 @@ class CourseTableViewState extends State<CourseTableView> {
                                           },
                                           style: TextButton.styleFrom(
                                               minimumSize: Size.zero,
-                                              padding: EdgeInsets.zero),
+                                              padding: EdgeInsets.zero,
+                                              backgroundColor: Theme.of(context)
+                                                  .primaryColor),
                                         ),
                                         TextButton(
                                           child: Text(
@@ -305,7 +308,9 @@ class CourseTableViewState extends State<CourseTableView> {
                                                   context),
                                           style: TextButton.styleFrom(
                                               minimumSize: Size.zero,
-                                              padding: EdgeInsets.zero),
+                                              padding: EdgeInsets.zero,
+                                              backgroundColor: Theme.of(context)
+                                                  .primaryColor),
                                         ),
                                       ],
                                     )
@@ -319,7 +324,10 @@ class CourseTableViewState extends State<CourseTableView> {
                             padding:
                                 const EdgeInsets.only(bottom: 50.0, left: 10.0),
                             child: FloatingActionButton(
-                              backgroundColor: Theme.of(context).primaryColor,
+                              backgroundColor: Theme.of(context).brightness ==
+                                      Brightness.light
+                                  ? Theme.of(context).primaryColor
+                                  : Colors.white,
                               onPressed: () async {
                                 Navigator.of(context)
                                     .push(MaterialPageRoute(

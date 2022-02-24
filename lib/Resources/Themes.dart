@@ -4,13 +4,13 @@ import '../Utils/ColorUtil.dart';
 ThemeData getThemeData(String color, Brightness brightness) {
   ThemeData td =
       ThemeData(colorSchemeSeed: HexColor(color), brightness: brightness);
-  // ThemeData tdlight =
-  // ThemeData(colorSchemeSeed: HexColor(color), brightness: Brightness.light);
-  // Color primaryColor = tdlight.primaryColor;
+  ThemeData tdlight =
+      ThemeData(colorSchemeSeed: HexColor(color), brightness: Brightness.light);
+  Color primaryThemeColor = tdlight.primaryColor;
   Color primaryColor = HexColor(color);
   ThemeData rst = td.copyWith(
     appBarTheme: AppBarTheme(
-      color: primaryColor,
+      color: brightness == Brightness.light ? primaryColor : primaryThemeColor,
     ),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(

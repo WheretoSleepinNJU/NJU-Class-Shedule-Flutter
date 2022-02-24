@@ -84,7 +84,9 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
                   backgroundColor: Theme.of(context).primaryColor,
                   actions: [
                     TextButton(
-                        style: TextButton.styleFrom(primary: Colors.white),
+                        style: TextButton.styleFrom(
+                            primary: Colors.white,
+                            backgroundColor: Theme.of(context).primaryColor),
                         child: Text(S.of(context).import_banner_action),
                         onPressed: () => launch(Url.URL_NJU_VPN))
                   ],
@@ -96,8 +98,7 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
                       borderSide:
                           BorderSide(color: Theme.of(context).primaryColor),
                     ),
-                    icon: Icon(Icons.account_circle,
-                        color: Theme.of(context).primaryColor),
+                    icon: const Icon(Icons.account_circle),
                     hintText: S.of(context).username,
                   ),
                   onEditingComplete: () =>
@@ -110,8 +111,7 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
                       borderSide:
                           BorderSide(color: Theme.of(context).primaryColor),
                     ),
-                    icon:
-                        Icon(Icons.lock, color: Theme.of(context).primaryColor),
+                    icon: const Icon(Icons.lock),
                     hintText: S.of(context).password,
                   ),
                   obscureText: true,
@@ -127,8 +127,7 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
                         borderSide:
                             BorderSide(color: Theme.of(context).primaryColor),
                       ),
-                      icon: Icon(Icons.code,
-                          color: Theme.of(context).primaryColor),
+                      icon: const Icon(Icons.code),
                       hintText: S.of(context).captcha,
                     ),
                   )),
@@ -155,24 +154,43 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
                       child: InkWell(
                         child: Text(
                           S.of(context).tap_to_refresh,
-                          style:
-                              TextStyle(color: Theme.of(context).primaryColor),
+                          style: TextStyle(
+                              color: Theme.of(context).brightness ==
+                                      Brightness.light
+                                  ? Theme.of(context).primaryColor
+                                  : Colors.white),
                         ),
                         onTap: () => setState(() {
                           randomNumForCaptcha = Random().nextDouble();
                         }),
                       ))
                 ]),
+                // CheckboxListTile(
+                //   contentPadding: EdgeInsets.zero,
+                //   title: Text("title text"),
+                //   value: _checkboxSelected,
+                //   onChanged: (newValue) {},
+                //   controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
+                // ),
                 Row(
                   children: <Widget>[
-                    Checkbox(
-                      value: _checkboxSelected,
-                      activeColor: Theme.of(context).primaryColor, //选中时的颜色
-                      onChanged: (value) {
-                        setState(() {
-                          _checkboxSelected = value!;
-                        });
-                      },
+                    SizedBox(
+                        height: 44.0,
+                        width: 24.0,
+                        child: Checkbox(
+                          value: _checkboxSelected,
+                          checkColor:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? Colors.white
+                                  : Colors.black,
+                          onChanged: (value) {
+                            setState(() {
+                              _checkboxSelected = value!;
+                            });
+                          },
+                        )),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 10),
                     ),
                     Text(S.of(context).remember_password),
                   ],

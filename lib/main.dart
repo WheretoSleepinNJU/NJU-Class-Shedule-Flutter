@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 import 'generated/l10n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 
 // import 'package:talkingdata_sdk_plugin/talkingdata_sdk_plugin.dart';
@@ -16,7 +17,8 @@ import 'Utils/States/MainState.dart';
 import 'Utils/InitUtil.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   //Initialize the app config.
   List themeConf = await InitUtil.initialize();
   //初始化组件化基础库, 所有友盟业务SDK都必须调用此初始化接口。

@@ -52,7 +52,12 @@ class WeekChanger extends StatelessWidget {
                                       S
                                           .of(context)
                                           .week((index + 1).toString()),
-                                      style: const TextStyle(fontSize: 16),
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: Theme.of(context).brightness ==
+                                                  Brightness.light
+                                              ? Colors.black
+                                              : Colors.white),
                                     ),
                                   );
                                 }))), widgetCancelAction: () {
