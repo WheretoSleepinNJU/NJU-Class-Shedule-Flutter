@@ -60,7 +60,7 @@ class HomeWidgetUtil {
     }
     for (Course course in allCourses) {
       List weeks = json.decode(course.weeks!);
-      if (weeks.contains(nowWeek) && course.weekTime == 1) {
+      if (weeks.contains(nowWeek) && course.weekTime == DateTime.now().weekday) {
         coursesToday.add(course);
       }
     }
