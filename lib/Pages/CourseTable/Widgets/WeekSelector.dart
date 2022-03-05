@@ -22,7 +22,7 @@ class WeekSelector extends StatelessWidget {
                 children: List.generate(
                     Config.MAX_WEEKS,
                     (int i) => Container(
-                        color: Theme.of(context).primaryColor,
+                        color: Theme.of(context).appBarTheme.backgroundColor,
                         padding: const EdgeInsets.only(
                             left: 5, top: 10, right: 5, bottom: 10),
                         child: InkWell(

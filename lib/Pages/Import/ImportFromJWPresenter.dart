@@ -76,14 +76,23 @@ class ImportFromJWPresenter {
     MainStateModel.of(context).changeclassTable(courseTable.id!);
     CourseProvider courseProvider = CourseProvider();
     await courseProvider.insert(Course(
-        courseTable.id, "自动导入", "[1,2,3,4,5,6,7]", 3, 5, 2, 0,
-        classroom: 'QAQ'));
+        courseTable.id, "自动导入的课程", "[1,2,3,4,5,6,7]", 3, 5, 1, 0,
+        teacher: "测试教师", classroom: '测试地点'));
     await courseProvider.insert(Course(
-        courseTable.id, "手动导入", "[1,2,3,4,5,6,7]", 4, 2, 3, 1,
-        classroom: '仙林校区不知道哪个教室'));
+        courseTable.id, "手动导入的课程", "[1,2,3,4,5,6,7]", 3, 7, 1, 1,
+        teacher: "测试教师", classroom: '仙林校区'));
     await courseProvider.insert(Course(
-        courseTable.id, "并不是线性代数", "[1,2,3,4,5,6,7]", 4, 2, 3, 0,
-        classroom: 'QAQ'));
+        courseTable.id, "自动导入的课程", "[1,2,3,4,5,6,7]", 2, 5, 1, 0,
+        teacher: "测试教师", classroom: '测试地点'));
+    await courseProvider.insert(Course(
+        courseTable.id, "有时间冲突的课程1", "[1,2,3,4,5,6,7]", 4, 2, 1, 0,
+        teacher: "测试教师", classroom: '测试地点'));
+    await courseProvider.insert(Course(
+        courseTable.id, "有时间冲突的课程2", "[1,2,3,4,5,6,7]", 4, 2, 1, 0,
+        teacher: "测试教师", classroom: '测试地点'));
+    await courseProvider.insert(Course(
+        courseTable.id, "自由时间课程", "[1,2,3,4,5,6,7]", 0, 0, 0, 0,
+        classroom: '测试地点'));
     return true;
   }
 }

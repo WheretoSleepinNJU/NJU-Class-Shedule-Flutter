@@ -278,8 +278,9 @@ class CourseTableViewState extends State<CourseTableView> {
                                               _freeCourseNum.toString()),
                                           style: const TextStyle(
                                               color: Colors.white))),
-                                  backgroundColor:
-                                      Theme.of(context).primaryColor,
+                                  backgroundColor: Theme.of(context)
+                                      .appBarTheme
+                                      .backgroundColor,
                                   actions: [
                                     Row(
                                       children: [
@@ -295,7 +296,8 @@ class CourseTableViewState extends State<CourseTableView> {
                                               minimumSize: Size.zero,
                                               padding: EdgeInsets.zero,
                                               backgroundColor: Theme.of(context)
-                                                  .primaryColor),
+                                                  .appBarTheme
+                                                  .backgroundColor),
                                         ),
                                         TextButton(
                                           child: Text(
@@ -310,7 +312,8 @@ class CourseTableViewState extends State<CourseTableView> {
                                               minimumSize: Size.zero,
                                               padding: EdgeInsets.zero,
                                               backgroundColor: Theme.of(context)
-                                                  .primaryColor),
+                                                  .appBarTheme
+                                                  .backgroundColor),
                                         ),
                                       ],
                                     )
