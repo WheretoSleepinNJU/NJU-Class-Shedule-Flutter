@@ -82,10 +82,14 @@ class _ThemeCustomDialogState extends State<ThemeCustomDialog> {
         Navigator.of(context).pop('');
       },
       widgetOKAction: () {
+        String color = '#' + _controller.text;
+        if (color == '#') {
+          color = defaultColor;
+        }
         UmengCommonSdk.onEvent("theme_change",
-            {"type": "theme_change", "color": _controller.text});
+            {"type": "theme_change", "color": color});
         ScopedModel.of<MainStateModel>(context)
-            .changeCustomTheme('#' + _controller.text);
+            .changeCustomTheme(color);
         ScopedModel.of<MainStateModel>(context)
             .changeTheme(themeDataList.length);
         // ScopedModel.of<MainStateModel>(context).refresh();
