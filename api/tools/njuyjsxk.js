@@ -46,6 +46,9 @@ function scheduleHtmlParser() {
       } else if (strs[4] == '双') {
         for (let z = parseInt(strs[1]); z <= parseInt(strs[3]); z += 2)
           weeks.push(z);
+      } else if (typeof(strs[2]) == 'undefined'){
+          // Just a single weak ...
+          weeks.push(parseInt(strs[1]));
       } else {
         for (let z = parseInt(strs[1]); z <= parseInt(strs[3]); z++)
           weeks.push(z);
