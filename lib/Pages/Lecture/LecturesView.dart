@@ -55,7 +55,7 @@ class _LectureViewState extends State<LectureView> {
     //     onClosed: () {
     //       print("Search bar has been closed");
     //     });
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _refreshKey.currentState?.show();
     });
     _scrollController.addListener(() {

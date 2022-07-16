@@ -71,7 +71,7 @@ class ImportFromJWPresenter {
     // same in CourseParser.dart
     CourseTableProvider courseTableProvider = CourseTableProvider();
     CourseTable courseTable =
-        await courseTableProvider.insert(CourseTable('Demo课表'));
+        await courseTableProvider.insert(CourseTable('Demo课表', data: '{"class_time_list": [{"start": "08:00", "end": "08:50"},{"start": "08:00", "end": "08:50"},{"start": "08:00", "end": "08:50"},{"start": "08:00", "end": "08:50"},{"start": "08:00", "end": "08:50"},{"start": "08:00", "end": "08:50"},{"start": "08:00", "end": "08:50"},{"start": "08:00", "end": "08:50"},{"start": "08:00", "end": "08:50"},{"start": "08:00", "end": "08:50"},{"start": "08:00", "end": "08:50"},{"start": "08:00", "end": "08:50"},{"start": "08:00", "end": "08:50"},{"start": "08:00", "end": "08:50"},{"start": "08:00", "end": "08:50"}]}'));
     // 减1的原因：SQL中id从1开始计
     MainStateModel.of(context).changeclassTable(courseTable.id!);
     CourseProvider courseProvider = CourseProvider();

@@ -1,35 +1,47 @@
 import 'package:flutter/material.dart';
 import '../../../Resources/Constant.dart';
 
-class ClassTitle extends StatelessWidget {
+class ClassTitle extends StatefulWidget {
   final int _maxShowClasses;
   final double _classTitleHeight;
   final double _classTitleWidth;
   final bool _isShowWeekTime;
   final bool? _isWhiteMode;
+  final List<Map> classTimeList;
 
   const ClassTitle(this._maxShowClasses, this._classTitleHeight,
       this._classTitleWidth, this._isShowWeekTime, this._isWhiteMode,
-      {Key? key})
+      {Key? key, this.classTimeList = Constant.CLASS_TIME_LIST})
       : super(key: key);
 
+  @override
+  _ClassTitleState createState() => _ClassTitleState();
+}
+
+class _ClassTitleState extends State<ClassTitle> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   Color? getColor() {
-    if (_isWhiteMode == null) {
+    if (widget._isWhiteMode == null) {
       return null;
     } else {
-      return _isWhiteMode! ? Colors.white : Colors.black;
+      return widget._isWhiteMode! ? Colors.white : Colors.black;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // getClassTimeList();
     List<Widget> _classTitle = List.generate(
-      _maxShowClasses,
+      widget._maxShowClasses,
       (int i) => SizedBox(
-          height: _classTitleHeight,
-          width: _classTitleWidth,
+          height: widget._classTitleHeight,
+          width: widget._classTitleWidth,
           child: Center(
-              child: _isShowWeekTime
+              child: widget._isShowWeekTime
                   ? Column(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
@@ -40,9 +52,9 @@ class ClassTitle extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                                 color: getColor())),
                         Text(
-                          Constant.CLASS_TIME_LIST[i]['start'] +
+                          widget.classTimeList[i]['start'] +
                               '\n' +
-                              Constant.CLASS_TIME_LIST[i]['end'],
+                              widget.classTimeList[i]['end'],
                           style: TextStyle(fontSize: 10, color: getColor()),
                         )
                       ],

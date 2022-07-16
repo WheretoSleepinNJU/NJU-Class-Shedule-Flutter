@@ -128,8 +128,21 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
       String response = await controller.runJavascriptReturningResult(js);
       response = Uri.decodeComponent(response.replaceAll('"', ''));
       Map courseTableMap = json.decode(response);
-      CourseTable courseTable =
-          await courseTableProvider.insert(CourseTable(courseTableMap['name']));
+      CourseTable courseTable;
+      if (widget.config['class_time_list'] == null) {
+        courseTable = await courseTableProvider
+            .insert(CourseTable(courseTableMap['name']));
+      } else {
+        try{
+          Map data = {"class_time_list": widget.config['class_time_list']};
+          String dataString = json.encode(data);
+          courseTable = await courseTableProvider
+              .insert(CourseTable(courseTableMap['name'], data: dataString));
+        } catch(e) {
+          courseTable = await courseTableProvider
+              .insert(CourseTable(courseTableMap['name']));
+        }
+      }
       int index = (courseTable.id!);
       CourseProvider courseProvider = CourseProvider();
       await ScopedModel.of<MainStateModel>(context).changeclassTable(index);

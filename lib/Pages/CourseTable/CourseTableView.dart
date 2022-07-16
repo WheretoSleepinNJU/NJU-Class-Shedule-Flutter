@@ -1,3 +1,4 @@
+import '../../Resources/Constant.dart';
 import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -14,6 +15,7 @@ import '../../Resources/Config.dart';
 import '../../Utils/States/MainState.dart';
 import '../../Utils/PrivacyUtil.dart';
 import '../../Utils/UpdateUtil.dart';
+import '../../Models/CourseTableModel.dart';
 import '../../Models/CourseModel.dart';
 
 import 'Widgets/BackgroundImage.dart';
@@ -36,6 +38,7 @@ class CourseTableViewState extends State<CourseTableView> {
   late bool _isShowMonth;
   late bool _isShowDate;
   late bool _isForceZoom;
+  late List<Map> _classTimeList;
   late bool _isShowAddButton;
   late bool? _isWhiteMode;
   late int _maxShowClasses;
@@ -82,7 +85,6 @@ class CourseTableViewState extends State<CourseTableView> {
           await ScopedModel.of<MainStateModel>(context).getWhiteMode();
     }
 
-    _maxShowClasses = Config.MAX_CLASSES;
     _maxShowDays = _isShowWeekend ? 7 : 5;
     int index = await ScopedModel.of<MainStateModel>(context).getClassTable();
     _nowWeekNum = await ScopedModel.of<MainStateModel>(context).getWeek();
@@ -91,6 +93,15 @@ class CourseTableViewState extends State<CourseTableView> {
 
     await _presenter.refreshClasses(index, _nowShowWeekNum);
     _freeCourseNum = _presenter.freeCourses.length;
+
+    try{
+      CourseTableProvider courseTableProvider = CourseTableProvider();
+      _classTimeList = await courseTableProvider.getclassTimeList(index);
+      _maxShowClasses = _classTimeList.length;
+    }catch(e) {
+      _classTimeList = Constant.CLASS_TIME_LIST;
+      _maxShowClasses = Config.MAX_CLASSES;
+    }
 
     _screenWidth = MediaQuery.of(context).size.width;
     _screenHeight = MediaQuery.of(context).size.height;
@@ -256,7 +267,8 @@ class CourseTableViewState extends State<CourseTableView> {
                                   _classTitleHeight,
                                   _classTitleWidth,
                                   _isShowClassTime,
-                                  _isWhiteMode),
+                                  _isWhiteMode,
+                                  classTimeList: _classTimeList),
                               SizedBox(
                                   height: _classTitleHeight * _maxShowClasses,
                                   width: _screenWidth - _classTitleWidth,
