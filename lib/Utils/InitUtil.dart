@@ -11,13 +11,15 @@ import '../Utils/ColorUtil.dart';
 import '../Utils/WeekUtil.dart';
 
 class InitUtil {
-  static Future<int> initialize() async {
+  static Future<List> initialize() async {
     int themeIndex = await getTheme();
+    int themeModeIndex = await getThemeMode();
+    String themeCustom = await getThemeCustom();
     await checkDataBase();
     await WeekUtil.checkWeek();
     await ColorPool.checkColorPool();
     showReview();
-    return themeIndex;
+    return [themeIndex, themeModeIndex, themeCustom];
   }
 
   static Future<int> getTheme() async {
@@ -27,6 +29,24 @@ class InitUtil {
       return themeIndex;
     }
     return 0;
+  }
+
+  static Future<int> getThemeMode() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    int? themeModeIndex = sp.getInt("themeModeIndex");
+    if (themeModeIndex != null) {
+      return themeModeIndex;
+    }
+    return 0;
+  }
+
+  static Future<String> getThemeCustom() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    String? themeCustom = sp.getString("themeCustomColor");
+    if (themeCustom != null) {
+      return themeCustom;
+    }
+    return '';
   }
 
   static checkDataBase() async {

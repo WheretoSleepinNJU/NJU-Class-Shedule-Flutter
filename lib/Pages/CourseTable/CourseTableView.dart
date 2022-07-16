@@ -1,7 +1,9 @@
+import '../../Resources/Constant.dart';
 import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 //import 'package:text_view/text_view.dart';
 import './CourseTablePresenter.dart';
@@ -13,6 +15,7 @@ import '../../Resources/Config.dart';
 import '../../Utils/States/MainState.dart';
 import '../../Utils/PrivacyUtil.dart';
 import '../../Utils/UpdateUtil.dart';
+import '../../Models/CourseTableModel.dart';
 import '../../Models/CourseModel.dart';
 
 import 'Widgets/BackgroundImage.dart';
@@ -35,8 +38,9 @@ class CourseTableViewState extends State<CourseTableView> {
   late bool _isShowMonth;
   late bool _isShowDate;
   late bool _isForceZoom;
+  late List<Map> _classTimeList;
   late bool _isShowAddButton;
-  late bool _isWhiteMode;
+  late bool? _isWhiteMode;
   late int _maxShowClasses;
   late int _maxShowDays;
   late int _nowWeekNum;
@@ -71,10 +75,16 @@ class CourseTableViewState extends State<CourseTableView> {
 
     _isShowAddButton =
         await ScopedModel.of<MainStateModel>(context).getAddButton();
-    _isWhiteMode = await ScopedModel.of<MainStateModel>(context).getWhiteMode();
 
     _bgImgPath = await ScopedModel.of<MainStateModel>(context).getBgImgPath();
-    _maxShowClasses = Config.MAX_CLASSES;
+
+    if (_bgImgPath == '') {
+      _isWhiteMode = null;
+    } else {
+      _isWhiteMode =
+          await ScopedModel.of<MainStateModel>(context).getWhiteMode();
+    }
+
     _maxShowDays = _isShowWeekend ? 7 : 5;
     int index = await ScopedModel.of<MainStateModel>(context).getClassTable();
     _nowWeekNum = await ScopedModel.of<MainStateModel>(context).getWeek();
@@ -83,6 +93,15 @@ class CourseTableViewState extends State<CourseTableView> {
 
     await _presenter.refreshClasses(index, _nowShowWeekNum);
     _freeCourseNum = _presenter.freeCourses.length;
+
+    try{
+      CourseTableProvider courseTableProvider = CourseTableProvider();
+      _classTimeList = await courseTableProvider.getclassTimeList(index);
+      _maxShowClasses = _classTimeList.length;
+    }catch(e) {
+      _classTimeList = Constant.CLASS_TIME_LIST;
+      _maxShowClasses = Config.MAX_CLASSES;
+    }
 
     _screenWidth = MediaQuery.of(context).size.width;
     _screenHeight = MediaQuery.of(context).size.height;
@@ -130,7 +149,9 @@ class CourseTableViewState extends State<CourseTableView> {
         false;
     if (!rst) return;
     await _presenter.showAfterImport(context);
-    ScopedModel.of<MainStateModel>(context).refresh();
+    setState(() {
+      ScopedModel.of<MainStateModel>(context).refresh();
+    });
   }
 
   @override
@@ -174,7 +195,7 @@ class CourseTableViewState extends State<CourseTableView> {
                     nowWeek = S.of(context).not_this_week + ' ' + nowWeek;
                   }
                   // double height = MediaQuery.of(context).size.height;
-
+                  FlutterNativeSplash.remove();
                   return Scaffold(
                     appBar: AppBar(
                         centerTitle: true,
@@ -246,7 +267,8 @@ class CourseTableViewState extends State<CourseTableView> {
                                   _classTitleHeight,
                                   _classTitleWidth,
                                   _isShowClassTime,
-                                  _isWhiteMode),
+                                  _isWhiteMode,
+                                  classTimeList: _classTimeList),
                               SizedBox(
                                   height: _classTitleHeight * _maxShowClasses,
                                   width: _screenWidth - _classTitleWidth,
@@ -268,8 +290,9 @@ class CourseTableViewState extends State<CourseTableView> {
                                               _freeCourseNum.toString()),
                                           style: const TextStyle(
                                               color: Colors.white))),
-                                  backgroundColor:
-                                      Theme.of(context).primaryColor,
+                                  backgroundColor: Theme.of(context)
+                                      .appBarTheme
+                                      .backgroundColor,
                                   actions: [
                                     Row(
                                       children: [
@@ -283,7 +306,10 @@ class CourseTableViewState extends State<CourseTableView> {
                                           },
                                           style: TextButton.styleFrom(
                                               minimumSize: Size.zero,
-                                              padding: EdgeInsets.zero),
+                                              padding: EdgeInsets.zero,
+                                              backgroundColor: Theme.of(context)
+                                                  .appBarTheme
+                                                  .backgroundColor),
                                         ),
                                         TextButton(
                                           child: Text(
@@ -296,7 +322,10 @@ class CourseTableViewState extends State<CourseTableView> {
                                                   context),
                                           style: TextButton.styleFrom(
                                               minimumSize: Size.zero,
-                                              padding: EdgeInsets.zero),
+                                              padding: EdgeInsets.zero,
+                                              backgroundColor: Theme.of(context)
+                                                  .appBarTheme
+                                                  .backgroundColor),
                                         ),
                                       ],
                                     )
@@ -310,7 +339,10 @@ class CourseTableViewState extends State<CourseTableView> {
                             padding:
                                 const EdgeInsets.only(bottom: 50.0, left: 10.0),
                             child: FloatingActionButton(
-                              backgroundColor: Theme.of(context).primaryColor,
+                              backgroundColor: Theme.of(context).brightness ==
+                                      Brightness.light
+                                  ? Theme.of(context).primaryColor
+                                  : Colors.white,
                               onPressed: () async {
                                 Navigator.of(context)
                                     .push(MaterialPageRoute(

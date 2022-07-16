@@ -1,5 +1,7 @@
+// import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../Resources/Constant.dart';
 
 abstract class ThemeStateModel extends Model {
   int? _themeIndex;
@@ -15,11 +17,46 @@ abstract class ThemeStateModel extends Model {
 
   Future<int> getTheme() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
-    int? themeIndex = sp.getInt("themeIndex");
-    if (themeIndex != null) {
-      return themeIndex;
-    }
-    return 0;
+    _themeIndex = sp.getInt("themeIndex") ?? 0;
+    return themeIndex;
+  }
+
+  int? _themeModeIndex;
+
+  get themeMode => (_themeModeIndex == null)
+      ? null
+      : Constant.themeModeList[_themeModeIndex!];
+
+  get themeModeIndex => _themeModeIndex;
+
+  void changeThemeMode(int themeModeIndex) async {
+    _themeModeIndex = themeModeIndex;
+    notifyListeners();
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setInt("themeModeIndex", themeModeIndex);
+  }
+
+  Future<int> getThemeMode() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    _themeModeIndex = sp.getInt("themeModeIndex") ?? 0;
+    return themeModeIndex;
+  }
+
+  String? _themeCustomColor;
+
+  get themeCustomColor => _themeCustomColor;
+
+  void changeCustomTheme(String themeCustomColor) async {
+    _themeCustomColor = themeCustomColor;
+    notifyListeners();
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setString("themeCustomColor", themeCustomColor);
+  }
+
+  Future<String> getCustomTheme() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    _themeCustomColor = sp.getString("themeCustomColor") ?? '';
+    return themeCustomColor;
   }
 }
 

@@ -31,42 +31,45 @@ class WeekChanger extends StatelessWidget {
                   builder: (BuildContext context) {
                     int changedWeek = snapshot.data! - 1;
                     return MDialog(
-                      S.of(context).change_week_title,
-                      SizedBox(
-                          height: 96,
-                          child: CupertinoPicker(
-                              scrollController: FixedExtentScrollController(
-                                initialItem: snapshot.data! > Config.MAX_WEEKS
-                                    ? -1
-                                    : snapshot.data! - 1,
-                              ),
-                              itemExtent: 32.0,
-                              backgroundColor: Colors.white,
-                              onSelectedItemChanged: (int index) {
-                                changedWeek = index;
-                              },
-                              children: List<Widget>.generate(
-                                  Config.MAX_WEEKS, (int index) {
-                                return Center(
-                                  child: Text(
-                                    S.of(context).week((index + 1).toString()),
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                );
-                              }))),
-                      widgetCancelAction: () {
-                        UmengCommonSdk.onEvent(
-                            "week_change", {"action": "cancel"});
-                        Navigator.of(context).pop();
-                      },
-                      widgetOKAction: () async {
-                        UmengCommonSdk.onEvent(
-                            "week_change", {"action": "accept"});
-                        await changeWeek(
-                            context, changedWeek, snapshot.data!);
-                        Navigator.of(context).pop();
-                      }
-                    );
+                        S.of(context).change_week_title,
+                        SizedBox(
+                            height: 96,
+                            child: CupertinoPicker(
+                                scrollController: FixedExtentScrollController(
+                                  initialItem: snapshot.data! > Config.MAX_WEEKS
+                                      ? -1
+                                      : snapshot.data! - 1,
+                                ),
+                                itemExtent: 32.0,
+                                // backgroundColor: Colors.white,
+                                onSelectedItemChanged: (int index) {
+                                  changedWeek = index;
+                                },
+                                children: List<Widget>.generate(
+                                    Config.MAX_WEEKS, (int index) {
+                                  return Center(
+                                    child: Text(
+                                      S
+                                          .of(context)
+                                          .week((index + 1).toString()),
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: Theme.of(context).brightness ==
+                                                  Brightness.light
+                                              ? Colors.black
+                                              : Colors.white),
+                                    ),
+                                  );
+                                }))), widgetCancelAction: () {
+                      UmengCommonSdk.onEvent(
+                          "week_change", {"action": "cancel"});
+                      Navigator.of(context).pop();
+                    }, widgetOKAction: () async {
+                      UmengCommonSdk.onEvent(
+                          "week_change", {"action": "accept"});
+                      await changeWeek(context, changedWeek, snapshot.data!);
+                      Navigator.of(context).pop();
+                    });
                   },
                 );
               },

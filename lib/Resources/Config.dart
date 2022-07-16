@@ -22,7 +22,8 @@ class Config {
     "targetUrl":
         "http://elite.nju.edu.cn/jiaowu/student/teachinginfo/courseList.do?method=currentTermCourse",
     "extractJS": "document.body.innerHTML",
-    "banner_content": "注意：如加载失败，请连接南京大学VPN\n试试浏览器访问教务网，没准系统又抽风了\n听起来有点离谱，不过在南京大学，倒也正常",
+    "banner_content":
+        "注意：如加载失败，请连接南京大学VPN\n试试浏览器访问教务网，没准系统又抽风了\n听起来有点离谱，不过在南京大学，倒也正常",
     "banner_action": "下载南京大学VPN",
     "banner_url": "https://vpn.nju.edu.cn"
   };
@@ -37,7 +38,8 @@ class Config {
         "document.getElementsByClassName('yxkc-window-btn')[0].click()",
     "delayTime": 3,
     "extractJS": "document.body.innerHTML",
-    "banner_content": "注意：如加载失败，请连接南京大学VPN\n试试浏览器访问教务网，没准系统又抽风了\n听起来有点离谱，不过在南京大学，倒也正常",
+    "banner_content":
+        "注意：如加载失败，请连接南京大学VPN\n试试浏览器访问教务网，没准系统又抽风了\n听起来有点离谱，不过在南京大学，倒也正常",
     "banner_action": "下载南京大学VPN",
     "banner_url": "https://vpn.nju.edu.cn"
   };

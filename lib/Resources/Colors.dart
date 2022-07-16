@@ -14,4 +14,3 @@ final List<String> colorList = [
   '#E2C490',
   '#E2C490',
 ];
-

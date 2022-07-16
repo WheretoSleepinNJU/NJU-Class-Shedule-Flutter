@@ -1,34 +1,42 @@
 {
   "data": [
     {
-      "title": "清华大学选课系统",
-      "pinyin": "qinghuadaxuexuanke",
-      "description": "在线获取南京大学选课导入，稳定性可能更好",
+      "title": "南京大学本科生选课系统（beta）",
+      "pinyin": "nanjingdaxuebenke",
+      "description": "测试中，请确保APP版本>=3.1.0!",
       "page_title": "选课系统登录",
-      "initialUrl": "https://xk.nju.edu.cn/xsxkapp/sys/xsxkapp/*default/index.do",
-      "redirectUrl": "",
-      "targetUrl": "https://xk.nju.edu.cn/xsxkapp/sys/xsxkapp/*default/grablessons.do",
-      "preExtractJS": "document.getElementsByClassName('yxkc-window-btn')[0].click()",
+      "initialUrl": "https://authserver.nju.edu.cn/authserver/login?service=http%3A%2F%2Felite.nju.edu.cn%2Fjiaowu%2Fcaslogin.jsp",
+      "redirectUrl": "http://elite.nju.edu.cn/jiaowu/login.do",
+      "targetUrl": "http://elite.nju.edu.cn/jiaowu/student/teachinginfo/courseList.do?method=currentTermCourse",
+      "preExtractJS": "",
       "delayTime": 3,
-      "extractJS": "document.body.innerHTML",
-      "banner_content": "注意：如加载失败，优先检查是否开启南京大学VPN\n如浏览器也无法访问教务网，那一定是教务系统又抽风了",
+      "extractJS": "",
+      "extractJSfileAndroid": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/njubksxk_android.js",
+      "extractJSfileiOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/njubksxk.js",
+      "banner_content": "注意：如加载失败，请连接南京大学VPN\n试试浏览器访问教务网，没准教务系统又抽风了\n听起来有点离谱，不过在南京大学，倒也正常",
       "banner_action": "下载南京大学VPN",
-      "banner_url": "https://vpn.nju.edu.cn"
+      "banner_url": "https://vpn.nju.edu.cn",
+      "isGrey": true,
+      "isGrey3.1.0": false
     },
     {
-      "title": "南京大学选课系统",
+      "title": "南京大学研究生选课系统（alpha）",
       "pinyin": "nanjingdaxueyanjiu",
-      "description": "在线获取南京大学选课导入，稳定性可能更好",
+      "description": "测试中，请确保APP版本>=3.1.0!",
       "page_title": "选课系统登录",
-      "initialUrl": "https://xk.nju.edu.cn/xsxkapp/sys/xsxkapp/*default/index.do",
-      "redirectUrl": "",
-      "targetUrl": "https://xk.nju.edu.cn/xsxkapp/sys/xsxkapp/*default/grablessons.do",
-      "preExtractJS": "document.getElementsByClassName('yxkc-window-btn')[0].click()",
+      "initialUrl": "https://yjsxk.nju.edu.cn/yjsxkapp/sys/xsxkapp/index_nju.html",
+      "redirectUrl": "https://yjsxk.nju.edu.cn/yjsxkapp/sys/xsxkapp/course_nju.html",
+      "targetUrl": "https://yjsxk.nju.edu.cn/yjsxkapp/sys/xsxkapp/xsxkCourse/loadStdCourseInfo.do",
+      "preExtractJS": "",
       "delayTime": 3,
-      "extractJS": "document.body.innerHTML",
-      "banner_content": "注意：如加载失败，优先检查是否开启南京大学VPN\n如浏览器也无法访问教务网，那一定是教务系统又抽风了",
+      "extractJS": "",
+      "extractJSfileAndroid": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/njuyjsxk_android.js",
+      "extractJSfileiOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/njuyjsxk.js",
+      "banner_content": "导入方式：登陆后点击「我的选课」进入选课页\n注意：如加载失败，请连接南京大学VPN\n试试浏览器访问教务网，没准教务系统又抽风了\n听起来有点离谱，不过在南京大学，倒也正常",
       "banner_action": "下载南京大学VPN",
-      "banner_url": "https://vpn.nju.edu.cn"
+      "banner_url": "https://vpn.nju.edu.cn",
+      "isGrey": true,
+      "isGrey3.1.0": false
     }
   ]
 }

@@ -102,7 +102,10 @@ class _LectureCardState extends State<LectureCard> {
                     }
                   },
                   text: widget.lecture.info ?? S.of(context).unknown_info,
-                  linkStyle: TextStyle(color: Theme.of(context).primaryColor),
+                  linkStyle: TextStyle(
+                      color: Theme.of(context).brightness == Brightness.light
+                          ? Theme.of(context).primaryColor
+                          : Colors.white),
                   options: const LinkifyOptions(humanize: false),
                 ),
               ),
@@ -128,7 +131,10 @@ class _LectureCardState extends State<LectureCard> {
                               },
                             )
                           : TransBgTextButton(
-                              color: Theme.of(context).primaryColor,
+                              color: Theme.of(context).brightness ==
+                                      Brightness.light
+                                  ? Theme.of(context).primaryColor
+                                  : Colors.white,
                               child: Text(S.of(context).lecture_add(count)),
                               onPressed: () async {
                                 if (widget.lecture.isAccurate) {

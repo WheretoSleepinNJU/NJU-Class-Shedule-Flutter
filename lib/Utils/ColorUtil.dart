@@ -22,11 +22,10 @@ class HexColor extends Color {
 }
 
 class ColorPool {
-
   static checkColorPool() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     String? colorPool = sp.getString("colorPool");
-    if(colorPool == null) shuffleColorPool();
+    if (colorPool == null) shuffleColorPool();
   }
 
   static Future<List> getColorPool() async {
@@ -36,7 +35,6 @@ class ColorPool {
     List colorPool = json.decode(colorPoolString!);
     return colorPool;
   }
-
 
   static shuffleColorPool() async {
     List<int> colorPool = List<int>.generate(colorList.length, (i) => i);

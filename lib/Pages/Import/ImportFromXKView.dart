@@ -70,7 +70,9 @@ class _WebViewState extends State<ImportFromXKView> {
                     backgroundColor: Theme.of(context).primaryColor,
                     actions: [
                       TextButton(
-                          style: TextButton.styleFrom(primary: Colors.white),
+                          style: TextButton.styleFrom(
+                              primary: Colors.white,
+                              backgroundColor: Theme.of(context).primaryColor),
                           child: Text(widget.config['banner_action']),
                           onPressed: () => launch(widget.config['banner_url'])),
                     ],
@@ -105,8 +107,8 @@ class _WebViewState extends State<ImportFromXKView> {
     Toast.showToast(S.of(context).class_parse_toast_importing, context);
     await controller.runJavascript(widget.config['preExtractJS'] ?? '');
     await Future.delayed(Duration(seconds: widget.config['delayTime'] ?? 0));
-    String response =
-        await controller.runJavascriptReturningResult(widget.config['extractJS']);
+    String response = await controller
+        .runJavascriptReturningResult(widget.config['extractJS']);
     response = response.replaceAll('\\u003C', '<').replaceAll('\\"', '"');
 
     CourseParser cp = CourseParser(response);

@@ -5,7 +5,8 @@ import 'dart:async';
 import 'dart:math';
 
 class RainDropWidget extends StatefulWidget {
-  const RainDropWidget({Key? key, this.width = 300, this.height = 300}) : super(key: key);
+  const RainDropWidget({Key? key, this.width = 300, this.height = 300})
+      : super(key: key);
 
   final double width;
   final double height;
@@ -20,7 +21,8 @@ class RainDropState extends State<RainDropWidget>
     with TickerProviderStateMixin {
   List<RainDropDrawer>? _rainList;
   AnimationController? _animation;
-  double _width = 300 ;
+  double _width = 300;
+
   double _height = 300;
   Timer? _timer;
 

@@ -89,7 +89,6 @@ class CourseParser {
         String weekSeries;
         weekSeries = getWeekSeriesString(info);
 
-
         // Get ClassRoom
         String classRoom = strs[strs.length - 1];
         // print(classRoom);

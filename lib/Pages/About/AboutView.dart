@@ -23,7 +23,7 @@ class _AboutViewState extends State<AboutView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: const Color(0xffeeeeee),
+        // backgroundColor: Theme.of(context).hoverColor,
         appBar: AppBar(
           title: Text(S.of(context).about_title),
         ),
@@ -59,7 +59,9 @@ class _AboutViewState extends State<AboutView> {
             ),
             TextButton(
               style: TextButton.styleFrom(
-                  primary: Theme.of(context).primaryColor,
+                  primary: Theme.of(context).brightness == Brightness.light
+                      ? Theme.of(context).primaryColor
+                      : Colors.white,
                   backgroundColor: Colors.transparent),
               child: Text(S.of(context).check_privacy_button),
               onPressed: () {
@@ -98,7 +100,7 @@ class _AboutViewState extends State<AboutView> {
       child: Container(
         margin: const EdgeInsets.all(15.0),
         padding: const EdgeInsets.all(10.0),
-        color: Colors.white,
+        color: Theme.of(context).secondaryHeaderColor,
         child: Text(text),
         alignment: Alignment.centerLeft,
       ),

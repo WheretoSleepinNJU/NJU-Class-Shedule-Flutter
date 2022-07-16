@@ -1,12 +1,13 @@
 import 'dart:io';
+import 'dart:async';
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../../Utils/States/MainState.dart';
-import 'dart:async';
 import '../../generated/l10n.dart';
 import '../../Components/Toast.dart';
 import '../../Models/CourseModel.dart';
@@ -76,7 +77,9 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
                     backgroundColor: Theme.of(context).primaryColor,
                     actions: [
                       TextButton(
-                          style: TextButton.styleFrom(primary: Colors.white),
+                          style: TextButton.styleFrom(
+                              primary: Colors.white,
+                              backgroundColor: Theme.of(context).primaryColor),
                           child: Text(widget.config['banner_action']),
                           onPressed: () => launch(widget.config['banner_url'])),
                     ],
@@ -112,28 +115,56 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
       Toast.showToast(S.of(context).class_parse_toast_importing, context);
       await controller.runJavascript(widget.config['preExtractJS'] ?? '');
       await Future.delayed(Duration(seconds: widget.config['delayTime'] ?? 0));
-
-      String response =
-          await controller.runJavascriptReturningResult(widget.config['extractJS']);
-      response = response.replaceAll('\\u003C', '<').replaceAll('\\"', '"');
-
+      Dio dio = Dio();
+      // 他妈的，屁事真多
+      String url = '';
+      if (Platform.isIOS) {
+        url = widget.config['extractJSfileiOS'];
+      } else if (Platform.isAndroid) {
+        url = widget.config['extractJSfileAndroid'];
+      }
+      Response rsp = await dio.get(url);
+      String js = rsp.data;
+      String response = await controller.runJavascriptReturningResult(js);
+      response = Uri.decodeComponent(response.replaceAll('"', ''));
       Map courseTableMap = json.decode(response);
-      CourseTable courseTable = await courseTableProvider
-          .insert(CourseTable(courseTableMap['name']));
+      CourseTable courseTable;
+      if (widget.config['class_time_list'] == null) {
+        courseTable = await courseTableProvider
+            .insert(CourseTable(courseTableMap['name']));
+      } else {
+        try{
+          Map data = {"class_time_list": widget.config['class_time_list']};
+          String dataString = json.encode(data);
+          courseTable = await courseTableProvider
+              .insert(CourseTable(courseTableMap['name'], data: dataString));
+        } catch(e) {
+          courseTable = await courseTableProvider
+              .insert(CourseTable(courseTableMap['name']));
+        }
+      }
       int index = (courseTable.id!);
       CourseProvider courseProvider = CourseProvider();
       await ScopedModel.of<MainStateModel>(context).changeclassTable(index);
-
-      Iterable courses = json.decode(courseTableMap['courses']);
+      Iterable courses;
+      // 因为这里有的可能会被encode有的不会 所以做下特殊处理...
+      if (courseTableMap['courses'].runtimeType != String) {
+        courses = courseTableMap['courses'];
+      } else if (json.decode(courseTableMap['courses']).runtimeType != String) {
+        courses = json.decode(courseTableMap['courses']);
+      } else {
+        courses = json.decode(json.decode(courseTableMap['courses']));
+      }
       List<Map<String, dynamic>> coursesMap =
           List<Map<String, dynamic>>.from(courses);
       for (var courseMap in coursesMap) {
         courseMap.remove('id');
         courseMap['tableid'] = index;
         Course course = Course.fromMap(courseMap);
-        courseProvider.insert(course);
+        await courseProvider.insert(course);
       }
-      UmengCommonSdk.onEvent("class_import", {"type": "be", "action": "success"});
+      UmengCommonSdk.onEvent(
+          "class_import", {"type": "be", "action": "success"});
       Toast.showToast(S.of(context).class_parse_toast_success, context);
       Navigator.of(context).pop(true);
     } catch (e) {
