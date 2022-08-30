@@ -96,7 +96,7 @@ class CourseTableViewState extends State<CourseTableView> {
 
     try{
       CourseTableProvider courseTableProvider = CourseTableProvider();
-      _classTimeList = await courseTableProvider.getclassTimeList(index);
+      _classTimeList = await courseTableProvider.getClassTimeList(index);
       _maxShowClasses = _classTimeList.length;
     }catch(e) {
       _classTimeList = Constant.CLASS_TIME_LIST;

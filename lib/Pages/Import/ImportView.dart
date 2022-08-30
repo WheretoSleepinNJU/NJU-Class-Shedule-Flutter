@@ -54,8 +54,11 @@ class ImportView extends StatefulWidget {
 }
 
 class _ImportViewState extends State<ImportView> {
+  List<bool> importVisibility = [false, false, false];
+
   @override
   void initState() {
+    getImportVisibility();
     super.initState();
   }
 
@@ -70,57 +73,71 @@ class _ImportViewState extends State<ImportView> {
             //     child:
             Column(
                 children: ListTile.divideTiles(context: context, tiles: [
-          Container(
-              child:
-                  Text(S.of(context).import_inline, style: const TextStyle()),
-              padding:
-                  const EdgeInsets.only(left: 15.0, top: 10.0, bottom: 5.0),
-              alignment: Alignment.centerLeft,
-              color: Theme.of(context).hoverColor),
-          ListTile(
-            title: Text(S.of(context).import_from_NJU_cer_title),
-            subtitle: FittedBox(
-                fit: BoxFit.scaleDown,
-                alignment: Alignment.centerLeft,
-                child: Text(S.of(context).import_from_NJU_cer_subtitle)),
-            onTap: () async {
-              UmengCommonSdk.onEvent(
-                  "class_import", {"type": "cer", "action": "show"});
-              bool? status = await Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) =>
-                      const ImportFromCerView(config: Config.jw_config)));
-              if (status == true) Navigator.of(context).pop(status);
-            },
-          ),
-          ListTile(
-            title: Text(S.of(context).import_from_NJU_title),
-            subtitle: FittedBox(
-                fit: BoxFit.scaleDown,
-                alignment: Alignment.centerLeft,
-                child: Text(S.of(context).import_from_NJU_subtitle)),
-            onTap: () async {
-              UmengCommonSdk.onEvent(
-                  "class_import", {"type": "jw", "action": "show"});
-              bool? status = await Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => const ImportFromJWView()));
-              if (status == true) Navigator.of(context).pop(status);
-            },
-          ),
-          ListTile(
-            title: Text(S.of(context).import_from_NJU_xk_title),
-            subtitle: FittedBox(
-                fit: BoxFit.scaleDown,
-                alignment: Alignment.centerLeft,
-                child: Text(S.of(context).import_from_NJU_xk_subtitle)),
-            onTap: () async {
-              UmengCommonSdk.onEvent(
-                  "class_import", {"type": "xk", "action": "show"});
-              bool? status = await Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) =>
-                      const ImportFromXKView(config: Config.xk_config)));
-              if (status == true) Navigator.of(context).pop(status);
-            },
-          ),
+          (importVisibility[0] || importVisibility[1] || importVisibility[2])
+              ? Container(
+                  child: Text(S.of(context).import_inline,
+                      style: const TextStyle()),
+                  padding:
+                      const EdgeInsets.only(left: 15.0, top: 10.0, bottom: 5.0),
+                  alignment: Alignment.centerLeft,
+                  color: Theme.of(context).hoverColor)
+              : Container(),
+          importVisibility[0]
+              ? ListTile(
+                  title: Text(S.of(context).import_from_NJU_cer_title),
+                  subtitle: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Text(S.of(context).import_from_NJU_cer_subtitle)),
+                  onTap: () async {
+                    UmengCommonSdk.onEvent(
+                        "class_import", {"type": "cer", "action": "show"});
+                    bool? status = await Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                const ImportFromCerView(
+                                    config: Config.jw_config)));
+                    if (status == true) Navigator.of(context).pop(status);
+                  },
+                )
+              : Container(),
+          importVisibility[1]
+              ? ListTile(
+                  title: Text(S.of(context).import_from_NJU_title),
+                  subtitle: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Text(S.of(context).import_from_NJU_subtitle)),
+                  onTap: () async {
+                    UmengCommonSdk.onEvent(
+                        "class_import", {"type": "jw", "action": "show"});
+                    bool? status = await Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                const ImportFromJWView()));
+                    if (status == true) Navigator.of(context).pop(status);
+                  },
+                )
+              : Container(),
+          importVisibility[2]
+              ? ListTile(
+                  title: Text(S.of(context).import_from_NJU_xk_title),
+                  subtitle: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Text(S.of(context).import_from_NJU_xk_subtitle)),
+                  onTap: () async {
+                    UmengCommonSdk.onEvent(
+                        "class_import", {"type": "xk", "action": "show"});
+                    bool? status = await Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                const ImportFromXKView(
+                                    config: Config.xk_config)));
+                    if (status == true) Navigator.of(context).pop(status);
+                  },
+                )
+              : Container(),
           Container(
               child:
                   Text(S.of(context).import_online, style: const TextStyle()),
@@ -133,6 +150,18 @@ class _ImportViewState extends State<ImportView> {
                   builder:
                       (BuildContext context, AsyncSnapshot<List> snapshot) {
                     if (snapshot.hasData) {
+                      if (snapshot.data!.isEmpty) {
+                        return Column(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 0),
+                              child: const Text("加载中..."),
+                            ),
+                            moreSchools()
+                          ],
+                        );
+                      }
                       // List configList = snapshot.data!;
                       List<School> schoolList = snapshot.data!
                           .map((data) => School(
@@ -193,6 +222,22 @@ class _ImportViewState extends State<ImportView> {
         ]).toList())
         // )
         );
+  }
+
+  getImportVisibility() async {
+    try {
+      Dio dio = Dio();
+      String url = Url.UPDATE_ROOT + '/importVisibility.json';
+      Response response = await dio.get(url);
+      List<bool> rst = List<bool>.from(response.data['data']);
+      setState(() {
+        importVisibility = rst;
+      });
+    } catch (e) {
+      setState(() {
+        importVisibility = [true, false, false];
+      });
+    }
   }
 
   Future<List> getOnlineConfig() async {
@@ -265,7 +310,10 @@ class _ImportViewState extends State<ImportView> {
     return InkWell(
         child: Container(
             child: Text(S.of(context).import_more_schools,
-                style: TextStyle(color: Theme.of(context).primaryColor)),
+                style: TextStyle(
+                    color: Theme.of(context).brightness == Brightness.light
+                        ? Theme.of(context).primaryColor
+                        : Colors.white)),
             alignment: Alignment.topCenter,
             padding: const EdgeInsets.only(top: 5.0, bottom: 5.0)),
         onTap: () {

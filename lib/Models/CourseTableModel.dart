@@ -77,7 +77,7 @@ class CourseTableProvider {
     return rst.toList();
   }
 
-  Future<List<Map>> getclassTimeList(int id) async {
+  Future<List<Map>> getClassTimeList(int id) async {
     await open();
     List<Map> defaultClassTimeList = Constant.CLASS_TIME_LIST;
 
@@ -88,17 +88,38 @@ class CourseTableProvider {
     if (maps.isEmpty || maps[0]["data"] == null) {
       return defaultClassTimeList;
     }
-    print(maps);
+    // print(maps);
     try {
       Map rst = json.decode(maps[0]["data"]);
       if(rst["class_time_list"] == null) {
         return defaultClassTimeList;
       }
-      print(rst["class_time_list"]);
+      // print(rst["class_time_list"]);
       return List<Map>.from(rst["class_time_list"]);
     } catch (e) {
       // print(e);
       return defaultClassTimeList;
+    }
+  }
+
+  Future<String> getSemesterStartMonday(int id) async {
+    await open();
+    List<Map<String, dynamic>> maps = await db!.query(tableName,
+        columns: [columnId, columnName, columnData],
+        where: '$columnId = ?',
+        whereArgs: [id]);
+    if (maps.isEmpty || maps[0]["data"] == null || maps[0]["data"] == "") {
+      return "";
+    }
+    try {
+      Map rst = json.decode(maps[0]["data"]);
+      if(rst["semester_start_monday"] == null) {
+        return "";
+      }
+      return rst["semester_start_monday"];
+    } catch (e) {
+      // print(e);
+      return "";
     }
   }
 

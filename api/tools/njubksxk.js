@@ -1,3 +1,37 @@
+function getWeekSeriesString(info) {
+  let weekList = [];
+  let strs = [];
+  try {
+    info = info.split(" ")[2];
+    strs = info.split(",");
+  } catch (e) {
+    return "[]";
+  }
+
+  for (let i = 0; i < strs.length; i++) {
+    var rst4 = strs[i].match(/^(\d{1,2})周$/);
+    if (rst4 != null) {
+      weekList.push(rst4[1]);
+    }
+
+    var rst2 = strs[i].match(/(\d{1,2})-(\d{1,2})周/);
+    if (rst2 != null) {
+      let startWeek = parseInt(rst2[1]);
+      let endWeek = parseInt(rst2[2]);
+      if (strs[i].includes("单") || strs[i].includes("双")) {
+        for (let j = startWeek; j <= endWeek; j = j + 2) {
+          weekList.push(j);
+        }
+      } else {
+        for (let j = startWeek; j <= endWeek; j++) {
+          weekList.push(j);
+        }
+      }
+    }
+  }
+  return weekList;
+}
+
 function scheduleHtmlParser() {
   let WEEK_WITH_BIAS = [
     "",
@@ -9,83 +43,110 @@ function scheduleHtmlParser() {
     "周六",
     "周日",
   ];
-  let name = document.querySelector(
-    "body > div:nth-child(10) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(1)"
-  ).textContent;
-  let rst = { name: name, courses: []};
-  let table_1 = document.getElementsByClassName("TABLE_TR_01");
-  let table_2 = document.getElementsByClassName("TABLE_TR_02");
-  let table = table_1.concat(table_2);
-  table.forEach((e) => {
-    let state = e.children[6].innerText;
-    if (state.includes("已退选")) return;
-    let course_name = e.children[1].innerText;
-    let class_number = e.children[0].innerText;
-    let teacher = e.children[3].innerText;
-    let test_time = e.children[8].innerText;
-    let test_location = e.children[9].innerText;
-    let course_info = e.children[10].innerText;
-    let info_str = e.children[4].innerText;
-    let info_list = info_str.split("\n");
-    info_list.forEach((i) => {
-      let week_time = 0;
-      let strs = i.split(" ");
-      let start_time = 0;
-      let time_count = 0;
-      let weeks = [];
-      for (let z = 0; z < WEEK_WITH_BIAS.length; z++) {
-        if (WEEK_WITH_BIAS[z] == strs[0]) week_time = z;
-      }
-      let pattern1 = new RegExp("第(\\d{1,2})-(\\d{1,2})节", "i");
-      strs.forEach((w) => {
-        let r = pattern1.exec(w);
-        if (r) {
-          start_time = parseInt(r[1]);
-          time_count = parseInt(r[2]) - parseInt(r[1]);
-        }
-      });
-      let pattern2 = new RegExp("(\\d{1,2})-(\\d{1,2})周", "i");
-      strs.forEach((x) => {
-        let s = pattern2.exec(x);
-        if (s) {
-          if (strs.includes("单周")) {
-            for (let z = parseInt(s[1]); z <= parseInt(s[2]); z += 2)
-              weeks.push(z);
-          } else if (strs.includes("双周")) {
-            for (let z = parseInt(s[1]); z <= parseInt(s[2]); z += 2)
-              weeks.push(z);
-          } else {
-            for (let z = parseInt(s[1]); z <= parseInt(s[2]); z++)
-              weeks.push(z);
+  let WEEK_NUM = 17;
+
+  let name = document.getElementsByClassName("currentTerm")[0].innerHTML;
+  let rst = { name: name, courses: [] };
+  let tableHead = document.getElementsByClassName("course-head")[1];
+  let headElements = tableHead.children[0].children;
+  let infoIndex = 3;
+  let courseNameIndex = 1;
+  let courseTeacherIndex = 2;
+  let courseInfoIndex = 6;
+  for (let i = 0; i < headElements.length; i++) {
+    //  console.log(headElements[i].innerHTML);
+    if (headElements[i].innerHTML.includes("时间地点")) {
+      infoIndex = i;
+    } else if (headElements[i].innerHTML.includes("课程名")) {
+      courseNameIndex = i;
+    } else if (headElements[i].innerHTML.includes("教师")) {
+      courseTeacherIndex = i;
+    } else if (headElements[i].innerHTML.includes("备注")) {
+      courseInfoIndex = i;
+    }
+  }
+  let table = document.getElementsByClassName("course-body")[1];
+  let elements = table.children;
+
+  for (let i = 0; i < elements.length; i++) {
+    // console.log(elements[i]);
+    //退选课程
+    // String state = e.children[6].innerHtml.trim();
+    // if(state.contains('已退选')) continue;
+
+    if (elements[i].className.includes("wdbm-course-tr")) continue;
+    // print(e.className);
+
+    // Time and Place
+    let infos = elements[i].children[infoIndex].children;
+    let courseName = elements[i].children[courseNameIndex].innerHTML;
+    let courseTeacher = elements[i].children[courseTeacherIndex].innerHTML;
+    let courseInfo =
+      elements[i].children[courseInfoIndex].attributes["title"].value;
+
+    // console.log(infos);
+    for (let j = 0; j < infos.length; j++) {
+      let info = infos[j].innerHTML;
+      if (info == "") continue;
+      //  console.log(info);
+
+      let strs = info.split(" ");
+
+      //自由时间缺省值
+      let weekTime = 0;
+      let startTime = 0;
+      let timeCount = 0;
+      if (!info.includes("自由时间")) {
+        // Get WeekTime
+        let weekStr = info.substring(0, 2);
+        for (let k = 0; k < WEEK_WITH_BIAS.length; k++) {
+          if (WEEK_WITH_BIAS[k] == weekStr) {
+            weekTime = k;
           }
         }
-      });
-      let pattern3 = new RegExp("第(\\d{1,2})周", "i");
-      strs.forEach((y) => {
-        let t = pattern3.exec(y);
-        if (t) {
-          weeks.push(parseInt(t[1]));
+      }
+
+      let weekSeries;
+      // console.log(info)
+
+      let time = info.match(/(\d{1,2})-(\d{1,2})节/);
+      // console.log(time);
+      // var time = patten1.firstMatch(info);
+      if (time) {
+        startTime = parseInt(time[1]);
+        timeCount = parseInt(time[2]) - startTime;
+        weekSeries = getWeekSeriesString(info);
+      }
+      if (weekSeries == null) {
+        weekSeries = [];
+        for (let j = 1; j <= WEEK_NUM; j++) {
+          weekSeries.push(j);
         }
-      });
-      let classroom = strs[strs.length - 1];
+      }
+
+      // Get ClassRoom
+      let classRoom = strs[strs.length - 1];
+
+      // console.log(weekTime);
       rst["courses"].push({
-        name: course_name,
-        classroom: classroom,
-        class_number: class_number,
-        teacher: teacher,
-        test_time: test_time,
-        test_location: test_location,
+        name: courseName,
+        classroom: classRoom,
+        // class_number: class_number,
+        teacher: courseTeacher,
+        // test_time: test_time,
+        // test_location: test_location,
         link: null,
-        weeks: weeks,
-        week_time: week_time,
-        start_time: start_time,
-        time_count: time_count,
+        weeks: weekSeries,
+        week_time: weekTime,
+        start_time: startTime,
+        time_count: timeCount,
         import_type: 1,
-        info: course_info,
+        info: courseInfo,
         data: null,
       });
-    });
-  });
+    }
+  }
+  // return rst;
   return encodeURIComponent(JSON.stringify(rst));
 }
 scheduleHtmlParser();

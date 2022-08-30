@@ -34,9 +34,12 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m6(num) => "已结束(${num}人已添加)";
 
-  static String m7(num) => "第 ${num} 周";
+  static String m7(code) =>
+      "看起来导入失败了，都怪傻翠！\n\n本次导入错误码：${code}\n\n点击下方按钮将复制该错误码并加入用户群，你可以报告傻翠并等待修复，当然，也可以试试其他方式是否可以正常导入";
 
-  static String m8(start, end) => "${start}-${end} 周";
+  static String m8(num) => "第 ${num} 周";
+
+  static String m9(start, end) => "${start}-${end} 周";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -265,6 +268,13 @@ class MessageLookup extends MessageLookupByLibrary {
             "shared_preferences: ^2.0.7\nflutter_swiper_null_safety: ^1.0.2\nscoped_model: ^2.0.0-nullsafety.0\nazlistview: ^2.0.0-nullsafety.0\nwebview_flutter: ^2.0.13\nflutter_linkify: ^5.0.2\nimage_picker: ^0.8.4\npackage_info: ^2.0.2\npath_provider: ^2.0.3\nurl_launcher: ^6.0.10\nflutter_html: ^2.1.3\nfluttertoast: ^8.0.1\nsqflite: ^2.0.0+4\nhtml: ^0.15.0\ndio: ^4.0.0"),
         "open_source_library_title":
             MessageLookupByLibrary.simpleMessage("所使用到的开源库"),
+        "parse_error_dialog_add_group":
+            MessageLookupByLibrary.simpleMessage("加入用户群报告问题"),
+        "parse_error_dialog_content": m7,
+        "parse_error_dialog_other_ways":
+            MessageLookupByLibrary.simpleMessage("试试其他导入方式"),
+        "parse_error_dialog_title":
+            MessageLookupByLibrary.simpleMessage("Oops，导入失败惹 TvT"),
         "password": MessageLookupByLibrary.simpleMessage("密码"),
         "password_error_toast":
             MessageLookupByLibrary.simpleMessage("密码错误 = =||"),
@@ -307,8 +317,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "view_lecture_subtitle":
             MessageLookupByLibrary.simpleMessage("查看南哪最新讲座信息，可一键导入至课表"),
         "view_lecture_title": MessageLookupByLibrary.simpleMessage("查看/添加讲座"),
-        "week": m7,
-        "week_duration": m8,
+        "week": m8,
+        "week_duration": m9,
         "week_num_invalid_dialog_content":
             MessageLookupByLibrary.simpleMessage("课程结束周数应大于起始周数"),
         "week_num_invalid_dialog_title":

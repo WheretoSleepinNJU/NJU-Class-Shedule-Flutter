@@ -27,5 +27,5 @@ class Url {
   // TODO: change URL to production
   static const String UPDATE_ROOT =
       'https://cdn.idealclover.cn/Projects/wheretosleepinnju/production';
-// static final String UPDATE_ROOT = 'https://clover-1254951786.cos.ap-shanghai.myqcloud.com/Projects/wheretosleepinnju/debug';
+  // static const String UPDATE_ROOT = 'https://clover-1254951786.cos.ap-shanghai.myqcloud.com/Projects/wheretosleepinnju/debug';
 }

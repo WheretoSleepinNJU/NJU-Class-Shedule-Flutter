@@ -1220,6 +1220,46 @@ class S {
     );
   }
 
+  /// `Oops，导入失败惹 TvT`
+  String get parse_error_dialog_title {
+    return Intl.message(
+      'Oops，导入失败惹 TvT',
+      name: 'parse_error_dialog_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `看起来导入失败了，都怪傻翠！\n\n本次导入错误码：{code}\n\n点击下方按钮将复制该错误码并加入用户群，你可以报告傻翠并等待修复，当然，也可以试试其他方式是否可以正常导入`
+  String parse_error_dialog_content(Object code) {
+    return Intl.message(
+      '看起来导入失败了，都怪傻翠！\n\n本次导入错误码：$code\n\n点击下方按钮将复制该错误码并加入用户群，你可以报告傻翠并等待修复，当然，也可以试试其他方式是否可以正常导入',
+      name: 'parse_error_dialog_content',
+      desc: '',
+      args: [code],
+    );
+  }
+
+  /// `加入用户群报告问题`
+  String get parse_error_dialog_add_group {
+    return Intl.message(
+      '加入用户群报告问题',
+      name: 'parse_error_dialog_add_group',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `试试其他导入方式`
+  String get parse_error_dialog_other_ways {
+    return Intl.message(
+      '试试其他导入方式',
+      name: 'parse_error_dialog_other_ways',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `导入完成`
   String get import_success_toast {
     return Intl.message(
