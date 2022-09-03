@@ -52,6 +52,8 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
+	<key>NSCalendarsUsageDescription</key>
+	<string>南哪课表需要日历权限，才能将课程导入系统日历。</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 </dict>
