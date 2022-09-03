@@ -1,7 +1,7 @@
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-abstract class WeekStateModel extends Model {
+mixin WeekStateModel on Model {
   int? _weekIndex;
   int? _tmpWeekIndex;
 
