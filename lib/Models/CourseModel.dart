@@ -34,8 +34,8 @@ class Course {
   String? link;
   String? info;
 
-  String? weeks;
-  int? weekTime;
+  String? weeks; //哪些周会上这个课
+  int? weekTime; //星期几
   int? startTime;
   int? timeCount;
   int? importType;

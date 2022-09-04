@@ -1,11 +1,18 @@
+import 'dart:collection';
 import 'dart:io';
+import 'dart:convert';
+import 'dart:math';
 import '../../generated/l10n.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info/package_info.dart';
+import 'package:device_calendar/device_calendar.dart';
+import 'package:timezone/timezone.dart';
+import 'package:scoped_model/scoped_model.dart';
 import '../ManageTable/ManageTableView.dart';
 import '../Import/ImportView.dart';
 // import '../AllCourse/AllCourseView.dart';
@@ -17,6 +24,9 @@ import '../Share/ShareView.dart';
 import '../../Components/Toast.dart';
 import '../../Resources/Config.dart';
 import '../../Resources/Url.dart';
+import '../../Utils/States/MainState.dart';
+import '../../Models/CourseModel.dart';
+
 
 import 'Widgets/WeekChanger.dart';
 import 'Widgets/ThemeChanger.dart';
@@ -33,6 +43,21 @@ class _SettingsViewState extends State<SettingsView> {
   void initState() {
     super.initState();
   }
+
+  Map<int,DateTime> timeMap={
+    1 :DateTime(2022,1,1,8,0),
+    2 :DateTime(2022,1,1,9,0),
+    3 :DateTime(2022,1,1,10,10),
+    4 :DateTime(2022,1,1,11,10),
+    5 :DateTime(2022,1,1,14,0),
+    6 :DateTime(2022,1,1,15,0),
+    7 :DateTime(2022,1,1,16,10),
+    8 :DateTime(2022,1,1,17,10),
+    9 :DateTime(2022,1,1,18,30),
+    10:DateTime(2022,1,1,19,30),
+    11:DateTime(2022,1,1,20,30),
+    12:DateTime(2022,1,1,21,30),
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -147,6 +172,13 @@ class _SettingsViewState extends State<SettingsView> {
                           const ManageTableView()));
                 },
               ),
+              ListTile(
+                title: Text(S.of(context).export_to_system_calendar),
+                subtitle: Text(S.of(context).make_sure_week_num_correct),
+                onTap: () async{
+                  exportToSystemCalendar(context);
+                },
+              ),
               // TODO: Refresh multi times when changing themes.
               const ThemeChanger(),
               ListTile(
@@ -247,4 +279,71 @@ class _SettingsViewState extends State<SettingsView> {
       return false;
     }
   }
+  Future<bool> exportToSystemCalendar(BuildContext ctx) async {
+    int tableId=await MainStateModel.of(context).getClassTable();
+    CourseProvider cp=CourseProvider();
+    List courses=await cp.getAllCourses(tableId);
+
+    Map<int,DateTime> dayMap=await getDayMap();
+    Duration courseLength=Duration(minutes: 50);
+    DeviceCalendarPlugin dc=DeviceCalendarPlugin();
+    const String CALENDAR_NAME="南哪课表";
+    for (Map<String, dynamic> courseMap in courses) {
+        Course course=Course.fromMap(courseMap);
+        for(int week_num in json.decode(course.weeks!)){
+          DateTime day=dayMap[course.weekTime]!.add(Duration(days: 7)*week_num);
+          DateTime startTime=timeMap[course.startTime]!;
+          DateTime endTime=timeMap[course.startTime!+course.timeCount!+1]!;
+
+          String timezone='Asia/Shanghai';
+          Location loc=timeZoneDatabase.get(timezone);
+
+          TZDateTime start=TZDateTime(loc,day.year,day.month,day.day,startTime.hour,startTime.minute);
+          TZDateTime end=TZDateTime(loc,day.year,day.month,day.day,endTime.hour,endTime.minute);
+
+          UnmodifiableListView calendars=(await dc.retrieveCalendars()).data!;
+          String? targetCalendarId;
+          bool found=false;
+          for(Calendar c in calendars){
+            if(c.name==CALENDAR_NAME){
+              targetCalendarId=c.id!;
+              found=true;
+              break;
+            }
+          }
+          if(found==false){
+            targetCalendarId=(await dc.createCalendar(CALENDAR_NAME)).data!;
+          }
+          String? result=(await dc.createOrUpdateEvent(Event(
+            targetCalendarId!,
+            title: course.name,
+            start: start,
+            end: end,
+            location: course.testLocation,
+            description: course.info,
+          )))?.data;
+        }
+      }
+    return true;
+  }
+  Future<Map<int,DateTime>> getDayMap() async{
+    //获取开学第一周的周一到周日的日期
+    //时间是调用此函数时的时间，没有意义，不应被使用
+    Map<int,DateTime> dayMap={};
+    DateTime now=DateTime.now();
+    int weekNum=await ScopedModel.of<MainStateModel>(context).getWeek();
+    Duration backaweek=Duration(days: -7);
+    Duration backaday=Duration(days: -1);
+    DateTime firstDay=now.add(backaweek*weekNum+backaday*now.weekday);
+    for(int i=0;i<7;i++){
+      Duration delta=Duration(days: i);
+      DateTime target=firstDay.add(delta);
+      dayMap[target.weekday]=target;
+    }
+    return dayMap;
+  }
 }
+
+
+
+

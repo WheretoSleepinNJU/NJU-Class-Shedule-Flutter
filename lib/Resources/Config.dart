@@ -1,5 +1,5 @@
 class Config {
-  static const int MAX_CLASSES = 13;
+  static const int MAX_CLASSES = 12;
   static const int MAX_WEEKS = 25;
   static const int DEFAULT_WEEK_NUM = 17;
 
