@@ -3,15 +3,19 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:scoped_model/scoped_model.dart';
+import '../../Components/Dialog.dart';
+import '../../Components/TransBgTextButton.dart';
 import '../../Utils/States/MainState.dart';
 import '../../generated/l10n.dart';
 import '../../Components/Toast.dart';
 import '../../Models/CourseModel.dart';
 import '../../Models/CourseTableModel.dart';
+import '../../Resources/Url.dart';
 
 class ImportFromBEView extends StatefulWidget {
   final String? title;
@@ -129,16 +133,24 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
       response = Uri.decodeComponent(response.replaceAll('"', ''));
       Map courseTableMap = json.decode(response);
       CourseTable courseTable;
-      if (widget.config['class_time_list'] == null) {
+      if (widget.config['class_time_list'] == null &&
+          widget.config['semester_start_monday'] == null) {
         courseTable = await courseTableProvider
             .insert(CourseTable(courseTableMap['name']));
       } else {
-        try{
-          Map data = {"class_time_list": widget.config['class_time_list']};
+        try {
+          Map data = {};
+          if (widget.config['class_time_list'] != null) {
+            data["class_time_list"] = widget.config['class_time_list'];
+          }
+          if (widget.config['semester_start_monday'] != null) {
+            data["semester_start_monday"] =
+                widget.config['semester_start_monday'];
+          }
           String dataString = json.encode(data);
           courseTable = await courseTableProvider
               .insert(CourseTable(courseTableMap['name'], data: dataString));
-        } catch(e) {
+        } catch (e) {
           courseTable = await courseTableProvider
               .insert(CourseTable(courseTableMap['name']));
         }
@@ -168,8 +180,66 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
       Toast.showToast(S.of(context).class_parse_toast_success, context);
       Navigator.of(context).pop(true);
     } catch (e) {
+      String response = await controller.runJavascriptReturningResult(
+          "window.document.getElementsByTagName('html')[0].outerHTML;");
+      String url = await controller.currentUrl() ?? "";
+
+      String now = DateTime.now().toString();
+      String errorCode = now
+          .replaceAll("-", "")
+          .replaceAll(":", "")
+          .replaceAll(" ", "")
+          .replaceAll(".", "");
+      Map<String, String> info = {
+        "errorCode": errorCode,
+        "response": response,
+        "errorMsg": e.toString(),
+        "url": url,
+        "way": "be"
+      };
+      await Dio()
+          .post(Url.URL_BACKEND + "/log/log", data: FormData.fromMap(info));
+
       UmengCommonSdk.onEvent("class_import", {"type": "be", "action": "fail"});
-      Toast.showToast(S.of(context).online_parse_error_toast, context);
+      // Toast.showToast(S.of(context).online_parse_error_toast, context);
+      showDialog<String>(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
+            return MDialog(
+              S.of(context).parse_error_dialog_title,
+              Text(S.of(context).parse_error_dialog_content(errorCode)),
+              overrideActions: <Widget>[
+                Container(
+                    alignment: Alignment.centerRight,
+                    child: TransBgTextButton(
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? Theme.of(context).primaryColor
+                            : Colors.white,
+                        child: Text(S.of(context).parse_error_dialog_add_group),
+                        onPressed: () async {
+                          await Clipboard.setData(
+                              ClipboardData(text: errorCode));
+                          if (Platform.isIOS) {
+                            launch(Url.QQ_GROUP_APPLE_URL);
+                          } else if (Platform.isAndroid) {
+                            launch(Url.QQ_GROUP_ANDROID_URL);
+                          }
+                          Navigator.of(context).pop();
+                        })),
+                Container(
+                    alignment: Alignment.centerRight,
+                    child: TransBgTextButton(
+                        color: Colors.grey,
+                        child: Text(S.of(context).parse_error_dialog_other_ways,
+                            style: const TextStyle(color: Colors.grey)),
+                        onPressed: () async {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        }))
+              ],
+            );
+          });
       return;
     }
   }

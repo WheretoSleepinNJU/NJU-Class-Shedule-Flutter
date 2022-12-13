@@ -1,3 +1,7 @@
+import 'dart:io';
+import 'package:flutter/services.dart';
+import '../../Components/Dialog.dart';
+import '../../Components/TransBgTextButton.dart';
 import '../../generated/l10n.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -243,14 +247,68 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
                             Toast.showToast(
                                 S.of(context).class_parse_error_toast, context);
                           } else {
+                            UmengCommonSdk.onEvent("class_import",
+                                {"type": "jw", "action": "success"});
                             Toast.showToast(
                                 S.of(context).class_parse_toast_success,
                                 context);
                           }
                           Navigator.of(context).pop(true);
                         } else {
-                          Toast.showToast(
-                              S.of(context).class_parse_toast_fail, context);
+                          UmengCommonSdk.onEvent(
+                              "class_import", {"type": "jw", "action": "fail"});
+                          // Toast.showToast(
+                          //     S.of(context).class_parse_toast_fail, context);
+                          showDialog<String>(
+                              barrierDismissible: false,
+                              context: context,
+                              builder: (BuildContext context) {
+                                return MDialog(
+                                  S.of(context).parse_error_dialog_title,
+                                  Text(S
+                                      .of(context)
+                                      .parse_error_dialog_content("102")),
+                                  overrideActions: <Widget>[
+                                    Container(
+                                        alignment: Alignment.centerRight,
+                                        child: TransBgTextButton(
+                                            color: Theme.of(context)
+                                                        .brightness ==
+                                                    Brightness.light
+                                                ? Theme.of(context).primaryColor
+                                                : Colors.white,
+                                            child: Text(S
+                                                .of(context)
+                                                .parse_error_dialog_add_group),
+                                            onPressed: () async {
+                                              await Clipboard.setData(
+                                                  const ClipboardData(
+                                                      text: "102"));
+                                              if (Platform.isIOS) {
+                                                launch(Url.QQ_GROUP_APPLE_URL);
+                                              } else if (Platform.isAndroid) {
+                                                launch(
+                                                    Url.QQ_GROUP_ANDROID_URL);
+                                              }
+                                              Navigator.of(context).pop();
+                                            })),
+                                    Container(
+                                        alignment: Alignment.centerRight,
+                                        child: TransBgTextButton(
+                                            color: Colors.grey,
+                                            child: Text(
+                                                S
+                                                    .of(context)
+                                                    .parse_error_dialog_other_ways,
+                                                style: const TextStyle(
+                                                    color: Colors.grey)),
+                                            onPressed: () async {
+                                              Navigator.of(context).pop();
+                                              Navigator.of(context).pop();
+                                            }))
+                                  ],
+                                );
+                              });
                           setState(() {
                             randomNumForCaptcha = Random().nextDouble();
                           });

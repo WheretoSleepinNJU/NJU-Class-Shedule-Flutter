@@ -28,43 +28,76 @@ class CourseParser {
 
   Future<List<Course>> parseCourse(int tableId) async {
     List<Course> rst = [];
+
+    Element? tableHead = document!.getElementsByClassName("course-head")[1];
+    List<Element> headElements = tableHead.children[0].children;
+    int infoIndex = 3;
+    int courseNameIndex = 1;
+    int courseTeacherIndex = 2;
+    int courseInfoIndex = 6;
+    for (var i = 0; i < headElements.length; i++) {
+      print(headElements[i].innerHtml);
+      if (headElements[i].innerHtml.contains('时间地点')) {
+        infoIndex = i;
+      } else if (headElements[i].innerHtml.contains('课程名')) {
+        courseNameIndex = i;
+      } else if (headElements[i].innerHtml.contains('教师')) {
+        courseTeacherIndex = i;
+      } else if (headElements[i].innerHtml.contains('备注')) {
+        courseInfoIndex = i;
+      }
+    }
+
     Element? table = document!.getElementsByClassName("course-body")[1];
     List<Element> elements = table.children;
+
     for (Element e in elements) {
       //退选课程
       // String state = e.children[6].innerHtml.trim();
       // if(state.contains('已退选')) continue;
 
+      if (e.className.contains('wdbm-course-tr')) continue;
+      // print(e.className);
+
       // Time and Place
-      List<Element> infos = e.children[3].children;
-      String courseName = e.children[1].innerHtml;
-      String courseTeacher = e.children[2].innerHtml;
-      String courseInfo = e.children[6].attributes['title'] ?? '';
+      List<Element> infos = e.children[infoIndex].children;
+      String courseName = e.children[courseNameIndex].innerHtml;
+      String courseTeacher = e.children[courseTeacherIndex].innerHtml;
+      String courseInfo = e.children[courseInfoIndex].attributes['title'] ?? '';
 
       // String source = e.children[3].innerHtml.trim().replaceAll('<br>', '\\n');
       // List<String> infos = source.split('\\n');
 
-      // print(source);
+      print(infos);
 
       for (Element i in infos) {
         String info = i.innerHtml;
         if (info == '') continue;
 
+        print(i.text);
+
         // "自由时间 2-17周 详见主页通知"
         // ATTENTION：这里是新教务系统的坑！
         if (info == '自由地点') continue;
 
-        // Get WeekTime
         List<String> strs = info.split(' ');
-        String weekStr = info.substring(0, 2);
 
-        int weekTime = _getIntWeek(weekStr);
-        if (weekTime == 0) {
-          throw (courseName);
+        //自由时间缺省值
+        int weekTime = 0;
+        int startTime = 0;
+        int timeCount = 0;
+
+        if (!info.contains('自由时间')) {
+          // Get WeekTime
+          String weekStr = info.substring(0, 2);
+
+          weekTime = _getIntWeek(weekStr);
+          if (weekTime == 0) {
+            throw (courseName);
+          }
         }
 
         // Get Time
-        int startTime, timeCount;
         String weekSeries;
 
         try {

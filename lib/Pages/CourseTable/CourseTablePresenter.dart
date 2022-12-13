@@ -2,12 +2,13 @@ import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
+import 'package:flutter_swiper_null_safety_flutter3/flutter_swiper_null_safety_flutter3.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter_html/flutter_html.dart';
+import '../../Models/CourseTableModel.dart';
 import '../../generated/l10n.dart';
 import '../../Models/CourseModel.dart';
 import '../../Models/ScheduleModel.dart';
@@ -102,10 +103,16 @@ class CourseTablePresenter {
       welcomeTitle = response.data['title'];
       welcomeContent = response.data['content_html'];
       delaySeconds = response.data['delay'];
-      bool isSameWeek = await WeekUtil.isSameWeek(
-          (response.data['semester_start_monday']), 1);
+      String semesterStartMonday = response.data['semester_start_monday'];
+      int index = await ScopedModel.of<MainStateModel>(context).getClassTable();
+      CourseTableProvider courseTableProvider = CourseTableProvider();
+      String tmpSemesterStartMonday = await courseTableProvider.getSemesterStartMonday(index);
+      if(tmpSemesterStartMonday != "") {
+        semesterStartMonday = tmpSemesterStartMonday;
+      }
+      bool isSameWeek = await WeekUtil.isSameWeek(semesterStartMonday, 1);
       if (!isSameWeek) {
-        await changeWeek(context, response.data['semester_start_monday']);
+        await changeWeek(context, semesterStartMonday);
       }
     } else {
       welcomeTitle = S.of(context).welcome_title;
