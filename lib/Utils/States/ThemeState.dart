@@ -3,7 +3,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../Resources/Constant.dart';
 
-abstract class ThemeStateModel extends Model {
+mixin ThemeStateModel on Model {
   int? _themeIndex;
 
   get themeIndex => _themeIndex;
