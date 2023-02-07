@@ -83,6 +83,10 @@
   "delete_backgound_picture_subtitle": "恢复默认白色背景",
   "delete_backgound_picture_success_toast": "已恢复默认背景ww",
   "add_backgound_picture_success_toast": "更换背景图片成功ww",
+  "export_to_system_calendar_title":"导出到系统日历",
+  "export_to_system_calendar_subtitle":"请确保当前周数正确，如需修改请在系统日历中操作",
+  "export_to_system_calendar_success_toast":"导出成功",
+  "export_to_system_calendar_fail_toast":"导出日历失败，请检查是否授予权限",
   "class_height_title": "自定义课程显示长度",
   "class_height_subtitle": "仅当强制缩放关闭时生效",
   "lecture_title": "讲座列表",
@@ -181,14 +185,12 @@
   "introduction": "博客：https://idealclover.top\nEmail：idealclover@163.com",
   "open_source_library_title": "所使用到的开源库",
   "open_source_library_content": "shared_preferences: ^2.0.7\nflutter_swiper_null_safety: ^1.0.2\nscoped_model: ^2.0.0-nullsafety.0\nazlistview: ^2.0.0-nullsafety.0\nwebview_flutter: ^2.0.13\nflutter_linkify: ^5.0.2\nimage_picker: ^0.8.4\npackage_info: ^2.0.2\npath_provider: ^2.0.3\nurl_launcher: ^6.0.10\nflutter_html: ^2.1.3\nfluttertoast: ^8.0.1\nsqflite: ^2.0.0+4\nhtml: ^0.15.0\ndio: ^4.0.0\ndevice_calendar: ^4.2.0\nflutter_native_timezone: ^2.0.0",
-  "easter_egg": "感谢小百合工作室\n感谢 @ns @lgt @FengChendian 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光",
+  "easter_egg": "感谢小百合工作室\n感谢 @ns @lgt @FengChendian @SuperKenVery 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光",
   "love_and_donate": "完美导入！投喂傻翠w",
   "bug_and_report": "似乎有bug，我要反馈",
   "love_but_no_money": "感谢制作，但我没钱",
   "welcome_content": "2021.08\n又是新的学期啦\n21届的新同学都要来了，瞬间有种自己太老了的感觉hhhhhh\n\n2021.2\n不知不觉小作文更新这么长了～\n\n又是新的一年，新的一学期了。\n\n过去的这一年或许大家都经历了很多，疫情来了，翠翠毕业了，紫荆站关闭了。或许，哪次教务系统更新之后，南哪课表就再也用不起来了。\n\n所以，如果南哪课表还不错，可以在它还在的时候，一起安利给周围的小伙伴吗～\n\n过去的时光，我们都辛苦了，未来，一起加油。\n\n“敬自己一杯，因为值得。”\n\n2020.9\n这是翠翠离开南大的第一个秋天。不过放心，南哪课表还在维护。\n\n离开校园，其实想说的话有很多，但却又不知道从哪里说起，说些什么，却总会在被社会毒打的时候怀念起在南大的快乐时光。\n\n大概，衷心希望学弟学妹们珍惜大学生活w\n\n2020.5\n在付出了另一个¥688后，南哪课表终于上线 APP Store 啦！感谢大家一直以来的支持！\n\n2020.2\n2020年2月全部投喂收入将捐赠以支援湖北疫情\n(2020.3补充：已捐赠)\n\n2019.9\nHi！我是项目作者傻翠～\n\n看起来你已经导入我南教务处成功啦！撒花撒花！\n\n建议大家还是和自己教务系统中的课表对一下～避免出现什么bug～如果有bug的话欢迎反馈给我！设置-反馈中有交流群的群号～\n\n坦率地讲，从安卓移植到全平台是一个痛苦的过程。之前的APP多少是建立在开源项目的基础上，而这个重构项目算是自己从零开始搭起来的。其中也做了不少取舍与妥协，还有可能出现之前所没有过的bug，如果不巧遇到bug，欢迎向我反馈。\n\n写这个项目是一个吃力不讨好的事。单是苹果的开发者账号就要688/年，更不用提为了开发iOS版而单独买的MacBook。所以如果小伙伴想让这个项目持续下去的话，欢迎投喂傻翠。\n\n放心，这个弹框每次导入只会弹出一次，所以不会影响你的正常使用。\n\n希望南哪课表可以陪伴学弟学妹们走过每一学期ww\n\n傻翠",
   "welcome_content_html": "<p><b>2021.08</b></p><p>又是新的学期啦</p><p>21届的新同学都要来了，瞬间有种自己太老了的感觉hhhhhh</p><p><b>2021.2</b></p><p>不知不觉小作文更新这么长了～</p><p>又是新的一年，新的一学期了。</p><p>过去的这一年或许大家都经历了很多，疫情来了，翠翠毕业了，紫荆站关闭了。或许，哪次教务系统更新之后，南哪课表就再也用不起来了。</p><p>所以，如果南哪课表还不错，可以在它还在的时候，一起安利给周围的小伙伴吗～</p><p>过去的时光，我们都辛苦了，未来，一起加油。</p><p>“敬自己一杯，因为值得。”</p><p><b>2020.9</b></p><p>这是翠翠离开南大的第一个秋天。不过放心，南哪课表还在维护。</p><p>离开校园，其实想说的话有很多，但却又不知道从哪里说起，说些什么，却总会在被社会毒打的时候怀念起在南大的快乐时光。</p><p>大概，衷心希望学弟学妹们珍惜大学生活w</p><p><b>2020.5</b></p><p>在付出了另一个¥688后，南哪课表终于上线 APP Store 啦！感谢大家一直以来的支持！</p><p><b>2020.2</b></p><p>2020年2月全部投喂收入将捐赠以支援湖北疫情</p><p>(2020.3补充：已捐赠)</p><p><b>2019.9</b></p><p>Hi！我是项目作者傻翠～</p><p>看起来你已经导入我南教务处成功啦！撒花撒花！</p><p>建议大家还是和自己教务系统中的课表对一下～避免出现什么bug～如果有bug的话欢迎反馈给我！设置-反馈中有交流群的群号～</p><p>坦率地讲，从安卓移植到全平台是一个痛苦的过程。之前的APP多少是建立在开源项目的基础上，而这个重构项目算是自己从零开始搭起来的。其中也做了不少取舍与妥协，还有可能出现之前所没有过的bug，如果不巧遇到bug，欢迎向我反馈。</p><p>写这个项目是一个吃力不讨好的事。单是苹果的开发者账号就要688/年，更不用提为了开发iOS版而单独买的MacBook。所以如果小伙伴想让这个项目持续下去的话，欢迎投喂傻翠。</p><p>放心，这个弹框每次导入只会弹出一次，所以不会影响你的正常使用。</p><p>希望南哪课表可以陪伴学弟学妹们走过每一学期ww</p><p>傻翠</p>",
   "welcome_title": "欢迎使用南哪课表！",
-  "go_to_settings_toast": "修改当前周数请前往设置ww",
-  "export_to_system_calendar":"导出到系统日历",
-  "make_sure_week_num_correct":"请确保当前周数正确，我们不提供删除功能"
+  "go_to_settings_toast": "修改当前周数请前往设置ww"
 }

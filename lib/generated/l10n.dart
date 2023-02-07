@@ -890,6 +890,46 @@ class S {
     );
   }
 
+  /// `导出到系统日历`
+  String get export_to_system_calendar_title {
+    return Intl.message(
+      '导出到系统日历',
+      name: 'export_to_system_calendar_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请确保当前周数正确，如需修改请在系统日历中操作`
+  String get export_to_system_calendar_subtitle {
+    return Intl.message(
+      '请确保当前周数正确，如需修改请在系统日历中操作',
+      name: 'export_to_system_calendar_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `导出成功`
+  String get export_to_system_calendar_success_toast {
+    return Intl.message(
+      '导出成功',
+      name: 'export_to_system_calendar_success_toast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `导出日历失败，请检查是否授予权限`
+  String get export_to_system_calendar_fail_toast {
+    return Intl.message(
+      '导出日历失败，请检查是否授予权限',
+      name: 'export_to_system_calendar_fail_toast',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `自定义课程显示长度`
   String get class_height_title {
     return Intl.message(
@@ -1870,10 +1910,10 @@ class S {
     );
   }
 
-  /// `感谢小百合工作室\n感谢 @ns @lgt @FengChendian 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光`
+  /// `感谢小百合工作室\n感谢 @ns @lgt @FengChendian @SuperKenVery 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光`
   String get easter_egg {
     return Intl.message(
-      '感谢小百合工作室\n感谢 @ns @lgt @FengChendian 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光',
+      '感谢小百合工作室\n感谢 @ns @lgt @FengChendian @SuperKenVery 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光',
       name: 'easter_egg',
       desc: '',
       args: [],
@@ -1945,26 +1985,6 @@ class S {
     return Intl.message(
       '修改当前周数请前往设置ww',
       name: 'go_to_settings_toast',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `导出到系统日历`
-  String get export_to_system_calendar {
-    return Intl.message(
-      '导出到系统日历',
-      name: 'export_to_system_calendar',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `请确保当前周数正确，我们不提供删除功能`
-  String get make_sure_week_num_correct {
-    return Intl.message(
-      '请确保当前周数正确，我们不提供删除功能',
-      name: 'make_sure_week_num_correct',
       desc: '',
       args: [],
     );

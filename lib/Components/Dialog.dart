@@ -30,7 +30,8 @@ class MDialog extends StatelessWidget {
         title: FittedBox(
             fit: BoxFit.scaleDown,
             alignment: Alignment.centerLeft,
-            child: Text(
+            child:
+            Text(
                 (title.length <= 15) ? title : '${title.substring(0, 15)}...')),
         content: content,
         actions: overrideActions ??

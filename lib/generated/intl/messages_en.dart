@@ -129,13 +129,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "donate_title": MessageLookupByLibrary.simpleMessage("投喂"),
         "double_week": MessageLookupByLibrary.simpleMessage("双周"),
         "easter_egg": MessageLookupByLibrary.simpleMessage(
-            "感谢小百合工作室\n感谢 @ns @lgt @FengChendian 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光"),
+            "感谢小百合工作室\n感谢 @ns @lgt @FengChendian @SuperKenVery 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光"),
         "export_classtable_subtitle": MessageLookupByLibrary.simpleMessage(
             "导出当前课表为二维码/链接\n使用公共服务 file.io"),
         "export_classtable_title":
             MessageLookupByLibrary.simpleMessage("导出当前课表"),
         "export_title": MessageLookupByLibrary.simpleMessage("导出课程表"),
-        "export_to_system_calendar":
+        "export_to_system_calendar_fail_toast":
+            MessageLookupByLibrary.simpleMessage("导出日历失败，请检查是否授予权限"),
+        "export_to_system_calendar_subtitle":
+            MessageLookupByLibrary.simpleMessage("请确保当前周数正确，如需修改请在系统日历中操作"),
+        "export_to_system_calendar_success_toast":
+            MessageLookupByLibrary.simpleMessage("导出成功"),
+        "export_to_system_calendar_title":
             MessageLookupByLibrary.simpleMessage("导出到系统日历"),
         "fix_week_dialog_content":
             MessageLookupByLibrary.simpleMessage("检测到学期周数与当前不一致，是否立即矫正？"),
@@ -249,8 +255,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "lecture_title": MessageLookupByLibrary.simpleMessage("讲座列表"),
         "love_and_donate": MessageLookupByLibrary.simpleMessage("完美导入！投喂傻翠w"),
         "love_but_no_money": MessageLookupByLibrary.simpleMessage("感谢制作，但我没钱"),
-        "make_sure_week_num_correct":
-            MessageLookupByLibrary.simpleMessage("请确保当前周数正确，我们不提供删除功能"),
         "manage_table_subtitle":
             MessageLookupByLibrary.simpleMessage("添加或删除课表数据"),
         "manage_table_title": MessageLookupByLibrary.simpleMessage("课表管理"),
