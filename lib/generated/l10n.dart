@@ -890,6 +890,46 @@ class S {
     );
   }
 
+  /// `导出到系统日历`
+  String get export_to_system_calendar_title {
+    return Intl.message(
+      '导出到系统日历',
+      name: 'export_to_system_calendar_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请确保当前周数正确，如需修改请在系统日历中操作`
+  String get export_to_system_calendar_subtitle {
+    return Intl.message(
+      '请确保当前周数正确，如需修改请在系统日历中操作',
+      name: 'export_to_system_calendar_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `导出成功`
+  String get export_to_system_calendar_success_toast {
+    return Intl.message(
+      '导出成功',
+      name: 'export_to_system_calendar_success_toast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `导出日历失败，请检查是否授予权限`
+  String get export_to_system_calendar_fail_toast {
+    return Intl.message(
+      '导出日历失败，请检查是否授予权限',
+      name: 'export_to_system_calendar_fail_toast',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `自定义课程显示长度`
   String get class_height_title {
     return Intl.message(
@@ -1860,20 +1900,20 @@ class S {
     );
   }
 
-  /// `shared_preferences: ^2.0.7\nflutter_swiper_null_safety: ^1.0.2\nscoped_model: ^2.0.0-nullsafety.0\nazlistview: ^2.0.0-nullsafety.0\nwebview_flutter: ^2.0.13\nflutter_linkify: ^5.0.2\nimage_picker: ^0.8.4\npackage_info: ^2.0.2\npath_provider: ^2.0.3\nurl_launcher: ^6.0.10\nflutter_html: ^2.1.3\nfluttertoast: ^8.0.1\nsqflite: ^2.0.0+4\nhtml: ^0.15.0\ndio: ^4.0.0`
+  /// `shared_preferences: ^2.0.7\nflutter_swiper_null_safety: ^1.0.2\nscoped_model: ^2.0.0-nullsafety.0\nazlistview: ^2.0.0-nullsafety.0\nwebview_flutter: ^2.0.13\nflutter_linkify: ^5.0.2\nimage_picker: ^0.8.4\npackage_info: ^2.0.2\npath_provider: ^2.0.3\nurl_launcher: ^6.0.10\nflutter_html: ^2.1.3\nfluttertoast: ^8.0.1\nsqflite: ^2.0.0+4\nhtml: ^0.15.0\ndio: ^4.0.0\ndevice_calendar: ^4.2.0\nflutter_native_timezone: ^2.0.0`
   String get open_source_library_content {
     return Intl.message(
-      'shared_preferences: ^2.0.7\nflutter_swiper_null_safety: ^1.0.2\nscoped_model: ^2.0.0-nullsafety.0\nazlistview: ^2.0.0-nullsafety.0\nwebview_flutter: ^2.0.13\nflutter_linkify: ^5.0.2\nimage_picker: ^0.8.4\npackage_info: ^2.0.2\npath_provider: ^2.0.3\nurl_launcher: ^6.0.10\nflutter_html: ^2.1.3\nfluttertoast: ^8.0.1\nsqflite: ^2.0.0+4\nhtml: ^0.15.0\ndio: ^4.0.0',
+      'shared_preferences: ^2.0.7\nflutter_swiper_null_safety: ^1.0.2\nscoped_model: ^2.0.0-nullsafety.0\nazlistview: ^2.0.0-nullsafety.0\nwebview_flutter: ^2.0.13\nflutter_linkify: ^5.0.2\nimage_picker: ^0.8.4\npackage_info: ^2.0.2\npath_provider: ^2.0.3\nurl_launcher: ^6.0.10\nflutter_html: ^2.1.3\nfluttertoast: ^8.0.1\nsqflite: ^2.0.0+4\nhtml: ^0.15.0\ndio: ^4.0.0\ndevice_calendar: ^4.2.0\nflutter_native_timezone: ^2.0.0',
       name: 'open_source_library_content',
       desc: '',
       args: [],
     );
   }
 
-  /// `感谢小百合工作室\n感谢 @ns @lgt @FengChendian 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光`
+  /// `感谢小百合工作室\n感谢 @ns @lgt @FengChendian @SuperKenVery 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光`
   String get easter_egg {
     return Intl.message(
-      '感谢小百合工作室\n感谢 @ns @lgt @FengChendian 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光',
+      '感谢小百合工作室\n感谢 @ns @lgt @FengChendian @SuperKenVery 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光',
       name: 'easter_egg',
       desc: '',
       args: [],
