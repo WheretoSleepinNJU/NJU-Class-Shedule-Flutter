@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="renderer" content="webkit">
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,maximum-scale=10.0,minimum-scale=1,user-scalable=yes">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+
+    <title data-i18n-text="title">选课</title>
+    <link rel="stylesheet"
+          href="https://xkres.nju.edu.cn/products/jwfw/xsxkapp/public/css/bhwindow.css?av=1661495177574">
+    <link rel="stylesheet"
+          href="https://xkres.nju.edu.cn/products/jwfw/xsxkapp/public/css/grablessons/reset.css?av=1661495177574">
+    <link rel="stylesheet"
+          href="https://xkres.nju.edu.cn/products/jwfw/xsxkapp/public/css/bhTip.css?av=1661495177574">
+    <link rel="stylesheet"
+          href="https://xkres.nju.edu.cn/products/jwfw/xsxkapp/public/css/grablessons/grablessons.css?av=1661495177574">
+    <link rel="stylesheet"
+          href="https://xkres.nju.edu.cn/products/jwfw/xsxkapp/public/css/electiveBatchAndXz.css?av=1661495177574">
+</head>
+
+<body>
+<div class="main" style="min-width: 1134px;">
+    <!--头部-->
+    <header class="cv-page-header cv-bg-color-primary cv-clearfix">
+        <!--logo-->
+        <div class="logo-container cv-pull-left">
+            <img class="logo-img" data-i18n-title="logout"
+                 src="https://xkres.nju.edu.cn/products/jwfw/xsxkapp/public/images/common/logo1.png?av=1661495177574"
+                 id="cv-log-img" title="退出">
+            <div class="descript cv-pull-left">
+                <div class="cn">南京大学选课系统</div>
+            </div>
+        </div>
+        <!--选课类型tab-->
+        <div class="cv-pull-left" cv-role="tabs">
+            <ul id="cvPageHeadTab" class="cv-tabs" cv-role="tabList">
+                <li class="cv-active"><a href="javascript:void(0);" class="tab-first"
+                                         data-teachingclasstype="ZY">专业</a></li>
+                <li><a href="javascript:void(0);" class="tab-first"
+                       data-teachingclasstype="GG">公共</a></li>
+                <li><a href="javascript:void(0);" class="tab-first" data-teachingclasstype="GG03">交流生语言课</a>
+                </li>
+                <li><a href="javascript:void(0);" class="tab-first" data-teachingclasstype="GG04">国际化课程</a>
+                </li>
+                <li><a href="javascript:void(0);" class="tab-first"
+                       data-teachingclasstype="KZY">跨专业</a></li>
+                <li><a href="javascript:void(0);" class="tab-first"
+                       data-teachingclasstype="YD">悦读</a></li>
+                <li><a href="javascript:void(0);" class="tab-first"
+                       data-teachingclasstype="QB">课表查询</a></li>
+            </ul>
+        </div>
+        <div class="cv-pull-right">
+            <div class="cv-clearfix">
+                <div id="change_language" class="cv-pull-left" data-value="zh_cn" onclick=""></div>
+                <div id="change_electiveBatch" data-i18n-title="changeElectiveBatch" onclick=""
+                     class="cv-pull-left" title="切换轮次"></div>
+                <div class="userinfo cv-pull-right">
+                    <div class="user-top cv-clearfix">
+                        <img class="user-img"
+                             src="https://xkres.nju.edu.cn/products/jwfw/xsxkapp/public/images/common/men.png">
+                        <span class="username" title="佘俊城">佘俊城</span>
+                        <img class="arrow-icon"
+                             src="https://xkres.nju.edu.cn/products/jwfw/xsxkapp/public/images/common/down-rounded.png?av=1661495177574">
+                    </div>
+                    <div class="user-dropdown" style="">
+                        <div id="logout" data-i18n-text="logout">退出</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!--推荐选课模块-->
+    <article id="course-main">
+        <div class="top">
+            <div class="top-title cv-clearfix">
+                <span class="cv-color-prey cv-pull-left" data-i18n-text="firstPage">首页</span>
+                <span class="cv-color-prey cv-mh-4 cv-pull-left">/</span>
+                <span class="menuName cv-pull-left">专业</span>
+                <div class="zyyx-container cv-pull-left"></div>
+            </div>
+            <div class="top-second cv-clearfix">
+                <span class="cv-color-prey" data-i18n-text="currentTerm">当前学期：</span>
+                <span class="currentTerm">2022-2023学年 第1学期</span>
+                <span class="campus-info cv-ml-16">
+                            <span class="cv-color-prey" data-i18n-text="currentCampus">当前校区：</span>
+                            <span class="currentcampus">全部</span>
+                            <span class="home-change-campus"
+                                  style="margin-left: 4px;color: #047ADC;cursor: pointer;"
+                                  data-i18n-text="change">切换</span>
+                        </span>
+            </div>
+            <div class="top-search searchInput">
+                <input class="search-input" type="text"
+                       data-i18n-placeholder="courseSearchPlaceholder" placeholder="课程名称/课程号/教师">
+                <button class="cv-btn search-btn" data-i18n-text="search">搜索</button>
+                <button class="cv-btn yxkc-window-btn" data-i18n-text="home.selectedCourse">已选课程
+                </button>
+            </div>
+            <div class="second-tab-list cv-clearfix"></div>
+        </div>
+        <div class="content-container" style="height: 609px;">
+            <div class="search-container cv-clearfix">
+                <div class="cv-pull-left search-item">
+                    <div class="cv-clearfix">
+                        <div class="cv-pull-left search-label">上课年级:</div>
+                        <div class="cv-pull-left search-item-warp"><input class="cv-search-dropdown"
+                                                                          data-search="SKNJ"
+                                                                          placeholder="请选择年级"
+                                                                          data-code="2020"
+                                                                          title="2020"
+                                                                          disabled="disabled"></div>
+                    </div>
+                </div>
+                <div class="cv-pull-left search-item">
+                    <div class="cv-clearfix">
+                        <div class="cv-pull-left search-label">上课专业:</div>
+                        <div class="cv-pull-left search-item-warp"><input class="cv-search-dropdown"
+                                                                          data-search="SKZY"
+                                                                          placeholder="请选择专业"
+                                                                          data-code="273"
+                                                                          title="金融工程"
+                                                                          disabled="disabled"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="result-container" data-teachingclasstype="ZY">
+                <table class="course-list" cellspacing="0">
+                    <thead class="course-head">
+                    <tr>
+                        <td class="kch course-cell course-order" data-type="KCH"
+                            data-order="normal"><span>课程号</span></td>
+                        <td class="kcmc course-cell course-order" data-type="KCMC"
+                            data-order="normal"><span>课程名</span></td>
+                        <td class="xf course-cell course-order" data-type="XF" data-order="normal">
+                            <span>学分</span></td>
+                        <td class="kcxz course-cell course-order" data-type="KCXZ"
+                            data-order="normal"><span>课程性质</span></td>
+                        <td class="xkfs course-cell course-order" data-type="XKFS"
+                            data-order="normal"><span>选课方式</span></td>
+                        <td class="bjs course-cell course-order" data-type="BJS"
+                            data-order="normal"><span>班级数</span></td>
+                        <td class="cz course-cell">操作</td>
+                    </tr>
+                    </thead>
+                    <tbody class="course-body program-course">
+                    <tr class="course-tr course  cv-has-selected" data-coursenumber="00000030A">
+                        <td class="kch course-cell"><a class="cv-view-detail"
+                                                       data-number="00000030A"
+                                                       href="javascript:void(0);">00000030A</a></td>
+                        <td class="kcmc course-cell">毛泽东思想和中国特色社会主义理论体系概论（理论部分）</td>
+                        <td class="xf course-cell">3</td>
+                        <td class="kcxz course-cell">通修</td>
+                        <td class="xkfs course-cell">指选</td>
+                        <td class="bjs course-cell">1</td>
+                        <td class="cz course-cell"><a class="cv-zy-expand" data-number="00000030A"
+                                                      href="javascript:void(0);" data-isopen="0">查看班级</a>
+                        </td>
+                    </tr>
+                    <tr class="course-jxb-container-tr">
+                        <td colspan="7">
+                            <div class="cv-clearfix course-jxb-container"
+                                 data-coursenumber="00000030A"
+                            "="">
+                            <div class="cv-pull-left jxb-item ischoosed">
+                                <div class="content">
+                                    <div class="head"><span class="jxb-title" title="丁蕖">丁蕖</span><a
+                                            class="cv-jxb-detail" data-number="00000030A"
+                                            data-teachingclassid="20222023100000030A05"
+                                            href="javascript:void(0);" title="大纲-周历">大纲-周历</a></div>
+                                    <div class="value" title="仙林校区">仙林校区</div>
+                                    <div class="value" title="周三 2-4节 5-16周 逸B-410">周三 2-4节 5-16周
+                                        逸B-410
+                                    </div>
+                                    <div class="label krl-label"><span>已选/容量</span><span
+                                            class="value"><span class="yxrs-value cv-color-danger">已满</span>/74</span>
+                                    </div>
+                                </div>
+                                <div class="buttons">
+                                    <button class="cv-btn cv-delete-select" disabled="disabled"
+                                            type="button" data-tcid="20222023100000030A05"
+                                            data-number="00000030A" data-capacitysuffix="undefined"
+                                            data-isfull="undefined"
+                                            data-teachingclasstype="undefined"
+                                            data-isconflict="undefined" data-limitgender="undefined"
+                                            data-capacityofmale="undefined"
+                                            data-capacityoffemale="undefined"
+                                            data-numberofmale="undefined"
+                                            data-numberoffemale="undefined"
+                                            data-coursenaturename="通修">退选
+                                    </button>
+                                </div>
+                            </div>
+            </div>
+            </td></tr>
+            <tr class="course-tr course  cv-has-selected" data-coursenumber="00000080E">
+                <td class="kch course-cell"><a class="cv-view-detail" data-number="00000080E"
+                                               href="javascript:void(0);">00000080E</a></td>
+                <td class="kcmc course-cell">形势与政策</td>
+                <td class="xf course-cell">0.25</td>
+                <td class="kcxz course-cell">通修</td>
+                <td class="xkfs course-cell">指选</td>
+                <td class="bjs course-cell">1</td>
+                <td class="cz course-cell"><a class="cv-zy-expand" data-number="00000080E"
+                                              href="javascript:void(0);" data-isopen="0">查看班级</a>
+                </td>
+            </tr>
+            <tr class="course-jxb-container-tr">
+                <td colspan="7">
+                    <div class="cv-clearfix course-jxb-container" data-coursenumber="00000080E"
+                    "="">
+                    <div class="cv-pull-left jxb-item ischoosed">
+                        <div class="content">
+                            <div class="head"><span class="jxb-title" title="丁驰">丁驰</span><a
+                                    class="cv-jxb-detail" data-number="00000080E"
+                                    data-teachingclassid="20222023100000080E01"
+                                    href="javascript:void(0);" title="大纲-周历">大纲-周历</a></div>
+                            <div class="value" title="仙林校区">仙林校区</div>
+                            <div class="value" title="周一 9-10节 4周,7周,10周,13周 逸C-115">周一 9-10节
+                                4周,7周,10周,13周 逸C-115
+                            </div>
+                            <div class="label krl-label"><span>已选/容量</span><span class="value"><span
+                                    class="yxrs-value cv-color-danger">已满</span>/74</span></div>
+                        </div>
+                        <div class="buttons">
+                            <button class="cv-btn cv-delete-select" disabled="disabled"
+                                    type="button" data-tcid="20222023100000080E01"
+                                    data-number="00000080E" data-capacitysuffix="undefined"
+                                    data-isfull="undefined" data-teachingclasstype="undefined"
+                                    data-isconflict="undefined" data-limitgender="undefined"
+                                    data-capacityofmale="undefined"
+                                    data-capacityoffemale="undefined" data-numberofmale="undefined"
+                                    data-numberoffemale="undefined" data-coursenaturename="通修">退选
+                            </button>
+                        </div>
+                    </div>
+        </div>
+        </td></tr>
+        <tr class="course-tr course  cv-has-selected" data-coursenumber="27000170">
+            <td class="kch course-cell"><a class="cv-view-detail" data-number="27000170"
+                                           href="javascript:void(0);">27000170</a></td>
+            <td class="kcmc course-cell">人工智能</td>
+            <td class="xf course-cell">3</td>
+            <td class="kcxz course-cell">选修</td>
+            <td class="xkfs course-cell">可选（限人数）</td>
+            <td class="bjs course-cell">1</td>
+            <td class="cz course-cell"><a class="cv-zy-expand" data-number="27000170"
+                                          href="javascript:void(0);" data-isopen="0">查看班级</a></td>
+        </tr>
+        <tr class="course-jxb-container-tr">
+            <td colspan="7">
+                <div class="cv-clearfix course-jxb-container" data-coursenumber="27000170"
+                "="">
+                <div class="cv-pull-left jxb-item ischoosed">
+                    <div class="content">
+                        <div class="head"><span class="jxb-title" title="罗晓鹏">罗晓鹏</span><a
+                                class="cv-jxb-detail" data-number="27000170"
+                                data-teachingclassid="2022202312700017001"
+                                href="javascript:void(0);" title="大纲-周历">大纲-周历</a></div>
+                        <div class="value" title="仙林校区">仙林校区</div>
+                        <div class="value" title="周四 5-7节 1-16周 仙Ⅱ-110">周四 5-7节 1-16周 仙Ⅱ-110</div>
+                        <div class="label krl-label"><span>已选/容量</span><span class="value"><span
+                                class="yxrs-value cv-color-danger">已满</span>/75</span></div>
+                    </div>
+                    <div class="buttons">
+                        <button class="cv-btn cv-delete-select" type="button"
+                                data-tcid="2022202312700017001" data-number="27000170"
+                                data-capacitysuffix="undefined" data-isfull="undefined"
+                                data-teachingclasstype="undefined" data-isconflict="undefined"
+                                data-limitgender="undefined" data-capacityofmale="undefined"
+                                data-capacityoffemale="undefined" data-numberofmale="undefined"
+                                data-numberoffemale="undefined" data-coursenaturename="选修">退选
+                        </button>
+                    </div>
+                </div>
+</div>
+</td></tr>
+<tr class="course-tr course  cv-has-selected" data-coursenumber="27000180">
+    <td class="kch course-cell"><a class="cv-view-detail" data-number="27000180"
+                                   href="javascript:void(0);">27000180</a></td>
+    <td class="kcmc course-cell">数据挖掘</td>
+    <td class="xf course-cell">2</td>
+    <td class="kcxz course-cell">核心</td>
+    <td class="xkfs course-cell">指选</td>
+    <td class="bjs course-cell">1</td>
+    <td class="cz course-cell"><a class="cv-zy-expand" data-number="27000180"
+                                  href="javascript:void(0);" data-isopen="0">查看班级</a></td>
+</tr>
+<tr class="course-jxb-container-tr">
+    <td colspan="7">
+        <div class="cv-clearfix course-jxb-container" data-coursenumber="27000180"
+        "="">
+        <div class="cv-pull-left jxb-item ischoosed">
+            <div class="content">
+                <div class="head"><span class="jxb-title" title="刘海飞">刘海飞</span><a
+                        class="cv-jxb-detail" data-number="27000180"
+                        data-teachingclassid="2022202312700018001" href="javascript:void(0);"
+                        title="大纲-周历">大纲-周历</a></div>
+                <div class="value" title="仙林校区">仙林校区</div>
+                <div class="value" title="周一 3-4节 1-16周 仙Ⅱ-504">周一 3-4节 1-16周 仙Ⅱ-504</div>
+                <div class="label krl-label"><span>已选/容量</span><span class="value"><span
+                        class="yxrs-value cv-color-danger">已满</span>/75</span></div>
+            </div>
+            <div class="buttons">
+                <button class="cv-btn cv-delete-select" disabled="disabled" type="button"
+                        data-tcid="2022202312700018001" data-number="27000180"
+                        data-capacitysuffix="undefined" data-isfull="undefined"
+                        data-teachingclasstype="undefined" data-isconflict="undefined"
+                        data-limitgender="undefined" data-capacityofmale="undefined"
+                        data-capacityoffemale="undefined" data-numberofmale="undefined"
+                        data-numberoffemale="undefined" data-coursenaturename="核心">退选
+                </button>
+            </div>
+        </div>
+        </div></td>
+</tr>
+<tr class="course-tr course  cv-has-selected" data-coursenumber="27010090">
+    <td class="kch course-cell"><a class="cv-view-detail" data-number="27010090"
+                                   href="javascript:void(0);">27010090</a></td>
+    <td class="kcmc course-cell">公司金融学</td>
+    <td class="xf course-cell">3</td>
+    <td class="kcxz course-cell">核心</td>
+    <td class="xkfs course-cell">指选</td>
+    <td class="bjs course-cell">1</td>
+    <td class="cz course-cell"><a class="cv-zy-expand" data-number="27010090"
+                                  href="javascript:void(0);" data-isopen="0">查看班级</a></td>
+</tr>
+<tr class="course-jxb-container-tr">
+    <td colspan="7">
+        <div class="cv-clearfix course-jxb-container" data-coursenumber="27010090"
+        "="">
+        <div class="cv-pull-left jxb-item ischoosed">
+            <div class="content">
+                <div class="head"><span class="jxb-title" title="陈莹">陈莹</span><a
+                        class="cv-jxb-detail" data-number="27010090"
+                        data-teachingclassid="2022202312701009001" href="javascript:void(0);"
+                        title="大纲-周历">大纲-周历</a></div>
+                <div class="value" title="仙林校区">仙林校区</div>
+                <div class="value" title="周一 5-7节 1-16周 逸B-303">周一 5-7节 1-16周 逸B-303</div>
+                <div class="label krl-label"><span>已选/容量</span><span class="value"><span
+                        class="yxrs-value">31</span>/55</span></div>
+            </div>
+            <div class="buttons">
+                <button class="cv-btn cv-delete-select" disabled="disabled" type="button"
+                        data-tcid="2022202312701009001" data-number="27010090"
+                        data-capacitysuffix="undefined" data-isfull="undefined"
+                        data-teachingclasstype="undefined" data-isconflict="undefined"
+                        data-limitgender="undefined" data-capacityofmale="undefined"
+                        data-capacityoffemale="undefined" data-numberofmale="undefined"
+                        data-numberoffemale="undefined" data-coursenaturename="核心">退选
+                </button>
+            </div>
+        </div>
+        </div></td>
+</tr>
+<tr class="course-tr course  cv-has-selected" data-coursenumber="27010110I">
+    <td class="kch course-cell"><a class="cv-view-detail" data-number="27010110I"
+                                   href="javascript:void(0);">27010110I</a></td>
+    <td class="kcmc course-cell">随机过程</td>
+    <td class="xf course-cell">2</td>
+    <td class="kcxz course-cell">选修</td>
+    <td class="xkfs course-cell">可选（限人数）</td>
+    <td class="bjs course-cell">1</td>
+    <td class="cz course-cell"><a class="cv-zy-expand" data-number="27010110I"
+                                  href="javascript:void(0);" data-isopen="0">查看班级</a></td>
+</tr>
+<tr class="course-jxb-container-tr">
+    <td colspan="7">
+        <div class="cv-clearfix course-jxb-container" data-coursenumber="27010110I"
+        "="">
+        <div class="cv-pull-left jxb-item ischoosed">
+            <div class="content">
+                <div class="head"><span class="jxb-title" title="瞿慧">瞿慧</span><a
+                        class="cv-jxb-detail" data-number="27010110I"
+                        data-teachingclassid="20222023127010110I01" href="javascript:void(0);"
+                        title="大纲-周历">大纲-周历</a></div>
+                <div class="value" title="仙林校区">仙林校区</div>
+                <div class="value" title="周五 3-4节 1-16周 仙Ⅱ-105">周五 3-4节 1-16周 仙Ⅱ-105</div>
+                <div class="label krl-label"><span>已选/容量</span><span class="value"><span
+                        class="yxrs-value cv-color-danger">已满</span>/75</span></div>
+            </div>
+            <div class="buttons">
+                <button class="cv-btn cv-delete-select" type="button"
+                        data-tcid="20222023127010110I01" data-number="27010110I"
+                        data-capacitysuffix="undefined" data-isfull="undefined"
+                        data-teachingclasstype="undefined" data-isconflict="undefined"
+                        data-limitgender="undefined" data-capacityofmale="undefined"
+                        data-capacityoffemale="undefined" data-numberofmale="undefined"
+                        data-numberoffemale="undefined" data-coursenaturename="选修">退选
+                </button>
+            </div>
+        </div>
+        </div></td>
+</tr>
+<tr class="course-tr course  cv-has-selected" data-coursenumber="27040050">
+    <td class="kch course-cell"><a class="cv-view-detail" data-number="27040050"
+                                   href="javascript:void(0);">27040050</a></td>
+    <td class="kcmc course-cell">金融机构运作与管理</td>
+    <td class="xf course-cell">2</td>
+    <td class="kcxz course-cell">核心</td>
+    <td class="xkfs course-cell">指选</td>
+    <td class="bjs course-cell">1</td>
+    <td class="cz course-cell"><a class="cv-zy-expand" data-number="27040050"
+                                  href="javascript:void(0);" data-isopen="0">查看班级</a></td>
+</tr>
+<tr class="course-jxb-container-tr">
+    <td colspan="7">
+        <div class="cv-clearfix course-jxb-container" data-coursenumber="27040050"
+        "="">
+        <div class="cv-pull-left jxb-item ischoosed">
+            <div class="content">
+                <div class="head"><span class="jxb-title" title="肖斌卿">肖斌卿</span><a
+                        class="cv-jxb-detail" data-number="27040050"
+                        data-teachingclassid="2022202312704005001" href="javascript:void(0);"
+                        title="大纲-周历">大纲-周历</a></div>
+                <div class="value" title="仙林校区">仙林校区</div>
+                <div class="value" title="周五 5-6节 1-16周 仙Ⅱ-105">周五 5-6节 1-16周 仙Ⅱ-105</div>
+                <div class="label krl-label"><span>已选/容量</span><span class="value"><span
+                        class="yxrs-value">52</span>/55</span></div>
+            </div>
+            <div class="buttons">
+                <button class="cv-btn cv-delete-select" disabled="disabled" type="button"
+                        data-tcid="2022202312704005001" data-number="27040050"
+                        data-capacitysuffix="undefined" data-isfull="undefined"
+                        data-teachingclasstype="undefined" data-isconflict="undefined"
+                        data-limitgender="undefined" data-capacityofmale="undefined"
+                        data-capacityoffemale="undefined" data-numberofmale="undefined"
+                        data-numberoffemale="undefined" data-coursenaturename="核心">退选
+                </button>
+            </div>
+        </div>
+        </div></td>
+</tr>
+<tr class="course-tr course " data-coursenumber="27040100">
+    <td class="kch course-cell"><a class="cv-view-detail" data-number="27040100"
+                                   href="javascript:void(0);">27040100</a></td>
+    <td class="kcmc course-cell">行为金融学</td>
+    <td class="xf course-cell">2</td>
+    <td class="kcxz course-cell">选修</td>
+    <td class="xkfs course-cell">可选（限人数）</td>
+    <td class="bjs course-cell">1</td>
+    <td class="cz course-cell"><a class="cv-zy-expand" data-number="27040100"
+                                  href="javascript:void(0);" data-isopen="0">查看班级</a></td>
+</tr>
+<tr class="course-jxb-container-tr">
+    <td colspan="7">
+        <div class="cv-clearfix course-jxb-container" data-coursenumber="27040100"
+        "="">
+        <div class="cv-pull-left jxb-item ">
+            <div class="content">
+                <div class="head"><span class="jxb-title" title="俞红海">俞红海</span><a
+                        class="cv-jxb-detail" data-number="27040100"
+                        data-teachingclassid="2022202312704010001" href="javascript:void(0);"
+                        title="大纲-周历">大纲-周历</a></div>
+                <div class="value" title="仙林校区">仙林校区</div>
+                <div class="value" title="周二 3-4节 1-16周 仙Ⅱ-215">周二 3-4节 1-16周 仙Ⅱ-215</div>
+                <div class="label krl-label"><span>已选/容量</span><span class="value"><span
+                        class="yxrs-value">46</span>/55</span></div>
+            </div>
+            <div class="buttons">
+                <button class="cv-btn cv-choice" type="button" data-number="27040100"
+                        data-tcid="2022202312704010001" data-capacitysuffix="" data-isfull="0"
+                        data-isconflict="0" data-limitgender="0" data-capacityofmale=""
+                        data-capacityoffemale="" data-numberofmale="" data-numberoffemale="">选择
+                </button>
+            </div>
+        </div>
+        </div></td>
+</tr>
+</tbody></table>
+<div class="course-table-footer" onclick="" style="display: none;"><span>加载更多</span><img
+        src="public/images/common/down-double.png"></div>
+</div>
+</div>
+</article>
+
+<!--页脚-->
+<footer class="cv-page-footer">
+    <div>
+        <span class="cv-copyright" id="cv-copyright">版权信息：© 2020 南京大学本科生院</span>
+        <span id="noline-tip">（当前选课在线人数 55 人）</span>
+        <span class="cv-mh-4 cv-color-danger">选课如有问题请联系89682303</span>
+    </div>
+</footer>
+</div>
+
+<!-- 引导页 -->
+<div class="jszp" style="display:none;">
+    <div class="step1">
+        <div>
+            <img src="https://xkres.nju.edu.cn/products/jwfw/xsxkapp/public/images/curriculaVariable/01.png?av=1661495177574">
+        </div>
+        <div class="btns">
+            <div class="cv-btn">我知道了</div>
+        </div>
+    </div>
+    <div class="step2" style="display: none;">
+        <div>
+            <img src="https://xkres.nju.edu.cn/products/jwfw/xsxkapp/public/images/curriculaVariable/02.png?av=1661495177574">
+        </div>
+        <div class="btns">
+            <div class="cv-btn">我知道了</div>
+        </div>
+    </div>
+</div>
+
+<!--我的课表模板-->
+<script type="text/template" id="tpl-mycourse-model">
+    <div class="my-course-table">
+        <div class="my-course-top cv-clearfix">
+            <div class="bh-checkbox cv-pull-right">
+                <label class="bh-checkbox-label">
+                    <input type="checkbox" name="table-list" class="change-table-list"
+                           data-type="table" value="0" data-caption="@tablelist">
+                    <i class="bh-choice-helper"></i>@tablelist
+                </label>
+            </div>
+        </div>
+        <div class="course-table">
+            <div class="course-table-container"></div>
+            <div class="not-arranged">
+                <h3 class="cv-font-bold cv-mv-16">@wapkcbt</h3>
+                <div class="myNoArrangedCourseList"></div>
+            </div>
+        </div>
+        <div class="my-course-list cv-hide"></div>
+    </div>
+</script>
+
+<script type="text/template" id="electiveBatch_list_select">
+    <div class="xzlc-container">
+        <div class="lc-container">
+            <table class="electiveBatch-list-table" cellspacing="0">
+                <thead class="electiveBatch-head">
+                <th class="cv-electiveBatch-operate">@operate</th>
+                <th class="cv-electiveBatch-name">@name</th>
+                <th class="cv-electiveBatch-kssj">@begintime</th>
+                <th class="cv-electiveBatch-jssj">@endtime</th>
+                <th class="cv-electiveBatch-cause">@bkxyy</th>
+                </thead>
+                <tbody class="electiveBatch-body">@electiveBatchBody</tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+</script>
+
+<script type="text/template" id="tpl-schoolcourse-view">
+    <div class="schoolcourse-view-table">
+        <h2>@courseTitle</h2>
+        <h4>能否选课原因分析</h4>
+        <div>
+            @chooseBody
+        </div>
+    </div>
+</script>
+
+<script type="text/template" id="electiveBatch_list_select">
+    <div class="xzlc-container">
+        <div class="lc-container">
+            <table class="electiveBatch-list-table" cellspacing="0">
+                <thead class="electiveBatch-head">
+                <th class="cv-electiveBatch-operate">操作</th>
+                <th class="cv-electiveBatch-name">名称</th>
+                <th class="cv-electiveBatch-cause">不可选原因</th>
+                </thead>
+                <tbody class="electiveBatch-body">@electiveBatchBody</tbody>
+            </table>
+        </div>
+    </div>
+</script>
+
+<script type="text/javascript">
+            var BaseUrl = "https://xk.nju.edu.cn/xsxkapp";
+            var length = BaseUrl.length;
+            if (BaseUrl.indexOf(length - 1, length) == '/') {
+                BaseUrl = BaseUrl.substring(0, length - 1);
+            }
+    
+            var uid = 'null';
+            var loginType = 'ldap';
+            var casUrl = 'http://authserver.nju.edu.cn/authserver/login';
+            var casUrlOut = 'http://authserver.nju.edu.cn/authserver/logout';
+            var resUrl = 'https://xkres.nju.edu.cn/products/jwfw/xsxkapp';
+            var socketUrl = 'null';
+            var pageType = 'grablessons';
+
+</script>
+<script type="text/javascript"
+        src="https://xkres.nju.edu.cn/products/jwfw/xsxkapp/public/plugins/jquery.min.js?av=1661495177574"></script>
+<script type="text/javascript"
+        src="https://xkres.nju.edu.cn/products/jwfw/xsxkapp/public/plugins/i18n/jquery.i18n.properties.js?av=1661495177574"></script>
+<script type="text/javascript"
+        src="https://xkres.nju.edu.cn/products/jwfw/xsxkapp/public/js/jqxwidget/jquery.nicescroll.min.js?av=1661495177574"></script>
+<script type="text/javascript"
+        src="https://xkres.nju.edu.cn/products/jwfw/xsxkapp/public/js/jqxcore.js?av=1661495177574"></script>
+<script type="text/javascript"
+        src="https://xkres.nju.edu.cn/products/jwfw/xsxkapp/public/js/jqxtabs.js?av=1661495177574"></script>
+<script type="text/javascript"
+        src="https://xkres.nju.edu.cn/products/jwfw/xsxkapp/public/js/jqxwindow.js?av=1661495177574"></script>
+
+<script type="text/javascript"
+        src="https://xkres.nju.edu.cn/products/jwfw/xsxkapp/public/js/bh_utils.js?av=1661495177574"></script>
+<script type="text/javascript"
+        src="https://xkres.nju.edu.cn/products/jwfw/xsxkapp/public/plugins/sortable/Sortable-1.3.0.js?av=1661495177574"></script>
+<script type="text/javascript"
+        src="https://xkres.nju.edu.cn/products/jwfw/xsxkapp/public/js/bhTip.js?av=1661495177574"></script>
+<script type="text/javascript"
+        src="https://xkres.nju.edu.cn/products/jwfw/xsxkapp/public/js/window.js?av=1661495177574"></script>
+
+<script type="text/javascript"
+        src="https://xkres.nju.edu.cn/products/jwfw/xsxkapp/public/js/loginInUserRegister.js?av=1661495177574"></script>
+<script type="text/javascript"
+        src="https://xkres.nju.edu.cn/products/jwfw/xsxkapp/public/js/index/indexBS.js?av=1661495177574"></script>
+<script type="text/javascript"
+        src="https://xkres.nju.edu.cn/products/jwfw/xsxkapp/public/js/grablessons/grablessons.js?av=1661495177574"></script>
+
+<script type="text/javascript"
+        src="https://xkres.nju.edu.cn/products/jwfw/xsxkapp/public/js/xsxkpub.js?av=1661495177574"></script>
+
+
+<div class="jqx-rc-all jqx-window jqx-popup jqx-widget jqx-widget-content"
+     style="padding-bottom: 72px; width: 1152px; outline: none; height: 687px; left: 144px; top: 50px; z-index: 1801;">
+    <div class="head jqx-window-header jqx-widget-header jqx-disableselect jqx-rc-t"
+         style="width: 418px; cursor: move; padding-bottom: 5px;">
+        <div style="float: left; direction: ltr; margin-top: 0px;"><h3>选课结果</h3></div>
+        <div class="jqx-window-close-button-background jqx-popover-close-button"
+             style="visibility: visible; width: 24px; height: 24px; position: absolute; right: 8px;">
+            <div style="width: 100%; height: 100%;"
+                 class="jqx-window-close-button jqx-icon-close"></div>
+        </div>
+        <div class="jqx-window-collapse-button-background"
+             style="visibility: hidden; width: 16px; height: 16px; margin-right: 0px; margin-left: 0px; position: absolute; right: 24px;">
+            <div style="width: 100%; height: 100%; top: 0px;"
+                 class="jqx-window-collapse-button jqx-icon-arrow-up"></div>
+        </div>
+    </div>
+    <div class="jqx-window-content jqx-widget-content jqx-rc-b" tabindex="25"
+         style="overflow: hidden; outline: none;">
+        <div class="content">
+            <div class="cv-yxkc-window tabs-container">
+                <div class="yxkc-window-tab jqx-tabs jqx-widget jqx-widget-content jqx-rc-all"
+                     id="jqxWidgetc7b1dafcb22f" aria-disabled="false" role="tablist"
+                     style="width: auto;" hidefocus="true"
+                     aria-activedescendant="jqxWidgetc7b1dafcb22fTab0" tabindex="0">
+                    <div style="outline: currentcolor none medium; height: 32px; position: relative; left: 0px; top: 0px;"
+                         class="jqx-tabs-headerWrapper jqx-tabs-header jqx-widget-header jqx-rc-t">
+                        <ul class=" jqx-tabs-title-container"
+                            style="outline: currentcolor none medium; white-space: nowrap; margin-top: 0px; margin-bottom: 0px; padding: 0px; background: transparent none repeat scroll 0% 0%; border: medium none; text-indent: 0px; height: 32px; width: 1118px; left: 0px; position: relative; top: 0px;">
+                            <li data-type="wdkc" role="tab" id="jqxWidgetc7b1dafcb22fTab0"
+                                class="jqx-reset jqx-disableselect jqx-tabs-title jqx-item jqx-rc-t jqx-fill-state-pressed jqx-tabs-title-selected-top"
+                                style="float: left; position: static; height: 16px;">
+                                <div class="jqx-tabs-titleWrapper"
+                                     style="outline: currentcolor none medium; position: relative; z-index: 15; height: 100%; margin-top: 8px;">
+                                    <div class="jqx-tabs-titleContentWrapper jqx-disableselect"
+                                         style="float: left;">我的课程
+                                    </div>
+                                    <div class="jqx-tabs-close-button"
+                                         style="height: 16px; width: 16px; float: left; font-size: 1px; display: none; margin-top: 9px;"></div>
+                                </div>
+                            </li>
+                            <li data-type="wdbm" role="tab" id="jqxWidgetc7b1dafcb22fTab1"
+                                class="jqx-reset jqx-disableselect jqx-tabs-title jqx-item jqx-rc-t"
+                                style="float: left; position: static; height: 16px;">
+                                <div class="jqx-tabs-titleWrapper"
+                                     style="outline: currentcolor none medium; position: relative; z-index: 15; height: 100%; margin-top: 8px;">
+                                    <div class="jqx-tabs-titleContentWrapper jqx-disableselect"
+                                         style="float: left;">我的报名
+                                    </div>
+                                    <div class="jqx-tabs-close-button"
+                                         style="height: 16px; width: 16px; float: left; font-size: 1px; display: none; margin-top: 9px;"></div>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="jqx-tabs-arrow-background jqx-widget-header"
+                             style="z-index: 30; display: none; width: 16px; height: 100%; position: absolute; top: 0px; right: 16px;">
+                            <span style="display: block; width: 16px; height: 16px; margin-top: 10px;"
+                                  class="jqx-tabs-arrow-left"></span></div>
+                        <div class="jqx-tabs-arrow-background jqx-widget-header"
+                             style="z-index: 30; display: none; width: 16px; height: 100%; position: absolute; top: 0px; right: 0px;">
+                            <span style="display: block; width: 16px; height: 16px; margin-top: 10px;"
+                                  class="jqx-tabs-arrow-right"></span></div>
+                    </div>
+                    <div class="jqx-tabs-content jqx-widget-content jqx-rc-b"
+                         style="float: none; height: auto; display: block;">
+                        <div data-type="wdkc"
+                             style="height: 450px; overflow: auto; padding: 20px 0px 10px; display: block;"
+                             role="tabpanel" class="jqx-tabs-content-element jqx-rc-b">
+                            <table class="course-list" cellspacing="0">
+                                <thead class="course-head">
+                                <tr>
+                                    <td class="kch course-cell " data-type="KCH"
+                                        data-order="normal"><span>课程号</span></td>
+                                    <td class="kcmc course-cell " data-type="KCMC"
+                                        data-order="normal"><span>课程名</span></td>
+                                    <td class="jsmc course-cell " data-type="JSMC"
+                                        data-order="normal"><span>教师</span></td>
+                                    <td class="sjdd course-cell " data-type="SJDD"
+                                        data-order="normal"><span>时间地点</span></td>
+                                    <td class="xq course-cell " data-type="XQ" data-order="normal">
+                                        <span>校区</span></td>
+                                    <td class="xklx course-cell " data-type="XKLX"
+                                        data-order="normal"><span>选课类型</span></td>
+                                    <td class="xxbz course-cell " data-type="XXBZ"
+                                        data-order="normal"><span>备注</span></td>
+                                    <td class="cz course-cell">操作</td>
+                                </tr>
+                                </thead>
+                                <tbody class="course-body">
+                                <tr class="course-tr ">
+                                    <td class="kch course-cell">27000180</td>
+                                    <td class="kcmc course-cell">数据挖掘</td>
+                                    <td class="jsmc course-cell">刘海飞</td>
+                                    <td class="sjdd course-cell">
+                                        <div class="sjdd-item">周一 3-4节 1-16周 仙Ⅱ-504</div>
+                                    </td>
+                                    <td class="xq course-cell">仙林校区</td>
+                                    <td class="xklx course-cell ">指选</td>
+                                    <td class="xkbz course-cell" title=""></td>
+                                    <td class="cz course-cell"></td>
+                                </tr>
+                                <tr class="course-tr ">
+                                    <td class="kch course-cell">27010090</td>
+                                    <td class="kcmc course-cell">公司金融学</td>
+                                    <td class="jsmc course-cell">陈莹</td>
+                                    <td class="sjdd course-cell">
+                                        <div class="sjdd-item">周一 5-7节 1-16周 逸B-303</div>
+                                    </td>
+                                    <td class="xq course-cell">仙林校区</td>
+                                    <td class="xklx course-cell ">指选</td>
+                                    <td class="xkbz course-cell" title=""></td>
+                                    <td class="cz course-cell"></td>
+                                </tr>
+                                <tr class="course-tr ">
+                                    <td class="kch course-cell">00000080E</td>
+                                    <td class="kcmc course-cell">形势与政策</td>
+                                    <td class="jsmc course-cell">丁驰</td>
+                                    <td class="sjdd course-cell">
+                                        <div class="sjdd-item">周一 9-10节 4周,7周,10周,13周 逸C-115</div>
+                                    </td>
+                                    <td class="xq course-cell">仙林校区</td>
+                                    <td class="xklx course-cell ">指选</td>
+                                    <td class="xkbz course-cell" title=""></td>
+                                    <td class="cz course-cell"></td>
+                                </tr>
+                                <tr class="course-tr ">
+                                    <td class="kch course-cell">27010020</td>
+                                    <td class="kcmc course-cell">管理学</td>
+                                    <td class="jsmc course-cell">朱华桂</td>
+                                    <td class="sjdd course-cell">
+                                        <div class="sjdd-item">周一 9-10节 1-16周 仙Ⅰ-317</div>
+                                    </td>
+                                    <td class="xq course-cell">仙林校区</td>
+                                    <td class="xklx course-cell ">指选</td>
+                                    <td class="xkbz course-cell" title=""></td>
+                                    <td class="cz course-cell"></td>
+                                </tr>
+                                <tr class="course-tr ">
+                                    <td class="kch course-cell">27000200</td>
+                                    <td class="kcmc course-cell">数据库与信息系统</td>
+                                    <td class="jsmc course-cell">李迁</td>
+                                    <td class="sjdd course-cell">
+                                        <div class="sjdd-item">周二 5-6节 1-16周 仙Ⅱ-207</div>
+                                        <div class="sjdd-item">周二 7-8节 1-16周 基础实验楼乙406</div>
+                                    </td>
+                                    <td class="xq course-cell">仙林校区</td>
+                                    <td class="xklx course-cell ">开放</td>
+                                    <td class="xkbz course-cell" title=""></td>
+                                    <td class="cz course-cell"><a class="cv-delete-select"
+                                                                  data-tcid="2022202312700020001"
+                                                                  data-number="27000200"
+                                                                  data-capacitysuffix="undefined"
+                                                                  data-isfull=""
+                                                                  data-teachingclasstype="KZY"
+                                                                  data-isconflict=""
+                                                                  data-limitgender=""
+                                                                  data-capacityofmale="undefined"
+                                                                  data-capacityoffemale="undefined"
+                                                                  data-numberofmale="undefined"
+                                                                  data-numberoffemale="undefined"
+                                                                  href="javascript:void(0);">退选</a>
+                                    </td>
+                                </tr>
+                                <tr class="course-tr ">
+                                    <td class="kch course-cell">00000030A</td>
+                                    <td class="kcmc course-cell">毛泽东思想和中国特色社会主义理论体系概论（理论部分）</td>
+                                    <td class="jsmc course-cell">丁蕖</td>
+                                    <td class="sjdd course-cell">
+                                        <div class="sjdd-item">周三 2-4节 5-16周 逸B-410</div>
+                                    </td>
+                                    <td class="xq course-cell">仙林校区</td>
+                                    <td class="xklx course-cell ">指选</td>
+                                    <td class="xkbz course-cell" title=""></td>
+                                    <td class="cz course-cell"></td>
+                                </tr>
+                                <tr class="course-tr ">
+                                    <td class="kch course-cell">17010730</td>
+                                    <td class="kcmc course-cell">常微分方程</td>
+                                    <td class="jsmc course-cell">吕迎辉</td>
+                                    <td class="sjdd course-cell">
+                                        <div class="sjdd-item">周三 5-6节 1-16周 逸B-301</div>
+                                    </td>
+                                    <td class="xq course-cell">仙林校区</td>
+                                    <td class="xklx course-cell ">开放</td>
+                                    <td class="xkbz course-cell" title=""></td>
+                                    <td class="cz course-cell"><a class="cv-delete-select"
+                                                                  data-tcid="2022202311701073002"
+                                                                  data-number="17010730"
+                                                                  data-capacitysuffix="undefined"
+                                                                  data-isfull=""
+                                                                  data-teachingclasstype="KZY"
+                                                                  data-isconflict=""
+                                                                  data-limitgender=""
+                                                                  data-capacityofmale="undefined"
+                                                                  data-capacityoffemale="undefined"
+                                                                  data-numberofmale="undefined"
+                                                                  data-numberoffemale="undefined"
+                                                                  href="javascript:void(0);">退选</a>
+                                    </td>
+                                </tr>
+                                <tr class="course-tr ">
+                                    <td class="kch course-cell">27000170</td>
+                                    <td class="kcmc course-cell">人工智能</td>
+                                    <td class="jsmc course-cell">罗晓鹏</td>
+                                    <td class="sjdd course-cell">
+                                        <div class="sjdd-item">周四 5-7节 1-16周 仙Ⅱ-110</div>
+                                    </td>
+                                    <td class="xq course-cell">仙林校区</td>
+                                    <td class="xklx course-cell ">自选</td>
+                                    <td class="xkbz course-cell" title=""></td>
+                                    <td class="cz course-cell"><a class="cv-delete-select"
+                                                                  data-tcid="2022202312700017001"
+                                                                  data-number="27000170"
+                                                                  data-capacitysuffix="undefined"
+                                                                  data-isfull=""
+                                                                  data-teachingclasstype="ZY"
+                                                                  data-isconflict=""
+                                                                  data-limitgender=""
+                                                                  data-capacityofmale="undefined"
+                                                                  data-capacityoffemale="undefined"
+                                                                  data-numberofmale="undefined"
+                                                                  data-numberoffemale="undefined"
+                                                                  href="javascript:void(0);">退选</a>
+                                    </td>
+                                </tr>
+                                <tr class="course-tr ">
+                                    <td class="kch course-cell">27010110I</td>
+                                    <td class="kcmc course-cell">随机过程</td>
+                                    <td class="jsmc course-cell">瞿慧</td>
+                                    <td class="sjdd course-cell">
+                                        <div class="sjdd-item">周五 3-4节 1-16周 仙Ⅱ-105</div>
+                                    </td>
+                                    <td class="xq course-cell">仙林校区</td>
+                                    <td class="xklx course-cell ">自选</td>
+                                    <td class="xkbz course-cell" title="国际化课程，英文授课">国际化课程，英文授课</td>
+                                    <td class="cz course-cell"><a class="cv-delete-select"
+                                                                  data-tcid="20222023127010110I01"
+                                                                  data-number="27010110I"
+                                                                  data-capacitysuffix="undefined"
+                                                                  data-isfull=""
+                                                                  data-teachingclasstype="ZY"
+                                                                  data-isconflict=""
+                                                                  data-limitgender=""
+                                                                  data-capacityofmale="undefined"
+                                                                  data-capacityoffemale="undefined"
+                                                                  data-numberofmale="undefined"
+                                                                  data-numberoffemale="undefined"
+                                                                  href="javascript:void(0);">退选</a>
+                                    </td>
+                                </tr>
+                                <tr class="course-tr ">
+                                    <td class="kch course-cell">27040050</td>
+                                    <td class="kcmc course-cell">金融机构运作与管理</td>
+                                    <td class="jsmc course-cell">肖斌卿</td>
+                                    <td class="sjdd course-cell">
+                                        <div class="sjdd-item">周五 5-6节 1-16周 仙Ⅱ-105</div>
+                                    </td>
+                                    <td class="xq course-cell">仙林校区</td>
+                                    <td class="xklx course-cell ">指选</td>
+                                    <td class="xkbz course-cell" title=""></td>
+                                    <td class="cz course-cell"></td>
+                                </tr>
+                                <tr class="course-tr ">
+                                    <td class="kch course-cell">11090350</td>
+                                    <td class="kcmc course-cell">计算机网络</td>
+                                    <td class="jsmc course-cell">苏丰</td>
+                                    <td class="sjdd course-cell">
+                                        <div class="sjdd-item">周五 9-11节 1-16周 仙Ⅱ-110</div>
+                                    </td>
+                                    <td class="xq course-cell">仙林校区</td>
+                                    <td class="xklx course-cell ">开放</td>
+                                    <td class="xkbz course-cell" title=""></td>
+                                    <td class="cz course-cell"><a class="cv-delete-select"
+                                                                  data-tcid="2022202311109035001"
+                                                                  data-number="11090350"
+                                                                  data-capacitysuffix="undefined"
+                                                                  data-isfull=""
+                                                                  data-teachingclasstype="KZY"
+                                                                  data-isconflict=""
+                                                                  data-limitgender=""
+                                                                  data-capacityofmale="undefined"
+                                                                  data-capacityoffemale="undefined"
+                                                                  data-numberofmale="undefined"
+                                                                  data-numberoffemale="undefined"
+                                                                  href="javascript:void(0);">退选</a>
+                                    </td>
+                                </tr>
+                                <tr class="course-tr ">
+                                    <td class="kch course-cell">00460100</td>
+                                    <td class="kcmc course-cell">《文化与组织》阅读</td>
+                                    <td class="jsmc course-cell">钱海燕</td>
+                                    <td class="sjdd course-cell">
+                                        <div class="sjdd-item">自由时间</div>
+                                    </td>
+                                    <td class="xq course-cell">仙林校区</td>
+                                    <td class="xklx course-cell ">开放</td>
+                                    <td class="xkbz course-cell" title=""></td>
+                                    <td class="cz course-cell"><a class="cv-delete-select"
+                                                                  data-tcid="E04BFC38330A59FEE053317EDBDB8FFC"
+                                                                  data-number="00460100"
+                                                                  data-capacitysuffix="undefined"
+                                                                  data-isfull=""
+                                                                  data-teachingclasstype="YD"
+                                                                  data-isconflict=""
+                                                                  data-limitgender=""
+                                                                  data-capacityofmale="undefined"
+                                                                  data-capacityoffemale="undefined"
+                                                                  data-numberofmale="undefined"
+                                                                  data-numberoffemale="undefined"
+                                                                  href="javascript:void(0);">退选</a>
+                                    </td>
+                                </tr>
+                                <tr class="course-tr ">
+                                    <td class="kch course-cell">78004580</td>
+                                    <td class="kcmc course-cell">郑钢证券行业研究训练营</td>
+                                    <td class="jsmc course-cell">赵梓溪,郑钢</td>
+                                    <td class="sjdd course-cell">
+                                        <div class="sjdd-item">自由时间 自由地点</div>
+                                    </td>
+                                    <td class="xq course-cell">仙林校区</td>
+                                    <td class="xklx course-cell ">开放</td>
+                                    <td class="xkbz course-cell" title=""></td>
+                                    <td class="cz course-cell"><a class="cv-delete-select"
+                                                                  data-tcid="2022202317800458001"
+                                                                  data-number="78004580"
+                                                                  data-capacitysuffix="undefined"
+                                                                  data-isfull=""
+                                                                  data-teachingclasstype="GG01"
+                                                                  data-isconflict=""
+                                                                  data-limitgender=""
+                                                                  data-capacityofmale="undefined"
+                                                                  data-capacityoffemale="undefined"
+                                                                  data-numberofmale="undefined"
+                                                                  data-numberoffemale="undefined"
+                                                                  href="javascript:void(0);">退选</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div data-type="wdbm"
+                             style="height: 450px; overflow: auto; padding: 20px 0px 10px; display: none;"
+                             role="tabpanel" class="jqx-tabs-content-element jqx-rc-b">无课程
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="buttons"
+             style="position: absolute;bottom:24px;width: 100%;left: 0;float: right;padding: 0 24px;">
+            <hr style="border:none;border-top: 1px solid #efefef;margin-bottom: 10px;">
+            <button type="button" class="bh-btn-default bh-btn bh-pull-right" data-index="0">关闭
+            </button>
+        </div>
+    </div>
+</div>
+<div class="jqx-window-modal"
+     style="opacity: 0.3; position: fixed; top: 0px; left: 0px; z-index: 1800; display: block; width: 100%; height: 100%;"></div>
+</body>
+</html>

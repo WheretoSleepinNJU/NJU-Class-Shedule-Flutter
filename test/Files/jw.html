@@ -1,0 +1,886 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>南京大学教务系统</title>
+    <base href="http://elite.nju.edu.cn:80/jiaowu/">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link href="css/inner.css" rel="stylesheet" type="text/css">  
+  </head>
+  <!--[if lte IE 6.0000]>
+  	<script language="javascript" src="js/pngfix.js"></script>
+  <![endif]--> 
+  <body >
+ 
+	<div id="Header">
+		
+
+
+
+
+ 
+<div id="Logo"><a href="student/index.do#"><img src="image/student/Logo_Student.jpg" border="0"></a></div>
+<div id="TopLink"><img src="image/Icon_Help.gif"><a href="student/index.do#">帮助</a>&nbsp;&nbsp;&nbsp;&nbsp;<img src="image/Icon_Exit.gif"><a href="exit.do?type=student">退出</a></div>
+<div id="UserInfo">欢迎您：&nbsp;&nbsp;&nbsp;&nbsp;当前身份：学生</div>
+		
+<script type="text/javascript" language="javascript" src="js/prototype.js"></script>
+<div id="Nav">
+  <ul>
+    <li id="homepage"><a href="student/index.do">首  页</a></li>
+    <li id="studentinfo"><a href="student/studentinfo/index.do">个人信息</a></li>
+    <li id="teachinginfo"><a href="student/teachinginfo/index.do">教学信息</a></li>
+    <li id="teachinginfo"><a href="student/elective/index.do">学期选课</a></li>
+    <li id="teachinginfo"><a href="student/signup/index.do">业务办理</a></li>
+<!--
+    <li id="studentinfo"><a href="student/dissertation/index.do">论文信息</a></li>
+    <li id="studentinfo"><a href="student/evalcourse/list.do">课程评估</a></li>
+-->
+    <li id="studentinfo"><a href="student/exchange/index.do">校际交换</a></li>    	
+  </ul>
+</div>
+	</div>
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html>
+  <head>
+    <base href="http://elite.nju.edu.cn:80/jiaowu/">
+    <title>课程信息</title>
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+    <link href="css/table.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript">
+    	var num;
+    	var coursename;
+    	var teachername;
+    	var termcode;
+    	
+    	function Init() 
+    	{
+  			
+    	}
+  		
+    	function check()
+		{
+		   	var cCourse1;
+		   	for(var i=0 ; i < $('codeCourse').length; i++)
+    		{
+				if($('codeCourse').options[i].selected)
+				{
+					cCourse1= $('codeCourse').options[i].value;
+					if(cCourse1 == -1)
+					{
+						alert("请选择反馈意见后再提交");
+						return false;
+					}
+					break;
+				}
+			}
+			
+			var summarize = $('summarize').value;
+  			if(summarize.length >= 150)
+  			{
+  				alert("详细说明超过150字的字数限制，请重新输入！");
+  				$('summarize').focus();
+  				return false;
+  			}
+			return confirm("您确定要提交对‘" + coursename + "’课程的意见吗？");
+		}
+    	function showSchedule(id){
+    		$('operation').show();
+			var pars = 'method=getCourseScheduleList&classId=' + id;	
+			var myAjax = new Ajax.Updater(
+				'scheduleList',
+				'student/teachinginfo/courseList.do',
+				{
+					method : 'post',
+					parameters : pars,
+					evalScript : true,
+					onComplete : function(){
+						$('operation').hide();
+					}
+				}
+			);
+    	}
+       function showCodeCourse(number,cname,tname,code){
+       		num = number;
+       		coursename = cname;
+       		teachername = tname;
+       		termcode = code;
+    		$('operation').show();
+			var pars = 'method=getCodeCourseList&courseNumber=' + number + '&termCode=' + termcode + '&courseName=' + coursename + '&teacherName=' + teachername;	
+			var myAjax = new Ajax.Updater(
+				'scheduleList',
+				'student/teachinginfo/codeCourseList.do',
+				{
+					method : 'post',
+					parameters : pars,
+					evalScript : true,
+					onComplete : function(){
+						$('operation').hide();
+					}
+				}
+			);
+    	}
+    	function onSaveFeedback(){
+    		var cCourse;
+    		var summarize = $('summarize').value;
+    		var phone = $('phone').value;
+    		for(var i=0 ; i < $('codeCourse').length; i++)
+    		{
+				if($('codeCourse').options[i].selected)
+				{
+					cCourse= $('codeCourse').options[i].value;
+					break;
+				}
+			}
+			$('operation').show();
+			if(teachername == null){
+				alert("获取教师姓名失败！");return;
+			}	
+			if(num == null){
+				alert("获取课程编号失败！");return;
+			}
+			if(coursename == null){
+				alert("获取课程姓名失败！");return;
+			}
+			if(termcode == null){
+				alert("获取学期代码失败！");return;
+			}
+			var pars = 'method=setStudentFeedback&teacherName=' + teachername + '&courseNumber=' + num + '&courseName=' + coursename + 
+			'&feedbackContent=' + cCourse + '&termCode=' + termcode + '&summarize=' + summarize+ '&phone=' + phone;
+			var myAjax = new Ajax.Updater(
+				'scheduleList',
+				'student/teachinginfo/codeCourseList.do',
+				{
+					method : 'post',
+					parameters : pars,
+					evalScript : true,
+					onComplete : function(){
+						$('operation').hide();
+					}
+				}
+			);
+    	}
+    	
+    	function doElectiveConfirm()
+    	{
+  			window.confirm("1、所有标记为“自选”、“开放”类型的课程均无法再行变动。\n2、如果标记为“必选”、“指选”、“重修”的课程信息有误，或者你的专业必修课程不在以上列表内，请联系院系教务员老师修正。\n\n确认所有课程信息均准确，请按‘确定’，否则请按‘取消’") ? window.location.href="http://elite.nju.edu.cn:80/jiaowu/"+"student/teachinginfo/courseList.do?method=courseElectiveConfirm" : "";
+  		}
+  		
+    </script>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  </head>
+
+  <body class="BODY"  leftmargin="50" rightmargin="50" onLoad="javascript:Init();">
+   
+  <div  align="center" style="width: 100%">
+    <TABLE width="100%"  height="100%" align="left" >
+      <tr><td height="15"></td></tr>
+      <TR>
+        <TD colspan="2" align="center" style="color:blue; ">2022-2023学年第一学期</TD>
+      </TR>
+      
+      <TR align="left">
+		<TD width="10" >&nbsp;</TD>
+        <TD align="left" valign="top">
+			<table width="95%"  class="TABLE_BODY" bordercolor="#777777" border="1" style="border-color:#777777;border-collapse:collapse">
+				<tr class="TABLE_TH">
+				  <th >课程编号</th>
+				  <th >课程名称</th>
+				  <th >校区</th>
+				  <th >教师</th>
+				  <th >上课时间及地点</th>
+				  <th >教学周历</th>
+				  <th >选课类型</th>
+				  <th >教学反馈</th>
+				  
+				  	<th >考试时间</th>
+				  	<th >考试地点</th>
+				  
+				  <th width="25%">课程备注</th>
+				</tr>
+				
+				  
+					
+					<tr align="left"  
+					  
+						 class="TABLE_TR_01"
+						
+					  
+					  >
+					  <td valign="middle"><a href="http://elite.nju.edu.cn:80/jiaowu/student/elective/courseList.do?method=getCourseInfoM&courseNumber=00000030A&classid=205645" target="_blank"><u>00000030A</u></a></td>
+			
+					  <!-- <td valign="middle">00000030A</td> -->
+					  <td valign="middle">毛泽东思想和中国特色社会主义理论体系概论（理论部分）</td>
+					  <td valign="middle">仙林校区</td>
+					  <td valign="middle">丁蕖</td>
+					  <td valign="middle">
+					  	周三 第2-4节 5-16周  逸B-410
+					  </td>					  
+					  <td valign="middle"><a href="javascript:showSchedule(205645)">查看</a></td>
+					  <td valign="middle">
+					  	
+					  		
+					  		指选
+					  		
+					  		
+					  		
+					  		
+					  		
+												  	
+					  							  	
+					  	
+					  </td>
+					  <td valign="middle"><a href="javascript:showCodeCourse('00000030A','毛泽东思想和中国特色社会主义理论体系概论（理论部分）','丁蕖','20221')">意见</a></td>					  
+					  
+					 	 <td valign="middle">请咨询院系或上课老师</td>
+					 	 <td valign="middle"> </td>
+					  
+					  
+					  
+					  <!-- <td valign="middle"><a href="http://elite.nju.edu.cn:80/jiaowu/student/elective/webCourse.do?method=visitWebCourse&webclassid=QQ群：756692964、教学立方邀请码：JHKFFB22" target="_blank">网络课程</a></td>
+					   -->
+					   <td style="word-break:break-all;"><b style="color:blue;">QQ群：756692964、教学立方邀请码：JHKFFB22</b></td>
+					  
+					  
+					</tr>
+				  
+					
+					<tr align="left"  
+					  
+						
+						 class="TABLE_TR_02" 
+					  
+					  >
+					  <td valign="middle"><a href="http://elite.nju.edu.cn:80/jiaowu/student/elective/courseList.do?method=getCourseInfoM&courseNumber=00000080E&classid=206471" target="_blank"><u>00000080E</u></a></td>
+			
+					  <!-- <td valign="middle">00000080E</td> -->
+					  <td valign="middle">形势与政策</td>
+					  <td valign="middle">仙林校区</td>
+					  <td valign="middle">丁驰</td>
+					  <td valign="middle">
+					  	周一 第9-10节 第4周 第7周 第10周 第13周  逸C-115
+					  </td>					  
+					  <td valign="middle"><a href="javascript:showSchedule(206471)">查看</a></td>
+					  <td valign="middle">
+					  	
+					  		
+					  		指选
+					  		
+					  		
+					  		
+					  		
+					  		
+												  	
+					  							  	
+					  	
+					  </td>
+					  <td valign="middle"><a href="javascript:showCodeCourse('00000080E','形势与政策','丁驰','20221')">意见</a></td>					  
+					  
+					 	 <td valign="middle">请咨询院系或上课老师</td>
+					 	 <td valign="middle"> </td>
+					  
+					  
+					  
+					  
+					  <td></td>
+					  
+					</tr>
+				  
+					
+					<tr align="left"  
+					  
+						 class="TABLE_TR_01"
+						
+					  
+					  >
+					  <td valign="middle"><a href="http://elite.nju.edu.cn:80/jiaowu/student/elective/courseList.do?method=getCourseInfoM&courseNumber=11090350&classid=204011" target="_blank"><u>11090350</u></a></td>
+			
+					  <!-- <td valign="middle">11090350</td> -->
+					  <td valign="middle">计算机网络</td>
+					  <td valign="middle">仙林校区</td>
+					  <td valign="middle">苏丰</td>
+					  <td valign="middle">
+					  	周五 第9-11节 1-16周  仙Ⅱ-110
+					  </td>					  
+					  <td valign="middle"><a href="javascript:showSchedule(204011)">查看</a></td>
+					  <td valign="middle">
+					  	
+					  		
+					  		
+					  		
+					  		
+					  		开放
+					  		
+					  		
+												  	
+					  							  	
+					  	
+					  </td>
+					  <td valign="middle"><a href="javascript:showCodeCourse('11090350','计算机网络','苏丰','20221')">意见</a></td>					  
+					  
+					 	 <td valign="middle">请咨询院系或上课老师</td>
+					 	 <td valign="middle"> </td>
+					  
+					  
+					  
+					  <!-- <td valign="middle"><a href="http://elite.nju.edu.cn:80/jiaowu/student/elective/webCourse.do?method=visitWebCourse&webclassid=课程QQ群号：416973833，线上上课腾讯会议号：400-9880-6813，会议密码：210023" target="_blank">网络课程</a></td>
+					   -->
+					   <td style="word-break:break-all;"><b style="color:blue;">课程QQ群号：416973833，线上上课腾讯会议号：400-9880-6813，会议密码：210023</b></td>
+					  
+					  
+					</tr>
+				  
+					
+					<tr align="left"  
+					  
+						
+						 class="TABLE_TR_02" 
+					  
+					  >
+					  <td valign="middle"><a href="http://elite.nju.edu.cn:80/jiaowu/student/elective/courseList.do?method=getCourseInfoM&courseNumber=17010730&classid=204353" target="_blank"><u>17010730</u></a></td>
+			
+					  <!-- <td valign="middle">17010730</td> -->
+					  <td valign="middle">常微分方程</td>
+					  <td valign="middle">仙林校区</td>
+					  <td valign="middle">吕迎辉</td>
+					  <td valign="middle">
+					  	周三 第5-6节 1-16周  逸B-301
+					  </td>					  
+					  <td valign="middle"><a href="javascript:showSchedule(204353)">查看</a></td>
+					  <td valign="middle">
+					  	
+					  		
+					  		
+					  		
+					  		
+					  		开放
+					  		
+					  		
+												  	
+					  							  	
+					  	
+					  </td>
+					  <td valign="middle"><a href="javascript:showCodeCourse('17010730','常微分方程','吕迎辉','20221')">意见</a></td>					  
+					  
+					 	 <td valign="middle">请咨询院系或上课老师</td>
+					 	 <td valign="middle"> </td>
+					  
+					  
+					  
+					  
+					  <td></td>
+					  
+					</tr>
+				  
+					
+					<tr align="left"  
+					  
+						 class="TABLE_TR_01"
+						
+					  
+					  >
+					  <td valign="middle"><a href="http://elite.nju.edu.cn:80/jiaowu/student/elective/courseList.do?method=getCourseInfoM&courseNumber=22011660&classid=205592" target="_blank"><u>22011660</u></a></td>
+			
+					  <!-- <td valign="middle">22011660</td> -->
+					  <td valign="middle">【暑期课程】中德跨文化社会计算科考研究</td>
+					  <td valign="middle">仙林校区</td>
+					  <td valign="middle">闵学勤, 宋方敏, 丁智, 李文中</td>
+					  <td valign="middle">
+					  	自由时间 1-4周  自由时间
+					  </td>					  
+					  <td valign="middle"><a href="javascript:showSchedule(205592)">查看</a></td>
+					  <td valign="middle">
+					  	
+					  		
+					  		指选
+					  		
+					  		
+					  		
+					  		
+					  		
+												  	
+					  							  	
+					  	
+					  </td>
+					  <td valign="middle"><a href="javascript:showCodeCourse('22011660','【暑期课程】中德跨文化社会计算科考研究','闵学勤, 宋方敏, 丁智, 李文中','20221')">意见</a></td>					  
+					  
+					 	 <td valign="middle">请咨询院系或上课老师</td>
+					 	 <td valign="middle"> </td>
+					  
+					  
+					  
+					  <!-- <td valign="middle"><a href="http://elite.nju.edu.cn:80/jiaowu/student/elective/webCourse.do?method=visitWebCourse&webclassid=2022中德跨文化社会计算理论与应用研究国际科考与科研训练项目，非项目团队成员请勿选课。" target="_blank">网络课程</a></td>
+					   -->
+					   <td style="word-break:break-all;"><b style="color:blue;">2022中德跨文化社会计算理论与应用研究国际科考与科研训练项目，非项目团队成员请勿选课。</b></td>
+					  
+					  
+					</tr>
+				  
+					
+					<tr align="left"  
+					  
+						
+						 class="TABLE_TR_02" 
+					  
+					  >
+					  <td valign="middle"><a href="http://elite.nju.edu.cn:80/jiaowu/student/elective/courseList.do?method=getCourseInfoM&courseNumber=27000170&classid=204150" target="_blank"><u>27000170</u></a></td>
+			
+					  <!-- <td valign="middle">27000170</td> -->
+					  <td valign="middle">人工智能</td>
+					  <td valign="middle">仙林校区</td>
+					  <td valign="middle">罗晓鹏</td>
+					  <td valign="middle">
+					  	周四 第5-7节 1-16周  仙Ⅱ-110
+					  </td>					  
+					  <td valign="middle"><a href="javascript:showSchedule(204150)">查看</a></td>
+					  <td valign="middle">
+					  	
+					  		
+					  		
+					  		
+					  		
+					  		
+					  		自选
+					  		
+												  	
+					  							  	
+					  	
+					  </td>
+					  <td valign="middle"><a href="javascript:showCodeCourse('27000170','人工智能','罗晓鹏','20221')">意见</a></td>					  
+					  
+					 	 <td valign="middle">请咨询院系或上课老师</td>
+					 	 <td valign="middle"> </td>
+					  
+					  
+					  
+					  
+					  <td></td>
+					  
+					</tr>
+				  
+					
+					<tr align="left"  
+					  
+						 class="TABLE_TR_01"
+						
+					  
+					  >
+					  <td valign="middle"><a href="http://elite.nju.edu.cn:80/jiaowu/student/elective/courseList.do?method=getCourseInfoM&courseNumber=27000180&classid=204153" target="_blank"><u>27000180</u></a></td>
+			
+					  <!-- <td valign="middle">27000180</td> -->
+					  <td valign="middle">数据挖掘</td>
+					  <td valign="middle">仙林校区</td>
+					  <td valign="middle">刘海飞</td>
+					  <td valign="middle">
+					  	周一 第3-4节 1-16周  仙Ⅱ-504
+					  </td>					  
+					  <td valign="middle"><a href="javascript:showSchedule(204153)">查看</a></td>
+					  <td valign="middle">
+					  	
+					  		
+					  		指选
+					  		
+					  		
+					  		
+					  		
+					  		
+												  	
+					  							  	
+					  	
+					  </td>
+					  <td valign="middle"><a href="javascript:showCodeCourse('27000180','数据挖掘','刘海飞','20221')">意见</a></td>					  
+					  
+					 	 <td valign="middle">请咨询院系或上课老师</td>
+					 	 <td valign="middle"> </td>
+					  
+					  
+					  
+					  
+					  <td></td>
+					  
+					</tr>
+				  
+					
+					<tr align="left"  
+					  
+						
+						 class="TABLE_TR_02" 
+					  
+					  >
+					  <td valign="middle"><a href="http://elite.nju.edu.cn:80/jiaowu/student/elective/courseList.do?method=getCourseInfoM&courseNumber=27000200&classid=204161" target="_blank"><u>27000200</u></a></td>
+			
+					  <!-- <td valign="middle">27000200</td> -->
+					  <td valign="middle">数据库与信息系统</td>
+					  <td valign="middle">仙林校区</td>
+					  <td valign="middle">李迁</td>
+					  <td valign="middle">
+					  	周二 第7-8节 1-16周  基础实验楼乙406<br/>周二 第5-6节 1-16周  仙Ⅱ-207
+					  </td>					  
+					  <td valign="middle"><a href="javascript:showSchedule(204161)">查看</a></td>
+					  <td valign="middle">
+					  	
+					  		
+					  		
+					  		
+					  		
+					  		开放
+					  		
+					  		
+												  	
+					  							  	
+					  	
+					  </td>
+					  <td valign="middle"><a href="javascript:showCodeCourse('27000200','数据库与信息系统','李迁','20221')">意见</a></td>					  
+					  
+					 	 <td valign="middle">请咨询院系或上课老师</td>
+					 	 <td valign="middle"> </td>
+					  
+					  
+					  
+					  
+					  <td></td>
+					  
+					</tr>
+				  
+					
+					<tr align="left"  
+					  
+						 class="TABLE_TR_01"
+						
+					  
+					  >
+					  <td valign="middle"><a href="http://elite.nju.edu.cn:80/jiaowu/student/elective/courseList.do?method=getCourseInfoM&courseNumber=27010020&classid=204165" target="_blank"><u>27010020</u></a></td>
+			
+					  <!-- <td valign="middle">27010020</td> -->
+					  <td valign="middle">管理学</td>
+					  <td valign="middle">仙林校区</td>
+					  <td valign="middle">朱华桂</td>
+					  <td valign="middle">
+					  	周一 第9-10节 1-16周  仙Ⅰ-317
+					  </td>					  
+					  <td valign="middle"><a href="javascript:showSchedule(204165)">查看</a></td>
+					  <td valign="middle">
+					  	
+					  		
+					  		指选
+					  		
+					  		
+					  		
+					  		
+					  		
+												  	
+					  							  	
+					  	
+					  </td>
+					  <td valign="middle"><a href="javascript:showCodeCourse('27010020','管理学','朱华桂','20221')">意见</a></td>					  
+					  
+					 	 <td valign="middle">请咨询院系或上课老师</td>
+					 	 <td valign="middle"> </td>
+					  
+					  
+					  
+					  
+					  <td></td>
+					  
+					</tr>
+				  
+					
+					<tr align="left"  
+					  
+						
+						 class="TABLE_TR_02" 
+					  
+					  >
+					  <td valign="middle"><a href="http://elite.nju.edu.cn:80/jiaowu/student/elective/courseList.do?method=getCourseInfoM&courseNumber=27010090&classid=204128" target="_blank"><u>27010090</u></a></td>
+			
+					  <!-- <td valign="middle">27010090</td> -->
+					  <td valign="middle">公司金融学</td>
+					  <td valign="middle">仙林校区</td>
+					  <td valign="middle">陈莹</td>
+					  <td valign="middle">
+					  	周一 第5-7节 1-16周  逸B-303
+					  </td>					  
+					  <td valign="middle"><a href="javascript:showSchedule(204128)">查看</a></td>
+					  <td valign="middle">
+					  	
+					  		
+					  		指选
+					  		
+					  		
+					  		
+					  		
+					  		
+												  	
+					  							  	
+					  	
+					  </td>
+					  <td valign="middle"><a href="javascript:showCodeCourse('27010090','公司金融学','陈莹','20221')">意见</a></td>					  
+					  
+					 	 <td valign="middle">请咨询院系或上课老师</td>
+					 	 <td valign="middle"> </td>
+					  
+					  
+					  
+					  
+					  <td></td>
+					  
+					</tr>
+				  
+					
+					<tr align="left"  
+					  
+						 class="TABLE_TR_01"
+						
+					  
+					  >
+					  <td valign="middle"><a href="http://elite.nju.edu.cn:80/jiaowu/student/elective/courseList.do?method=getCourseInfoM&courseNumber=27010110I&classid=204154" target="_blank"><u>27010110I</u></a></td>
+			
+					  <!-- <td valign="middle">27010110I</td> -->
+					  <td valign="middle">随机过程</td>
+					  <td valign="middle">仙林校区</td>
+					  <td valign="middle">瞿慧</td>
+					  <td valign="middle">
+					  	周五 第3-4节 1-16周  仙Ⅱ-105
+					  </td>					  
+					  <td valign="middle"><a href="javascript:showSchedule(204154)">查看</a></td>
+					  <td valign="middle">
+					  	
+					  		
+					  		
+					  		
+					  		
+					  		
+					  		自选
+					  		
+												  	
+					  							  	
+					  	
+					  </td>
+					  <td valign="middle"><a href="javascript:showCodeCourse('27010110I','随机过程','瞿慧','20221')">意见</a></td>					  
+					  
+					 	 <td valign="middle">请咨询院系或上课老师</td>
+					 	 <td valign="middle"> </td>
+					  
+					  
+					  
+					  <!-- <td valign="middle"><a href="http://elite.nju.edu.cn:80/jiaowu/student/elective/webCourse.do?method=visitWebCourse&webclassid=国际化课程，英文授课" target="_blank">网络课程</a></td>
+					   -->
+					   <td style="word-break:break-all;"><b style="color:blue;">国际化课程，英文授课</b></td>
+					  
+					  
+					</tr>
+				  
+					
+					<tr align="left"  
+					  
+						
+						 class="TABLE_TR_02" 
+					  
+					  >
+					  <td valign="middle"><a href="http://elite.nju.edu.cn:80/jiaowu/student/elective/courseList.do?method=getCourseInfoM&courseNumber=27040050&classid=204129" target="_blank"><u>27040050</u></a></td>
+			
+					  <!-- <td valign="middle">27040050</td> -->
+					  <td valign="middle">金融机构运作与管理</td>
+					  <td valign="middle">仙林校区</td>
+					  <td valign="middle">肖斌卿</td>
+					  <td valign="middle">
+					  	周五 第5-6节 1-16周  仙Ⅱ-105
+					  </td>					  
+					  <td valign="middle"><a href="javascript:showSchedule(204129)">查看</a></td>
+					  <td valign="middle">
+					  	
+					  		
+					  		指选
+					  		
+					  		
+					  		
+					  		
+					  		
+												  	
+					  							  	
+					  	
+					  </td>
+					  <td valign="middle"><a href="javascript:showCodeCourse('27040050','金融机构运作与管理','肖斌卿','20221')">意见</a></td>					  
+					  
+					 	 <td valign="middle">请咨询院系或上课老师</td>
+					 	 <td valign="middle"> </td>
+					  
+					  
+					  
+					  
+					  <td></td>
+					  
+					</tr>
+				  
+					
+					<tr align="left"  
+					  
+						 class="TABLE_TR_01"
+						
+					  
+					  >
+					  <td valign="middle"><a href="http://elite.nju.edu.cn:80/jiaowu/student/elective/courseList.do?method=getCourseInfoM&courseNumber=78004580&classid=206325" target="_blank"><u>78004580</u></a></td>
+			
+					  <!-- <td valign="middle">78004580</td> -->
+					  <td valign="middle">郑钢证券行业研究训练营</td>
+					  <td valign="middle">仙林校区</td>
+					  <td valign="middle">郑钢, 赵梓溪</td>
+					  <td valign="middle">
+					  	自由时间 2-16周  自由地点
+					  </td>					  
+					  <td valign="middle"><a href="javascript:showSchedule(206325)">查看</a></td>
+					  <td valign="middle">
+					  	
+					  		
+					  		
+					  		
+					  		
+					  		开放
+					  		
+					  		
+												  	
+					  							  	
+					  	
+					  </td>
+					  <td valign="middle"><a href="javascript:showCodeCourse('78004580','郑钢证券行业研究训练营','郑钢, 赵梓溪','20221')">意见</a></td>					  
+					  
+					 	 <td valign="middle">请咨询院系或上课老师</td>
+					 	 <td valign="middle"> </td>
+					  
+					  
+					  
+					  
+					  <td></td>
+					  
+					</tr>
+				  
+					
+					<tr align="left"  
+					  
+						
+						 class="TABLE_TR_02" 
+					  
+					  >
+					  <td valign="middle"><a href="http://elite.nju.edu.cn:80/jiaowu/student/elective/courseList.do?method=getCourseInfoM&courseNumber=00460100&classid=206133" target="_blank"><u>00460100</u></a></td>
+			
+					  <!-- <td valign="middle">00460100</td> -->
+					  <td valign="middle">《文化与组织》阅读</td>
+					  <td valign="middle">仙林校区</td>
+					  <td valign="middle">钱海燕</td>
+					  <td valign="middle">
+					  	自由时间 4-17周  
+					  </td>					  
+					  <td valign="middle"><a href="javascript:showSchedule(206133)">查看</a></td>
+					  <td valign="middle">
+					  	
+					  		
+					  		
+					  		
+					  		
+					  		开放
+					  		
+					  		
+												  	
+					  							  	
+					  	
+					  </td>
+					  <td valign="middle"><a href="javascript:showCodeCourse('00460100','《文化与组织》阅读','钱海燕','20221')">意见</a></td>					  
+					  
+					 	 <td valign="middle">请咨询院系或上课老师</td>
+					 	 <td valign="middle"> </td>
+					  
+					  
+					  
+					  
+					  <td></td>
+					  
+					</tr>
+				  
+				
+				
+			</table>
+		</TD>
+      </TR>
+      
+      <TR>
+      </TR>
+      <TR style="display:none">
+        <TD colspan="2" align="center" style="color:blue; ">
+			<div align="center">
+				<input type="button" style="font-size:14px;border: #7b9ebd 1px solid;padding:1px;text-align:center;width:90px;color:blue" onclick="javascript:doElectiveConfirm()" value="课程确认"/>
+			</div>
+		</TD>
+      </TR>
+      <TR>
+      </TR>
+      <TR style="display:none">
+        <TD colspan="2" align="center" style="color:blue; ">
+			
+			
+				<b style="color:red; font-size:14px;">未完成确认！</b>
+			
+		</TD>
+      </TR>
+      
+    </TABLE>
+  </div>
+     <br><br/>
+	<div align="center">
+					
+		<div id="operation" style="display: none;">
+			<img src="image/load.gif">正在加载...
+		</div>
+		<div id="scheduleList"></div>
+	</div>
+    
+	
+	<div style="padding: 20px 0 0 50px;color:#0000FF; " align="left">
+    	<br/><b style="color:red; ">关于考试信息的说明：</b><br/>
+    	1、部分课程只显示了考试日期，未有具体时间，例如大学英语、大学数学等，这些课程会由开课单位具体安排后，由院系通知学生；<br/>
+    	2、如果课程的考试时间标记为“请咨询院系或上课老师”，说明在院系上报的信息中，该课程的考核不安排在期末考试周，你需与上课老师确认课程考试方式；<br/>
+    	3、考虑到可能会出现课程微调的情况，所以请同学们务必在期末考试周到来前，再次登录查看考试信息。<br/>
+    	<br>
+	<b style="color:red; ">考试纪律、规范需知：</b><br>
+		【时间安排】考试周伊始请务必再次确认考试时间和地点。根据《南京大学全日制本科生考试管理办法》规定，考试开始15分钟后禁止入场，视作旷考。缺考成绩将以0分记载，并计入学分绩。<br>
+		【手机离身】期末考试时，无论考试形式是开卷还是闭卷均禁止携带具有存储或通讯功能的电子设备，如手机、智能手表等，所以考试前务必将相关物品关机放包里。如果考试时身边发现手机，处于关机状态时将认定为一般违纪，处于开机状态时将认定为作弊。<br>
+		【座位清空】考试前必须仔细检查座位周围是否有其它材料，座位必须清空，座位上及抽屉内不能有任何考试相关资料。如果考试过程中发现有考试相关资料，不论是否属于本人，不论看与否都将认定为作弊。<br>
+		【不自带草稿纸】考试不允许自带草稿纸，如需使用草稿纸请向监考老师索取。未经监考老师允许使用自带草稿纸者，将认定为一般违纪，自带草稿纸中有考试相关内容者，将认定为考试作弊。<br>
+		【开卷考试要求】开卷考试只允许携带考试相关纸质资料，禁止携带手机，原则上不允许携带电脑等可以通讯和上网的电子产品。如主考老师允许携带电脑进行查阅资料，但禁止网上交流，巡考或监考老师发现考试过程中使用通讯或社交软件即算作弊并终止考试。<br>
+		考试纪律：请各位同学考试前务必仔细阅读《学生手册》中的《南京大学全日制本科生考试管理办法》，遵守考试纪律，考试期间服从监考老师和巡考老师安排。根据《南京大学普通全日制本科生学籍管理细则》规定，因违反学术诚信（包括考试作弊、论文抄袭等）受到记过（含记过）以上处分者，将不得授予学士学位。期末考试期间将全程录像，并且每场考试都必须签到，考试违纪或作弊，均要终止考试，成绩以0分记载，并计入学分绩，考试违纪将给予警告处分，考试作弊将给予记过处分。<br>
+		<br>
+    </div>
+    
+    
+	
+  	
+  	
+  		<script  type="text/javascript">
+  			alert('"形势与政策"和"管理学"上课时间可能存在冲突!\n');
+  		</script>
+  	
+  	
+  </body>
+</html>
+
+  </body>
+
+
+</html>

@@ -47,7 +47,8 @@ function scheduleHtmlParser() {
 
   let name = document.getElementsByClassName("currentTerm")[0].innerHTML;
   let rst = { name: name, courses: [] };
-  let tableHead = document.getElementsByClassName("course-head")[1];
+  let tableHeads = document.getElementsByClassName("course-head");
+  let tableHead = tableHeads[tableHeads.length - 1];
   let headElements = tableHead.children[0].children;
   let infoIndex = 3;
   let courseNameIndex = 1;
@@ -65,7 +66,8 @@ function scheduleHtmlParser() {
       courseInfoIndex = i;
     }
   }
-  let table = document.getElementsByClassName("course-body")[1];
+  let tables = document.getElementsByClassName("course-body");
+  let table = tables[tables.length - 1]
   let elements = table.children;
 
   for (let i = 0; i < elements.length; i++) {
@@ -81,6 +83,8 @@ function scheduleHtmlParser() {
     let infos = elements[i].children[infoIndex].children;
     let courseName = elements[i].children[courseNameIndex].innerHTML;
     let courseTeacher = elements[i].children[courseTeacherIndex].innerHTML;
+    console.log(courseInfoIndex)
+    console.log(elements[i].children[courseInfoIndex]);
     let courseInfo =
       elements[i].children[courseInfoIndex].attributes["title"].value;
 

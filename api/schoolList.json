@@ -2,7 +2,7 @@
   "data": [
     {
       "title": "南京大学本科生统一认证",
-      "pinyin": "nanjingdaxuebenke",
+      "pinyin": "1nanjingdaxuebenke",
       "description": "内置导入不成功时可以试试这个",
       "page_title": "教务系统登录",
       "initialUrl": "https://authserver.nju.edu.cn/authserver/login?service=http%3A%2F%2Felite.nju.edu.cn%2Fjiaowu%2Fcaslogin.jsp",
@@ -20,9 +20,9 @@
       "isGrey3.1.0": false
     },
     {
-      "title": "南京大学本科生选课系统（beta）",
-      "pinyin": "nanjingdaxuebenke",
-      "description": "新选课系统，可能不太稳定",
+      "title": "南京大学本科生选课系统",
+      "pinyin": "1nanjingdaxuebenke",
+      "description": "新选课系统，请升级到最新版本使用哦",
       "page_title": "选课系统登录",
       "initialUrl": "https://xk.nju.edu.cn",
       "redirectUrl": "",
@@ -41,7 +41,7 @@
     },
     {
       "title": "南京大学研究生选课系统",
-      "pinyin": "nanjingdaxueyanjiu",
+      "pinyin": "1nanjingdaxueyanjiu",
       "description": "研究生同学的课表导入方式",
       "page_title": "选课系统登录",
       "initialUrl": "https://yjsxk.nju.edu.cn/yjsxkapp/sys/xsxkapp/index_nju.html",
@@ -55,6 +55,297 @@
       "banner_content": "导入方式：登陆后点击「我的选课」进入选课页\n注意：如加载失败，请连接南京大学VPN\n试试浏览器访问教务网，没准教务系统又抽风了\n听起来有点离谱，不过在南京大学，倒也正常",
       "banner_action": "下载南京大学VPN",
       "banner_url": "https://vpn.nju.edu.cn",
+      "isGrey": true,
+      "isGrey3.1.0": false
+    },
+    {
+      "title": "东南大学本科生选课系统（test）",
+      "pinyin": "dongnandaxuebenke",
+      "description": "南哪课表嘛，东南也算南哪（大误",
+      "page_title": "选课系统登录",
+      "initialUrl": "http://newxk.urp.seu.edu.cn/yjsxkapp/sys/xsxkapp/index.html",
+      "redirectUrl": "http://newxk.urp.seu.edu.cn/yjsxkapp/sys/xsxkapp/course.html",
+      "targetUrl": "http://newxk.urp.seu.edu.cn/yjsxkapp/sys/xsxkapp/xsxkCourse/loadStdCourseInfo.do",
+      "preExtractJS": "",
+      "delayTime": 3,
+      "extractJS": "",
+      "extractJSfileAndroid": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/seubksxk.js",
+      "extractJSfileiOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/seubksxk.js",
+      "banner_content": "导入方式：登陆后点击「我的选课」进入选课页\n注意：如加载失败，请连接东南VPN\n试试浏览器访问教务网，没准教务系统又抽风了",
+      "banner_action": "下载东南大学VPN",
+      "banner_url": "https://vpn.seu.edu.cn",
+      "class_time_list": [
+        {
+          "start": "08:00",
+          "end": "08:45"
+        },
+        {
+          "start": "08:50",
+          "end": "09:35"
+        },
+        {
+          "start": "09:50",
+          "end": "10:35"
+        },
+        {
+          "start": "10:40",
+          "end": "11:25"
+        },
+        {
+          "start": "11:30",
+          "end": "12:15"
+        },
+        {
+          "start": "14:00",
+          "end": "14:45"
+        },
+        {
+          "start": "14:50",
+          "end": "15:35"
+        },
+        {
+          "start": "15:50",
+          "end": "16:35"
+        },
+        {
+          "start": "16:40",
+          "end": "17:25"
+        },
+        {
+          "start": "17:30",
+          "end": "18:15"
+        },
+        {
+          "start": "18:30",
+          "end": "19:15"
+        },
+        {
+          "start": "19:20",
+          "end": "20:05"
+        },
+        {
+          "start": "20:10",
+          "end": "20:55"
+        },
+        {
+          "start": "21:00",
+          "end": "21:45"
+        },
+        {
+          "start": "21:50",
+          "end": "22:35"
+        }
+      ],
+      "semester_start_monday": "2022-09-05",
+      "isGrey": true,
+      "isGrey3.1.0": false
+    },
+    {
+      "title": "东南大学研究生选课系统",
+      "pinyin": "dongnandaxueyanjiu",
+      "description": "南哪课表嘛，东南也算南哪（大误",
+      "page_title": "选课系统登录",
+      "initialUrl": "http://yjsxk.urp.seu.edu.cn/yjsxkapp/sys/xsxkapp/index.html",
+      "redirectUrl": "http://yjsxk.urp.seu.edu.cn/yjsxkapp/sys/xsxkapp/course.html",
+      "targetUrl": "http://yjsxk.urp.seu.edu.cn/yjsxkapp/sys/xsxkapp/xsxkCourse/loadStdCourseInfo.do",
+      "preExtractJS": "",
+      "delayTime": 3,
+      "extractJS": "",
+      "extractJSfileAndroid": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/seuyjsxk.js",
+      "extractJSfileiOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/seuyjsxk.js",
+      "banner_content": "导入方式：登陆后点击「我的选课」进入选课页\n注意：如加载失败，请连接东南VPN\n试试浏览器访问教务网，没准教务系统又抽风了",
+      "banner_action": "下载东南大学VPN",
+      "banner_url": "https://vpn.seu.edu.cn",
+      "class_time_list": [
+        {
+          "start": "08:00",
+          "end": "08:45"
+        },
+        {
+          "start": "08:50",
+          "end": "09:35"
+        },
+        {
+          "start": "09:50",
+          "end": "10:35"
+        },
+        {
+          "start": "10:40",
+          "end": "11:25"
+        },
+        {
+          "start": "11:30",
+          "end": "12:15"
+        },
+        {
+          "start": "14:00",
+          "end": "14:45"
+        },
+        {
+          "start": "14:50",
+          "end": "15:35"
+        },
+        {
+          "start": "15:50",
+          "end": "16:35"
+        },
+        {
+          "start": "16:40",
+          "end": "17:25"
+        },
+        {
+          "start": "17:30",
+          "end": "18:15"
+        },
+        {
+          "start": "18:30",
+          "end": "19:15"
+        },
+        {
+          "start": "19:20",
+          "end": "20:05"
+        },
+        {
+          "start": "20:10",
+          "end": "20:55"
+        },
+        {
+          "start": "21:00",
+          "end": "21:45"
+        },
+        {
+          "start": "21:50",
+          "end": "22:35"
+        }
+      ],
+      "semester_start_monday": "2022-09-05",
+      "isGrey": true,
+      "isGrey3.1.0": false
+    },
+    {
+      "title": "清华大学研究生选课系统",
+      "pinyin": "qinghuadaxueyanjiu",
+      "description": "开始尝试其他学校营业啦",
+      "page_title": "选课系统登录",
+      "initialUrl": "http://zhjwxk.cic.tsinghua.edu.cn/xklogin.do",
+      "redirectUrl": "http://zhjwxk.cic.tsinghua.edu.cn/xkYjs.vxkYjsXkbBs.do?m=main",
+      "targetUrl": "http://zhjwxk.cic.tsinghua.edu.cn/xkYjs.vxkYjsXkbBs.do?p_xnxq=2022-2023-1&pathContent=%BF%CE%B1%ED%B2%E9%D1%AF",
+      "preExtractJS": "",
+      "delayTime": 3,
+      "extractJS": "",
+      "extractJSfileAndroid": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/thuyjsxk.js",
+      "extractJSfileiOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/thuyjsxk.js",
+      "banner_content": "导入方式：登陆后自动跳转\n注意：如加载失败，请连接清华大学VPN\n试试浏览器访问教务网，没准教务系统又抽风了\n听起来有点离谱，不过在世界一流大学，倒也正常",
+      "banner_action": "下载清华大学VPN",
+      "banner_url": "https://deny.tsinghua.edu.cn/",
+      "class_time_list": [
+        {
+          "start": "08:00",
+          "end": "09:35"
+        },
+        {
+          "start": "09:50",
+          "end": "12:15"
+        },
+        {
+          "start": "13:30",
+          "end": "15:05"
+        },
+        {
+          "start": "15:20",
+          "end": "16:55"
+        },
+        {
+          "start": "17:05",
+          "end": "18:40"
+        },
+        {
+          "start": "19:20",
+          "end": "21:45"
+        }
+      ],
+      "isGrey": true,
+      "isGrey3.1.0": false
+    },
+    {
+      "title": "上海交通大学研究生选课系统",
+      "pinyin": "shanghaijiaotongdaxueyanjiu",
+      "description": "蛤交研究生同学的课表导入方式",
+      "page_title": "选课系统登录",
+      "initialUrl": "http://yjsxk.sjtu.edu.cn/yjsxkapp/sys/xsxkapp/index.html",
+      "redirectUrl": "http://yjsxk.sjtu.edu.cn/yjsxkapp/sys/xsxkapp/course.html",
+      "targetUrl": "http://yjsxk.sjtu.edu.cn/yjsxkapp/sys/xsxkapp/xsxkCourse/loadStdCourseInfo.do",
+      "preExtractJS": "",
+      "delayTime": 3,
+      "extractJS": "",
+      "extractJSfileAndroid": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/sjtuyjsxk.js",
+      "extractJSfileiOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/sjtuyjsxk.js",
+      "banner_content": "导入方式：登陆后点击「我的选课」进入选课页\n注意：如加载失败，请连接上交VPN\n试试浏览器访问教务网，没准教务系统又抽风了",
+      "banner_action": "使用上海交通大学VPN",
+      "banner_url": "https://net.sjtu.edu.cn/wlfw/VPN.htm",
+      "class_time_list": [
+        {
+          "start": "08:00",
+          "end": "08:45"
+        },
+        {
+          "start": "08:55",
+          "end": "09:40"
+        },
+        {
+          "start": "10:00",
+          "end": "10:45"
+        },
+        {
+          "start": "10:55",
+          "end": "11:40"
+        },
+        {
+          "start": "12:00",
+          "end": "12:45"
+        },
+        {
+          "start": "12:55",
+          "end": "13:40"
+        },
+        {
+          "start": "14:00",
+          "end": "14:45"
+        },
+        {
+          "start": "14:55",
+          "end": "15:40"
+        },
+        {
+          "start": "16:00",
+          "end": "16:45"
+        },
+        {
+          "start": "16:55",
+          "end": "17:40"
+        },
+        {
+          "start": "18:00",
+          "end": "18:45"
+        },
+        {
+          "start": "18:55",
+          "end": "19:40"
+        },
+        {
+          "start": "19:40",
+          "end": "20:20"
+        },
+        {
+          "start": "20:25",
+          "end": "21:10"
+        },
+        {
+          "start": "21:15",
+          "end": "22:00"
+        }
+      ],
+      "semester_start_monday": "2022-09-12",
       "isGrey": true,
       "isGrey3.1.0": false
     }
