@@ -45,6 +45,7 @@ function scheduleHtmlParser() {
   ];
   let WEEK_NUM = 17;
 
+  // let name = "";
   let name = document.getElementsByClassName("currentTerm")[0].innerHTML;
   let rst = { name: name, courses: [] };
   let tableHeads = document.getElementsByClassName("course-head");
@@ -83,8 +84,8 @@ function scheduleHtmlParser() {
     let infos = elements[i].children[infoIndex].children;
     let courseName = elements[i].children[courseNameIndex].innerHTML;
     let courseTeacher = elements[i].children[courseTeacherIndex].innerHTML;
-    console.log(courseInfoIndex)
-    console.log(elements[i].children[courseInfoIndex]);
+    // console.log(courseInfoIndex)
+    // console.log(elements[i].children[courseInfoIndex]);
     let courseInfo =
       elements[i].children[courseInfoIndex].attributes["title"].value;
 
@@ -92,7 +93,8 @@ function scheduleHtmlParser() {
     for (let j = 0; j < infos.length; j++) {
       let info = infos[j].innerHTML;
       if (info == "") continue;
-      //  console.log(info);
+      info = info.trim();
+      // console.log(info);
 
       let strs = info.split(" ");
 
