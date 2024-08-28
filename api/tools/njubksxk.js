@@ -84,8 +84,6 @@ function scheduleHtmlParser() {
     let infos = elements[i].children[infoIndex].children;
     let courseName = elements[i].children[courseNameIndex].innerHTML;
     let courseTeacher = elements[i].children[courseTeacherIndex].innerHTML;
-    // console.log(courseInfoIndex)
-    // console.log(elements[i].children[courseInfoIndex]);
     let courseInfo =
       elements[i].children[courseInfoIndex].attributes["title"].value;
 
@@ -93,7 +91,7 @@ function scheduleHtmlParser() {
     for (let j = 0; j < infos.length; j++) {
       let info = infos[j].innerHTML;
       if (info == "") continue;
-      info = info.trim();
+      info = info.replace(/^\s+|\s+$/gm,'');
       // console.log(info);
 
       let strs = info.split(" ");
@@ -132,6 +130,9 @@ function scheduleHtmlParser() {
 
       // Get ClassRoom
       let classRoom = strs[strs.length - 1];
+      if(classRoom.match(/(\d{1,2}|单|双)周$/)) {
+        classRoom = "";
+      }
 
       // console.log(weekTime);
       rst["courses"].push({
