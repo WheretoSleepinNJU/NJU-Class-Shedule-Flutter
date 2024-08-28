@@ -91,7 +91,7 @@ class CourseTableProvider {
     // print(maps);
     try {
       Map rst = json.decode(maps[0]["data"]);
-      if(rst["class_time_list"] == null) {
+      if (rst["class_time_list"] == null) {
         return defaultClassTimeList;
       }
       // print(rst["class_time_list"]);
@@ -113,7 +113,7 @@ class CourseTableProvider {
     }
     try {
       Map rst = json.decode(maps[0]["data"]);
-      if(rst["semester_start_monday"] == null) {
+      if (rst["semester_start_monday"] == null) {
         return "";
       }
       return rst["semester_start_monday"];

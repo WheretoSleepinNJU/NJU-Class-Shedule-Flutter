@@ -40,8 +40,8 @@ class _QRScanViewState extends State<QRScanView> {
             onQRViewCreated: _onQRViewCreated,
             overlay: QrScannerOverlayShape(
               borderColor: Theme.of(context).brightness == Brightness.light
-                      ? Theme.of(context).primaryColor
-                      : Colors.white,
+                  ? Theme.of(context).primaryColor
+                  : Colors.white,
               borderRadius: 10,
               borderLength: 30,
               borderWidth: 10,

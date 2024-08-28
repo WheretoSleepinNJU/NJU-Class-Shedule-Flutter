@@ -41,19 +41,19 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
     });
   }
 
-  Map<int,DateTime> timeMap={
-    1 :DateTime(2022,1,1,8,0),
-    2 :DateTime(2022,1,1,9,0),
-    3 :DateTime(2022,1,1,10,10),
-    4 :DateTime(2022,1,1,11,10),
-    5 :DateTime(2022,1,1,14,0),
-    6 :DateTime(2022,1,1,15,0),
-    7 :DateTime(2022,1,1,16,10),
-    8 :DateTime(2022,1,1,17,10),
-    9 :DateTime(2022,1,1,18,30),
-    10:DateTime(2022,1,1,19,30),
-    11:DateTime(2022,1,1,20,30),
-    12:DateTime(2022,1,1,21,30),
+  Map<int, DateTime> timeMap = {
+    1: DateTime(2022, 1, 1, 8, 0),
+    2: DateTime(2022, 1, 1, 9, 0),
+    3: DateTime(2022, 1, 1, 10, 10),
+    4: DateTime(2022, 1, 1, 11, 10),
+    5: DateTime(2022, 1, 1, 14, 0),
+    6: DateTime(2022, 1, 1, 15, 0),
+    7: DateTime(2022, 1, 1, 16, 10),
+    8: DateTime(2022, 1, 1, 17, 10),
+    9: DateTime(2022, 1, 1, 18, 30),
+    10: DateTime(2022, 1, 1, 19, 30),
+    11: DateTime(2022, 1, 1, 20, 30),
+    12: DateTime(2022, 1, 1, 21, 30),
   };
 
   @override
@@ -182,7 +182,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
             ListTile(
               title: Text(S.of(context).export_to_system_calendar_title),
               subtitle: Text(S.of(context).export_to_system_calendar_subtitle),
-              onTap: () async{
+              onTap: () async {
                 exportToSystemCalendar(context);
               },
             ),
@@ -356,6 +356,29 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                   }),
             ),
             ListTile(
+                title: Text(S.of(context).font_mode_title),
+                subtitle: Text(S.of(context).font_mode_subtitle),
+                trailing: FutureBuilder<bool>(
+                    future: _getFontMode(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                      if (!snapshot.hasData) {
+                        return Container(width: 0);
+                      } else {
+                        return Switch(
+                            activeColor:
+                                Theme.of(context).appBarTheme.backgroundColor,
+                            value: snapshot.data!,
+                            onChanged: (bool value) {
+                              UmengCommonSdk.onEvent("more_setting",
+                                  {"type": 12, "result": value.toString()});
+                              ScopedModel.of<MainStateModel>(context)
+                                  .setFontMode(value);
+                              setState(() {});
+                            });
+                      }
+                    })),
+            ListTile(
               title: Text(S.of(context).force_zoom_title),
               subtitle: Text(S.of(context).force_zoom_subtitle),
               trailing: FutureBuilder<bool>(
@@ -456,6 +479,10 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
     return await ScopedModel.of<MainStateModel>(context).getAddButton();
   }
 
+  Future<bool> _getFontMode() async {
+    return await ScopedModel.of<MainStateModel>(context).getFontMode();
+  }
+
   Future<bool> _getHasImgPath() async {
     String imgPath =
         await ScopedModel.of<MainStateModel>(context).getBgImgPath();
@@ -469,53 +496,57 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
   }
 
   Future<bool> exportToSystemCalendar(BuildContext ctx) async {
-    int tableId=await MainStateModel.of(context).getClassTable();
-    CourseProvider cp=CourseProvider();
-    List courses=await cp.getAllCourses(tableId);
+    int tableId = await MainStateModel.of(context).getClassTable();
+    CourseProvider cp = CourseProvider();
+    List courses = await cp.getAllCourses(tableId);
 
-    Map<int,DateTime> dayMap=await getDayMap();
-    Duration courseLength=Duration(minutes: 50);
-    DeviceCalendarPlugin dc=DeviceCalendarPlugin();
-    const String CALENDAR_NAME="南哪课表";
+    Map<int, DateTime> dayMap = await getDayMap();
+    Duration courseLength = Duration(minutes: 50);
+    DeviceCalendarPlugin dc = DeviceCalendarPlugin();
+    const String CALENDAR_NAME = "南哪课表";
     for (Map<String, dynamic> courseMap in courses) {
-      Course course=Course.fromMap(courseMap);
-      if(course.weekTime == 0) {
+      Course course = Course.fromMap(courseMap);
+      if (course.weekTime == 0) {
         continue;
       }
-      for(int week_num in json.decode(course.weeks!)){
-        DateTime day=dayMap[course.weekTime]!.add(Duration(days: 7)*week_num);
-        DateTime startTime=timeMap[course.startTime]!;
-        DateTime endTime=timeMap[course.startTime!+course.timeCount!+1]!;
+      for (int week_num in json.decode(course.weeks!)) {
+        DateTime day =
+            dayMap[course.weekTime]!.add(Duration(days: 7) * week_num);
+        DateTime startTime = timeMap[course.startTime]!;
+        DateTime endTime = timeMap[course.startTime! + course.timeCount! + 1]!;
 
-        String timezone='Asia/Shanghai';
-        Location loc=timeZoneDatabase.get(timezone);
+        String timezone = 'Asia/Shanghai';
+        Location loc = timeZoneDatabase.get(timezone);
 
-        TZDateTime start=TZDateTime(loc,day.year,day.month,day.day,startTime.hour,startTime.minute);
-        TZDateTime end=TZDateTime(loc,day.year,day.month,day.day,endTime.hour,endTime.minute);
+        TZDateTime start = TZDateTime(loc, day.year, day.month, day.day,
+            startTime.hour, startTime.minute);
+        TZDateTime end = TZDateTime(
+            loc, day.year, day.month, day.day, endTime.hour, endTime.minute);
 
-        try{
-          UnmodifiableListView calendars=(await dc.retrieveCalendars()).data!;
+        try {
+          UnmodifiableListView calendars = (await dc.retrieveCalendars()).data!;
           String? targetCalendarId;
-          bool found=false;
-          for(Calendar c in calendars){
-            if(c.name==CALENDAR_NAME){
-              targetCalendarId=c.id!;
-              found=true;
+          bool found = false;
+          for (Calendar c in calendars) {
+            if (c.name == CALENDAR_NAME) {
+              targetCalendarId = c.id!;
+              found = true;
               break;
             }
           }
-          if(found==false){
-            targetCalendarId=(await dc.createCalendar(CALENDAR_NAME)).data!;
+          if (found == false) {
+            targetCalendarId = (await dc.createCalendar(CALENDAR_NAME)).data!;
           }
-          String? result=(await dc.createOrUpdateEvent(Event(
+          String? result = (await dc.createOrUpdateEvent(Event(
             targetCalendarId!,
             title: course.name,
             start: start,
             end: end,
             location: course.testLocation,
             description: course.info,
-          )))?.data;
-        } catch(e) {
+          )))
+              ?.data;
+        } catch (e) {
           Toast.showToast(
               S.of(context).export_to_system_calendar_fail_toast, context);
         }
@@ -523,19 +554,20 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
     }
     return true;
   }
-  Future<Map<int,DateTime>> getDayMap() async{
+
+  Future<Map<int, DateTime>> getDayMap() async {
     //获取开学第一周的周一到周日的日期
     //时间是调用此函数时的时间，没有意义，不应被使用
-    Map<int,DateTime> dayMap={};
-    DateTime now=DateTime.now();
-    int weekNum=await ScopedModel.of<MainStateModel>(context).getWeek();
-    Duration backaweek=Duration(days: -7);
-    Duration backaday=Duration(days: -1);
-    DateTime firstDay=now.add(backaweek*weekNum+backaday*now.weekday);
-    for(int i=0;i<7;i++){
-      Duration delta=Duration(days: i);
-      DateTime target=firstDay.add(delta);
-      dayMap[target.weekday]=target;
+    Map<int, DateTime> dayMap = {};
+    DateTime now = DateTime.now();
+    int weekNum = await ScopedModel.of<MainStateModel>(context).getWeek();
+    Duration backaweek = Duration(days: -7);
+    Duration backaday = Duration(days: -1);
+    DateTime firstDay = now.add(backaweek * weekNum + backaday * now.weekday);
+    for (int i = 0; i < 7; i++) {
+      Duration delta = Duration(days: i);
+      DateTime target = firstDay.add(delta);
+      dayMap[target.weekday] = target;
     }
     return dayMap;
   }

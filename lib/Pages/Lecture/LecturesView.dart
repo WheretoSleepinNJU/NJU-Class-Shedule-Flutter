@@ -188,43 +188,50 @@ class _LectureViewState extends State<LectureView> {
                   Padding(
                       padding:
                           const EdgeInsets.only(top: 5, left: 10, right: 10),
-                      child: Row(
-                        children: List<Padding>.generate(
-                            _filterNames.length,
-                            (int i) => Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 5),
-                                  child: FilterChip(
-                                    label: Text(_filterNames[i]),
-                                    labelStyle: TextStyle(
-                                        color: Theme.of(context).brightness ==
-                                                Brightness.light
-                                            ? (_filterStatus
-                                                    .contains(_filterNames[i])
-                                                ? Colors.white
-                                                : Colors.black)
-                                            : Colors.white),
-                                    checkmarkColor: Colors.white,
-                                    selected:
-                                        _filterStatus.contains(_filterNames[i]),
-                                    selectedColor:
-                                        Theme.of(context).brightness ==
-                                                Brightness.light
-                                            ? Theme.of(context).primaryColor
-                                            : Colors.grey,
-                                    onSelected: (bool value) {
-                                      setState(() {
-                                        if (value) {
-                                          _filterStatus.add(_filterNames[i]);
-                                        } else {
-                                          _filterStatus.remove(_filterNames[i]);
-                                        }
-                                        _refresh();
-                                      });
-                                    },
-                                  ),
-                                )),
-                      )))
+                      child: SizedBox(
+                          height: 50, // 设置横向列表的高度
+                          child: ListView(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            children: List<Padding>.generate(
+                                _filterNames.length,
+                                (int i) => Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 5),
+                                      child: FilterChip(
+                                        label: Text(_filterNames[i]),
+                                        labelStyle: TextStyle(
+                                            color:
+                                                Theme.of(context).brightness ==
+                                                        Brightness.light
+                                                    ? (_filterStatus.contains(
+                                                            _filterNames[i])
+                                                        ? Colors.white
+                                                        : Colors.black)
+                                                    : Colors.white),
+                                        checkmarkColor: Colors.white,
+                                        selected: _filterStatus
+                                            .contains(_filterNames[i]),
+                                        selectedColor:
+                                            Theme.of(context).brightness ==
+                                                    Brightness.light
+                                                ? Theme.of(context).primaryColor
+                                                : Colors.grey,
+                                        onSelected: (bool value) {
+                                          setState(() {
+                                            if (value) {
+                                              _filterStatus
+                                                  .add(_filterNames[i]);
+                                            } else {
+                                              _filterStatus
+                                                  .remove(_filterNames[i]);
+                                            }
+                                            _refresh();
+                                          });
+                                        },
+                                      ),
+                                    )),
+                          ))))
               ..add(Column(
                 children: [
                   const Divider(),

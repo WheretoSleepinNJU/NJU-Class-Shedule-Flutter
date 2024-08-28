@@ -143,9 +143,10 @@ class _CourseCardState extends State<CourseCard> {
                           },
                         )
                       : TransBgTextButton(
-                          color: Theme.of(context).brightness == Brightness.light
-                              ? Theme.of(context).primaryColor
-                              : Colors.white,
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? Theme.of(context).primaryColor
+                                  : Colors.white,
                           child: Text(S.of(context).lecture_add(count)),
                           onPressed: () async {
                             addCourse();

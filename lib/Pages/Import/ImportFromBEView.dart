@@ -64,6 +64,7 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
               _webViewController.loadUrl(widget.config['initialUrl']);
             },
           ),
+
           /// 作弊器
           IconButton(
             icon: const Icon(Icons.gamepad),
@@ -91,7 +92,7 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
                     actions: [
                       TextButton(
                           style: TextButton.styleFrom(
-                              primary: Colors.white,
+                              foregroundColor: Colors.white,
                               backgroundColor: Theme.of(context).primaryColor),
                           child: Text(widget.config['banner_action']),
                           onPressed: () => launch(widget.config['banner_url'])),
@@ -122,14 +123,13 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
     );
   }
 
-  import(WebViewController controller, BuildContext context, {String? rsp}) async {
+  import(WebViewController controller, BuildContext context,
+      {String? rsp}) async {
     try {
       String response = "";
       CourseTableProvider courseTableProvider = CourseTableProvider();
-      Toast.showToast(S
-          .of(context)
-          .class_parse_toast_importing, context);
-      if(rsp == null) {
+      Toast.showToast(S.of(context).class_parse_toast_importing, context);
+      if (rsp == null) {
         await controller.runJavascript(widget.config['preExtractJS'] ?? '');
         await Future.delayed(
             Duration(seconds: widget.config['delayTime'] ?? 0));

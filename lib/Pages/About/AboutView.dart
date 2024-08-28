@@ -59,9 +59,10 @@ class _AboutViewState extends State<AboutView> {
             ),
             TextButton(
               style: TextButton.styleFrom(
-                  primary: Theme.of(context).brightness == Brightness.light
-                      ? Theme.of(context).primaryColor
-                      : Colors.white,
+                  foregroundColor:
+                      Theme.of(context).brightness == Brightness.light
+                          ? Theme.of(context).primaryColor
+                          : Colors.white,
                   backgroundColor: Colors.transparent),
               child: Text(S.of(context).check_privacy_button),
               onPressed: () {

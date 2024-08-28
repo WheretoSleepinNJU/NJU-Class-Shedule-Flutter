@@ -86,7 +86,7 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
                     actions: [
                       TextButton(
                           style: TextButton.styleFrom(
-                              primary: Colors.white,
+                              foregroundColor: Colors.white,
                               backgroundColor: Theme.of(context).primaryColor),
                           child: Text(widget.config['banner_action']),
                           onPressed: () => launch(widget.config['banner_url'])),
@@ -155,10 +155,10 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
         "errorMsg": e.toString(),
         "way": "cer"
       };
-      try{
+      try {
         await Dio()
             .post(Url.URL_BACKEND + "/log/log", data: FormData.fromMap(info));
-      } catch(e) {
+      } catch (e) {
         print(e);
       }
 

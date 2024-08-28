@@ -19,7 +19,7 @@ class TransBgTextButton extends TextButton {
           onHover: onHover,
           onFocusChange: onFocusChange,
           style: TextButton.styleFrom(
-              primary: color, backgroundColor: Colors.transparent),
+              foregroundColor: color, backgroundColor: Colors.transparent),
           focusNode: focusNode,
           autofocus: autofocus,
           clipBehavior: clipBehavior,
