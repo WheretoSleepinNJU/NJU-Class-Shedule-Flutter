@@ -18,11 +18,26 @@
     /* 周数解析 */
     function parseWeeks(weekStr) {
       const weeks = [];
+
       weekStr.split(',').forEach(part => {
-        const cleanPart = part.replace(/周/g, ''); // 去掉“周”字
+        // 检查是否为单双周
+        const isSingle = part.includes('(单)');
+        const isDouble = part.includes('(双)');
+        const cleanPart = part.replace(/周/g, '').replace(/\(单\)/g, '').replace(/\(双\)/g, ''); // 去掉"周"字
         if (cleanPart.includes('-')) {
           const [start, end] = cleanPart.split('-').map(Number);
-          for (let i = start; i <= end; i++) weeks.push(i);
+          if (isSingle) {
+            // 单周：从start开始，取奇数周
+            let current = start % 2 === 1 ? start : start + 1;
+            for (let i = current; i <= end; i += 2) weeks.push(i);
+          } else if (isDouble) {
+            // 双周：从start开始，取偶数周
+            let current = start % 2 === 0 ? start : start + 1;
+            for (let i = current; i <= end; i += 2) weeks.push(i);
+          } else {
+            // 普通周：连续周
+            for (let i = start; i <= end; i++) weeks.push(i);
+          }
         } else {
           weeks.push(Number(cleanPart));
         }
@@ -34,7 +49,7 @@
     timeLocFull.split(/,周|，/).forEach(seg => {
       /* 自由时间 */
       if (/自由时间/.test(seg)) {
-        const weeks = parseWeeks(seg.match(/([\d\-,]+)周/)?.[1] || '1-18');
+        const weeks = parseWeeks(seg.match(/([\d\-,]+)周/)?.[1] || '1-18', seg);
         courses.push({
           name: courseName,
           classroom: '自由时间',
@@ -57,7 +72,8 @@
       /* 正常匹配 */
       // 周三 2-4节 14-18周 基础实验楼丙405
       // 周三 2-4节 1-3周,10-13周 仙Ⅱ-304
-      const m = seg.match(/([一二三四五六日])?\s*(\d+)-(\d+)节\s*([\d\-,周]+)\s*(.+)/);
+      // 周二 5-8节 2-18周(双) 仙1-216
+      const m = seg.match(/([一二三四五六日])?\s*(\d+)-(\d+)节\s*([\d\-,周]+(?:\([单双]\))?)\s*(.+)/);
 
       if (!m) return;
       const weekDay   = WEEK_MAP[m[1]];
