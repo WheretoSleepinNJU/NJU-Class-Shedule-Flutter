@@ -59,19 +59,19 @@
       "isGrey3.1.0": false
     },
     {
-      "title": "东南大学本科生选课系统（test）",
-      "pinyin": "dongnandaxuebenke",
+      "title": "东南大学本研课表 (test)",
+      "pinyin": "dongnandaxue",
       "description": "南哪课表嘛，东南也算南哪（大误",
-      "page_title": "选课系统登录",
-      "initialUrl": "http://newxk.urp.seu.edu.cn/yjsxkapp/sys/xsxkapp/index.html",
-      "redirectUrl": "http://newxk.urp.seu.edu.cn/yjsxkapp/sys/xsxkapp/course.html",
-      "targetUrl": "http://newxk.urp.seu.edu.cn/yjsxkapp/sys/xsxkapp/xsxkCourse/loadStdCourseInfo.do",
+      "page_title": "本研课表",
+      "initialUrl": "https://ehall.seu.edu.cn/jwapp/sys/bykb/*default/index.do?t_s=1758092596613&EMAP_LANG=zh&THEME=indigo&amp_sec_version_=1&gid_=WXY5RGViNVd1QXovOGR3ZTFhcmFseTk1VmtVVmhBd21CMksyRGloRGpQYmxVMU9YTGpmKy9mV3lodldONnROOVpyVXAyYkpkN2RkeEdhSitra2loc2c9PQ#/xskcb",
+      "redirectUrl": "",
+      "targetUrl": "https://ehall.seu.edu.cn/jwapp/sys/bykb/*default/index.do#/xskcb",
       "preExtractJS": "",
       "delayTime": 3,
       "extractJS": "",
       "extractJSfileAndroid": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/seubksxk.js",
       "extractJSfileiOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/seubksxk.js",
-      "banner_content": "导入方式：登陆后点击「我的选课」进入选课页\n注意：如加载失败，请连接东南VPN\n试试浏览器访问教务网，没准教务系统又抽风了",
+      "banner_content": "导入方式：登陆后自动获取当前学期课表\n注意：如加载失败，请连接东南大学VPN\n试试浏览器访问教务网，没准教务系统又抽风了",
       "banner_action": "下载东南大学VPN",
       "banner_url": "https://vpn.seu.edu.cn",
       "class_time_list": [
@@ -116,27 +116,19 @@
           "end": "18:15"
         },
         {
-          "start": "18:30",
-          "end": "19:15"
+          "start": "19:00",
+          "end": "19:45"
         },
         {
-          "start": "19:20",
-          "end": "20:05"
+          "start": "19:50",
+          "end": "20:35"
         },
         {
-          "start": "20:10",
-          "end": "20:55"
-        },
-        {
-          "start": "21:00",
-          "end": "21:45"
-        },
-        {
-          "start": "21:50",
-          "end": "22:35"
+          "start": "20:40",
+          "end": "21:25"
         }
       ],
-      "semester_start_monday": "2022-09-05",
+      "semester_start_monday": "2025-09-22",
       "isGrey": true,
       "isGrey3.1.0": false
     },
