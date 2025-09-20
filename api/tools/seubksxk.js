@@ -37,11 +37,11 @@ function scheduleHtmlParser() {
   var currentTermName = null;
   
   // 尝试从DOM元素获取当前学期
-  var termLabel = document.getElementById('dqxnxq2');
-  if (termLabel) {
-    currentTermCode = termLabel.getAttribute('value');
-    currentTermName = termLabel.textContent || termLabel.innerText;
-  }
+  // var termLabel = document.getElementById('dqxnxq2');
+  // if (termLabel) {
+  //   currentTermCode = termLabel.getAttribute('value');
+  //   currentTermName = termLabel.textContent || termLabel.innerText;
+  // }
   
   // 如果无法从DOM获取，则从学期列表中查找
   if (!currentTermCode) {
