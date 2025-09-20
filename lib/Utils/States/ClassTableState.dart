@@ -1,7 +1,7 @@
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-abstract class ClassTableStateModel extends Model {
+mixin ClassTableStateModel on Model {
   int? _classTableIndex;
 
   get classTableIndex => _classTableIndex;

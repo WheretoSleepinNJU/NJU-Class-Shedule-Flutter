@@ -129,12 +129,20 @@ class MessageLookup extends MessageLookupByLibrary {
         "donate_title": MessageLookupByLibrary.simpleMessage("投喂"),
         "double_week": MessageLookupByLibrary.simpleMessage("双周"),
         "easter_egg": MessageLookupByLibrary.simpleMessage(
-            "感谢小百合工作室\n感谢 @ns @lgt @FengChendian 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光"),
+            "感谢小百合工作室\n感谢 @ns @lgt @FengChendian @SuperKenVery 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光"),
         "export_classtable_subtitle": MessageLookupByLibrary.simpleMessage(
             "导出当前课表为二维码/链接\n使用公共服务 file.io"),
         "export_classtable_title":
             MessageLookupByLibrary.simpleMessage("导出当前课表"),
         "export_title": MessageLookupByLibrary.simpleMessage("导出课程表"),
+        "export_to_system_calendar_fail_toast":
+            MessageLookupByLibrary.simpleMessage("导出日历失败，请检查是否授予权限"),
+        "export_to_system_calendar_subtitle":
+            MessageLookupByLibrary.simpleMessage("请确保当前周数正确，如需修改请在系统日历中操作"),
+        "export_to_system_calendar_success_toast":
+            MessageLookupByLibrary.simpleMessage("导出成功"),
+        "export_to_system_calendar_title":
+            MessageLookupByLibrary.simpleMessage("导出到系统日历"),
         "fix_week_dialog_content":
             MessageLookupByLibrary.simpleMessage("检测到学期周数与当前不一致，是否立即矫正？"),
         "fix_week_dialog_title": MessageLookupByLibrary.simpleMessage("周数矫正"),
@@ -265,7 +273,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "online_parse_error_toast":
             MessageLookupByLibrary.simpleMessage("导入课表失败，可能是 bug"),
         "open_source_library_content": MessageLookupByLibrary.simpleMessage(
-            "shared_preferences: ^2.0.7\nflutter_swiper_null_safety: ^1.0.2\nscoped_model: ^2.0.0-nullsafety.0\nazlistview: ^2.0.0-nullsafety.0\nwebview_flutter: ^2.0.13\nflutter_linkify: ^5.0.2\nimage_picker: ^0.8.4\npackage_info: ^2.0.2\npath_provider: ^2.0.3\nurl_launcher: ^6.0.10\nflutter_html: ^2.1.3\nfluttertoast: ^8.0.1\nsqflite: ^2.0.0+4\nhtml: ^0.15.0\ndio: ^4.0.0"),
+            "shared_preferences: ^2.0.7\nflutter_swiper_null_safety: ^1.0.2\nscoped_model: ^2.0.0-nullsafety.0\nazlistview: ^2.0.0-nullsafety.0\nwebview_flutter: ^2.0.13\nflutter_linkify: ^5.0.2\nimage_picker: ^0.8.4\npackage_info: ^2.0.2\npath_provider: ^2.0.3\nurl_launcher: ^6.0.10\nflutter_html: ^2.1.3\nfluttertoast: ^8.0.1\nsqflite: ^2.0.0+4\nhtml: ^0.15.0\ndio: ^4.0.0\ndevice_calendar: ^4.2.0\nflutter_native_timezone: ^2.0.0"),
         "open_source_library_title":
             MessageLookupByLibrary.simpleMessage("所使用到的开源库"),
         "parse_error_dialog_add_group":

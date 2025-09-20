@@ -106,8 +106,9 @@ class CourseTablePresenter {
       String semesterStartMonday = response.data['semester_start_monday'];
       int index = await ScopedModel.of<MainStateModel>(context).getClassTable();
       CourseTableProvider courseTableProvider = CourseTableProvider();
-      String tmpSemesterStartMonday = await courseTableProvider.getSemesterStartMonday(index);
-      if(tmpSemesterStartMonday != "") {
+      String tmpSemesterStartMonday =
+          await courseTableProvider.getSemesterStartMonday(index);
+      if (tmpSemesterStartMonday != "") {
         semesterStartMonday = tmpSemesterStartMonday;
       }
       bool isSameWeek = await WeekUtil.isSameWeek(semesterStartMonday, 1);

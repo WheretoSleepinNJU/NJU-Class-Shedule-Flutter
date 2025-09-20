@@ -94,11 +94,11 @@ class CourseTableViewState extends State<CourseTableView> {
     await _presenter.refreshClasses(index, _nowShowWeekNum);
     _freeCourseNum = _presenter.freeCourses.length;
 
-    try{
+    try {
       CourseTableProvider courseTableProvider = CourseTableProvider();
       _classTimeList = await courseTableProvider.getClassTimeList(index);
       _maxShowClasses = _classTimeList.length;
-    }catch(e) {
+    } catch (e) {
       _classTimeList = Constant.CLASS_TIME_LIST;
       _maxShowClasses = Config.MAX_CLASSES;
     }
@@ -144,6 +144,11 @@ class CourseTableViewState extends State<CourseTableView> {
     PrivacyUtil privacyUtil = PrivacyUtil();
     bool privacyRst = await privacyUtil.checkPrivacy(context, false);
     if (!privacyRst) return;
+    //初始化组件化基础库, 所有友盟业务SDK都必须调用此初始化接口。
+    UmengCommonSdk.initCommon(
+        '5f8ef217fac90f1c19a7b0f3', '5f9e1efa1c520d30739d2737', 'Umeng');
+    UmengCommonSdk.setPageCollectionModeAuto();
+    // UmengCommonSdk.onEvent("privacy_accept", {"result":"accept"});
     bool rst = await Navigator.of(context).push(MaterialPageRoute(
             builder: (BuildContext context) => const ImportView())) ??
         false;
@@ -201,7 +206,8 @@ class CourseTableViewState extends State<CourseTableView> {
                         centerTitle: true,
                         title: Column(children: [
 //                          TextView(),
-                          Text(S.of(context).app_name),
+                          Text(S.of(context).app_name,
+                              style: const TextStyle(fontSize: 18)),
                           GestureDetector(
                               child: Text((nowWeek),
                                   style: const TextStyle(fontSize: 14)),
@@ -216,7 +222,10 @@ class CourseTableViewState extends State<CourseTableView> {
                         ]),
                         actions: <Widget>[
                           IconButton(
-                            icon: const Icon(Icons.settings),
+                            icon: const Icon(
+                              Icons.settings,
+                              // color: Colors.white,
+                            ),
                             onPressed: () async {
                               UmengCommonSdk.onEvent(
                                   "setting_click", {"action": "success"});

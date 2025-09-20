@@ -1,29 +1,10 @@
-buildscript {
-    ext.kotlin_version = '1.6.10'
-    repositories {
-        google()
-        jcenter()
-//        maven { url 'https://dl.bintray.com/umsdk/release' }
-        maven { url 'https://repo1.maven.org/maven2/' }
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-    gradle.projectsEvaluated {
-        tasks.withType(JavaCompile) {
-            options.compilerArgs << "-Xlint:deprecation"
-        }
-    }
-}
-
 allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
+//        jcenter()
 //        maven { url 'https://dl.bintray.com/umsdk/release' }
-        maven { url 'https://repo1.maven.org/maven2/' }
+//        maven { url 'https://repo1.maven.org/maven2/' }
     }
 }
 
@@ -35,6 +16,6 @@ subprojects {
     project.evaluationDependsOn(':app')
 }
 
-task clean(type: Delete) {
+tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }

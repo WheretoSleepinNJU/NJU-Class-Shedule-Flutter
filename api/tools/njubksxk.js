@@ -45,9 +45,11 @@ function scheduleHtmlParser() {
   ];
   let WEEK_NUM = 17;
 
+  // let name = "";
   let name = document.getElementsByClassName("currentTerm")[0].innerHTML;
   let rst = { name: name, courses: [] };
-  let tableHead = document.getElementsByClassName("course-head")[1];
+  let tableHeads = document.getElementsByClassName("course-head");
+  let tableHead = tableHeads[tableHeads.length - 1];
   let headElements = tableHead.children[0].children;
   let infoIndex = 3;
   let courseNameIndex = 1;
@@ -65,7 +67,8 @@ function scheduleHtmlParser() {
       courseInfoIndex = i;
     }
   }
-  let table = document.getElementsByClassName("course-body")[1];
+  let tables = document.getElementsByClassName("course-body");
+  let table = tables[tables.length - 1]
   let elements = table.children;
 
   for (let i = 0; i < elements.length; i++) {
@@ -88,7 +91,8 @@ function scheduleHtmlParser() {
     for (let j = 0; j < infos.length; j++) {
       let info = infos[j].innerHTML;
       if (info == "") continue;
-      //  console.log(info);
+      info = info.replace(/^\s+|\s+$/gm,'');
+      // console.log(info);
 
       let strs = info.split(" ");
 
@@ -126,6 +130,9 @@ function scheduleHtmlParser() {
 
       // Get ClassRoom
       let classRoom = strs[strs.length - 1];
+      if(classRoom.match(/(\d{1,2}|单|双)周$/)) {
+        classRoom = "";
+      }
 
       // console.log(weekTime);
       rst["courses"].push({

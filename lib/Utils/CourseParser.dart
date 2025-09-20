@@ -24,7 +24,7 @@ class CourseParser {
     //     "body > div:nth-child(10) > table > tbody > tr:nth-child(2) > td");
     final RegExp nameExp = RegExp("[0-9]+-[0-9]+学年第(一|二)学期");
     String name = nameExp.stringMatch(html).toString();
-    if(name == "null") {
+    if (name == "null") {
       throw Exception("Didn't find course table.");
     }
     //    print(element.innerHtml);

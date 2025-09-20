@@ -1,7 +1,7 @@
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-abstract class ConfigStateModel extends Model {
+mixin ConfigStateModel on Model {
   bool _showWeekend = true;
   bool _showClassTime = true;
   bool _showFreeClass = true;

@@ -63,6 +63,16 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
               await cookieManager.clearCookies();
               _webViewController.loadUrl(widget.config['initialUrl']);
             },
+          ),
+
+          /// 作弊器
+          IconButton(
+            icon: const Icon(Icons.gamepad),
+            onPressed: () async {
+              // String rsp = "";
+              String rsp = "";
+              import(_webViewController, context, rsp: rsp);
+            },
           )
         ],
       ),
@@ -82,7 +92,7 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
                     actions: [
                       TextButton(
                           style: TextButton.styleFrom(
-                              primary: Colors.white,
+                              foregroundColor: Colors.white,
                               backgroundColor: Theme.of(context).primaryColor),
                           child: Text(widget.config['banner_action']),
                           onPressed: () => launch(widget.config['banner_url'])),
@@ -113,23 +123,30 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
     );
   }
 
-  import(WebViewController controller, BuildContext context) async {
+  import(WebViewController controller, BuildContext context,
+      {String? rsp}) async {
     try {
+      String response = "";
       CourseTableProvider courseTableProvider = CourseTableProvider();
       Toast.showToast(S.of(context).class_parse_toast_importing, context);
-      await controller.runJavascript(widget.config['preExtractJS'] ?? '');
-      await Future.delayed(Duration(seconds: widget.config['delayTime'] ?? 0));
-      Dio dio = Dio();
-      // 他妈的，屁事真多
-      String url = '';
-      if (Platform.isIOS) {
-        url = widget.config['extractJSfileiOS'];
-      } else if (Platform.isAndroid) {
-        url = widget.config['extractJSfileAndroid'];
+      if (rsp == null) {
+        await controller.runJavascript(widget.config['preExtractJS'] ?? '');
+        await Future.delayed(
+            Duration(seconds: widget.config['delayTime'] ?? 0));
+        Dio dio = Dio();
+        // 他妈的，屁事真多
+        String url = '';
+        if (Platform.isIOS) {
+          url = widget.config['extractJSfileiOS'];
+        } else if (Platform.isAndroid) {
+          url = widget.config['extractJSfileAndroid'];
+        }
+        Response rsp = await dio.get(url);
+        String js = rsp.data;
+        response = await controller.runJavascriptReturningResult(js);
+      } else {
+        response = rsp;
       }
-      Response rsp = await dio.get(url);
-      String js = rsp.data;
-      String response = await controller.runJavascriptReturningResult(js);
       response = Uri.decodeComponent(response.replaceAll('"', ''));
       Map courseTableMap = json.decode(response);
       CourseTable courseTable;
