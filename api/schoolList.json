@@ -65,7 +65,7 @@
       "page_title": "本研课表",
       "initialUrl": "http://ehall.seu.edu.cn/appShow?appId=5761129385495325",
       "redirectUrl": "",
-      "targetUrl": "https://ehall.seu.edu.cn/jwapp/sys/bykb/*default/index.do#/xskcb",
+      "targetUrl": "https://ehall.seu.edu.cn/jwapp/sys/bykb/*default/index.do",
       "preExtractJS": "",
       "delayTime": 3,
       "extractJS": "",
