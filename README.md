@@ -50,7 +50,7 @@
 ```
 {
     "name": "当前学期名称",
-    "course": [
+    "courses": [
         {
             "name": "课程名称",
             "classroom": "课程地点",
