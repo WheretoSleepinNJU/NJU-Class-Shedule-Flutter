@@ -73,7 +73,7 @@ function scheduleHtmlParser() {
   });
 
   console.log('已选择学期：' + currentTermCode + ' ' + currentTermName);
-  
+
   // 返回符合南哪课表格式的数据
   var result = {
     name: currentTermName,
