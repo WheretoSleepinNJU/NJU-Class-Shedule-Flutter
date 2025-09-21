@@ -65,7 +65,7 @@ function scheduleHtmlParser() {
       weeks: weeksArr,
       week_time: parseInt(r.SKXQ, 10),
       start_time: parseInt(r.KSJC, 10),
-      time_count: parseInt(r.JSJC, 10) - parseInt(r.KSJC, 10) + 1,
+      time_count: parseInt(r.JSJC, 10) - parseInt(r.KSJC, 10),
       import_type: 1,
       info: r.ZCMC,
       data: null
