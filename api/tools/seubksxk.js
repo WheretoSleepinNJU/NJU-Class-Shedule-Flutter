@@ -36,23 +36,10 @@ function scheduleHtmlParser() {
   var currentTermCode = null;
   var currentTermName = null;
   
-  // 尝试从DOM元素获取当前学期
-  var termLabel = document.getElementById('dqxnxq2');
-  if (termLabel) {
-    currentTermCode = termLabel.getAttribute('value');
-    currentTermName = termLabel.textContent || termLabel.innerText;
-  }
-  
-  // 如果无法从DOM获取，则从学期列表中查找
-  if (!currentTermCode) {
-    var terms = getTerms();
-    if (terms.length > 0) {
-      // 使用最新的学期
-      var currentTerm = terms[terms.length - 1];
-      currentTermCode = currentTerm.DM;
-      currentTermName = currentTerm.MC;
-    }
-  }
+  var terms = getTerms();
+  var currentTerm = terms[0];
+  currentTermCode = currentTerm.DM;
+  currentTermName = currentTerm.MC;
   
   if (!currentTermCode) {
     return encodeURIComponent(JSON.stringify({
@@ -78,7 +65,7 @@ function scheduleHtmlParser() {
       weeks: weeksArr,
       week_time: parseInt(r.SKXQ, 10),
       start_time: parseInt(r.KSJC, 10),
-      time_count: parseInt(r.JSJC, 10) - parseInt(r.KSJC, 10) + 1,
+      time_count: parseInt(r.JSJC, 10) - parseInt(r.KSJC, 10),
       import_type: 1,
       info: r.ZCMC,
       data: null
@@ -92,7 +79,6 @@ function scheduleHtmlParser() {
     name: currentTermName,
     courses: courses
   };
-  
   return encodeURIComponent(JSON.stringify(result));
 }
 
