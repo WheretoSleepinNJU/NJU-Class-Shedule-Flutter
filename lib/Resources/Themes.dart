@@ -10,11 +10,13 @@ ThemeData getThemeData(String color, Brightness brightness) {
   Color primaryColor = HexColor(color);
   ThemeData rst = td.copyWith(
     appBarTheme: AppBarTheme(
+      titleTextStyle: const TextStyle(fontSize: 18, color: Colors.white),
+      iconTheme: const IconThemeData(color: Colors.white),
       color: brightness == Brightness.light ? primaryColor : primaryThemeColor,
     ),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
-        primary: Colors.white,
+        foregroundColor: Colors.white,
         backgroundColor: primaryColor,
       ),
     ),

@@ -50,7 +50,7 @@ dependencies:
   # 但是只用在 iOS
   package_info: ^2.0.2
   # Android iOS       macOS
-  flutter_html: ^3.0.0-alpha.5
+  flutter_html: ^3.0.0-beta.2
   # Android iOS
   share_extend: ^2.0.0
   # Android iOS
@@ -69,6 +69,10 @@ dependencies:
 
 dependency_overrides:
   scrollable_positioned_list: 0.3.2
+  flutter_html:
+    git:
+      url: https://github.com/sub6resources/flutter_html.git
+      ref: fix/intrinsics-and-table
 
 dev_dependencies:
   flutter_lints: ^1.0.4

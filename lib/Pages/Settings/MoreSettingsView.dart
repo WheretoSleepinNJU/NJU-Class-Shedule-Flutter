@@ -356,29 +356,6 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                   }),
             ),
             ListTile(
-                title: Text(S.of(context).font_mode_title),
-                subtitle: Text(S.of(context).font_mode_subtitle),
-                trailing: FutureBuilder<bool>(
-                    future: _getFontMode(),
-                    builder:
-                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                      if (!snapshot.hasData) {
-                        return Container(width: 0);
-                      } else {
-                        return Switch(
-                            activeColor:
-                                Theme.of(context).appBarTheme.backgroundColor,
-                            value: snapshot.data!,
-                            onChanged: (bool value) {
-                              UmengCommonSdk.onEvent("more_setting",
-                                  {"type": 12, "result": value.toString()});
-                              ScopedModel.of<MainStateModel>(context)
-                                  .setFontMode(value);
-                              setState(() {});
-                            });
-                      }
-                    })),
-            ListTile(
               title: Text(S.of(context).force_zoom_title),
               subtitle: Text(S.of(context).force_zoom_subtitle),
               trailing: FutureBuilder<bool>(
@@ -477,10 +454,6 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
 
   Future<bool> _getAddButton() async {
     return await ScopedModel.of<MainStateModel>(context).getAddButton();
-  }
-
-  Future<bool> _getFontMode() async {
-    return await ScopedModel.of<MainStateModel>(context).getFontMode();
   }
 
   Future<bool> _getHasImgPath() async {
