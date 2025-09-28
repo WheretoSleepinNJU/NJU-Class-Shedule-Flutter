@@ -4,7 +4,7 @@ function scheduleHtmlParser() {
     var xhr = new XMLHttpRequest();
     xhr.open(
       "POST",
-      "https://yjs2.ruc.edu.cn/gsapp/sys/wdkbapp/modules/xskcb/kfdxnxqcx.do",
+      "https://ehallapp.nju.edu.cn/gsapp/sys/wdkbapp/modules/xskcb/kfdxnxqcx.do",
       false
     );
     xhr.send();
@@ -16,16 +16,15 @@ function scheduleHtmlParser() {
 
   // 2. 获取课表
   var getRawKb = function (termCode) {
-    var formData = new FormData();
-    formData.append("XNXQDM", termCode);
     var xhr = new XMLHttpRequest();
     xhr.open(
       "POST",
-      "https://yjs2.ruc.edu.cn/gsapp/sys/wdkbapp/bykb/loadXskbData.do",
+      "https://ehallapp.nju.edu.cn/gsapp/sys/wdkbapp/modules/xskcb/xsjxrwcx.do",
       false
     );
-    xhr.send(formData);
-    return JSON.parse(xhr.responseText).rwList;
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.send("XNXQDM=" + termCode);
+    return JSON.parse(xhr.responseText).datas.xsjxrwcx.rows;
   };
 
   // 3. 解析信息
@@ -34,7 +33,7 @@ function scheduleHtmlParser() {
     const segments = info.split(";");
 
     segments.forEach((seg) => {
-      // 1-4,6-8周 星期二[3-4节]公学一楼102;3周 星期日[3-4节]公学一楼102
+      // 5-9单周,13-17单周 星期五[3-4节]仙Ⅰ-319;4-18周 星期一[3-4节];4-18双周 星期五[3-4节]
       const match = seg.match(
         /(.+?周)\s*星期(.+?)\[(.+?)节\](.*)/
       );
@@ -45,7 +44,7 @@ function scheduleHtmlParser() {
       // 解析周次
       const weeks = [];
       weekPart.split(",").forEach((w) => {
-        var m = w.match(/(\d+)-?(\d+)?(?:(单|双))?周?/);
+        var m = w.match(/(\d+)-?(\d+)?(?:(单|双))?周/);
         if (!m) return [];
         var start = parseInt(m[1], 10);
         var end = parseInt(m[2], 10);
@@ -96,8 +95,6 @@ function scheduleHtmlParser() {
   var courses = [];
   console.log(rows);
   rows.forEach(function (r) {
-    // 无时间课程直接忽略
-    if(r.PKSJDD == null) return;
     var info = parseInfo(r.PKSJDD);
     info.forEach(function (i) {
       courses.push({
