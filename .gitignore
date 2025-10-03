@@ -118,3 +118,9 @@ app.*.symbols
 !/dev/ci/**/Gemfile.lock
 !pubspec.lock
 
+# FVM Version Cache
+.fvm/
+
+# Claude Code
+.claude/
+CLAUDE.md
