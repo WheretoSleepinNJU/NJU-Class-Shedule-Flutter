@@ -177,10 +177,11 @@ packages:
   flutter_html:
     dependency: "direct main"
     description:
-      name: flutter_html
-      sha256: "02ad69e813ecfc0728a455e4bf892b9379983e050722b1dce00192ee2e41d1ee"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
+      path: "."
+      ref: "fix/intrinsics-and-table"
+      resolved-ref: "90550ddeab4eabf4f715d15e56c5a3da82c37373"
+      url: "https://github.com/sub6resources/flutter_html.git"
+    source: git
     version: "3.0.0-beta.2"
   flutter_linkify:
     dependency: "direct main"

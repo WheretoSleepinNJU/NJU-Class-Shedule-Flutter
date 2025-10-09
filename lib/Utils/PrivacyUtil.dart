@@ -95,8 +95,8 @@ class PrivacyUtil {
         barrierDismissible: false,
         builder: (context) => MDialog(
               info['title'],
-              // SingleChildScrollView(child: Html(data: info['content'])),
-              SingleChildScrollView(child: Text(info['content'])),
+              SingleChildScrollView(child: Html(data: info['content'])),
+              // SingleChildScrollView(child: Text(info['content'])),
               overrideActions: widgets,
             ));
   }
