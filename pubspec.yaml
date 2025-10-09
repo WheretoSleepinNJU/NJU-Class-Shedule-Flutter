@@ -45,7 +45,7 @@ dependencies:
   # Android iOS Linux macOS     Windows
   url_launcher: ^6.0.10
   # Android iOS Linux macOS web Windows
-  in_app_review: ^2.0.3
+  in_app_review: ^2.0.9
   # Android iOS       macOS
   # 但是只用在 iOS
   package_info: ^2.0.2
