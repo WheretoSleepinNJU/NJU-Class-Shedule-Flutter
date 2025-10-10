@@ -80,21 +80,21 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                         // return DropdownButton(items: items, onChanged: onChanged)
                         return DropdownButton<int>(
                             value: snapshot.data,
-                            items: [
+                            items: const [
                               DropdownMenuItem(
-                                  child: Row(children: const [
+                                  child: Row(children: [
                                     Icon(Icons.settings),
                                     Text('跟随系统')
                                   ]),
                                   value: 0),
                               DropdownMenuItem(
-                                  child: Row(children: const [
+                                  child: Row(children: [
                                     Icon(Icons.wb_sunny),
                                     Text('浅色模式')
                                   ]),
                                   value: 1),
                               DropdownMenuItem(
-                                  child: Row(children: const [
+                                  child: Row(children: [
                                     Icon(Icons.shield_moon),
                                     Text('深色模式')
                                   ]),
@@ -474,7 +474,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
     List courses = await cp.getAllCourses(tableId);
 
     Map<int, DateTime> dayMap = await getDayMap();
-    Duration courseLength = Duration(minutes: 50);
+    Duration courseLength = const Duration(minutes: 50);
     DeviceCalendarPlugin dc = DeviceCalendarPlugin();
     const String CALENDAR_NAME = "南哪课表";
     for (Map<String, dynamic> courseMap in courses) {
@@ -484,7 +484,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
       }
       for (int week_num in json.decode(course.weeks!)) {
         DateTime day =
-            dayMap[course.weekTime]!.add(Duration(days: 7) * week_num);
+            dayMap[course.weekTime]!.add(const Duration(days: 7) * week_num);
         DateTime startTime = timeMap[course.startTime]!;
         DateTime endTime = timeMap[course.startTime! + course.timeCount! + 1]!;
 
@@ -534,8 +534,8 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
     Map<int, DateTime> dayMap = {};
     DateTime now = DateTime.now();
     int weekNum = await ScopedModel.of<MainStateModel>(context).getWeek();
-    Duration backaweek = Duration(days: -7);
-    Duration backaday = Duration(days: -1);
+    Duration backaweek = const Duration(days: -7);
+    Duration backaday = const Duration(days: -1);
     DateTime firstDay = now.add(backaweek * weekNum + backaday * now.weekday);
     for (int i = 0; i < 7; i++) {
       Duration delta = Duration(days: i);
