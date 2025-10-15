@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -83,7 +83,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		528000732E9F9B1F00459888 /* Exceptions for "ScheduleWidget" folder in "ScheduleWidgetExtension" target */ = {
+		528000732E9F9B1F00459888 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -93,18 +93,7 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		528000602E9F9B1E00459888 /* ScheduleWidget */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				528000732E9F9B1F00459888 /* Exceptions for "ScheduleWidget" folder in "ScheduleWidgetExtension" target */,
-			);
-			explicitFileTypes = {
-			};
-			explicitFolders = (
-			);
-			path = ScheduleWidget;
-			sourceTree = "<group>";
-		};
+		528000602E9F9B1E00459888 /* ScheduleWidget */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (528000732E9F9B1F00459888 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = ScheduleWidget; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -225,14 +214,14 @@
 			buildConfigurationList = 97C147051CF9000F007C117D /* Build configuration list for PBXNativeTarget "Runner" */;
 			buildPhases = (
 				3E51B465CEB9FA2329E6A866 /* [CP] Check Pods Manifest.lock */,
-				9740EEB61CF901F6004384FC /* Run Script */,
 				97C146EA1CF9000F007C117D /* Sources */,
 				97C146EB1CF9000F007C117D /* Frameworks */,
-				97C146EC1CF9000F007C117D /* Resources */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
+				5280006F2E9F9B1F00459888 /* Embed Foundation Extensions */,
+				97C146EC1CF9000F007C117D /* Resources */,
+				9740EEB61CF901F6004384FC /* Run Script */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				2E78730F9AF0F424C040AF38 /* [CP] Embed Pods Frameworks */,
-				5280006F2E9F9B1F00459888 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
@@ -313,9 +302,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
