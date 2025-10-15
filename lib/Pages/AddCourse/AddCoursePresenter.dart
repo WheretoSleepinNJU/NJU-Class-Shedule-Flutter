@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../Utils/States/MainState.dart';
 import '../../Models/CourseModel.dart';
 import '../../Resources/Constant.dart';
+import '../../core/widget_data/utils/widget_refresh_helper.dart';
 
 class AddCoursePresenter {
   Future<bool> addCourse(BuildContext context, String name, String teacher,
@@ -29,6 +30,10 @@ class AddCoursePresenter {
       course = await courseProvider.insert(course);
       if (course.id == null) return false;
     }
+    
+    // 刷新 Widget
+    await WidgetRefreshHelper.refreshAfterCourseAdded();
+    
     return true;
   }
 

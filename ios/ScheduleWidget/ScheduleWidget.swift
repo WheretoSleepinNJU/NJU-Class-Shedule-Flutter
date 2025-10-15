@@ -143,23 +143,6 @@ struct ScheduleWidgetEntryView: View {
     }
 }
 
-// MARK: - Small Widget (Next Course)
-struct SmallWidgetView: View {
-    let entry: ScheduleEntry
-
-    var body: some View {
-        if let errorMessage = entry.errorMessage {
-            ErrorView(message: errorMessage)
-        } else if let course = entry.nextCourse ?? entry.currentCourse {
-            NextCourseView(course: course,
-                          timeTemplate: entry.widgetData?.timeTemplate,
-                          isCurrent: entry.currentCourse?.id == course.id)
-        } else {
-            EmptyStateView(message: "今日无课")
-        }
-    }
-}
-
 // MARK: - Medium Widget (Today's Schedule)
 struct MediumWidgetView: View {
     let entry: ScheduleEntry
