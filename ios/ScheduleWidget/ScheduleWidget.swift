@@ -75,7 +75,6 @@ struct Provider: TimelineProvider {
 
         // If there's a next course, refresh at its start time
         if let nextCourse = entry.nextCourse,
-           let widgetData = entry.widgetData,
            let template = entry.widgetData?.timeTemplate,
            let period = template.getPeriodRange(
                startPeriod: nextCourse.startPeriod,
@@ -112,7 +111,6 @@ struct Provider: TimelineProvider {
 }
 
 // MARK: - Widget Configuration
-@main
 struct ScheduleWidget: Widget {
     let kind: String = "ScheduleWidget"
 
@@ -197,46 +195,6 @@ struct LargeWidgetView: View {
                 timeTemplate: entry.widgetData?.timeTemplate,
                 currentWeek: entry.widgetData?.currentWeek ?? 1
             )
-        }
-    }
-}
-
-// MARK: - Preview
-struct ScheduleWidget_Previews: PreviewProvider {
-    static var previews: some View {
-        let sampleCourse = WidgetCourse(
-            id: "1",
-            name: "数据结构",
-            classroom: "仙I-101",
-            teacher: "张教授",
-            startPeriod: 3,
-            periodCount: 2,
-            weekDay: 1,
-            color: "#4A90E2",
-            schoolId: "nju",
-            weeks: [1, 2, 3, 4, 5],
-            courseType: "imported",
-            notes: nil
-        )
-
-        let entry = ScheduleEntry(
-            date: Date(),
-            widgetData: nil,
-            nextCourse: sampleCourse,
-            currentCourse: nil,
-            todayCourses: [sampleCourse],
-            errorMessage: nil
-        )
-
-        Group {
-            ScheduleWidgetEntryView(entry: entry)
-                .previewContext(WidgetPreviewContext(family: .systemSmall))
-
-            ScheduleWidgetEntryView(entry: entry)
-                .previewContext(WidgetPreviewContext(family: .systemMedium))
-
-            ScheduleWidgetEntryView(entry: entry)
-                .previewContext(WidgetPreviewContext(family: .systemLarge))
         }
     }
 }

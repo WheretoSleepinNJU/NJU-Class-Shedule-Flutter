@@ -1,4 +1,5 @@
 import SwiftUI
+import WidgetKit
 
 /// 下节课视图（小组件）
 struct NextCourseView: View {
