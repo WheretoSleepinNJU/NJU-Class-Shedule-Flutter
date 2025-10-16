@@ -161,6 +161,23 @@ class NativeDataBridge {
       return false;
     }
   }
+
+  /// 调试：从原生端读取 Widget 数据
+  Future<Map<String, dynamic>?> debugReadWidgetData() async {
+    try {
+      print('[NativeDataBridge] 🔍 调试：从原生端读取 Widget 数据');
+      final result = await _channel.invokeMethod('debugReadWidgetData');
+      if (result != null) {
+        print('[NativeDataBridge] ✅ 成功读取数据');
+        return Map<String, dynamic>.from(result);
+      }
+      print('[NativeDataBridge] ⚠️ 未找到数据');
+      return null;
+    } catch (e) {
+      print('[NativeDataBridge] ❌ 读取失败: $e');
+      return null;
+    }
+  }
   
   /// 获取当前平台
   String _getCurrentPlatform() {

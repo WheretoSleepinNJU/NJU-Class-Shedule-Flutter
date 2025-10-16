@@ -48,6 +48,23 @@ struct Provider: TimelineProvider {
         print("🔄 [Widget] ========== Loading Widget Entry ==========")
         print("📅 [Widget] Current time: \(Date())")
 
+        // Debug: Test direct App Group access
+        let appGroupId = "group.top.idealclover.wheretosleepinnju"
+        if let testAppGroup = UserDefaults(suiteName: appGroupId) {
+            print("✅ [Widget] Direct App Group access successful")
+            if let testData = testAppGroup.data(forKey: "widget_data") {
+                print("✅ [Widget] Direct read successful: \(testData.count) bytes")
+            } else {
+                print("❌ [Widget] Direct read failed: No data at key 'widget_data'")
+                print("🔍 [Widget] Available keys:")
+                for (key, _) in testAppGroup.dictionaryRepresentation() {
+                    print("   - \(key)")
+                }
+            }
+        } else {
+            print("❌ [Widget] Direct App Group access failed!")
+        }
+
         let widgetData = WidgetDataManager.shared.loadWidgetData()
 
         guard let data = widgetData else {

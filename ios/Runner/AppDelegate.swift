@@ -52,6 +52,8 @@ import WidgetKit
       handleRefreshLiveActivities(result: result)
     case "getPlatformInfo":
       handleGetPlatformInfo(result: result)
+    case "debugReadWidgetData":
+      handleDebugReadWidgetData(result: result)
     default:
       result(FlutterMethodNotImplemented)
     }
@@ -222,6 +224,53 @@ import WidgetKit
       "appGroupId": "group.top.idealclover.wheretosleepinnju"
     ]
     result(platformInfo)
+  }
+
+  private func handleDebugReadWidgetData(result: @escaping FlutterResult) {
+    print("🔍 [AppDelegate] ========== Debug: Reading Widget Data ==========")
+
+    let appGroupId = "group.top.idealclover.wheretosleepinnju"
+    guard let appGroup = UserDefaults(suiteName: appGroupId) else {
+      print("❌ [AppDelegate] Failed to access App Group")
+      result(FlutterError(code: "APP_GROUP_ERROR", message: "Cannot access App Group", details: nil))
+      return
+    }
+
+    print("✅ [AppDelegate] App Group accessed")
+
+    // Check if data exists
+    guard let jsonData = appGroup.data(forKey: "widget_data") else {
+      print("❌ [AppDelegate] No data found in App Group")
+      print("🔍 [AppDelegate] Available keys:")
+      for (key, _) in appGroup.dictionaryRepresentation() {
+        print("   - \(key)")
+      }
+      result(FlutterError(code: "NO_DATA", message: "No widget_data found", details: nil))
+      return
+    }
+
+    print("✅ [AppDelegate] Data found: \(jsonData.count) bytes")
+
+    // Try to parse and return the data
+    do {
+      let jsonObject = try JSONSerialization.jsonObject(with: jsonData, options: [])
+      if let dict = jsonObject as? [String: Any] {
+        print("✅ [AppDelegate] Data parsed successfully")
+        print("📊 [AppDelegate] Keys: \(dict.keys)")
+
+        if let todayCourses = dict["todayCourses"] as? [[String: Any]] {
+          print("📚 [AppDelegate] Today's courses: \(todayCourses.count)")
+        }
+
+        result(dict)
+      } else {
+        print("❌ [AppDelegate] Data is not a dictionary")
+        result(FlutterError(code: "INVALID_FORMAT", message: "Data is not a dictionary", details: nil))
+      }
+    } catch {
+      print("❌ [AppDelegate] Failed to parse JSON: \(error)")
+      result(FlutterError(code: "PARSE_ERROR", message: error.localizedDescription, details: nil))
+    }
   }
 
   //友盟测试：iOS9以上使用以下方法
