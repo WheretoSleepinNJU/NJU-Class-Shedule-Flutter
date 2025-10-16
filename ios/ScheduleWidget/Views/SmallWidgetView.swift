@@ -7,23 +7,24 @@ struct SmallWidgetView: View {
     let entry: ScheduleEntry
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .center) {
             // 顶部日期栏
             DateHeaderView(
                 date: entry.date,
                 currentWeek: entry.widgetData?.currentWeek
             )
-            .padding(.horizontal, 8)
+            .padding(.horizontal, 4)
             .padding(.top, 8)
-            .padding(.bottom, 6)
 
             // 主内容区域
             ContentAreaView(entry: entry)
-                .padding(.horizontal, 8)
-                .padding(.bottom, 8)
+                .padding(.horizontal, 4)
+                .padding(.bottom, 12)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(Color(UIColor.systemBackground))
+        .containerBackground(for: .widget) {
+            Color.clear
+        }
     }
 }
 
@@ -33,14 +34,16 @@ private struct DateHeaderView: View {
     let currentWeek: Int?
 
     var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 4) {
-            Text(dateString)
-                .font(.system(size: 13, weight: .medium))
-                .foregroundColor(.primary)
+        HStack(spacing: 4) {
+            HStack(alignment: .firstTextBaseline, spacing: 4) {
+                Text(dateString)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(.primary)
 
-            Text(weekdayString)
-                .font(.system(size: 13, weight: .bold))
-                .foregroundColor(.accentColor)
+                Text(weekdayString)
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundColor(.accentColor)
+            }
 
             Spacer()
 
@@ -50,6 +53,7 @@ private struct DateHeaderView: View {
                     .foregroundColor(.secondary)
             }
         }
+        .frame(alignment: .center)
     }
 
     private var dateString: String {
@@ -139,9 +143,22 @@ private struct ContentAreaView: View {
             }
         }
 
-        // 4. 今日有课但还没开始
+        // 4. 今日还有课程（检查是否有下一节课或未开始的课程）
+        if entry.nextCourse != nil {
+            // 有下一节课但不在15分钟内，获取剩余课程
+            if let remainingCourses = getRemainingCourses() {
+                return .beforeFirstClass(
+                    first: remainingCourses.0,
+                    second: remainingCourses.1,
+                    total: remainingCourses.2
+                )
+            }
+        }
+
+        // 5. 如果今天有课但没有nextCourse，可能是数据问题，显示所有今日课程
         if let todayCourses = entry.widgetData?.todayCourses,
-           !todayCourses.isEmpty {
+           !todayCourses.isEmpty,
+           entry.nextCourse == nil {
             return .beforeFirstClass(
                 first: todayCourses[0],
                 second: todayCourses.count > 1 ? todayCourses[1] : nil,
@@ -149,8 +166,27 @@ private struct ContentAreaView: View {
             )
         }
 
-        // 5. 今日课程已结束
+        // 6. 今日课程已结束
         return .classesEnded
+    }
+
+    // 获取剩余课程（从下一节课开始）
+    private func getRemainingCourses() -> (WidgetCourse, WidgetCourse?, Int)? {
+        guard let nextCourse = entry.nextCourse,
+              let todayCourses = entry.widgetData?.todayCourses else {
+            return nil
+        }
+
+        // 找到下一节课在今日课程中的位置
+        guard let nextIndex = todayCourses.firstIndex(where: { $0.id == nextCourse.id }) else {
+            // 如果找不到，返回nextCourse作为第一门课
+            return (nextCourse, nil, 1)
+        }
+
+        let remainingCourses = Array(todayCourses[nextIndex...])
+        let second = remainingCourses.count > 1 ? remainingCourses[1] : nil
+
+        return (nextCourse, second, remainingCourses.count)
     }
 
     private func getMinutesUntilCourse(_ course: WidgetCourse, template: SchoolTimeTemplate) -> Int? {
@@ -298,6 +334,7 @@ private struct ClassesEndedView: View {
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundColor(.primary)
             }
+            .frame(maxWidth: .infinity)
 
             Spacer()
         }
@@ -311,17 +348,12 @@ private struct CourseCardView: View {
     var timeTemplate: SchoolTimeTemplate? = nil  // 可选的时间模板
 
     var body: some View {
-        HStack(alignment: .top, spacing: 8) {
-            // 左侧色块（贯穿整个卡片高度）
-            RoundedRectangle(cornerRadius: 2)
-                .fill(courseColor)
-                .frame(width: 4)
-
+        HStack(alignment: .top, spacing: 4) {
             // 右侧内容
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 2) {
                 // 第一行：课程名
                 Text(course.name)
-                    .font(.system(size: isDetailed ? 14 : 13, weight: .bold))
+                    .font(.system(size: 12, weight: .bold))
                     .lineLimit(1)
                     .foregroundColor(.primary)
 
@@ -351,12 +383,28 @@ private struct CourseCardView: View {
                     }
                 }
             }
-            .padding(.vertical, 8)
-            .padding(.trailing, 8)
+            .padding(.vertical, 6)
+            .padding(.horizontal, 8)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(
                 RoundedRectangle(cornerRadius: 8)
                     .fill(courseColor.opacity(0.12))
+            )
+            .overlay(
+                // 左侧色块（对齐圆角矩形，避开圆角部分）
+                GeometryReader { geometry in
+                    let cornerRadius: CGFloat = 8
+                    let cornerInset = cornerRadius * (1 - sqrt(2) / 2)
+
+                    HStack(spacing: 0) {
+                        RoundedRectangle(cornerRadius: 2)
+                            .fill(courseColor)
+                            .frame(width: 4)
+                            .padding(.vertical, cornerInset)
+                        Spacer()
+                    }
+                    .padding(.leading, -10)
+                }
             )
         }
         .contentShape(Rectangle())
@@ -401,5 +449,234 @@ private struct CourseCardView: View {
         }
         return timeString
     }
+}
+
+// MARK: - Previews
+#Preview("Before First Class", as: .systemSmall) {
+    ScheduleWidget()
+} timeline: {
+    // Sample data - Before first class
+    let sampleCourse1 = WidgetCourse(
+        id: "1",
+        name: "歌声合成与调校技术",
+        classroom: "体育馆",
+        teacher: "初音未来",
+        startPeriod: 6,
+        periodCount: 2,
+        weekDay: 1,
+        color: "39c5bb",
+        schoolId: "nju",
+        weeks: [1, 2, 3, 4, 5, 6, 7, 8],
+        courseType: "必修",
+        notes: nil
+    )
+
+    let sampleCourse2 = WidgetCourse(
+        id: "2",
+        name: "中文虚拟歌姬导论",
+        classroom: "仙I-202",
+        teacher: "洛天依",
+        startPeriod: 8,
+        periodCount: 2,
+        weekDay: 1,
+        color: "66ccff",
+        schoolId: "nju",
+        weeks: [1, 2, 3, 4, 5, 6, 7, 8],
+        courseType: "必修",
+        notes: nil
+    )
+
+    let timeTemplate = SchoolTimeTemplate(
+        schoolId: "nju",
+        schoolName: "南京大学",
+        schoolNameEn: "Nanjing University",
+        periods: [
+            ClassPeriod(startTime: "08:00", endTime: "08:50"),
+            ClassPeriod(startTime: "09:00", endTime: "09:50"),
+            ClassPeriod(startTime: "10:10", endTime: "11:00"),
+            ClassPeriod(startTime: "11:10", endTime: "12:00"),
+            ClassPeriod(startTime: "14:00", endTime: "14:50"),
+            ClassPeriod(startTime: "15:00", endTime: "15:50"),
+            ClassPeriod(startTime: "16:10", endTime: "17:00"),
+            ClassPeriod(startTime: "17:10", endTime: "18:00"),
+            ClassPeriod(startTime: "18:30", endTime: "19:20"),
+            ClassPeriod(startTime: "19:30", endTime: "20:20"),
+            ClassPeriod(startTime: "20:30", endTime: "21:20")
+        ]
+    )
+
+    let widgetData = WidgetScheduleData(
+        version: "1.0",
+        timestamp: "2025-01-15T07:30:00Z",
+        schoolId: "nju",
+        schoolName: "南京大学",
+        timeTemplate: timeTemplate,
+        currentWeek: 5,
+        currentWeekDay: 1,
+        semesterName: "2024-2025学年第一学期",
+        todayCourses: [sampleCourse1, sampleCourse2],
+        tomorrowCourses: [],
+        nextCourse: sampleCourse1,
+        currentCourse: nil,
+        weekSchedule: [:],
+        todayCourseCount: 2,
+        tomorrowCourseCount: 0,
+        weekCourseCount: 10,
+        hasCoursesToday: true,
+        hasCoursesTomorrow: false,
+        dataSource: "preview",
+        totalCourses: 10,
+        lastUpdateTime: "2025-01-15T07:30:00Z"
+    )
+
+    ScheduleEntry(
+        date: Date(),
+        widgetData: widgetData,
+        nextCourse: sampleCourse1,
+        currentCourse: nil,
+        todayCourses: [sampleCourse1, sampleCourse2],
+        errorMessage: nil
+    )
+}
+
+#Preview("In Class", as: .systemSmall) {
+    ScheduleWidget()
+} timeline: {
+    let currentCourse = WidgetCourse(
+        id: "1",
+        name: "计算机组成原理",
+        classroom: "仙II-308",
+        teacher: "王教授",
+        startPeriod: 3,
+        periodCount: 2,
+        weekDay: 1,
+        color: "4CAF50",
+        schoolId: "nju",
+        weeks: [1, 2, 3, 4, 5, 6, 7, 8],
+        courseType: "必修",
+        notes: nil
+    )
+
+    let nextCourse = WidgetCourse(
+        id: "2",
+        name: "数据结构",
+        classroom: "仙II-410",
+        teacher: "赵老师",
+        startPeriod: 5,
+        periodCount: 2,
+        weekDay: 1,
+        color: "FF9800",
+        schoolId: "nju",
+        weeks: [1, 2, 3, 4, 5, 6, 7, 8],
+        courseType: "必修",
+        notes: nil
+    )
+
+    let timeTemplate = SchoolTimeTemplate(
+        schoolId: "nju",
+        schoolName: "南京大学",
+        schoolNameEn: "Nanjing University",
+        periods: [
+            ClassPeriod(startTime: "08:00", endTime: "08:50"),
+            ClassPeriod(startTime: "09:00", endTime: "09:50"),
+            ClassPeriod(startTime: "10:10", endTime: "11:00"),
+            ClassPeriod(startTime: "11:10", endTime: "12:00"),
+            ClassPeriod(startTime: "14:00", endTime: "14:50"),
+            ClassPeriod(startTime: "15:00", endTime: "15:50")
+        ]
+    )
+
+    let widgetData = WidgetScheduleData(
+        version: "1.0",
+        timestamp: "2025-01-15T10:15:00Z",
+        schoolId: "nju",
+        schoolName: "南京大学",
+        timeTemplate: timeTemplate,
+        currentWeek: 5,
+        currentWeekDay: 1,
+        semesterName: "2024-2025学年第一学期",
+        todayCourses: [currentCourse, nextCourse],
+        tomorrowCourses: [],
+        nextCourse: nextCourse,
+        currentCourse: currentCourse,
+        weekSchedule: [:],
+        todayCourseCount: 2,
+        tomorrowCourseCount: 0,
+        weekCourseCount: 10,
+        hasCoursesToday: true,
+        hasCoursesTomorrow: false,
+        dataSource: "preview",
+        totalCourses: 10,
+        lastUpdateTime: "2025-01-15T10:15:00Z"
+    )
+
+    ScheduleEntry(
+        date: Date(),
+        widgetData: widgetData,
+        nextCourse: nextCourse,
+        currentCourse: currentCourse,
+        todayCourses: [currentCourse, nextCourse],
+        errorMessage: nil
+    )
+}
+
+#Preview("Classes Ended", as: .systemSmall) {
+    ScheduleWidget()
+} timeline: {
+    let timeTemplate = SchoolTimeTemplate(
+        schoolId: "nju",
+        schoolName: "南京大学",
+        schoolNameEn: "Nanjing University",
+        periods: [
+            ClassPeriod(startTime: "08:00", endTime: "08:50"),
+            ClassPeriod(startTime: "09:00", endTime: "09:50")
+        ]
+    )
+
+    let widgetData = WidgetScheduleData(
+        version: "1.0",
+        timestamp: "2025-01-15T18:00:00Z",
+        schoolId: "nju",
+        schoolName: "南京大学",
+        timeTemplate: timeTemplate,
+        currentWeek: 5,
+        currentWeekDay: 1,
+        semesterName: "2024-2025学年第一学期",
+        todayCourses: [],
+        tomorrowCourses: [],
+        nextCourse: nil,
+        currentCourse: nil,
+        weekSchedule: [:],
+        todayCourseCount: 0,
+        tomorrowCourseCount: 0,
+        weekCourseCount: 10,
+        hasCoursesToday: false,
+        hasCoursesTomorrow: false,
+        dataSource: "preview",
+        totalCourses: 10,
+        lastUpdateTime: "2025-01-15T18:00:00Z"
+    )
+
+    ScheduleEntry(
+        date: Date(),
+        widgetData: widgetData,
+        nextCourse: nil,
+        currentCourse: nil,
+        todayCourses: [],
+        errorMessage: nil
+    )
+}
+
+#Preview("No Data", as: .systemSmall) {
+    ScheduleWidget()
+} timeline: {
+    ScheduleEntry(
+        date: Date(),
+        widgetData: nil,
+        nextCourse: nil,
+        currentCourse: nil,
+        todayCourses: [],
+        errorMessage: "打开应用更新数据"
+    )
 }
 
