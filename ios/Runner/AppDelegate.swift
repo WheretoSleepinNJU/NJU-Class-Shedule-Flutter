@@ -58,40 +58,84 @@ import WidgetKit
   }
 
   private func handleSendWidgetData(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+    print("📱 [AppDelegate] ========== Widget Data Request ==========")
+
     guard let args = call.arguments as? [String: Any] else {
+      print("❌ [AppDelegate] Invalid arguments type")
       result(FlutterError(code: "INVALID_ARGUMENTS", message: "Invalid arguments", details: nil))
       return
     }
 
-    print("Received widget data: \(args.keys)")
+    print("✅ [AppDelegate] Received arguments with keys: \(args.keys)")
+    print("📊 [AppDelegate] Timestamp: \(args["timestamp"] ?? "N/A")")
+    print("📊 [AppDelegate] Platform: \(args["platform"] ?? "N/A")")
 
     // Extract the actual widget data from the 'data' field
     guard let widgetData = args["data"] as? [String: Any] else {
+      print("❌ [AppDelegate] Missing 'data' field in arguments")
       result(FlutterError(code: "INVALID_DATA", message: "Missing 'data' field", details: nil))
       return
     }
 
+    print("✅ [AppDelegate] Widget data extracted successfully")
+    print("📊 [AppDelegate] Widget data keys: \(widgetData.keys)")
+
+    // Log key data fields
+    if let todayCourses = widgetData["todayCourses"] as? [[String: Any]] {
+      print("📚 [AppDelegate] Today's courses count: \(todayCourses.count)")
+    }
+    if let currentCourse = widgetData["currentCourse"] as? [String: Any],
+       let courseName = currentCourse["name"] as? String {
+      print("📖 [AppDelegate] Current course: \(courseName)")
+    }
+    if let nextCourse = widgetData["nextCourse"] as? [String: Any],
+       let courseName = nextCourse["name"] as? String {
+      print("📖 [AppDelegate] Next course: \(courseName)")
+    }
+
     // Save to UserDefaults (App Group)
-    if let appGroup = UserDefaults(suiteName: "group.top.idealclover.wheretosleepinnju") {
+    let appGroupId = "group.top.idealclover.wheretosleepinnju"
+    print("🔐 [AppDelegate] Attempting to access App Group: \(appGroupId)")
+
+    if let appGroup = UserDefaults(suiteName: appGroupId) {
+      print("✅ [AppDelegate] App Group accessed successfully")
+
       do {
         let jsonData = try JSONSerialization.data(withJSONObject: widgetData, options: [])
+        let dataSize = jsonData.count
+        print("📦 [AppDelegate] JSON serialized successfully, size: \(dataSize) bytes")
+
         appGroup.set(jsonData, forKey: "widget_data")
         appGroup.set(Date(), forKey: "last_update_time")
-        appGroup.synchronize()
-        print("Widget data saved successfully: \(widgetData.keys)")
+
+        let syncSuccess = appGroup.synchronize()
+        print("💾 [AppDelegate] UserDefaults synchronize: \(syncSuccess ? "✅ Success" : "⚠️ Failed")")
+
+        // Verify data was saved
+        if let savedData = appGroup.data(forKey: "widget_data") {
+          print("✅ [AppDelegate] Data verified in UserDefaults: \(savedData.count) bytes")
+        } else {
+          print("⚠️ [AppDelegate] Warning: Could not verify saved data")
+        }
 
         // Trigger widget refresh immediately
         if #available(iOS 14.0, *) {
           WidgetCenter.shared.reloadAllTimelines()
-          print("Widgets refreshed after data update")
+          print("🔄 [AppDelegate] Widget refresh triggered via WidgetCenter")
+        } else {
+          print("⚠️ [AppDelegate] WidgetKit not available (iOS < 14)")
         }
 
+        print("✅ [AppDelegate] ========== Widget Data Saved Successfully ==========")
         result(true)
       } catch {
-        print("Failed to save widget data: \(error)")
+        print("❌ [AppDelegate] JSON serialization failed: \(error)")
+        print("❌ [AppDelegate] Error details: \(error.localizedDescription)")
         result(FlutterError(code: "SAVE_ERROR", message: error.localizedDescription, details: nil))
       }
     } else {
+      print("❌ [AppDelegate] Failed to access App Group: \(appGroupId)")
+      print("⚠️ [AppDelegate] Make sure App Groups capability is enabled")
       result(FlutterError(code: "APP_GROUP_ERROR", message: "Failed to access App Group", details: nil))
     }
   }

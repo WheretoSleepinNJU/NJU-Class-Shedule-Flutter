@@ -45,9 +45,19 @@ struct Provider: TimelineProvider {
 
     // MARK: - Data Loading
     private func loadEntry() -> ScheduleEntry {
+        print("🔄 [Widget] ========== Loading Widget Entry ==========")
+        print("📅 [Widget] Current time: \(Date())")
+
         let widgetData = WidgetDataManager.shared.loadWidgetData()
 
         guard let data = widgetData else {
+            print("❌ [Widget] No widget data found in App Group")
+            print("⚠️ [Widget] Displaying 'Open app to update' message")
+            print("🔍 [Widget] Possible causes:")
+            print("   1. App has not sent data yet")
+            print("   2. App Group not configured correctly")
+            print("   3. Data was cleared")
+
             return ScheduleEntry(
                 date: Date(),
                 widgetData: nil,
@@ -57,6 +67,26 @@ struct Provider: TimelineProvider {
                 errorMessage: "打开应用更新数据"
             )
         }
+
+        print("✅ [Widget] Widget data loaded successfully")
+        print("📊 [Widget] School: \(data.schoolName)")
+        print("📊 [Widget] Current week: \(data.currentWeek)")
+        print("📊 [Widget] Today's courses: \(data.todayCourseCount)")
+        print("📊 [Widget] Tomorrow's courses: \(data.tomorrowCourseCount)")
+
+        if let currentCourse = data.currentCourse {
+            print("📖 [Widget] Current course: \(currentCourse.name)")
+        } else {
+            print("📖 [Widget] No current course")
+        }
+
+        if let nextCourse = data.nextCourse {
+            print("📖 [Widget] Next course: \(nextCourse.name)")
+        } else {
+            print("📖 [Widget] No next course")
+        }
+
+        print("✅ [Widget] ========== Entry Loaded Successfully ==========")
 
         return ScheduleEntry(
             date: Date(),

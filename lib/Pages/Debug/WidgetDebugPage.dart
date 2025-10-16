@@ -131,6 +131,42 @@ class _WidgetDebugPageState extends State<WidgetDebugPage> {
     }
   }
 
+  Future<void> _testAppGroupAccess() async {
+    setState(() => _isLoading = true);
+    _addLog('测试 App Group 连接...');
+
+    try {
+      // 通过获取平台信息来测试连接
+      final info = await _bridge.getNativeDataStatus();
+      if (info != null) {
+        _addLog('✅ 成功连接到原生平台');
+        _addLog('📊 App Group ID: ${info["appGroupId"] ?? "未知"}');
+      } else {
+        _addLog('❌ 无法连接到原生平台');
+      }
+    } catch (e) {
+      _addLog('❌ 连接测试失败: $e');
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _clearCache() async {
+    setState(() => _isLoading = true);
+    _addLog('清除服务缓存...');
+
+    try {
+      if (_service != null) {
+        _service!.clearCache();
+        _addLog('✅ 缓存已清除');
+      }
+    } catch (e) {
+      _addLog('❌ 清除失败: $e');
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
   void _clearLogs() {
     setState(() {
       _logs.clear();
@@ -194,10 +230,33 @@ class _WidgetDebugPageState extends State<WidgetDebugPage> {
                   ],
                 ),
                 const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: _isLoading ? null : _getPlatformInfo,
+                        icon: const Icon(Icons.info_outline),
+                        label: const Text('平台信息'),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: _isLoading ? null : _testAppGroupAccess,
+                        icon: const Icon(Icons.link),
+                        label: const Text('测试连接'),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
                 OutlinedButton.icon(
-                  onPressed: _isLoading ? null : _getPlatformInfo,
-                  icon: const Icon(Icons.info_outline),
-                  label: const Text('获取平台信息'),
+                  onPressed: _isLoading ? null : _clearCache,
+                  icon: const Icon(Icons.cleaning_services),
+                  label: const Text('清除缓存'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.orange,
+                  ),
                 ),
               ],
             ),

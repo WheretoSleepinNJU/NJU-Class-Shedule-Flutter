@@ -93,18 +93,43 @@ class WidgetDataManager {
 
     /// 通用加载方法（可解码类型）
     private func loadDecodableData<T: Decodable>(forKey key: String) -> T? {
-        guard let appGroup = UserDefaults(suiteName: appGroupId),
-              let jsonData = appGroup.data(forKey: key) else {
-            print("No data found for key: \(key)")
+        print("📖 [WidgetDataManager] Loading data for key: \(key)")
+        print("🔐 [WidgetDataManager] App Group ID: \(appGroupId)")
+
+        guard let appGroup = UserDefaults(suiteName: appGroupId) else {
+            print("❌ [WidgetDataManager] Failed to access App Group")
             return nil
         }
+
+        print("✅ [WidgetDataManager] App Group accessed")
+
+        guard let jsonData = appGroup.data(forKey: key) else {
+            print("❌ [WidgetDataManager] No data found for key: \(key)")
+            print("🔍 [WidgetDataManager] Available keys in App Group:")
+            for (availableKey, _) in appGroup.dictionaryRepresentation() {
+                print("   - \(availableKey)")
+            }
+            return nil
+        }
+
+        print("✅ [WidgetDataManager] Data found, size: \(jsonData.count) bytes")
 
         do {
             let decoder = JSONDecoder()
             let data = try decoder.decode(T.self, from: jsonData)
+            print("✅ [WidgetDataManager] Data decoded successfully")
             return data
         } catch {
-            print("Failed to decode data for key \(key): \(error)")
+            print("❌ [WidgetDataManager] Failed to decode data for key \(key)")
+            print("❌ [WidgetDataManager] Error: \(error)")
+            print("❌ [WidgetDataManager] Error details: \(error.localizedDescription)")
+
+            // Try to print raw JSON for debugging
+            if let jsonString = String(data: jsonData, encoding: .utf8) {
+                let preview = String(jsonString.prefix(200))
+                print("📄 [WidgetDataManager] JSON preview: \(preview)...")
+            }
+
             return nil
         }
     }
