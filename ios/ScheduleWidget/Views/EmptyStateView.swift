@@ -26,23 +26,21 @@ struct ErrorView: View {
 
     var body: some View {
         Link(destination: URL(string: "njuschedule://refresh")!) {
-            VStack(spacing: 12) {
+            VStack(spacing: 8) {
                 Image(systemName: "exclamationmark.triangle")
                     .font(.system(size: 32))
                     .foregroundColor(.orange)
 
                 Text(message)
-                    .font(.system(size: 13, weight: .medium))
+                    .font(.system(size: 12, weight: .medium))
                     .foregroundColor(.primary)
                     .multilineTextAlignment(.center)
 
                 Text("轻触打开应用")
-                    .font(.system(size: 11))
+                    .font(.system(size: 10))
                     .foregroundColor(.secondary)
             }
-            .padding()
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color(UIColor.systemBackground))
         }
     }
 }

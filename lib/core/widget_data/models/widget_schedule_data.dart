@@ -154,5 +154,5 @@ class WidgetScheduleData {
   }
 
   @override
-  String toString() => 'WidgetScheduleData($schoolId: $schoolName, week $currentWeek, ${todayCourseCount} today courses)';
+  String toString() => 'WidgetScheduleData($schoolId: $schoolName, week $currentWeek, $todayCourseCount today courses)';
 }

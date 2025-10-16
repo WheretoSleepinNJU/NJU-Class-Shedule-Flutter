@@ -1,5 +1,6 @@
 import UIKit
 import Flutter
+import WidgetKit
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -64,13 +65,27 @@ import Flutter
 
     print("Received widget data: \(args.keys)")
 
+    // Extract the actual widget data from the 'data' field
+    guard let widgetData = args["data"] as? [String: Any] else {
+      result(FlutterError(code: "INVALID_DATA", message: "Missing 'data' field", details: nil))
+      return
+    }
+
     // Save to UserDefaults (App Group)
-    if let appGroup = UserDefaults(suiteName: "group.com.wheretosleepinnju.scheduleapp") {
+    if let appGroup = UserDefaults(suiteName: "group.top.idealclover.wheretosleepinnju") {
       do {
-        let jsonData = try JSONSerialization.data(withJSONObject: args, options: [])
+        let jsonData = try JSONSerialization.data(withJSONObject: widgetData, options: [])
         appGroup.set(jsonData, forKey: "widget_data")
+        appGroup.set(Date(), forKey: "last_update_time")
         appGroup.synchronize()
-        print("Widget data saved successfully")
+        print("Widget data saved successfully: \(widgetData.keys)")
+
+        // Trigger widget refresh immediately
+        if #available(iOS 14.0, *) {
+          WidgetCenter.shared.reloadAllTimelines()
+          print("Widgets refreshed after data update")
+        }
+
         result(true)
       } catch {
         print("Failed to save widget data: \(error)")
@@ -90,7 +105,7 @@ import Flutter
     print("Received live activity data: \(args.keys)")
 
     // Save to UserDefaults (App Group)
-    if let appGroup = UserDefaults(suiteName: "group.com.wheretosleepinnju.scheduleapp") {
+    if let appGroup = UserDefaults(suiteName: "group.top.idealclover.wheretosleepinnju") {
       do {
         let jsonData = try JSONSerialization.data(withJSONObject: args, options: [])
         appGroup.set(jsonData, forKey: "live_activity_data")
@@ -115,7 +130,7 @@ import Flutter
     print("Received unified data package")
 
     // Save to UserDefaults (App Group)
-    if let appGroup = UserDefaults(suiteName: "group.com.wheretosleepinnju.scheduleapp") {
+    if let appGroup = UserDefaults(suiteName: "group.top.idealclover.wheretosleepinnju") {
       do {
         let jsonData = try JSONSerialization.data(withJSONObject: args, options: [])
         appGroup.set(jsonData, forKey: "unified_data_package")
@@ -135,8 +150,8 @@ import Flutter
   private func handleRefreshWidgets(result: @escaping FlutterResult) {
     // Trigger widget refresh
     if #available(iOS 14.0, *) {
-      // WidgetCenter.shared.reloadAllTimelines()
-      print("Widget refresh requested (requires WidgetKit)")
+      WidgetCenter.shared.reloadAllTimelines()
+      print("Widget refresh triggered successfully")
       result(true)
     } else {
       result(FlutterError(code: "UNSUPPORTED", message: "Widgets require iOS 14+", details: nil))
@@ -160,7 +175,7 @@ import Flutter
       "model": UIDevice.current.model,
       "supportsWidgets": true,
       "supportsLiveActivities": true,
-      "appGroupId": "group.com.wheretosleepinnju.scheduleapp"
+      "appGroupId": "group.top.idealclover.wheretosleepinnju"
     ]
     result(platformInfo)
   }

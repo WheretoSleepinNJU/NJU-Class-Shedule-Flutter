@@ -78,9 +78,22 @@ class UnifiedDataService {
   /// 更新 Widget 数据
   Future<bool> updateWidgetData() async {
     try {
+      print('[UnifiedDataService] 开始更新 Widget 数据...');
       final data = await getWidgetData();
-      return await _bridge.sendWidgetData(data);
-    } catch (e) {
+      print('[UnifiedDataService] Widget 数据构建成功: ${data.todayCourseCount} 门今日课程, ${data.tomorrowCourseCount} 门明日课程');
+      print('[UnifiedDataService] 当前课程: ${data.currentCourse?.name ?? "无"}');
+      print('[UnifiedDataService] 下节课程: ${data.nextCourse?.name ?? "无"}');
+
+      final result = await _bridge.sendWidgetData(data);
+      if (result) {
+        print('[UnifiedDataService] ✅ Widget 数据发送成功');
+      } else {
+        print('[UnifiedDataService] ❌ Widget 数据发送失败');
+      }
+      return result;
+    } catch (e, stackTrace) {
+      print('[UnifiedDataService] ❌ 更新 Widget 数据时发生异常: $e');
+      print('[UnifiedDataService] StackTrace: $stackTrace');
       return false;
     }
   }

@@ -124,3 +124,6 @@ app.*.symbols
 # Claude Code
 .claude/
 CLAUDE.md
+
+# SweetPad
+buildServer.json

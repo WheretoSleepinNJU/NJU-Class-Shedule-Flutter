@@ -17,15 +17,27 @@ class NativeDataBridge {
   /// 发送 Widget 数据到原生平台
   Future<bool> sendWidgetData(WidgetScheduleData data) async {
     try {
+      print('[NativeDataBridge] 准备发送 Widget 数据到原生平台...');
       final dataJson = data.toJson();
+      print('[NativeDataBridge] JSON 序列化成功，数据大小: ${dataJson.toString().length} 字符');
+      print('[NativeDataBridge] 调用 MethodChannel: sendWidgetData');
+
       final result = await _channel.invokeMethod('sendWidgetData', {
         'data': dataJson,
         'timestamp': DateTime.now().toIso8601String(),
         'platform': _getCurrentPlatform(),
       });
+
+      print('[NativeDataBridge] MethodChannel 调用完成，返回值: $result');
+      if (result == true) {
+        print('[NativeDataBridge] ✅ 原生平台确认接收成功');
+      } else {
+        print('[NativeDataBridge] ⚠️ 原生平台返回: $result');
+      }
       return result == true;
-    } catch (e) {
-      print('发送 Widget 数据失败: $e');
+    } catch (e, stackTrace) {
+      print('[NativeDataBridge] ❌ 发送 Widget 数据失败: $e');
+      print('[NativeDataBridge] StackTrace: $stackTrace');
       return false;
     }
   }

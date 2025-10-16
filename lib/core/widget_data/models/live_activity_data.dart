@@ -174,7 +174,7 @@ class LiveActivityData {
   /// 检查是否即将开始（30分钟内）
   bool get isImminent {
     final now = DateTime.now();
-    return now.isAfter(startTime.subtract(Duration(minutes: 30))) && now.isBefore(startTime);
+    return now.isAfter(startTime.subtract(const Duration(minutes: 30))) && now.isBefore(startTime);
   }
   
   /// 检查是否活跃
