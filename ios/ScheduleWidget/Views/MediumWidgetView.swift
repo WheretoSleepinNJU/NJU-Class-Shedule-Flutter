@@ -128,6 +128,19 @@ private struct LeftContentAreaView: View {
                     LeftClassesEndedView()
                 }
 
+            case .betweenClasses:
+                // 课间状态：和 beforeFirstClass 显示相同
+                if let remainingCourses = getRemainingCourses() {
+                    LeftBeforeClassView(
+                        course: remainingCourses.0,
+                        totalCount: remainingCourses.1,
+                        isTomorrow: false,
+                        timeTemplate: entry.widgetData?.timeTemplate
+                    )
+                } else {
+                    LeftClassesEndedView()
+                }
+
             case .approachingClass:
                 if let next = entry.nextCourse {
                     LeftApproachingClassView(

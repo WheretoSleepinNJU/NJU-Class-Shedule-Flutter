@@ -89,11 +89,12 @@ private struct LargeContentAreaView: View {
             LargeErrorView(message: errorMessage)
         } else {
             switch entry.displayState {
-            case .beforeFirstClass:
-                if let todayCourses = entry.widgetData?.todayCourses, !todayCourses.isEmpty {
+            case .beforeFirstClass, .betweenClasses:
+                // 上课前和课间：显示从下一节课开始的剩余课程
+                if let remaining = getRemainingCourses() {
                     LargeBeforeClassView(
-                        courses: todayCourses,
-                        emphasizedCourse: todayCourses[0],
+                        courses: remaining.courses,
+                        emphasizedCourse: remaining.emphasizedCourse,
                         timeTemplate: entry.widgetData?.timeTemplate
                     )
                 } else {
@@ -143,6 +144,23 @@ private struct LargeContentAreaView: View {
                 LargeErrorView(message: entry.errorMessage ?? "发生错误")
             }
         }
+    }
+
+    // 获取剩余课程（从下一节课开始）
+    private func getRemainingCourses() -> (courses: [WidgetCourse], emphasizedCourse: WidgetCourse)? {
+        guard let nextCourse = entry.nextCourse,
+              let todayCourses = entry.widgetData?.todayCourses else {
+            return nil
+        }
+
+        // 找到下一节课在今日课程中的位置
+        guard let nextIndex = todayCourses.firstIndex(where: { $0.id == nextCourse.id }) else {
+            // 如果找不到，返回nextCourse作为唯一课程
+            return ([nextCourse], nextCourse)
+        }
+
+        let remainingCourses = Array(todayCourses[nextIndex...])
+        return (remainingCourses, nextCourse)
     }
 }
 

@@ -109,6 +109,20 @@ private struct ContentAreaView: View {
                     ClassesEndedView()
                 }
 
+            case .betweenClasses:
+                // 课间状态：和 beforeFirstClass 显示相同，但语义不同
+                if let remainingCourses = getRemainingCourses() {
+                    BeforeClassView(
+                        firstCourse: remainingCourses.0,
+                        secondCourse: remainingCourses.1,
+                        totalCount: remainingCourses.2,
+                        isTomorrow: false,
+                        timeTemplate: entry.widgetData?.timeTemplate
+                    )
+                } else {
+                    ClassesEndedView()
+                }
+
             case .approachingClass:
                 if let next = entry.nextCourse {
                     ApproachingClassView(nextCourse: next, timeTemplate: entry.widgetData?.timeTemplate)

@@ -3,7 +3,8 @@ import SwiftUI
 
 // MARK: - Widget Display State
 enum WidgetDisplayState {
-    case beforeFirstClass    // 上课前
+    case beforeFirstClass    // 上课前（当天第一节课之前）
+    case betweenClasses      // 课间（已上过课，等待下一节课）
     case approachingClass    // 即将上课
     case inClass             // 上课中
     case classesEnded        // 课程结束
@@ -162,9 +163,19 @@ struct Provider: TimelineProvider {
             }
         }
 
-        // 4. 今日还有课程
-        if data.nextCourse != nil {
-            return .beforeFirstClass
+        // 4. 今日还有课程，判断是第一节课前还是课间
+        if let nextCourse = data.nextCourse {
+            // 检查是否是当天第一节课
+            if let todayCourses = data.todayCourses,
+               !todayCourses.isEmpty,
+               let firstCourse = todayCourses.first,
+               firstCourse.id == nextCourse.id {
+                // 是第一节课
+                return .beforeFirstClass
+            } else {
+                // 不是第一节课，说明已经上过课了，现在是课间
+                return .betweenClasses
+            }
         }
 
         // 5. 今日课程已结束

@@ -193,7 +193,46 @@ struct WidgetPreviewData {
         )
     }
 
-    /// 场景 3：上课中（正在上第三门课，还有 3 门课）
+    /// 场景 3：课间休息（第二门课已结束，距离第三门课还有一段时间）
+    static func betweenClasses() -> ScheduleEntry {
+        let widgetData = WidgetScheduleData(
+            version: "1.0",
+            timestamp: "2025-01-15T13:00:00Z",
+            schoolId: "nju",
+            schoolName: "南京大学",
+            timeTemplate: njuTimeTemplate,
+            currentWeek: 5,
+            currentWeekDay: 1,
+            semesterName: "2024-2025学年第一学期",
+            todayCourses: sampleCourses,
+            tomorrowCourses: [],
+            nextCourse: sampleCourses[2],  // 第三门课是下一门
+            currentCourse: nil,
+            weekSchedule: [:],
+            todayCourseCount: 6,
+            tomorrowCourseCount: 0,
+            weekCourseCount: 24,
+            hasCoursesToday: true,
+            hasCoursesTomorrow: false,
+            dataSource: "preview",
+            totalCourses: 24,
+            lastUpdateTime: "2025-01-15T13:00:00Z",
+            approachingMinutes: 15,
+            tomorrowPreviewHour: 21
+        )
+
+        return ScheduleEntry(
+            date: Date(),
+            widgetData: widgetData,
+            nextCourse: sampleCourses[2],
+            currentCourse: nil,
+            todayCourses: sampleCourses,
+            errorMessage: nil,
+            displayState: .betweenClasses
+        )
+    }
+
+    /// 场景 4：上课中（正在上第三门课，还有 3 门课）
     static func inClass() -> ScheduleEntry {
         let widgetData = WidgetScheduleData(
             version: "1.0",
@@ -232,7 +271,7 @@ struct WidgetPreviewData {
         )
     }
 
-    /// 场景 4：课程结束（今日所有课程已结束）
+    /// 场景 5：课程结束（今日所有课程已结束）
     static func classesEnded() -> ScheduleEntry {
         let widgetData = WidgetScheduleData(
             version: "1.0",
@@ -271,7 +310,7 @@ struct WidgetPreviewData {
         )
     }
 
-    /// 场景 5：明天预览（晚上 21:00 后）
+    /// 场景 6：明天预览（晚上 21:00 后）
     static func tomorrowPreview() -> ScheduleEntry {
         let tomorrowCourses = Array(sampleCourses.prefix(3))
 
@@ -312,7 +351,7 @@ struct WidgetPreviewData {
         )
     }
 
-    /// 场景 6：无数据（需要打开应用）
+    /// 场景 7：无数据（需要打开应用）
     static func noData() -> ScheduleEntry {
         return ScheduleEntry(
             date: Date(),
@@ -325,7 +364,7 @@ struct WidgetPreviewData {
         )
     }
 
-    /// 场景 7：今日无课
+    /// 场景 8：今日无课
     static func noCourses() -> ScheduleEntry {
         let widgetData = WidgetScheduleData(
             version: "1.0",
