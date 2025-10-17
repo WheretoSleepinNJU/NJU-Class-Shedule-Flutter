@@ -166,8 +166,8 @@ struct Provider: TimelineProvider {
         // 4. 今日还有课程，判断是第一节课前还是课间
         if let nextCourse = data.nextCourse {
             // 检查是否是当天第一节课
-            if let todayCourses = data.todayCourses,
-               !todayCourses.isEmpty,
+            let todayCourses = data.todayCourses
+            if !todayCourses.isEmpty,
                let firstCourse = todayCourses.first,
                firstCourse.id == nextCourse.id {
                 // 是第一节课
