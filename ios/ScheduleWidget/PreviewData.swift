@@ -150,7 +150,8 @@ struct WidgetPreviewData {
             currentCourse: nil,
             todayCourses: sampleCourses,
             errorMessage: nil,
-            displayState: .beforeFirstClass
+            displayState: .beforeFirstClass,
+            relevance: TimelineEntryRelevance(score: 10) // 今日还有课，但时间较远
         )
     }
 
@@ -189,7 +190,8 @@ struct WidgetPreviewData {
             currentCourse: nil,
             todayCourses: sampleCourses,
             errorMessage: nil,
-            displayState: .approachingClass
+            displayState: .approachingClass,
+            relevance: TimelineEntryRelevance(score: 75) // 10分钟内即将上课，高优先级 (100 - 10*5 = 50，但这里用75)
         )
     }
 
@@ -228,7 +230,8 @@ struct WidgetPreviewData {
             currentCourse: nil,
             todayCourses: sampleCourses,
             errorMessage: nil,
-            displayState: .betweenClasses
+            displayState: .betweenClasses,
+            relevance: TimelineEntryRelevance(score: 10) // 今日还有课，但不是马上
         )
     }
 
@@ -267,7 +270,8 @@ struct WidgetPreviewData {
             currentCourse: sampleCourses[2],
             todayCourses: sampleCourses,
             errorMessage: nil,
-            displayState: .inClass
+            displayState: .inClass,
+            relevance: TimelineEntryRelevance(score: 100, duration: 60) // 正在上课，最高优先级
         )
     }
 
@@ -306,7 +310,8 @@ struct WidgetPreviewData {
             currentCourse: nil,
             todayCourses: [],
             errorMessage: nil,
-            displayState: .classesEnded
+            displayState: .classesEnded,
+            relevance: TimelineEntryRelevance(score: 0) // 课程已结束，不需要显示
         )
     }
 
@@ -347,7 +352,8 @@ struct WidgetPreviewData {
             currentCourse: nil,
             todayCourses: [],
             errorMessage: nil,
-            displayState: .tomorrowPreview
+            displayState: .tomorrowPreview,
+            relevance: TimelineEntryRelevance(score: 5) // 明日预览，很低优先级
         )
     }
 
@@ -360,7 +366,8 @@ struct WidgetPreviewData {
             currentCourse: nil,
             todayCourses: [],
             errorMessage: "打开应用更新数据",
-            displayState: .error
+            displayState: .error,
+            relevance: TimelineEntryRelevance(score: 0) // 错误状态，不显示
         )
     }
 
@@ -399,7 +406,8 @@ struct WidgetPreviewData {
             currentCourse: nil,
             todayCourses: [],
             errorMessage: nil,
-            displayState: .classesEnded
+            displayState: .classesEnded,
+            relevance: TimelineEntryRelevance(score: 0) // 今日无课，不需要显示
         )
     }
 }

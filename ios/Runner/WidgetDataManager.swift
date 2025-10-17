@@ -118,6 +118,13 @@ class WidgetDataManager {
             let decoder = JSONDecoder()
             let data = try decoder.decode(T.self, from: jsonData)
             print("✅ [WidgetDataManager] Data decoded successfully")
+
+            // 打印原始JSON用于调试
+            if let jsonString = String(data: jsonData, encoding: .utf8) {
+                print("📄 [WidgetDataManager] Full JSON data:")
+                print(jsonString)
+            }
+
             return data
         } catch {
             print("❌ [WidgetDataManager] Failed to decode data for key \(key)")

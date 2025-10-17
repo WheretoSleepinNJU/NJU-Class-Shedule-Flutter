@@ -33,6 +33,10 @@ class WidgetScheduleData {
   final int totalCourses;                  // 总课程数
   final DateTime? lastUpdateTime;          // 最后更新时间
 
+  // Widget 配置选项
+  final int? approachingMinutes;           // 即将上课提前时间（分钟），默认15
+  final int? tomorrowPreviewHour;          // 明日预览开始时间（小时），默认21
+
   WidgetScheduleData({
     this.version = '1.0',
     required this.timestamp,
@@ -55,6 +59,8 @@ class WidgetScheduleData {
     this.dataSource = 'local',
     required this.totalCourses,
     this.lastUpdateTime,
+    this.approachingMinutes,
+    this.tomorrowPreviewHour,
   });
 
   // JSON 序列化
@@ -82,6 +88,8 @@ class WidgetScheduleData {
     'dataSource': dataSource,
     'totalCourses': totalCourses,
     'lastUpdateTime': lastUpdateTime?.toIso8601String(),
+    'approachingMinutes': approachingMinutes,
+    'tomorrowPreviewHour': tomorrowPreviewHour,
   };
 
   // JSON 反序列化
@@ -118,9 +126,11 @@ class WidgetScheduleData {
     hasCoursesTomorrow: json['hasCoursesTomorrow'],
     dataSource: json['dataSource'] ?? 'local',
     totalCourses: json['totalCourses'],
-    lastUpdateTime: json['lastUpdateTime'] != null 
-        ? DateTime.parse(json['lastUpdateTime']) 
+    lastUpdateTime: json['lastUpdateTime'] != null
+        ? DateTime.parse(json['lastUpdateTime'])
         : null,
+    approachingMinutes: json['approachingMinutes'],
+    tomorrowPreviewHour: json['tomorrowPreviewHour'],
   );
 
   /// 获取今日课程时间文本

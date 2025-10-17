@@ -15,6 +15,10 @@ mixin ConfigStateModel on Model {
   int _lastCheckUpdateTime = 0;
   int _coolDownTime = 600;
 
+  // Widget configuration
+  int _widgetApproachingMinutes = 15;
+  int _widgetTomorrowPreviewHour = 21;
+
   void setShowWeekend(bool showWeekend) async {
     _showWeekend = showWeekend;
     notifyListeners();
@@ -225,5 +229,40 @@ mixin ConfigStateModel on Model {
     // IMPORTANT: don't notify listeners
     SharedPreferences sp = await SharedPreferences.getInstance();
     sp.setInt("coolDownTime", _coolDownTime);
+  }
+
+  // Widget configuration getters and setters
+  void setWidgetApproachingMinutes(int minutes) async {
+    _widgetApproachingMinutes = minutes;
+    notifyListeners();
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setInt("widgetApproachingMinutes", _widgetApproachingMinutes);
+  }
+
+  Future<int> getWidgetApproachingMinutes() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    int? minutes = sp.getInt("widgetApproachingMinutes");
+    if (minutes != null) {
+      _widgetApproachingMinutes = minutes;
+      return minutes;
+    }
+    return _widgetApproachingMinutes;
+  }
+
+  void setWidgetTomorrowPreviewHour(int hour) async {
+    _widgetTomorrowPreviewHour = hour;
+    notifyListeners();
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setInt("widgetTomorrowPreviewHour", _widgetTomorrowPreviewHour);
+  }
+
+  Future<int> getWidgetTomorrowPreviewHour() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    int? hour = sp.getInt("widgetTomorrowPreviewHour");
+    if (hour != null) {
+      _widgetTomorrowPreviewHour = hour;
+      return hour;
+    }
+    return _widgetTomorrowPreviewHour;
   }
 }
