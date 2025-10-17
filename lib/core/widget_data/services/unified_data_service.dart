@@ -109,6 +109,11 @@ class UnifiedDataService {
   }
 
   /// 构建 Widget 数据（从真实数据源）
+  ///
+  /// 数据处理逻辑复用课表前端的渲染逻辑（CourseTablePresenter + ScheduleModel）：
+  /// 1. 使用 ScheduleModel.init() 分类课程为 activeCourses, hideCourses, multiCourses, freeCourses
+  /// 2. Widget 使用本周课程：activeCourses + multiCourses[0]（不包含 hideCourses）
+  /// 3. 从本周课程中筛选今日/明日课程
   Future<WidgetScheduleData> _buildWidgetScheduleData() async {
     try {
       // 1. 获取当前课程表ID
@@ -126,34 +131,73 @@ class UnifiedDataService {
       final courseProvider = CourseProvider();
       final allCoursesMaps = await courseProvider.getAllCourses(currentTableId);
       final allCourses = allCoursesMaps.map((map) => Course.fromMap(map)).toList();
-      
+
+      print('[UnifiedDataService] 📊 数据库中总课程数: ${allCourses.length}');
+      print('[UnifiedDataService] 📊 当前周次: $currentWeek');
+
       // 5. 使用现有逻辑分类课程
       final scheduleModel = ScheduleModel(allCourses, currentWeek);
       scheduleModel.init();
-      
-      // 6. 计算今日课程
+
+      print('[UnifiedDataService] 📊 activeCourses 数量: ${scheduleModel.activeCourses.length}');
+      for (var course in scheduleModel.activeCourses) {
+        print('[UnifiedDataService]    - ${course.name} (周${course.weekTime}, 节${course.startTime})');
+      }
+
+      print('[UnifiedDataService] 📊 multiCourses 数量: ${scheduleModel.multiCourses.length}');
+      for (var courseList in scheduleModel.multiCourses) {
+        print('[UnifiedDataService]    - 冲突组: ${courseList.map((c) => '${c.name}(周${c.weekTime})').join(', ')}');
+      }
+
+      print('[UnifiedDataService] 📊 freeCourses 数量: ${scheduleModel.freeCourses.length}');
+      for (var course in scheduleModel.freeCourses) {
+        print('[UnifiedDataService]    - ${course.name} (周${course.weekTime}, 节${course.startTime})');
+      }
+
+      print('[UnifiedDataService] 📊 hideCourses 数量: ${scheduleModel.hideCourses.length}');
+      for (var course in scheduleModel.hideCourses) {
+        print('[UnifiedDataService]    - ${course.name} (周${course.weekTime}, 节${course.startTime}, weeks=${course.weeks})');
+      }
+
+      // 6. 复用课表前端的渲染逻辑：activeCourses + multiCourses[0]
+      // 注意：课表前端虽然也渲染 hideCourses（灰色显示），但那是非本周课程
+      // Widget 只需要显示本周的课程，所以只使用 activeCourses + multiCourses
+      final activeCoursesForWidget = [
+        ...scheduleModel.activeCourses,
+        ...scheduleModel.multiCourses.map((list) => list[0]),
+      ];
+
+      print('[UnifiedDataService] 📊 Widget 使用的本周课程总数: ${activeCoursesForWidget.length}');
+
+      // 7. 计算今日课程（从本周课程中筛选）
       final currentWeekDay = DateTime.now().weekday;
-      final todayCourses = _filterCoursesForDay(scheduleModel.activeCourses, currentWeekDay);
-      
-      // 7. 计算明日课程
+      print('[UnifiedDataService] 📊 当前星期: $currentWeekDay');
+      final todayCourses = _filterCoursesForDay(activeCoursesForWidget, currentWeekDay);
+      print('[UnifiedDataService] 📊 今日课程数: ${todayCourses.length}');
+
+      // 8. 计算明日课程
       final tomorrowWeekDay = currentWeekDay == 7 ? 1 : currentWeekDay + 1;
       final tomorrowWeek = currentWeekDay == 7 ? currentWeek + 1 : currentWeek;
       final tomorrowCourses = _filterCoursesForTomorrow(allCourses, tomorrowWeek, tomorrowWeekDay);
-      
-      // 8. 计算当前课程和下一节课
+
+      // 9. 计算当前课程和下一节课
       final now = DateTime.now();
       final currentCourse = _getCurrentCourse(todayCourses, now, timeTemplate);
       final nextCourse = _getNextCourse(todayCourses, now, timeTemplate);
-      
-      // 9. 构建周课表
-      final weekSchedule = _buildWeekSchedule(scheduleModel.activeCourses);
+
+      // 10. 构建周课表（使用本周课程）
+      final weekSchedule = _buildWeekSchedule(activeCoursesForWidget);
       
       // 10. 转换为 Widget 格式
       final widgetTodayCourses = todayCourses.map((c) => _convertToWidgetCourse(c, schoolId)).toList();
       final widgetTomorrowCourses = tomorrowCourses.map((c) => _convertToWidgetCourse(c, schoolId)).toList();
       final widgetCurrentCourse = currentCourse != null ? _convertToWidgetCourse(currentCourse, schoolId) : null;
       final widgetNextCourse = nextCourse != null ? _convertToWidgetCourse(nextCourse, schoolId) : null;
-      
+
+      // 11. 读取 Widget 配置选项
+      final approachingMinutes = _preferences.getInt('widgetApproachingMinutes') ?? 15;
+      final tomorrowPreviewHour = _preferences.getInt('widgetTomorrowPreviewHour') ?? 21;
+
       return WidgetScheduleData(
         version: '1.0',
         timestamp: DateTime.now(),
@@ -176,6 +220,8 @@ class UnifiedDataService {
         dataSource: 'sqlite',
         totalCourses: allCourses.length,
         lastUpdateTime: DateTime.now(),
+        approachingMinutes: approachingMinutes,
+        tomorrowPreviewHour: tomorrowPreviewHour,
       );
     } catch (e) {
       print('Error building widget data: $e');
@@ -184,8 +230,9 @@ class UnifiedDataService {
   }
   
   /// 筛选今日课程
-  List<Course> _filterCoursesForDay(List<Course> activeCourses, int weekDay) {
-    final filtered = activeCourses.where((course) => course.weekTime == weekDay).toList();
+  /// 复用课表前端逻辑：从本周课程（activeCourses + multiCourses[0]）中筛选今日课程
+  List<Course> _filterCoursesForDay(List<Course> activeCoursesForWidget, int weekDay) {
+    final filtered = activeCoursesForWidget.where((course) => course.weekTime == weekDay).toList();
     // 按开始时间排序
     filtered.sort((a, b) => (a.startTime ?? 0).compareTo(b.startTime ?? 0));
     return filtered;
@@ -277,26 +324,27 @@ class UnifiedDataService {
   }
   
   /// 构建周课表
-  Map<int, List<Course>> _buildWeekSchedule(List<Course> activeCourses) {
+  /// 复用课表前端逻辑：使用本周课程（activeCourses + multiCourses[0]）
+  Map<int, List<Course>> _buildWeekSchedule(List<Course> activeCoursesForWidget) {
     final schedule = <int, List<Course>>{};
-    
+
     // 初始化 1-7
     for (int i = 1; i <= 7; i++) {
       schedule[i] = [];
     }
-    
+
     // 填充课程
-    for (final course in activeCourses) {
+    for (final course in activeCoursesForWidget) {
       if (course.weekTime != null && course.weekTime! >= 1 && course.weekTime! <= 7) {
         schedule[course.weekTime!]?.add(course);
       }
     }
-    
+
     // 排序
     for (final courses in schedule.values) {
       courses.sort((a, b) => (a.startTime ?? 0).compareTo(b.startTime ?? 0));
     }
-    
+
     return schedule;
   }
   
