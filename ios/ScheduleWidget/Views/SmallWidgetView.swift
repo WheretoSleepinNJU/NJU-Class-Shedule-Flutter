@@ -332,9 +332,9 @@ private struct CourseCardView: View {
                     .foregroundColor(.primary)
 
                 if isDetailed {
-                    // 详细模式：第二行教室+教师，第三行时间
-                    // 第二行：教室 + 教师
-                    HStack(spacing: 6) {
+                    // 详细模式：第二行教室·教师，第三行时间
+                    // 第二行：教室 · 教师
+                    HStack(spacing: 3) {
                         if let classroom = course.classroom {
                             Text(classroom)
                                 .font(.system(size: 11, weight: .semibold))
@@ -342,6 +342,10 @@ private struct CourseCardView: View {
                         }
 
                         if let teacher = course.teacher {
+                            Text("·")
+                                .font(.system(size: 11))
+                                .foregroundColor(.secondary)
+
                             Text(teacher)
                                 .font(.system(size: 11))
                                 .lineLimit(1)

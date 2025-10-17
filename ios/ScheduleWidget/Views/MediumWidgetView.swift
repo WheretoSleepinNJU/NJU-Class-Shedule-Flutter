@@ -306,8 +306,8 @@ private struct DetailedCourseCard: View {
                 .lineLimit(2)
                 .foregroundColor(.primary)
 
-            // 教室 + 教师
-            HStack(spacing: 6) {
+            // 教室 · 教师
+            HStack(spacing: 3) {
                 if let classroom = course.classroom {
                     Text(classroom)
                         .font(.system(size: 11, weight: .semibold))
@@ -315,6 +315,10 @@ private struct DetailedCourseCard: View {
                 }
 
                 if let teacher = course.teacher {
+                    Text("·")
+                        .font(.system(size: 11))
+                        .foregroundColor(.secondary)
+
                     Text(teacher)
                         .font(.system(size: 11))
                         .lineLimit(1)
