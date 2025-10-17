@@ -23,7 +23,7 @@ struct MediumWidgetView: View {
             RightContentView(entry: entry)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .padding(10)
+        .padding(.horizontal, 10)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .containerBackground(for: .widget) {
             containerBackgroundColor
