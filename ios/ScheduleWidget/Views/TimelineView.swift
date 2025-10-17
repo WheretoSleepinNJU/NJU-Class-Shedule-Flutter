@@ -29,20 +29,20 @@ struct TimelineView: View {
 
             Divider()
 
-            ScrollView {
-                VStack(spacing: 8) {
-                    ForEach(courses, id: \.id) { course in
-                        TimelineCourseCard(
-                            course: course,
-                            timeTemplate: timeTemplate,
-                            isCurrent: currentCourse?.id == course.id
-                        )
-                    }
+            // 移除ScrollView，使用固定布局（最多显示5门课）
+            VStack(spacing: 8) {
+                ForEach(Array(courses.prefix(5)), id: \.id) { course in
+                    TimelineCourseCard(
+                        course: course,
+                        timeTemplate: timeTemplate,
+                        isCurrent: currentCourse?.id == course.id
+                    )
                 }
-                .padding(12)
             }
+            .padding(12)
+
+            Spacer(minLength: 0)
         }
-        .background(Color(UIColor.systemBackground))
     }
 
     private func getCurrentDateString() -> String {

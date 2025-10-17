@@ -167,7 +167,7 @@ struct ScheduleWidget: Widget {
         }
         .configurationDisplayName("课程表")
         .description("查看今日课程和下节课信息")
-        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+        .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
 
@@ -182,49 +182,8 @@ struct ScheduleWidgetEntryView: View {
             SmallWidgetView(entry: entry)
         case .systemMedium:
             MediumWidgetView(entry: entry)
-        case .systemLarge:
-            LargeWidgetView(entry: entry)
         default:
             SmallWidgetView(entry: entry)
-        }
-    }
-}
-
-// MARK: - Medium Widget (Today's Schedule)
-struct MediumWidgetView: View {
-    let entry: ScheduleEntry
-
-    var body: some View {
-        if let errorMessage = entry.errorMessage {
-            ErrorView(message: errorMessage)
-        } else if entry.todayCourses.isEmpty {
-            EmptyStateView(message: "今日无课，好好休息～")
-        } else {
-            TodayScheduleView(
-                courses: Array(entry.todayCourses.prefix(3)),
-                currentCourse: entry.currentCourse,
-                timeTemplate: entry.widgetData?.timeTemplate
-            )
-        }
-    }
-}
-
-// MARK: - Large Widget (Full Day)
-struct LargeWidgetView: View {
-    let entry: ScheduleEntry
-
-    var body: some View {
-        if let errorMessage = entry.errorMessage {
-            ErrorView(message: errorMessage)
-        } else if entry.todayCourses.isEmpty {
-            EmptyStateView(message: "今日无课，享受休息时光")
-        } else {
-            TimelineView(
-                courses: entry.todayCourses,
-                currentCourse: entry.currentCourse,
-                timeTemplate: entry.widgetData?.timeTemplate,
-                currentWeek: entry.widgetData?.currentWeek ?? 1
-            )
         }
     }
 }
