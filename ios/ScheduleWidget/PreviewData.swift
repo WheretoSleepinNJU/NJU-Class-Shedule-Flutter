@@ -124,7 +124,9 @@ struct WidgetPreviewData {
             hasCoursesTomorrow: false,
             dataSource: "preview",
             totalCourses: 20,
-            lastUpdateTime: "2025-01-15T07:30:00Z"
+            lastUpdateTime: "2025-01-15T07:30:00Z",
+            approachingMinutes: 15,
+            tomorrowPreviewHour: 21
         )
 
         return ScheduleEntry(
@@ -133,7 +135,8 @@ struct WidgetPreviewData {
             nextCourse: sampleCourses[0],
             currentCourse: nil,
             todayCourses: sampleCourses,
-            errorMessage: nil
+            errorMessage: nil,
+            displayState: .beforeFirstClass
         )
     }
 
@@ -160,7 +163,9 @@ struct WidgetPreviewData {
             hasCoursesTomorrow: false,
             dataSource: "preview",
             totalCourses: 20,
-            lastUpdateTime: "2025-01-15T07:50:00Z"
+            lastUpdateTime: "2025-01-15T07:50:00Z",
+            approachingMinutes: 15,
+            tomorrowPreviewHour: 21
         )
 
         return ScheduleEntry(
@@ -169,7 +174,8 @@ struct WidgetPreviewData {
             nextCourse: sampleCourses[0],
             currentCourse: nil,
             todayCourses: sampleCourses,
-            errorMessage: nil
+            errorMessage: nil,
+            displayState: .approachingClass
         )
     }
 
@@ -196,7 +202,9 @@ struct WidgetPreviewData {
             hasCoursesTomorrow: false,
             dataSource: "preview",
             totalCourses: 20,
-            lastUpdateTime: "2025-01-15T14:30:00Z"
+            lastUpdateTime: "2025-01-15T14:30:00Z",
+            approachingMinutes: 15,
+            tomorrowPreviewHour: 21
         )
 
         return ScheduleEntry(
@@ -205,7 +213,8 @@ struct WidgetPreviewData {
             nextCourse: sampleCourses[3],
             currentCourse: sampleCourses[2],
             todayCourses: sampleCourses,
-            errorMessage: nil
+            errorMessage: nil,
+            displayState: .inClass
         )
     }
 
@@ -213,7 +222,7 @@ struct WidgetPreviewData {
     static func classesEnded() -> ScheduleEntry {
         let widgetData = WidgetScheduleData(
             version: "1.0",
-            timestamp: "2025-01-15T21:30:00Z",
+            timestamp: "2025-01-15T18:00:00Z",
             schoolId: "nju",
             schoolName: "南京大学",
             timeTemplate: njuTimeTemplate,
@@ -232,7 +241,9 @@ struct WidgetPreviewData {
             hasCoursesTomorrow: true,
             dataSource: "preview",
             totalCourses: 20,
-            lastUpdateTime: "2025-01-15T21:30:00Z"
+            lastUpdateTime: "2025-01-15T18:00:00Z",
+            approachingMinutes: 15,
+            tomorrowPreviewHour: 21
         )
 
         return ScheduleEntry(
@@ -241,7 +252,8 @@ struct WidgetPreviewData {
             nextCourse: nil,
             currentCourse: nil,
             todayCourses: [],
-            errorMessage: nil
+            errorMessage: nil,
+            displayState: .classesEnded
         )
     }
 
@@ -270,7 +282,9 @@ struct WidgetPreviewData {
             hasCoursesTomorrow: true,
             dataSource: "preview",
             totalCourses: 20,
-            lastUpdateTime: "2025-01-15T21:30:00Z"
+            lastUpdateTime: "2025-01-15T21:30:00Z",
+            approachingMinutes: 15,
+            tomorrowPreviewHour: 21
         )
 
         return ScheduleEntry(
@@ -279,7 +293,8 @@ struct WidgetPreviewData {
             nextCourse: nil,
             currentCourse: nil,
             todayCourses: [],
-            errorMessage: nil
+            errorMessage: nil,
+            displayState: .tomorrowPreview
         )
     }
 
@@ -291,7 +306,8 @@ struct WidgetPreviewData {
             nextCourse: nil,
             currentCourse: nil,
             todayCourses: [],
-            errorMessage: "打开应用更新数据"
+            errorMessage: "打开应用更新数据",
+            displayState: .error
         )
     }
 
@@ -318,7 +334,9 @@ struct WidgetPreviewData {
             hasCoursesTomorrow: false,
             dataSource: "preview",
             totalCourses: 20,
-            lastUpdateTime: "2025-01-15T10:00:00Z"
+            lastUpdateTime: "2025-01-15T10:00:00Z",
+            approachingMinutes: 15,
+            tomorrowPreviewHour: 21
         )
 
         return ScheduleEntry(
@@ -327,7 +345,8 @@ struct WidgetPreviewData {
             nextCourse: nil,
             currentCourse: nil,
             todayCourses: [],
-            errorMessage: nil
+            errorMessage: nil,
+            displayState: .classesEnded
         )
     }
 }

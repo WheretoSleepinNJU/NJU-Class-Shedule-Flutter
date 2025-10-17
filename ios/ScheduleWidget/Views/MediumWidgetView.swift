@@ -11,7 +11,7 @@ struct MediumWidgetView: View {
     @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 8) {
             // 左侧：详细课程视图（类似小组件）
             LeftDetailView(entry: entry)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -23,7 +23,7 @@ struct MediumWidgetView: View {
             RightContentView(entry: entry)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .padding(12)
+        .padding(10)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .containerBackground(for: .widget) {
             containerBackgroundColor
@@ -46,13 +46,13 @@ private struct LeftDetailView: View {
     let entry: ScheduleEntry
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 2) {
             // 顶部日期栏
             DateHeaderView(
                 date: entry.date,
                 currentWeek: entry.widgetData?.currentWeek
             )
-            .padding(.bottom, 4)
+            .padding(.bottom, 2)
 
             // 主内容区域（复用小组件的逻辑）
             LeftContentAreaView(entry: entry)
@@ -281,9 +281,15 @@ private struct LeftBeforeClassView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(isTomorrow ? "明天有 \(totalCount) 门课" : "今天有 \(totalCount) 门课")
-                .font(.system(size: 11, weight: .medium))
-                .foregroundColor(.secondary)
+            if isTomorrow {
+                Text("明天有 \(totalCount) 门课")
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundColor(.secondary)
+            } else {
+                Text("接下来")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundColor(.orange)
+            }
 
             DetailedCourseCard(course: course, timeTemplate: timeTemplate)
 
@@ -607,18 +613,27 @@ private struct RemainingCoursesListView: View {
         VStack(alignment: .leading, spacing: 0) {
             // 标题
             Text("剩余课程")
-                .font(.system(size: 11, weight: .semibold))
+                .font(.system(size: 10, weight: .semibold))
                 .foregroundColor(.secondary)
-                .padding(.bottom, 8)
+                .padding(.bottom, 4)
 
-            // 课程列表 (最多显示4门课，移除ScrollView因为widgets不支持)
-            VStack(spacing: 6) {
-                ForEach(Array(courses.prefix(4)), id: \.id) { course in
+            // 课程列表 (最多显示3门课)
+            VStack(spacing: 4) {
+                ForEach(Array(courses.prefix(3)), id: \.id) { course in
                     CompactCourseRow(
                         course: course,
                         timeTemplate: timeTemplate
                     )
                 }
+            }
+
+            // 如果还有更多课程，显示提示
+            if courses.count > 3 {
+                Text("还有 \(courses.count - 3) 门课……")
+                    .font(.system(size: 9, weight: .medium))
+                    .foregroundColor(.secondary)
+                    .padding(.top, 4)
+                    .frame(maxWidth: .infinity, alignment: .center)
             }
 
             Spacer(minLength: 0)
@@ -633,34 +648,34 @@ private struct CompactCourseRow: View {
 
     var body: some View {
         Link(destination: URL(string: "njuschedule://course/\(course.id)")!) {
-            HStack(spacing: 6) {
+            HStack(spacing: 4) {
                 // 左侧色块
                 RoundedRectangle(cornerRadius: 2)
                     .fill(courseColor)
                     .frame(width: 3)
 
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: 1) {
                     // 课程名
                     Text(course.name)
-                        .font(.system(size: 11, weight: .medium))
+                        .font(.system(size: 10, weight: .medium))
                         .lineLimit(1)
                         .foregroundColor(.primary)
 
                     // 时间和地点
-                    HStack(spacing: 4) {
+                    HStack(spacing: 3) {
                         if let timeRange = getTimeRange() {
                             Text(timeRange)
-                                .font(.system(size: 9))
+                                .font(.system(size: 8))
                                 .foregroundColor(.secondary)
                         }
 
                         if let classroom = course.classroom {
                             Text("·")
-                                .font(.system(size: 9))
+                                .font(.system(size: 8))
                                 .foregroundColor(.secondary)
 
                             Text(classroom)
-                                .font(.system(size: 9))
+                                .font(.system(size: 8))
                                 .foregroundColor(.secondary)
                                 .lineLimit(1)
                         }
@@ -669,10 +684,10 @@ private struct CompactCourseRow: View {
 
                 Spacer(minLength: 0)
             }
-            .padding(.vertical, 6)
-            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .padding(.horizontal, 6)
             .background(
-                RoundedRectangle(cornerRadius: 6)
+                RoundedRectangle(cornerRadius: 5)
                     .fill(courseColor.opacity(0.08))
             )
         }

@@ -275,10 +275,17 @@ private struct BeforeClassView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             // 提示文本
-            Text(isTomorrow ? "明天有 \(totalCount) 门课" : "今天有 \(totalCount) 门课")
-                .font(.system(size: 11, weight: .medium))
-                .foregroundColor(.secondary)
-                .padding(.bottom, 8)
+            if isTomorrow {
+                Text("明天有 \(totalCount) 门课")
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundColor(.secondary)
+                    .padding(.bottom, 8)
+            } else {
+                Text("接下来")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundColor(.orange)
+                    .padding(.bottom, 8)
+            }
 
             // 第一门课（详细）
             CourseCardView(course: firstCourse, isDetailed: true, timeTemplate: timeTemplate)

@@ -69,6 +69,10 @@ struct WidgetScheduleData: Codable {
     let dataSource: String
     let totalCourses: Int
     let lastUpdateTime: String
+
+    // Configuration
+    let approachingMinutes: Int?  // 即将上课提前时间（分钟），默认15
+    let tomorrowPreviewHour: Int?  // 明日预览开始时间（小时），默认21
 }
 
 // MARK: - Live Activity Data
