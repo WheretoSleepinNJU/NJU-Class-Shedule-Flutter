@@ -236,7 +236,7 @@ struct ScheduleWidget: Widget {
         }
         .configurationDisplayName("课程表")
         .description("查看今日课程和下节课信息")
-        .supportedFamilies([.systemSmall, .systemMedium])
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }
 
@@ -251,6 +251,8 @@ struct ScheduleWidgetEntryView: View {
             SmallWidgetView(entry: entry)
         case .systemMedium:
             MediumWidgetView(entry: entry)
+        case .systemLarge:
+            LargeWidgetView(entry: entry)
         default:
             SmallWidgetView(entry: entry)
         }

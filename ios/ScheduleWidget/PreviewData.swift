@@ -96,12 +96,26 @@ struct WidgetPreviewData {
             weeks: [1, 2, 3, 4, 5, 6, 7, 8],
             courseType: "必修",
             notes: nil
+        ),
+        WidgetCourse(
+            id: "6",
+            name: "人工智能导论",
+            classroom: "计科楼-301",
+            teacher: "图灵",
+            startPeriod: 11,
+            periodCount: 2,
+            weekDay: 1,
+            color: "00BCD4",
+            schoolId: "nju",
+            weeks: [1, 2, 3, 4, 5, 6, 7, 8],
+            courseType: "选修",
+            notes: nil
         )
     ]
 
     // MARK: - 预览场景
 
-    /// 场景 1：上课前（早上 7:30，今天有 5 门课）
+    /// 场景 1：上课前（早上 7:30，今天有 6 门课）
     static func beforeFirstClass() -> ScheduleEntry {
         let widgetData = WidgetScheduleData(
             version: "1.0",
@@ -117,13 +131,13 @@ struct WidgetPreviewData {
             nextCourse: sampleCourses[0],
             currentCourse: nil,
             weekSchedule: [:],
-            todayCourseCount: 5,
+            todayCourseCount: 6,
             tomorrowCourseCount: 0,
-            weekCourseCount: 20,
+            weekCourseCount: 24,
             hasCoursesToday: true,
             hasCoursesTomorrow: false,
             dataSource: "preview",
-            totalCourses: 20,
+            totalCourses: 24,
             lastUpdateTime: "2025-01-15T07:30:00Z",
             approachingMinutes: 15,
             tomorrowPreviewHour: 21
@@ -156,13 +170,13 @@ struct WidgetPreviewData {
             nextCourse: sampleCourses[0],
             currentCourse: nil,
             weekSchedule: [:],
-            todayCourseCount: 5,
+            todayCourseCount: 6,
             tomorrowCourseCount: 0,
-            weekCourseCount: 20,
+            weekCourseCount: 24,
             hasCoursesToday: true,
             hasCoursesTomorrow: false,
             dataSource: "preview",
-            totalCourses: 20,
+            totalCourses: 24,
             lastUpdateTime: "2025-01-15T07:50:00Z",
             approachingMinutes: 15,
             tomorrowPreviewHour: 21
@@ -195,13 +209,13 @@ struct WidgetPreviewData {
             nextCourse: sampleCourses[3],
             currentCourse: sampleCourses[2],
             weekSchedule: [:],
-            todayCourseCount: 5,
+            todayCourseCount: 6,
             tomorrowCourseCount: 0,
-            weekCourseCount: 20,
+            weekCourseCount: 24,
             hasCoursesToday: true,
             hasCoursesTomorrow: false,
             dataSource: "preview",
-            totalCourses: 20,
+            totalCourses: 24,
             lastUpdateTime: "2025-01-15T14:30:00Z",
             approachingMinutes: 15,
             tomorrowPreviewHour: 21
@@ -236,11 +250,11 @@ struct WidgetPreviewData {
             weekSchedule: [:],
             todayCourseCount: 0,
             tomorrowCourseCount: 3,
-            weekCourseCount: 20,
+            weekCourseCount: 24,
             hasCoursesToday: false,
             hasCoursesTomorrow: true,
             dataSource: "preview",
-            totalCourses: 20,
+            totalCourses: 24,
             lastUpdateTime: "2025-01-15T18:00:00Z",
             approachingMinutes: 15,
             tomorrowPreviewHour: 21
@@ -277,11 +291,11 @@ struct WidgetPreviewData {
             weekSchedule: [:],
             todayCourseCount: 0,
             tomorrowCourseCount: 3,
-            weekCourseCount: 20,
+            weekCourseCount: 24,
             hasCoursesToday: false,
             hasCoursesTomorrow: true,
             dataSource: "preview",
-            totalCourses: 20,
+            totalCourses: 24,
             lastUpdateTime: "2025-01-15T21:30:00Z",
             approachingMinutes: 15,
             tomorrowPreviewHour: 21
@@ -329,11 +343,11 @@ struct WidgetPreviewData {
             weekSchedule: [:],
             todayCourseCount: 0,
             tomorrowCourseCount: 0,
-            weekCourseCount: 20,
+            weekCourseCount: 24,
             hasCoursesToday: false,
             hasCoursesTomorrow: false,
             dataSource: "preview",
-            totalCourses: 20,
+            totalCourses: 24,
             lastUpdateTime: "2025-01-15T10:00:00Z",
             approachingMinutes: 15,
             tomorrowPreviewHour: 21
