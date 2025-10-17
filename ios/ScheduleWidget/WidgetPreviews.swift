@@ -26,31 +26,37 @@ import WidgetKit
     WidgetPreviewData.approachingClass()
 }
 
-#Preview("3. In Class", as: .systemSmall) {
+#Preview("3. Between Classes", as: .systemSmall) {
+    ScheduleWidget()
+} timeline: {
+    WidgetPreviewData.betweenClasses()
+}
+
+#Preview("4. In Class", as: .systemSmall) {
     ScheduleWidget()
 } timeline: {
     WidgetPreviewData.inClass()
 }
 
-#Preview("4. Classes Ended", as: .systemSmall) {
+#Preview("5. Classes Ended", as: .systemSmall) {
     ScheduleWidget()
 } timeline: {
     WidgetPreviewData.classesEnded()
 }
 
-#Preview("5. Tomorrow Preview", as: .systemSmall) {
+#Preview("6. Tomorrow Preview", as: .systemSmall) {
     ScheduleWidget()
 } timeline: {
     WidgetPreviewData.tomorrowPreview()
 }
 
-#Preview("6. No Data", as: .systemSmall) {
+#Preview("7. No Data", as: .systemSmall) {
     ScheduleWidget()
 } timeline: {
     WidgetPreviewData.noData()
 }
 
-#Preview("7. No Courses", as: .systemSmall) {
+#Preview("8. No Courses", as: .systemSmall) {
     ScheduleWidget()
 } timeline: {
     WidgetPreviewData.noCourses()
