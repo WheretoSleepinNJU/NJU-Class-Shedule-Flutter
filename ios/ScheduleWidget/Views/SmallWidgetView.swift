@@ -94,101 +94,64 @@ private struct ContentAreaView: View {
         if let errorMessage = entry.errorMessage {
             ErrorView(message: errorMessage)
         } else {
-            let displayState = determineDisplayState()
+            // 使用 entry 中显式设置的 displayState
+            switch entry.displayState {
+            case .beforeFirstClass:
+                if let remainingCourses = getRemainingCourses() {
+                    BeforeClassView(
+                        firstCourse: remainingCourses.0,
+                        secondCourse: remainingCourses.1,
+                        totalCount: remainingCourses.2,
+                        isTomorrow: false,
+                        timeTemplate: entry.widgetData?.timeTemplate
+                    )
+                } else {
+                    ClassesEndedView()
+                }
 
-            switch displayState {
-            case .beforeFirstClass(let first, let second, let total):
-                BeforeClassView(
-                    firstCourse: first,
-                    secondCourse: second,
-                    totalCount: total,
-                    isTomorrow: false,
-                    timeTemplate: entry.widgetData?.timeTemplate
-                )
+            case .approachingClass:
+                if let next = entry.nextCourse {
+                    ApproachingClassView(nextCourse: next, timeTemplate: entry.widgetData?.timeTemplate)
+                } else {
+                    ClassesEndedView()
+                }
 
-            case .approachingClass(let next):
-                ApproachingClassView(nextCourse: next, timeTemplate: entry.widgetData?.timeTemplate)
-
-            case .inClass(let current, let next):
-                InClassView(
-                    currentCourse: current,
-                    nextCourse: next,
-                    remainingCount: getRemainingCoursesCount(),
-                    timeTemplate: entry.widgetData?.timeTemplate
-                )
+            case .inClass:
+                if let current = entry.currentCourse {
+                    InClassView(
+                        currentCourse: current,
+                        nextCourse: entry.nextCourse,
+                        remainingCount: getRemainingCoursesCount(),
+                        timeTemplate: entry.widgetData?.timeTemplate
+                    )
+                } else {
+                    ClassesEndedView()
+                }
 
             case .classesEnded:
                 ClassesEndedView()
 
-            case .tomorrowPreview(let first, let second, let total):
-                BeforeClassView(
-                    firstCourse: first,
-                    secondCourse: second,
-                    totalCount: total,
-                    isTomorrow: true,
-                    timeTemplate: entry.widgetData?.timeTemplate
-                )
+            case .tomorrowPreview:
+                if let tomorrowCourses = entry.widgetData?.tomorrowCourses, !tomorrowCourses.isEmpty {
+                    BeforeClassView(
+                        firstCourse: tomorrowCourses[0],
+                        secondCourse: tomorrowCourses.count > 1 ? tomorrowCourses[1] : nil,
+                        totalCount: tomorrowCourses.count,
+                        isTomorrow: true,
+                        timeTemplate: entry.widgetData?.timeTemplate
+                    )
+                } else {
+                    ClassesEndedView()
+                }
+
+            case .error:
+                if let errorMessage = entry.errorMessage {
+                    ErrorView(message: errorMessage)
+                } else {
+                    ErrorView(message: "发生错误")
+                }
             }
         }
-    }
-
-    // MARK: - 状态判断逻辑
-    private func determineDisplayState() -> DisplayState {
-        let now = Date()
-        let calendar = Calendar.current
-        let currentHour = calendar.component(.hour, from: now)
-
-        // 1. 晚上 21:00 后显示明日预览
-        if currentHour >= 21 {
-            if let tomorrow = entry.widgetData?.tomorrowCourses,
-               !tomorrow.isEmpty {
-                return .tomorrowPreview(
-                    first: tomorrow[0],
-                    second: tomorrow.count > 1 ? tomorrow[1] : nil,
-                    total: tomorrow.count
-                )
-            }
-        }
-
-        // 2. 正在上课
-        if let current = entry.currentCourse {
-            return .inClass(current: current, next: entry.nextCourse)
-        }
-
-        // 3. 检查是否即将上课（提前时间内，默认15分钟）
-        if let next = entry.nextCourse,
-           let template = entry.widgetData?.timeTemplate {
-            if let minutesUntil = getMinutesUntilCourse(next, template: template),
-               minutesUntil > 0 && minutesUntil <= 15 {
-                return .approachingClass(next: next)
-            }
-        }
-
-        // 4. 今日还有课程（检查是否有下一节课或未开始的课程）
-        if entry.nextCourse != nil {
-            // 有下一节课但不在15分钟内，获取剩余课程
-            if let remainingCourses = getRemainingCourses() {
-                return .beforeFirstClass(
-                    first: remainingCourses.0,
-                    second: remainingCourses.1,
-                    total: remainingCourses.2
-                )
-            }
-        }
-
-        // 5. 如果今天有课但没有nextCourse，可能是数据问题，显示所有今日课程
-        if let todayCourses = entry.widgetData?.todayCourses,
-           !todayCourses.isEmpty,
-           entry.nextCourse == nil {
-            return .beforeFirstClass(
-                first: todayCourses[0],
-                second: todayCourses.count > 1 ? todayCourses[1] : nil,
-                total: todayCourses.count
-            )
-        }
-
-        // 6. 今日课程已结束
-        return .classesEnded
     }
 
     // 获取剩余课程（从下一节课开始）
@@ -225,43 +188,6 @@ private struct ContentAreaView: View {
         // 返回从当前课程开始的剩余课程数量
         return todayCourses.count - currentIndex
     }
-
-    private func getMinutesUntilCourse(_ course: WidgetCourse, template: SchoolTimeTemplate) -> Int? {
-        guard let period = template.getPeriodRange(
-            startPeriod: course.startPeriod,
-            periodCount: course.periodCount
-        ) else { return nil }
-
-        guard let startTime = parseTime(period.startTime) else { return nil }
-
-        let now = Date()
-        let minutes = Calendar.current.dateComponents([.minute], from: now, to: startTime).minute
-        return minutes
-    }
-
-    private func parseTime(_ timeString: String) -> Date? {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
-        guard let time = formatter.date(from: timeString) else { return nil }
-
-        let calendar = Calendar.current
-        let now = Date()
-        let components = calendar.dateComponents([.hour, .minute], from: time)
-
-        return calendar.date(bySettingHour: components.hour ?? 0,
-                            minute: components.minute ?? 0,
-                            second: 0,
-                            of: now)
-    }
-}
-
-// MARK: - 显示状态枚举
-private enum DisplayState {
-    case beforeFirstClass(first: WidgetCourse, second: WidgetCourse?, total: Int)
-    case approachingClass(next: WidgetCourse)
-    case inClass(current: WidgetCourse, next: WidgetCourse?)
-    case classesEnded
-    case tomorrowPreview(first: WidgetCourse, second: WidgetCourse?, total: Int)
 }
 
 // MARK: - 1. 上课前/明日预览视图
@@ -275,17 +201,10 @@ private struct BeforeClassView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             // 提示文本
-            if isTomorrow {
-                Text("明天有 \(totalCount) 门课")
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundColor(.secondary)
-                    .padding(.bottom, 8)
-            } else {
-                Text("接下来")
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundColor(.orange)
-                    .padding(.bottom, 8)
-            }
+            Text(isTomorrow ? "明天有 \(totalCount) 门课" : "今天有 \(totalCount) 门课")
+                .font(.system(size: 11, weight: .medium))
+                .foregroundColor(.secondary)
+                .padding(.bottom, 8)
 
             // 第一门课（详细）
             CourseCardView(course: firstCourse, isDetailed: true, timeTemplate: timeTemplate)
@@ -308,7 +227,7 @@ private struct ApproachingClassView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("即将上课")
+            Text("接下来")
                 .font(.system(size: 11, weight: .semibold))
                 .foregroundColor(.orange)
                 .padding(.bottom, 8)

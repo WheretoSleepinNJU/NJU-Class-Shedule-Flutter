@@ -11,7 +11,7 @@ struct MediumWidgetView: View {
     @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: 16) {
             // 左侧：详细课程视图（类似小组件）
             LeftDetailView(entry: entry)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -69,16 +69,18 @@ private struct DateHeaderView: View {
     let currentWeek: Int?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
+        HStack(spacing: 4) {
             HStack(alignment: .firstTextBaseline, spacing: 4) {
                 Text(dateString)
-                    .font(.system(size: 14, weight: .medium))
+                    .font(.system(size: 13, weight: .medium))
                     .foregroundColor(.primary)
 
                 Text(weekdayString)
-                    .font(.system(size: 14, weight: .bold))
+                    .font(.system(size: 13, weight: .bold))
                     .foregroundColor(.accentColor)
             }
+
+            Spacer()
 
             if let week = currentWeek {
                 Text("第 \(week) 周")
@@ -86,6 +88,7 @@ private struct DateHeaderView: View {
                     .foregroundColor(.secondary)
             }
         }
+        .frame(alignment: .center)
     }
 
     private var dateString: String {
@@ -111,98 +114,64 @@ private struct LeftContentAreaView: View {
         if let errorMessage = entry.errorMessage {
             ErrorView(message: errorMessage)
         } else {
-            let displayState = determineDisplayState()
+            // 使用 entry 中显式设置的 displayState
+            switch entry.displayState {
+            case .beforeFirstClass:
+                if let remainingCourses = getRemainingCourses() {
+                    LeftBeforeClassView(
+                        course: remainingCourses.0,
+                        totalCount: remainingCourses.1,
+                        isTomorrow: false,
+                        timeTemplate: entry.widgetData?.timeTemplate
+                    )
+                } else {
+                    LeftClassesEndedView()
+                }
 
-            switch displayState {
-            case .beforeFirstClass(let first, let total):
-                LeftBeforeClassView(
-                    course: first,
-                    totalCount: total,
-                    isTomorrow: false,
-                    timeTemplate: entry.widgetData?.timeTemplate
-                )
+            case .approachingClass:
+                if let next = entry.nextCourse {
+                    LeftApproachingClassView(
+                        nextCourse: next,
+                        timeTemplate: entry.widgetData?.timeTemplate
+                    )
+                } else {
+                    LeftClassesEndedView()
+                }
 
-            case .approachingClass(let next):
-                LeftApproachingClassView(
-                    nextCourse: next,
-                    timeTemplate: entry.widgetData?.timeTemplate
-                )
-
-            case .inClass(let current, let remaining):
-                LeftInClassView(
-                    currentCourse: current,
-                    remainingCount: remaining,
-                    timeTemplate: entry.widgetData?.timeTemplate
-                )
+            case .inClass:
+                if let current = entry.currentCourse {
+                    LeftInClassView(
+                        currentCourse: current,
+                        remainingCount: getRemainingCoursesCount(),
+                        timeTemplate: entry.widgetData?.timeTemplate
+                    )
+                } else {
+                    LeftClassesEndedView()
+                }
 
             case .classesEnded:
                 LeftClassesEndedView()
 
-            case .tomorrowPreview(let first, let total):
-                LeftBeforeClassView(
-                    course: first,
-                    totalCount: total,
-                    isTomorrow: true,
-                    timeTemplate: entry.widgetData?.timeTemplate
-                )
+            case .tomorrowPreview:
+                if let tomorrowCourses = entry.widgetData?.tomorrowCourses, !tomorrowCourses.isEmpty {
+                    LeftBeforeClassView(
+                        course: tomorrowCourses[0],
+                        totalCount: tomorrowCourses.count,
+                        isTomorrow: true,
+                        timeTemplate: entry.widgetData?.timeTemplate
+                    )
+                } else {
+                    LeftClassesEndedView()
+                }
+
+            case .error:
+                if let errorMessage = entry.errorMessage {
+                    ErrorView(message: errorMessage)
+                } else {
+                    ErrorView(message: "发生错误")
+                }
             }
         }
-    }
-
-    // MARK: - 状态判断逻辑
-    private func determineDisplayState() -> LeftDisplayState {
-        let now = Date()
-        let calendar = Calendar.current
-        let currentHour = calendar.component(.hour, from: now)
-
-        // 1. 晚上 21:00 后显示明日预览
-        if currentHour >= 21 {
-            if let tomorrow = entry.widgetData?.tomorrowCourses,
-               !tomorrow.isEmpty {
-                return .tomorrowPreview(
-                    first: tomorrow[0],
-                    total: tomorrow.count
-                )
-            }
-        }
-
-        // 2. 正在上课
-        if let current = entry.currentCourse {
-            let remaining = getRemainingCoursesCount()
-            return .inClass(current: current, remaining: remaining)
-        }
-
-        // 3. 检查是否即将上课（提前时间内，默认15分钟）
-        if let next = entry.nextCourse,
-           let template = entry.widgetData?.timeTemplate {
-            if let minutesUntil = getMinutesUntilCourse(next, template: template),
-               minutesUntil > 0 && minutesUntil <= 15 {
-                return .approachingClass(next: next)
-            }
-        }
-
-        // 4. 今日还有课程
-        if entry.nextCourse != nil {
-            if let remainingCourses = getRemainingCourses() {
-                return .beforeFirstClass(
-                    first: remainingCourses.0,
-                    total: remainingCourses.1
-                )
-            }
-        }
-
-        // 5. 如果今天有课但没有nextCourse，可能是数据问题，显示所有今日课程
-        if let todayCourses = entry.widgetData?.todayCourses,
-           !todayCourses.isEmpty,
-           entry.nextCourse == nil {
-            return .beforeFirstClass(
-                first: todayCourses[0],
-                total: todayCourses.count
-            )
-        }
-
-        // 6. 今日课程已结束
-        return .classesEnded
     }
 
     // 获取剩余课程（从下一节课开始）
@@ -233,43 +202,6 @@ private struct LeftContentAreaView: View {
 
         return todayCourses.count - currentIndex
     }
-
-    private func getMinutesUntilCourse(_ course: WidgetCourse, template: SchoolTimeTemplate) -> Int? {
-        guard let period = template.getPeriodRange(
-            startPeriod: course.startPeriod,
-            periodCount: course.periodCount
-        ) else { return nil }
-
-        guard let startTime = parseTime(period.startTime) else { return nil }
-
-        let now = Date()
-        let minutes = Calendar.current.dateComponents([.minute], from: now, to: startTime).minute
-        return minutes
-    }
-
-    private func parseTime(_ timeString: String) -> Date? {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
-        guard let time = formatter.date(from: timeString) else { return nil }
-
-        let calendar = Calendar.current
-        let now = Date()
-        let components = calendar.dateComponents([.hour, .minute], from: time)
-
-        return calendar.date(bySettingHour: components.hour ?? 0,
-                            minute: components.minute ?? 0,
-                            second: 0,
-                            of: now)
-    }
-}
-
-// MARK: - 左侧显示状态枚举
-private enum LeftDisplayState {
-    case beforeFirstClass(first: WidgetCourse, total: Int)
-    case approachingClass(next: WidgetCourse)
-    case inClass(current: WidgetCourse, remaining: Int)
-    case classesEnded
-    case tomorrowPreview(first: WidgetCourse, total: Int)
 }
 
 // MARK: - 左侧视图：上课前/明日预览
@@ -281,15 +213,9 @@ private struct LeftBeforeClassView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            if isTomorrow {
-                Text("明天有 \(totalCount) 门课")
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundColor(.secondary)
-            } else {
-                Text("接下来")
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundColor(.orange)
-            }
+            Text(isTomorrow ? "明天有 \(totalCount) 门课" : "今天有 \(totalCount) 门课")
+                .font(.system(size: 11, weight: .medium))
+                .foregroundColor(.secondary)
 
             DetailedCourseCard(course: course, timeTemplate: timeTemplate)
 
@@ -305,7 +231,7 @@ private struct LeftApproachingClassView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("即将上课")
+            Text("接下来")
                 .font(.system(size: 11, weight: .semibold))
                 .foregroundColor(.orange)
 
@@ -385,13 +311,14 @@ private struct DetailedCourseCard: View {
                 if let classroom = course.classroom {
                     Text(classroom)
                         .font(.system(size: 11, weight: .semibold))
-                        .lineLimit(1)
+                        .fixedSize()  // 教室不能截断
                 }
 
                 if let teacher = course.teacher {
                     Text(teacher)
                         .font(.system(size: 11))
                         .lineLimit(1)
+                        .truncationMode(.tail)
                 }
             }
             .foregroundColor(.secondary)
@@ -648,47 +575,66 @@ private struct CompactCourseRow: View {
 
     var body: some View {
         Link(destination: URL(string: "njuschedule://course/\(course.id)")!) {
-            HStack(spacing: 4) {
-                // 左侧色块
-                RoundedRectangle(cornerRadius: 2)
-                    .fill(courseColor)
-                    .frame(width: 3)
+            VStack(alignment: .leading, spacing: 1) {
+                // 课程名
+                Text(course.name)
+                    .font(.system(size: 10, weight: .medium))
+                    .lineLimit(1)
+                    .foregroundColor(.primary)
 
-                VStack(alignment: .leading, spacing: 1) {
-                    // 课程名
-                    Text(course.name)
-                        .font(.system(size: 10, weight: .medium))
-                        .lineLimit(1)
-                        .foregroundColor(.primary)
+                // 时间、地点、教师
+                HStack(spacing: 3) {
+                    if let timeRange = getTimeRange() {
+                        Text(timeRange)
+                            .font(.system(size: 8))
+                            .foregroundColor(.secondary)
+                    }
 
-                    // 时间和地点
-                    HStack(spacing: 3) {
-                        if let timeRange = getTimeRange() {
-                            Text(timeRange)
-                                .font(.system(size: 8))
-                                .foregroundColor(.secondary)
-                        }
+                    if let classroom = course.classroom {
+                        Text("·")
+                            .font(.system(size: 8))
+                            .foregroundColor(.secondary)
 
-                        if let classroom = course.classroom {
-                            Text("·")
-                                .font(.system(size: 8))
-                                .foregroundColor(.secondary)
+                        Text(classroom)
+                            .font(.system(size: 8))
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                    }
 
-                            Text(classroom)
-                                .font(.system(size: 8))
-                                .foregroundColor(.secondary)
-                                .lineLimit(1)
-                        }
+                    if let teacher = course.teacher {
+                        Text("·")
+                            .font(.system(size: 8))
+                            .foregroundColor(.secondary)
+
+                        Text(teacher)
+                            .font(.system(size: 8))
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
                     }
                 }
-
-                Spacer(minLength: 0)
             }
             .padding(.vertical, 4)
             .padding(.horizontal, 6)
+            .frame(maxWidth: .infinity, alignment: .leading)
             .background(
                 RoundedRectangle(cornerRadius: 5)
                     .fill(courseColor.opacity(0.08))
+            )
+            .overlay(
+                // 左侧色块（对齐圆角矩形，避开圆角部分）
+                GeometryReader { geometry in
+                    let cornerRadius: CGFloat = 5
+                    let cornerInset = cornerRadius * (1 - sqrt(2) / 2)
+
+                    HStack(spacing: 0) {
+                        RoundedRectangle(cornerRadius: 2)
+                            .fill(courseColor)
+                            .frame(width: 3)
+                            .padding(.vertical, cornerInset)
+                        Spacer()
+                    }
+                    .padding(.leading, -6)
+                }
             )
         }
     }
