@@ -3,10 +3,12 @@ import 'dart:convert';
 import '../models/widget_schedule_data.dart';
 import '../models/live_activity_data.dart';
 import '../models/school_time_template.dart';
+import '../models/class_period.dart';
 import '../models/widget_course.dart';
 import '../exporters/unified_exporter.dart';
 import '../communication/native_data_bridge.dart';
 import '../../../Models/CourseModel.dart';
+import '../../../Models/CourseTableModel.dart';
 import '../../../Models/ScheduleModel.dart';
 
 /// 统一数据服务
@@ -122,10 +124,10 @@ class UnifiedDataService {
       // 2. 获取当前周次（使用现有逻辑）
       final currentWeek = _preferences.getInt('weekIndex') ?? 1;
       
-      // 3. 获取学校信息
+      // 3. 获取学校信息和时间模板（从数据库读取）
       final schoolId = _preferences.getString('school_id') ?? 'nju';
       final schoolName = _getSchoolName(schoolId);
-      final timeTemplate = _getTimeTemplate(schoolId);
+      final timeTemplate = await _getTimeTemplateFromDatabase(currentTableId, schoolId);
       
       // 4. 获取所有课程数据
       final courseProvider = CourseProvider();
@@ -417,7 +419,7 @@ class UnifiedDataService {
       timestamp: DateTime.now(),
       schoolId: schoolId,
       schoolName: schoolName,
-      timeTemplate: _getTimeTemplate(schoolId),
+      timeTemplate: _getDefaultTimeTemplate(schoolId),
       currentWeek: 1,
       currentWeekDay: DateTime.now().weekday,
       semesterName: '${DateTime.now().year}学年',
@@ -437,14 +439,60 @@ class UnifiedDataService {
     );
   }
 
-  /// 获取学校时间模板
-  SchoolTimeTemplate _getTimeTemplate(String schoolId) {
+  /// 从数据库获取学校时间模板
+  Future<SchoolTimeTemplate> _getTimeTemplateFromDatabase(int tableId, String schoolId) async {
+    try {
+      // 从数据库读取 classTimeList
+      final courseTableProvider = CourseTableProvider();
+      final classTimeList = await courseTableProvider.getClassTimeList(tableId);
+
+      print('[UnifiedDataService] 📊 从数据库读取 classTimeList: ${classTimeList.length} 个时间段');
+
+      // 转换为 ClassPeriod 列表
+      final periods = classTimeList.map((timeMap) {
+        return ClassPeriod(
+          startTime: timeMap['start'] as String,
+          endTime: timeMap['end'] as String,
+        );
+      }).toList();
+
+      // 创建 SchoolTimeTemplate
+      return SchoolTimeTemplate(
+        schoolId: schoolId,
+        schoolName: _getSchoolName(schoolId),
+        schoolNameEn: _getSchoolNameEn(schoolId),
+        periods: periods,
+      );
+    } catch (e) {
+      print('[UnifiedDataService] ⚠️ 读取时间模板失败，使用默认模板: $e');
+      // Fallback 到默认时间模板
+      return _getDefaultTimeTemplate(schoolId);
+    }
+  }
+
+  /// 获取默认时间模板（Fallback）
+  SchoolTimeTemplate _getDefaultTimeTemplate(String schoolId) {
     switch (schoolId) {
       case 'seu':
         return SchoolTimeTemplate.southeastUniversity;
       case 'nju':
       default:
         return SchoolTimeTemplate.nanjingUniversity;
+    }
+  }
+
+  /// 获取学校英文名称
+  String _getSchoolNameEn(String schoolId) {
+    switch (schoolId) {
+      case 'seu':
+        return 'Southeast University';
+      case 'sjtu':
+        return 'Shanghai Jiao Tong University';
+      case 'ruc':
+        return 'Renmin University of China';
+      case 'nju':
+      default:
+        return 'Nanjing University';
     }
   }
 
