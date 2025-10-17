@@ -114,13 +114,19 @@ class WidgetCourse {
       courseType = 'lecture';
     }
 
+    final startPeriod = courseMap['startTime'] ?? 1;
+    final timeCount = courseMap['timeCount'] ?? 0;
+    final periodCount = timeCount + 1;
+
+    print('[WidgetCourse] Converting: ${courseMap['name']} - startTime=$startPeriod, timeCount=$timeCount -> periodCount=$periodCount');
+
     return WidgetCourse(
       id: courseMap['id']?.toString() ?? '',
       name: courseMap['name']?.toString() ?? '',
       classroom: courseMap['classroom']?.toString(),
       teacher: courseMap['teacher']?.toString(),
-      startPeriod: courseMap['startTime'] ?? 1,
-      periodCount: courseMap['timeCount'] ?? 1,
+      startPeriod: startPeriod,
+      periodCount: periodCount,  // timeCount = endTime - startTime，需要+1得到实际节数
       weekDay: courseMap['weekTime'] ?? 1,
       color: courseMap['color']?.toString(),
       schoolId: schoolId,

@@ -8,7 +8,7 @@ import '../models/widget_course.dart';
 import '../exporters/unified_exporter.dart';
 import '../communication/native_data_bridge.dart';
 import '../../../Models/CourseModel.dart';
-import '../../../Models/CourseTableModel.dart';
+import '../../../Models/CourseTableModel.dart' as CourseTableDb;
 import '../../../Models/ScheduleModel.dart';
 
 /// 统一数据服务
@@ -119,15 +119,36 @@ class UnifiedDataService {
   Future<WidgetScheduleData> _buildWidgetScheduleData() async {
     try {
       // 1. 获取当前课程表ID
-      final currentTableId = _preferences.getInt('tableId') ?? 0;
-      
+      var currentTableId = _preferences.getInt('tableId') ?? 0;
+      print('[UnifiedDataService] 📊 SharedPreferences中的课程表ID: $currentTableId');
+
       // 2. 获取当前周次（使用现有逻辑）
       final currentWeek = _preferences.getInt('weekIndex') ?? 1;
-      
-      // 3. 获取学校信息和时间模板（从数据库读取）
-      final schoolId = _preferences.getString('school_id') ?? 'nju';
-      final schoolName = _getSchoolName(schoolId);
-      final timeTemplate = await _getTimeTemplateFromDatabase(currentTableId, schoolId);
+
+      // 3. 获取课表名称和时间模板（从数据库读取）
+      final courseTableProvider = CourseTableDb.CourseTableProvider();
+      var courseTable = await courseTableProvider.getCourseTable(currentTableId);
+
+      // 如果当前tableId无效（为0或不存在），尝试获取第一个课表
+      if (courseTable == null) {
+        print('[UnifiedDataService] ⚠️ 课表ID $currentTableId 无效，尝试获取第一个课表');
+        final allTables = await courseTableProvider.getAllCourseTable();
+        if (allTables.isNotEmpty) {
+          currentTableId = allTables[0][CourseTableDb.columnId] as int;
+          courseTable = await courseTableProvider.getCourseTable(currentTableId);
+          print('[UnifiedDataService] 📊 使用第一个课表，ID: $currentTableId');
+        } else {
+          print('[UnifiedDataService] ❌ 数据库中没有任何课表');
+          return _createEmptyData();
+        }
+      }
+
+      final scheduleName = courseTable?.name ?? '我的课表';
+      print('[UnifiedDataService] 📊 课表名称: $scheduleName');
+
+      // 从数据库读取时间模板（不再依赖 school_id）
+      final timeTemplate = await _getTimeTemplateFromDatabase(currentTableId, scheduleName);
+      print('[UnifiedDataService] 📊 学校信息: ${timeTemplate.schoolName} (${timeTemplate.schoolId}), ${timeTemplate.periods.length} 个时间段');
       
       // 4. 获取所有课程数据
       final courseProvider = CourseProvider();
@@ -190,11 +211,11 @@ class UnifiedDataService {
       // 10. 构建周课表（使用本周课程）
       final weekSchedule = _buildWeekSchedule(activeCoursesForWidget);
       
-      // 10. 转换为 Widget 格式
-      final widgetTodayCourses = todayCourses.map((c) => _convertToWidgetCourse(c, schoolId)).toList();
-      final widgetTomorrowCourses = tomorrowCourses.map((c) => _convertToWidgetCourse(c, schoolId)).toList();
-      final widgetCurrentCourse = currentCourse != null ? _convertToWidgetCourse(currentCourse, schoolId) : null;
-      final widgetNextCourse = nextCourse != null ? _convertToWidgetCourse(nextCourse, schoolId) : null;
+      // 10. 转换为 Widget 格式（使用课表名称作为标识）
+      final widgetTodayCourses = todayCourses.map((c) => _convertToWidgetCourse(c, scheduleName)).toList();
+      final widgetTomorrowCourses = tomorrowCourses.map((c) => _convertToWidgetCourse(c, scheduleName)).toList();
+      final widgetCurrentCourse = currentCourse != null ? _convertToWidgetCourse(currentCourse, scheduleName) : null;
+      final widgetNextCourse = nextCourse != null ? _convertToWidgetCourse(nextCourse, scheduleName) : null;
 
       // 11. 读取 Widget 配置选项
       final approachingMinutes = _preferences.getInt('widgetApproachingMinutes') ?? 15;
@@ -203,8 +224,8 @@ class UnifiedDataService {
       return WidgetScheduleData(
         version: '1.0',
         timestamp: DateTime.now(),
-        schoolId: schoolId,
-        schoolName: schoolName,
+        schoolId: timeTemplate.schoolId,  // 使用时间模板中的 schoolId
+        schoolName: timeTemplate.schoolName,  // 使用时间模板中的 schoolName
         timeTemplate: timeTemplate,
         currentWeek: currentWeek,
         currentWeekDay: currentWeekDay,
@@ -213,7 +234,7 @@ class UnifiedDataService {
         tomorrowCourses: widgetTomorrowCourses,
         nextCourse: widgetNextCourse,
         currentCourse: widgetCurrentCourse,
-        weekSchedule: _convertWeekScheduleToWidget(weekSchedule, schoolId),
+        weekSchedule: _convertWeekScheduleToWidget(weekSchedule, scheduleName),
         todayCourseCount: widgetTodayCourses.length,
         tomorrowCourseCount: widgetTomorrowCourses.length,
         weekCourseCount: scheduleModel.activeCourses.length,
@@ -225,8 +246,9 @@ class UnifiedDataService {
         approachingMinutes: approachingMinutes,
         tomorrowPreviewHour: tomorrowPreviewHour,
       );
-    } catch (e) {
+    } catch (e, stackTrace) {
       print('Error building widget data: $e');
+      print('StackTrace: $stackTrace');
       return _createEmptyData();
     }
   }
@@ -353,7 +375,7 @@ class UnifiedDataService {
   /// 转换为 Widget 课程格式
   WidgetCourse _convertToWidgetCourse(Course course, String schoolId) {
     final courseId = 'course_${course.id ?? 0}_${course.weekTime}_${course.startTime}';
-    
+
     // 解析周次列表
     List<int> weeksList = [];
     if (course.weeks != null) {
@@ -364,14 +386,21 @@ class UnifiedDataService {
         // ignore
       }
     }
-    
+
+    // 计算实际节数：timeCount = endTime - startTime，实际节数需要 +1
+    // 例如：第3-5节课，startTime=3, endTime=5, timeCount=2, 实际节数=3
+    final timeCount = course.timeCount ?? 0;
+    final periodCount = timeCount + 1;
+
+    print('[UnifiedDataService] 转换课程: ${course.name} - startTime=${course.startTime}, timeCount=$timeCount -> periodCount=$periodCount');
+
     return WidgetCourse(
       id: courseId,
       name: course.name ?? '未知课程',
       classroom: course.classroom,
       teacher: course.teacher,
       startPeriod: course.startTime ?? 1,
-      periodCount: course.timeCount ?? 1,
+      periodCount: periodCount,  // 使用修正后的节数
       weekDay: course.weekTime ?? 1,
       color: course.color,
       schoolId: schoolId,
@@ -409,17 +438,17 @@ class UnifiedDataService {
     }
   }
   
-  /// 创建空数据
+  /// 创建空数据（当没有课程时使用）
   WidgetScheduleData _createEmptyData() {
-    final schoolId = _preferences.getString('school_id') ?? 'nju';
-    final schoolName = _getSchoolName(schoolId);
-    
+    // 使用南京大学作为默认
+    final defaultTemplate = SchoolTimeTemplate.nanjingUniversity;
+
     return WidgetScheduleData(
       version: '1.0',
       timestamp: DateTime.now(),
-      schoolId: schoolId,
-      schoolName: schoolName,
-      timeTemplate: _getDefaultTimeTemplate(schoolId),
+      schoolId: defaultTemplate.schoolId,
+      schoolName: defaultTemplate.schoolName,
+      timeTemplate: defaultTemplate,
       currentWeek: 1,
       currentWeekDay: DateTime.now().weekday,
       semesterName: '${DateTime.now().year}学年',
@@ -440,13 +469,17 @@ class UnifiedDataService {
   }
 
   /// 从数据库获取学校时间模板
-  Future<SchoolTimeTemplate> _getTimeTemplateFromDatabase(int tableId, String schoolId) async {
+  /// [scheduleName] 课表名称，用于推断学校信息
+  Future<SchoolTimeTemplate> _getTimeTemplateFromDatabase(int tableId, String scheduleName) async {
     try {
       // 从数据库读取 classTimeList
-      final courseTableProvider = CourseTableProvider();
+      final courseTableProvider = CourseTableDb.CourseTableProvider();
       final classTimeList = await courseTableProvider.getClassTimeList(tableId);
 
       print('[UnifiedDataService] 📊 从数据库读取 classTimeList: ${classTimeList.length} 个时间段');
+
+      // 根据课表名称或时间段数量推断学校
+      final schoolInfo = _inferSchoolInfo(scheduleName, classTimeList);
 
       // 转换为 ClassPeriod 列表
       final periods = classTimeList.map((timeMap) {
@@ -458,30 +491,41 @@ class UnifiedDataService {
 
       // 创建 SchoolTimeTemplate
       return SchoolTimeTemplate(
-        schoolId: schoolId,
-        schoolName: _getSchoolName(schoolId),
-        schoolNameEn: _getSchoolNameEn(schoolId),
+        schoolId: schoolInfo['id']!,
+        schoolName: schoolInfo['name']!,
+        schoolNameEn: schoolInfo['nameEn']!,
         periods: periods,
       );
     } catch (e) {
       print('[UnifiedDataService] ⚠️ 读取时间模板失败，使用默认模板: $e');
-      // Fallback 到默认时间模板
-      return _getDefaultTimeTemplate(schoolId);
+      // Fallback 到南京大学默认模板
+      return SchoolTimeTemplate.nanjingUniversity;
     }
   }
 
-  /// 获取默认时间模板（Fallback）
-  SchoolTimeTemplate _getDefaultTimeTemplate(String schoolId) {
-    switch (schoolId) {
-      case 'seu':
-        return SchoolTimeTemplate.southeastUniversity;
-      case 'nju':
-      default:
-        return SchoolTimeTemplate.nanjingUniversity;
+  /// 根据课表名称和时间表推断学校信息
+  Map<String, String> _inferSchoolInfo(String scheduleName, List<Map> classTimeList) {
+    // 根据课表名称关键词推断
+    if (scheduleName.contains('东南')) {
+      return {'id': 'seu', 'name': '东南大学', 'nameEn': 'Southeast University'};
+    } else if (scheduleName.contains('交大') || scheduleName.contains('上海交通')) {
+      return {'id': 'sjtu', 'name': '上海交通大学', 'nameEn': 'Shanghai Jiao Tong University'};
+    } else if (scheduleName.contains('人大') || scheduleName.contains('中国人民')) {
+      return {'id': 'ruc', 'name': '中国人民大学', 'nameEn': 'Renmin University of China'};
+    } else if (scheduleName.contains('南大') || scheduleName.contains('南京大学')) {
+      return {'id': 'nju', 'name': '南京大学', 'nameEn': 'Nanjing University'};
     }
+
+    // 根据时间段数量推断（东南大学通常是13个时间段）
+    if (classTimeList.length == 13) {
+      return {'id': 'seu', 'name': '东南大学', 'nameEn': 'Southeast University'};
+    }
+
+    // 默认返回南京大学
+    return {'id': 'nju', 'name': '南京大学', 'nameEn': 'Nanjing University'};
   }
 
-  /// 获取学校英文名称
+  /// 获取学校英文名称（已废弃，由 _inferSchoolInfo 替代）
   String _getSchoolNameEn(String schoolId) {
     switch (schoolId) {
       case 'seu':

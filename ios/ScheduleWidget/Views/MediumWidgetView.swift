@@ -326,28 +326,29 @@ private struct DetailedCourseCard: View {
     var timeTemplate: SchoolTimeTemplate? = nil
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            // 课程名
+        VStack(alignment: .leading, spacing: adaptiveSpacing) {
+            // 课程名 - 允许换行显示，最多2行
             Text(course.name)
                 .font(.system(size: 13, weight: .bold))
                 .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)  // 允许垂直方向自动扩展
                 .foregroundColor(.primary)
 
             // 教室 · 教师
             HStack(spacing: 3) {
                 if let classroom = course.classroom {
                     Text(classroom)
-                        .font(.system(size: 11, weight: .semibold))
+                        .font(.system(size: 10, weight: .semibold))
                         .fixedSize()  // 教室不能截断
                 }
 
                 if let teacher = course.teacher {
                     Text("·")
-                        .font(.system(size: 11))
+                        .font(.system(size: 10))
                         .foregroundColor(.secondary)
 
                     Text(teacher)
-                        .font(.system(size: 11))
+                        .font(.system(size: 10))
                         .lineLimit(1)
                         .truncationMode(.tail)
                 }
@@ -357,11 +358,12 @@ private struct DetailedCourseCard: View {
             // 时间段
             if let timeRange = getTimeRange() {
                 Text(timeRange)
-                    .font(.system(size: 11, weight: .medium))
+                    .font(.system(size: 10, weight: .medium))
                     .foregroundColor(.secondary)
             }
         }
-        .padding(10)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 8)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 8)
@@ -383,6 +385,12 @@ private struct DetailedCourseCard: View {
             }
         )
         .widgetURL(URL(string: "njuschedule://course/\(course.id)"))
+    }
+
+    // 自适应间距：根据课程名称长度动态调整
+    private var adaptiveSpacing: CGFloat {
+        // 如果课程名称较长（可能换行），使用较小的间距保持整体紧凑
+        return course.name.count > 12 ? 3 : 5
     }
 
     private var courseColor: Color {
@@ -455,16 +463,18 @@ private struct RightContentView: View {
         case .classesEnded, .error:
             // 课程结束或错误：显示空状态
             EmptyRightView()
+                .padding(.top)
 
         default:
             // 其他状态：显示剩余课程列表
-            if let remaining = getRemainingCourses() {
+            if let remaining = getRemainingCourses(), !remaining.isEmpty {
                 RemainingCoursesListView(
                     courses: remaining,
                     timeTemplate: entry.widgetData?.timeTemplate
                 )
             } else {
-                EmptyRightView()
+                // 没有剩余课程（可能只有一节课，或者最后一节课）
+                LastCourseView()
             }
         }
     }
@@ -664,14 +674,40 @@ private struct CompactCourseRow: View {
     }
 }
 
-// MARK: - 右侧空状态视图
+// MARK: - 右侧空状态视图（课程已全部结束）
 private struct EmptyRightView: View {
     var body: some View {
-        VStack {
+        VStack(spacing: 6) {
             Spacer()
-            Image(systemName: "moon.stars")
-                .font(.system(size: 24))
-                .foregroundColor(.secondary.opacity(0.5))
+
+            Image(systemName: "moon.stars.fill")
+                .font(.system(size: 28))
+                .foregroundColor(.secondary.opacity(0.6))
+
+            Text("好好休息吧")
+                .font(.system(size: 13, weight: .medium))
+                .foregroundColor(.secondary)
+
+            Spacer()
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
+
+// MARK: - 右侧最后一节课视图
+private struct LastCourseView: View {
+    var body: some View {
+        VStack(spacing: 6) {
+            Spacer()
+
+            Image(systemName: "moon.stars.fill")
+                .font(.system(size: 28))
+                .foregroundColor(.secondary.opacity(0.6))
+
+            Text("这就是全部啦")
+                .font(.system(size: 13, weight: .medium))
+                .foregroundColor(.secondary)
+
             Spacer()
         }
         .frame(maxWidth: .infinity)
