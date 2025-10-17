@@ -37,65 +37,129 @@ struct CourseActivityWidget: Widget {
             LockScreenLiveActivityView(context: context)
         } dynamicIsland: { context in
             DynamicIsland {
-                // Expanded view
+                // MARK: - Expanded View (展开态)
+                // 遵循 Widget 设计精神：清晰的信息层级，课程色彩点缀
                 DynamicIslandExpandedRegion(.leading) {
-                    HStack(spacing: 8) {
-                        Image(systemName: getCourseIcon(context.state.status))
-                            .font(.system(size: 20))
-                            .foregroundColor(getCourseColor(context.attributes.color))
+                    HStack(spacing: 10) {
+                        // 课程图标（使用课程颜色）
+                        ZStack {
+                            Circle()
+                                .fill(getCourseColor(context.attributes.color).opacity(0.15))
+                                .frame(width: 36, height: 36)
 
-                        VStack(alignment: .leading, spacing: 2) {
+                            Image(systemName: getCourseIcon(context.state.status))
+                                .font(.system(size: 18, weight: .semibold))
+                                .foregroundColor(getCourseColor(context.attributes.color))
+                        }
+
+                        VStack(alignment: .leading, spacing: 3) {
+                            // 课程名称（主信息，粗体）
                             Text(context.state.courseName)
-                                .font(.system(size: 14, weight: .semibold))
-                                .lineLimit(1)
+                                .font(.system(size: 14, weight: .bold))
+                                .lineLimit(2)
+                                .fixedSize(horizontal: false, vertical: true)
 
-                            if let classroom = context.state.classroom {
-                                Text(classroom)
-                                    .font(.system(size: 12))
-                                    .foregroundColor(.secondary)
+                            // 教室·教师（次要信息，教室不能截断）
+                            HStack(spacing: 4) {
+                                if let classroom = context.state.classroom {
+                                    Text(classroom)
+                                        .font(.system(size: 12, weight: .semibold))
+                                        .foregroundColor(.secondary)
+                                        .fixedSize()  // 教室绝对不能截断
+                                }
+
+                                if let teacher = context.state.teacher {
+                                    Text("·")
+                                        .font(.system(size: 12))
+                                        .foregroundColor(.secondary)
+
+                                    Text(teacher)
+                                        .font(.system(size: 12))
+                                        .foregroundColor(.secondary)
+                                        .lineLimit(1)
+                                        .truncationMode(.tail)
+                                }
                             }
                         }
                     }
                 }
 
                 DynamicIslandExpandedRegion(.trailing) {
-                    VStack(alignment: .trailing, spacing: 4) {
+                    VStack(alignment: .trailing, spacing: 6) {
+                        // 状态标签（带颜色背景胶囊）
                         Text(getStatusText(context.state.status))
-                            .font(.system(size: 12, weight: .medium))
+                            .font(.system(size: 11, weight: .semibold))
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(getStatusColor(context.state.status).opacity(0.15))
                             .foregroundColor(getStatusColor(context.state.status))
+                            .clipShape(Capsule())
 
+                        // 倒计时（单色数字）
                         Text(formatMinutes(context.state.minutesRemaining))
                             .font(.system(size: 16, weight: .bold))
                             .monospacedDigit()
+                            .foregroundColor(.primary)
                     }
                 }
 
                 DynamicIslandExpandedRegion(.bottom) {
+                    // 时间段信息
                     HStack {
-                        if let teacher = context.state.teacher {
-                            Label(teacher, systemImage: "person.fill")
-                                .font(.system(size: 11))
-                        }
+                        Image(systemName: "clock")
+                            .font(.system(size: 11))
+                            .foregroundColor(.secondary)
+
+                        Text("\(formatTime(context.state.startTime)) - \(formatTime(context.state.endTime))")
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundColor(.secondary)
 
                         Spacer()
 
-                        Text("\(formatTime(context.state.startTime)) - \(formatTime(context.state.endTime))")
-                            .font(.system(size: 11))
-                            .foregroundColor(.secondary)
+                        // "我已到达"按钮（仅在即将上课时显示）
+                        if context.state.status == .startingSoon || context.state.status == .upcoming {
+                            Link(destination: URL(string: "njuschedule://arrived/\(context.attributes.courseId)")!) {
+                                Text("我已到达")
+                                    .font(.system(size: 11, weight: .semibold))
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 6)
+                                    .background(getCourseColor(context.attributes.color).opacity(0.15))
+                                    .foregroundColor(getCourseColor(context.attributes.color))
+                                    .clipShape(Capsule())
+                            }
+                        }
                     }
                     .padding(.top, 8)
                 }
             } compactLeading: {
-                // Compact leading (课程图标)
+                // MARK: - Compact Leading (紧凑态左侧)
+                // 显示状态图标 + 课程颜色
                 Image(systemName: getCourseIcon(context.state.status))
                     .foregroundColor(getCourseColor(context.attributes.color))
             } compactTrailing: {
-                // Compact trailing (剩余时间)
-                Text(formatMinutesShort(context.state.minutesRemaining))
-                    .font(.system(size: 12, weight: .semibold))
-                    .monospacedDigit()
+                // MARK: - Compact Trailing (紧凑态右侧)
+                // 显示教室（绝对不能截断）
+                if let classroom = context.state.classroom {
+                    VStack(alignment: .trailing, spacing: 0) {
+                        Text(classroom)
+                            .font(.system(size: 11, weight: .bold))
+                            .fixedSize()  // 教室绝对不能截断
+
+                        // 倒计时（小字）
+                        Text(formatMinutesShort(context.state.minutesRemaining))
+                            .font(.system(size: 9, weight: .medium))
+                            .foregroundColor(.secondary)
+                            .monospacedDigit()
+                    }
+                } else {
+                    // 如果没有教室，显示倒计时
+                    Text(formatMinutesShort(context.state.minutesRemaining))
+                        .font(.system(size: 12, weight: .semibold))
+                        .monospacedDigit()
+                }
             } minimal: {
-                // Minimal (最小显示)
+                // MARK: - Minimal (最小态)
+                // 使用课程颜色的图标
                 Image(systemName: "book.fill")
                     .foregroundColor(getCourseColor(context.attributes.color))
             }
@@ -184,54 +248,103 @@ struct CourseActivityWidget: Widget {
 }
 
 /// 锁屏 Live Activity 视图
+/// 遵循 Widget 设计精神：课程卡片风格 + 清晰的信息层级
 @available(iOS 16.1, *)
 struct LockScreenLiveActivityView: View {
     let context: ActivityViewContext<CourseActivityAttributes>
 
     var body: some View {
-        HStack(spacing: 12) {
-            // Icon
-            ZStack {
-                Circle()
-                    .fill(getCourseColor(context.attributes.color).opacity(0.2))
-                    .frame(width: 40, height: 40)
+        VStack(alignment: .leading, spacing: 12) {
+            // 顶部：状态标签
+            HStack {
+                Text(getStatusText(context.state.status))
+                    .font(.system(size: 11, weight: .semibold))
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 5)
+                    .background(getStatusColor(context.state.status).opacity(0.15))
+                    .foregroundColor(getStatusColor(context.state.status))
+                    .clipShape(Capsule())
 
-                Image(systemName: getCourseIcon(context.state.status))
-                    .font(.system(size: 18))
-                    .foregroundColor(getCourseColor(context.attributes.color))
+                Spacer()
+
+                // 倒计时
+                Text(formatMinutes(context.state.minutesRemaining))
+                    .font(.system(size: 14, weight: .bold))
+                    .monospacedDigit()
+                    .foregroundColor(.primary)
             }
 
-            // Content
-            VStack(alignment: .leading, spacing: 4) {
-                Text(context.state.courseName)
-                    .font(.system(size: 15, weight: .semibold))
-                    .lineLimit(1)
+            // 课程信息卡片（模仿 Widget 的课程卡片风格）
+            HStack(alignment: .top, spacing: 0) {
+                VStack(alignment: .leading, spacing: 4) {
+                    // 课程名称（主信息，粗体）
+                    Text(context.state.courseName)
+                        .font(.system(size: 15, weight: .bold))
+                        .lineLimit(2)
+                        .foregroundColor(.primary)
 
-                HStack(spacing: 8) {
-                    if let classroom = context.state.classroom {
-                        Label(classroom, systemImage: "mappin.circle.fill")
-                            .font(.system(size: 12))
+                    // 教室·教师（次要信息）
+                    HStack(spacing: 4) {
+                        if let classroom = context.state.classroom {
+                            Label {
+                                Text(classroom)
+                                    .font(.system(size: 13, weight: .semibold))
+                                    .fixedSize()  // 教室绝对不能截断
+                            } icon: {
+                                Image(systemName: "mappin.circle.fill")
+                                    .font(.system(size: 11))
+                            }
+                            .foregroundColor(.secondary)
+                        }
+
+                        if let teacher = context.state.teacher {
+                            if context.state.classroom != nil {
+                                Text("·")
+                                    .font(.system(size: 13))
+                                    .foregroundColor(.secondary)
+                            }
+
+                            Label {
+                                Text(teacher)
+                                    .font(.system(size: 13))
+                                    .lineLimit(1)
+                                    .truncationMode(.tail)
+                            } icon: {
+                                Image(systemName: "person.fill")
+                                    .font(.system(size: 11))
+                            }
+                            .foregroundColor(.secondary)
+                        }
                     }
 
-                    Text("•")
-                        .foregroundColor(.secondary)
+                    // 时间段
+                    HStack(spacing: 4) {
+                        Image(systemName: "clock")
+                            .font(.system(size: 11))
 
-                    Text(formatMinutes(context.state.minutesRemaining))
-                        .font(.system(size: 12, weight: .medium))
+                        Text("\(formatTime(context.state.startTime)) - \(formatTime(context.state.endTime))")
+                            .font(.system(size: 12, weight: .medium))
+                    }
+                    .foregroundColor(.secondary)
                 }
-                .foregroundColor(.secondary)
+                .padding(.vertical, 10)
+                .padding(.leading, 12)
+                .padding(.trailing, 10)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(getCourseColor(context.attributes.color).opacity(0.12))
+                )
+                .overlay(
+                    // 左侧色条（模仿 Widget 风格）
+                    HStack(spacing: 0) {
+                        RoundedRectangle(cornerRadius: 2)
+                            .fill(getCourseColor(context.attributes.color))
+                            .frame(width: 4)
+                        Spacer()
+                    }
+                )
             }
-
-            Spacer()
-
-            // Status
-            Text(getStatusText(context.state.status))
-                .font(.system(size: 11, weight: .semibold))
-                .padding(.horizontal, 8)
-                .padding(.vertical, 4)
-                .background(getStatusColor(context.state.status).opacity(0.2))
-                .foregroundColor(getStatusColor(context.state.status))
-                .clipShape(Capsule())
         }
         .padding(16)
     }
@@ -280,5 +393,11 @@ struct LockScreenLiveActivityView: View {
         } else {
             return "\(minutes / 60)小时后"
         }
+    }
+
+    private func formatTime(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        return formatter.string(from: date)
     }
 }
