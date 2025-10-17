@@ -89,12 +89,26 @@ private struct LargeContentAreaView: View {
             LargeErrorView(message: errorMessage)
         } else {
             switch entry.displayState {
-            case .beforeFirstClass, .betweenClasses:
-                // 上课前和课间：显示从下一节课开始的剩余课程
+            case .beforeFirstClass:
+                // 上课前：显示从第一节课开始的剩余课程
                 if let remaining = getRemainingCourses() {
                     LargeBeforeClassView(
                         courses: remaining.courses,
                         emphasizedCourse: remaining.emphasizedCourse,
+                        isBetweenClasses: false,
+                        timeTemplate: entry.widgetData?.timeTemplate
+                    )
+                } else {
+                    LargeClassesEndedView()
+                }
+
+            case .betweenClasses:
+                // 课间：显示"接下来"和剩余课程
+                if let remaining = getRemainingCourses() {
+                    LargeBeforeClassView(
+                        courses: remaining.courses,
+                        emphasizedCourse: remaining.emphasizedCourse,
+                        isBetweenClasses: true,
                         timeTemplate: entry.widgetData?.timeTemplate
                     )
                 } else {
@@ -133,6 +147,7 @@ private struct LargeContentAreaView: View {
                     LargeBeforeClassView(
                         courses: tomorrowCourses,
                         emphasizedCourse: tomorrowCourses[0],
+                        isBetweenClasses: false,
                         timeTemplate: entry.widgetData?.timeTemplate,
                         isTomorrow: true
                     )
@@ -164,17 +179,18 @@ private struct LargeContentAreaView: View {
     }
 }
 
-// MARK: - 1. 上课前/明日预览视图
+// MARK: - 1. 上课前/课间/明日预览视图
 private struct LargeBeforeClassView: View {
     let courses: [WidgetCourse]
     let emphasizedCourse: WidgetCourse
+    var isBetweenClasses: Bool = false  // 是否是课间状态
     var timeTemplate: SchoolTimeTemplate? = nil
     var isTomorrow: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             // 提示文本
-            Text(isTomorrow ? "明天有 \(courses.count) 门课" : "今天有 \(courses.count) 门课")
+            Text(promptText)
                 .font(.system(size: 13, weight: .medium))
                 .foregroundColor(.secondary)
 
@@ -189,6 +205,16 @@ private struct LargeBeforeClassView: View {
                     }
                 }
             }
+        }
+    }
+
+    private var promptText: String {
+        if isTomorrow {
+            return "明天有 \(courses.count) 门课"
+        } else if isBetweenClasses {
+            return "接下来"
+        } else {
+            return "今天有 \(courses.count) 门课"
         }
     }
 }

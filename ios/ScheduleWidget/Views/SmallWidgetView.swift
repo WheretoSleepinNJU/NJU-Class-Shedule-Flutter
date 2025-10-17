@@ -103,6 +103,7 @@ private struct ContentAreaView: View {
                         secondCourse: remainingCourses.1,
                         totalCount: remainingCourses.2,
                         isTomorrow: false,
+                        isBetweenClasses: false,
                         timeTemplate: entry.widgetData?.timeTemplate
                     )
                 } else {
@@ -110,13 +111,14 @@ private struct ContentAreaView: View {
                 }
 
             case .betweenClasses:
-                // 课间状态：和 beforeFirstClass 显示相同，但语义不同
+                // 课间状态：显示"接下来"
                 if let remainingCourses = getRemainingCourses() {
                     BeforeClassView(
                         firstCourse: remainingCourses.0,
                         secondCourse: remainingCourses.1,
                         totalCount: remainingCourses.2,
                         isTomorrow: false,
+                        isBetweenClasses: true,
                         timeTemplate: entry.widgetData?.timeTemplate
                     )
                 } else {
@@ -152,6 +154,7 @@ private struct ContentAreaView: View {
                         secondCourse: tomorrowCourses.count > 1 ? tomorrowCourses[1] : nil,
                         totalCount: tomorrowCourses.count,
                         isTomorrow: true,
+                        isBetweenClasses: false,
                         timeTemplate: entry.widgetData?.timeTemplate
                     )
                 } else {
@@ -204,18 +207,19 @@ private struct ContentAreaView: View {
     }
 }
 
-// MARK: - 1. 上课前/明日预览视图
+// MARK: - 1. 上课前/课间/明日预览视图
 private struct BeforeClassView: View {
     let firstCourse: WidgetCourse
     let secondCourse: WidgetCourse?
     let totalCount: Int
     let isTomorrow: Bool
+    let isBetweenClasses: Bool  // 是否是课间状态
     var timeTemplate: SchoolTimeTemplate? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             // 提示文本
-            Text(isTomorrow ? "明天有 \(totalCount) 门课" : "今天有 \(totalCount) 门课")
+            Text(promptText)
                 .font(.system(size: 11, weight: .medium))
                 .foregroundColor(.secondary)
                 .padding(.bottom, 8)
@@ -230,6 +234,16 @@ private struct BeforeClassView: View {
             }
 
             Spacer(minLength: 0)
+        }
+    }
+
+    private var promptText: String {
+        if isTomorrow {
+            return "明天有 \(totalCount) 门课"
+        } else if isBetweenClasses {
+            return "接下来"
+        } else {
+            return "今天有 \(totalCount) 门课"
         }
     }
 }

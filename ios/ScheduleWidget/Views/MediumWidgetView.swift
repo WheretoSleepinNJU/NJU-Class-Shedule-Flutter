@@ -122,6 +122,7 @@ private struct LeftContentAreaView: View {
                         course: remainingCourses.0,
                         totalCount: remainingCourses.1,
                         isTomorrow: false,
+                        isBetweenClasses: false,
                         timeTemplate: entry.widgetData?.timeTemplate
                     )
                 } else {
@@ -129,12 +130,13 @@ private struct LeftContentAreaView: View {
                 }
 
             case .betweenClasses:
-                // 课间状态：和 beforeFirstClass 显示相同
+                // 课间状态：显示"接下来"
                 if let remainingCourses = getRemainingCourses() {
                     LeftBeforeClassView(
                         course: remainingCourses.0,
                         totalCount: remainingCourses.1,
                         isTomorrow: false,
+                        isBetweenClasses: true,
                         timeTemplate: entry.widgetData?.timeTemplate
                     )
                 } else {
@@ -171,6 +173,7 @@ private struct LeftContentAreaView: View {
                         course: tomorrowCourses[0],
                         totalCount: tomorrowCourses.count,
                         isTomorrow: true,
+                        isBetweenClasses: false,
                         timeTemplate: entry.widgetData?.timeTemplate
                     )
                 } else {
@@ -217,22 +220,33 @@ private struct LeftContentAreaView: View {
     }
 }
 
-// MARK: - 左侧视图：上课前/明日预览
+// MARK: - 左侧视图：上课前/课间/明日预览
 private struct LeftBeforeClassView: View {
     let course: WidgetCourse
     let totalCount: Int
     let isTomorrow: Bool
+    let isBetweenClasses: Bool  // 是否是课间状态
     var timeTemplate: SchoolTimeTemplate? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(isTomorrow ? "明天有 \(totalCount) 门课" : "今天有 \(totalCount) 门课")
+            Text(promptText)
                 .font(.system(size: 11, weight: .medium))
                 .foregroundColor(.secondary)
 
             DetailedCourseCard(course: course, timeTemplate: timeTemplate)
 
             Spacer(minLength: 0)
+        }
+    }
+
+    private var promptText: String {
+        if isTomorrow {
+            return "明天有 \(totalCount) 门课"
+        } else if isBetweenClasses {
+            return "接下来"
+        } else {
+            return "今天有 \(totalCount) 门课"
         }
     }
 }
