@@ -324,14 +324,15 @@ private struct CourseCardView: View {
     var body: some View {
         HStack(alignment: .top, spacing: 4) {
             // 右侧内容
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: isDetailed ? 2 : 1) {
                 // 第一行：课程名
                 Text(course.name)
-                    .font(.system(size: 12, weight: .bold))
+                    .font(.system(size: isDetailed ? 12 : 10, weight: isDetailed ? .bold : .medium))
                     .lineLimit(1)
                     .foregroundColor(.primary)
 
                 if isDetailed {
+                    // 详细模式：第二行教室+教师，第三行时间
                     // 第二行：教室 + 教师
                     HStack(spacing: 6) {
                         if let classroom = course.classroom {
@@ -355,10 +356,42 @@ private struct CourseCardView: View {
                             .font(.system(size: 11, weight: .medium))
                             .foregroundColor(.secondary)
                     }
+                } else {
+                    // 紧凑模式：第二行显示 时间·地点·教师
+                    HStack(spacing: 3) {
+                        if let timeRange = getTimeRange() {
+                            Text(timeRange)
+                                .font(.system(size: 8))
+                                .foregroundColor(.secondary)
+                        }
+
+                        if let classroom = course.classroom {
+                            Text("·")
+                                .font(.system(size: 8))
+                                .foregroundColor(.secondary)
+
+                            Text(classroom)
+                                .font(.system(size: 8))
+                                .foregroundColor(.secondary)
+                                .fixedSize()  // 教室不能截断
+                        }
+
+                        if let teacher = course.teacher {
+                            Text("·")
+                                .font(.system(size: 8))
+                                .foregroundColor(.secondary)
+
+                            Text(teacher)
+                                .font(.system(size: 8))
+                                .foregroundColor(.secondary)
+                                .lineLimit(1)
+                                .truncationMode(.tail)
+                        }
+                    }
                 }
             }
-            .padding(.vertical, 6)
-            .padding(.horizontal, 8)
+            .padding(.vertical, isDetailed ? 6 : 4)
+            .padding(.horizontal, isDetailed ? 8 : 6)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(
                 RoundedRectangle(cornerRadius: 8)
@@ -401,17 +434,19 @@ private struct CourseCardView: View {
                   periodCount: course.periodCount
               ) else {
             // 如果没有时间模板，返回节次
-            if course.periodCount > 1 {
-                return "第 \(course.startPeriod)-\(course.startPeriod + course.periodCount - 1) 节"
-            } else {
-                return "第 \(course.startPeriod) 节"
-            }
+            return "第\(course.startPeriod)节"
         }
 
         // 格式化时间
         let startTime = formatTime(period.startTime)
-        let endTime = formatTime(period.endTime)
-        return "\(startTime) - \(endTime)"
+
+        // 如果是详细模式，返回时间段；紧凑模式只返回开始时间
+        if isDetailed {
+            let endTime = formatTime(period.endTime)
+            return "\(startTime) - \(endTime)"
+        } else {
+            return startTime
+        }
     }
 
     private func formatTime(_ timeString: String) -> String {

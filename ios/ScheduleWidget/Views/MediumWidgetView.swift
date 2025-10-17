@@ -394,49 +394,48 @@ private struct RightContentView: View {
     let entry: ScheduleEntry
 
     var body: some View {
-        let displayState = determineRightDisplayState()
+        // 使用 entry.displayState 来决定右侧显示内容
+        switch entry.displayState {
+        case .tomorrowPreview:
+            // 明日预览：显示明天的课程列表
+            if let tomorrowCourses = entry.widgetData?.tomorrowCourses, !tomorrowCourses.isEmpty {
+                // 跳过第一门（左侧已显示），显示剩余课程
+                let remainingCourses = Array(tomorrowCourses.dropFirst())
+                if !remainingCourses.isEmpty {
+                    RemainingCoursesListView(
+                        courses: remainingCourses,
+                        timeTemplate: entry.widgetData?.timeTemplate
+                    )
+                } else {
+                    EmptyRightView()
+                }
+            } else {
+                EmptyRightView()
+            }
 
-        switch displayState {
-        case .arrivedButton(let courseId):
-            ArrivedButtonView(courseId: courseId)
+        case .approachingClass:
+            // 即将上课：显示"我已到达"按钮
+            if let nextCourse = entry.nextCourse {
+                ArrivedButtonView(courseId: nextCourse.id)
+            } else {
+                EmptyRightView()
+            }
 
-        case .remainingCourses(let courses):
-            RemainingCoursesListView(
-                courses: courses,
-                timeTemplate: entry.widgetData?.timeTemplate
-            )
-
-        case .empty:
+        case .classesEnded, .error:
+            // 课程结束或错误：显示空状态
             EmptyRightView()
-        }
-    }
 
-    private func determineRightDisplayState() -> RightDisplayState {
-        let now = Date()
-        let calendar = Calendar.current
-        let currentHour = calendar.component(.hour, from: now)
-
-        // 晚上21:00后或课程结束，显示空状态
-        if currentHour >= 21 || (entry.nextCourse == nil && entry.currentCourse == nil) {
-            return .empty
-        }
-
-        // 即将上课：显示"我已到达"按钮
-        if let next = entry.nextCourse,
-           let template = entry.widgetData?.timeTemplate,
-           entry.currentCourse == nil {
-            if let minutesUntil = getMinutesUntilCourse(next, template: template),
-               minutesUntil > 0 && minutesUntil <= 15 {
-                return .arrivedButton(courseId: next.id)
+        default:
+            // 其他状态：显示剩余课程列表
+            if let remaining = getRemainingCourses() {
+                RemainingCoursesListView(
+                    courses: remaining,
+                    timeTemplate: entry.widgetData?.timeTemplate
+                )
+            } else {
+                EmptyRightView()
             }
         }
-
-        // 获取剩余课程列表
-        if let remaining = getRemainingCourses() {
-            return .remainingCourses(courses: remaining)
-        }
-
-        return .empty
     }
 
     // 获取剩余课程列表（不包括当前显示在左侧的课程）
@@ -465,41 +464,6 @@ private struct RightContentView: View {
         let remainingCourses = Array(todayCourses[startIndex...])
         return remainingCourses.count > 1 ? Array(remainingCourses.dropFirst()) : []
     }
-
-    private func getMinutesUntilCourse(_ course: WidgetCourse, template: SchoolTimeTemplate) -> Int? {
-        guard let period = template.getPeriodRange(
-            startPeriod: course.startPeriod,
-            periodCount: course.periodCount
-        ) else { return nil }
-
-        guard let startTime = parseTime(period.startTime) else { return nil }
-
-        let now = Date()
-        let minutes = Calendar.current.dateComponents([.minute], from: now, to: startTime).minute
-        return minutes
-    }
-
-    private func parseTime(_ timeString: String) -> Date? {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
-        guard let time = formatter.date(from: timeString) else { return nil }
-
-        let calendar = Calendar.current
-        let now = Date()
-        let components = calendar.dateComponents([.hour, .minute], from: time)
-
-        return calendar.date(bySettingHour: components.hour ?? 0,
-                            minute: components.minute ?? 0,
-                            second: 0,
-                            of: now)
-    }
-}
-
-// MARK: - 右侧显示状态枚举
-private enum RightDisplayState {
-    case arrivedButton(courseId: String)
-    case remainingCourses(courses: [WidgetCourse])
-    case empty
 }
 
 // MARK: - "我已到达"按钮视图
@@ -598,7 +562,7 @@ private struct CompactCourseRow: View {
                         Text(classroom)
                             .font(.system(size: 8))
                             .foregroundColor(.secondary)
-                            .lineLimit(1)
+                            .fixedSize()  // 教室不能截断
                     }
 
                     if let teacher = course.teacher {
