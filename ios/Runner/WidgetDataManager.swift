@@ -6,7 +6,7 @@ class WidgetDataManager {
     static let shared = WidgetDataManager()
 
     // App Group ID - 需要在 Xcode 中配置
-    private let appGroupId = "group.top.idealclover.wheretosleepinnju"
+    private let appGroupId = "group.top.idealclover.wheretosleepinnju.group"
 
     // UserDefaults keys
     private enum Keys {

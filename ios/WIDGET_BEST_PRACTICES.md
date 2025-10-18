@@ -408,7 +408,7 @@ let nextRefresh = Calendar.current.date(
 
 ```swift
 // ✅ GOOD: Shared constant
-let appGroupId = "group.top.idealclover.wheretosleepinnju"
+let appGroupId = "group.top.idealclover.wheretosleepinnju.group"
 
 // Main App
 if let sharedDefaults = UserDefaults(suiteName: appGroupId) {
@@ -432,7 +432,7 @@ UserDefaults.standard.set(value, forKey: "key")
 // ✅ GOOD: Always use shared suite
 class AppGroupDefaults {
     static let shared = UserDefaults(
-        suiteName: "group.top.idealclover.wheretosleepinnju"
+        suiteName: "group.top.idealclover.wheretosleepinnju.group"
     )!
 }
 
@@ -471,7 +471,7 @@ if let data = sharedDefaults.data(forKey: "widget_data"),
 // ✅ GOOD: Single source of truth
 class WidgetDataManager {
     static let shared = WidgetDataManager()
-    private let appGroupId = "group.top.idealclover.wheretosleepinnju"
+    private let appGroupId = "group.top.idealclover.wheretosleepinnju.group"
 
     func saveWidgetData(_ data: WidgetScheduleData) {
         guard let defaults = UserDefaults(suiteName: appGroupId) else { return }

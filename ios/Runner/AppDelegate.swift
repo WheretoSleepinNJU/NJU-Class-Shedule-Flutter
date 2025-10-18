@@ -96,7 +96,7 @@ import WidgetKit
     }
 
     // Save to UserDefaults (App Group)
-    let appGroupId = "group.top.idealclover.wheretosleepinnju"
+    let appGroupId = "group.top.idealclover.wheretosleepinnju.group"
     print("🔐 [AppDelegate] Attempting to access App Group: \(appGroupId)")
 
     if let appGroup = UserDefaults(suiteName: appGroupId) {
@@ -151,7 +151,7 @@ import WidgetKit
     print("Received live activity data: \(args.keys)")
 
     // Save to UserDefaults (App Group)
-    if let appGroup = UserDefaults(suiteName: "group.top.idealclover.wheretosleepinnju") {
+    if let appGroup = UserDefaults(suiteName: "group.top.idealclover.wheretosleepinnju.group") {
       do {
         let jsonData = try JSONSerialization.data(withJSONObject: args, options: [])
         appGroup.set(jsonData, forKey: "live_activity_data")
@@ -176,7 +176,7 @@ import WidgetKit
     print("Received unified data package")
 
     // Save to UserDefaults (App Group)
-    if let appGroup = UserDefaults(suiteName: "group.top.idealclover.wheretosleepinnju") {
+    if let appGroup = UserDefaults(suiteName: "group.top.idealclover.wheretosleepinnju.group") {
       do {
         let jsonData = try JSONSerialization.data(withJSONObject: args, options: [])
         appGroup.set(jsonData, forKey: "unified_data_package")
@@ -221,7 +221,7 @@ import WidgetKit
       "model": UIDevice.current.model,
       "supportsWidgets": true,
       "supportsLiveActivities": true,
-      "appGroupId": "group.top.idealclover.wheretosleepinnju"
+      "appGroupId": "group.top.idealclover.wheretosleepinnju.group"
     ]
     result(platformInfo)
   }
@@ -229,7 +229,7 @@ import WidgetKit
   private func handleDebugReadWidgetData(result: @escaping FlutterResult) {
     print("🔍 [AppDelegate] ========== Debug: Reading Widget Data ==========")
 
-    let appGroupId = "group.top.idealclover.wheretosleepinnju"
+    let appGroupId = "group.top.idealclover.wheretosleepinnju.group"
     guard let appGroup = UserDefaults(suiteName: appGroupId) else {
       print("❌ [AppDelegate] Failed to access App Group")
       result(FlutterError(code: "APP_GROUP_ERROR", message: "Cannot access App Group", details: nil))

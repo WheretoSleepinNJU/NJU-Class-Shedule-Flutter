@@ -29,16 +29,16 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSBonjourServices</key>
+	<array>
+		<string></string>
+	</array>
 	<key>NSCalendarsUsageDescription</key>
 	<string>南哪课表需要日历权限，才能将课程导入系统日历。</string>
 	<key>NSCameraUsageDescription</key>
 	<string>南哪课表需要相机权限，才能扫码导入课程。</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string></string>
-	<key>NSBonjourServices</key>
-	<array>
-		<string></string>
-	</array>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>南哪课表需要相册权限，才能选择背景图片。</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

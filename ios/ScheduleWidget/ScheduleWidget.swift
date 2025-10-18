@@ -89,7 +89,7 @@ struct Provider: TimelineProvider {
         print("📅 [Widget] Current time: \(Date())")
 
         // Debug: Test direct App Group access
-        let appGroupId = "group.top.idealclover.wheretosleepinnju"
+        let appGroupId = "group.top.idealclover.wheretosleepinnju.group"
         if let testAppGroup = UserDefaults(suiteName: appGroupId) {
             print("✅ [Widget] Direct App Group access successful")
             if let testData = testAppGroup.data(forKey: "widget_data") {
