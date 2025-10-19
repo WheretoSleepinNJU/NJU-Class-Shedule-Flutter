@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
+		525C12EF2EA54CA60087AB96 /* WhereToSleepInNJU.icon in Resources */ = {isa = PBXBuildFile; fileRef = 525C12EE2EA54CA60087AB96 /* WhereToSleepInNJU.icon */; };
+		525C12F02EA54CA60087AB96 /* WhereToSleepInNJU.icon in Resources */ = {isa = PBXBuildFile; fileRef = 525C12EE2EA54CA60087AB96 /* WhereToSleepInNJU.icon */; };
 		526B5BCF2EA11765005E0A7E /* Flutter.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 526B54492EA11729005E0A7E /* Flutter.xcframework */; };
 		5280005D2E9F9B1E00459888 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5280005C2E9F9B1E00459888 /* WidgetKit.framework */; };
 		5280005F2E9F9B1E00459888 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5280005E2E9F9B1E00459888 /* SwiftUI.framework */; };
@@ -53,6 +55,7 @@
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
 		3D3F45517E4F72C9BE507A59 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
+		525C12EE2EA54CA60087AB96 /* WhereToSleepInNJU.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = WhereToSleepInNJU.icon; sourceTree = "<group>"; };
 		526B53C92EA11729005E0A7E /* gen_snapshot */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = gen_snapshot; sourceTree = "<group>"; };
 		526B53CA2EA11729005E0A7E /* LICENSE.gen_snapshot.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.gen_snapshot.md; sourceTree = "<group>"; };
 		526B53CD2EA11729005E0A7E /* gen_snapshot */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = gen_snapshot; sourceTree = "<group>"; };
@@ -5767,6 +5770,7 @@
 				97C146EF1CF9000F007C117D /* Products */,
 				79261F6FDA599D2661D0E8B5 /* Pods */,
 				22C6FB66F31C8AFD5536DB4B /* Frameworks */,
+				525C12EE2EA54CA60087AB96 /* WhereToSleepInNJU.icon */,
 			);
 			sourceTree = "<group>";
 		};
@@ -5887,6 +5891,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				525C12EF2EA54CA60087AB96 /* WhereToSleepInNJU.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5896,6 +5901,7 @@
 			files = (
 				97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */,
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
+				525C12F02EA54CA60087AB96 /* WhereToSleepInNJU.icon in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
 			);
@@ -6090,7 +6096,7 @@
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = WhereToSleepInNJU;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -6382,7 +6388,7 @@
 			baseConfigurationReference = 9740EEB21CF90195004384FC /* Debug.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = WhereToSleepInNJU;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -6423,7 +6429,7 @@
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = WhereToSleepInNJU;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";

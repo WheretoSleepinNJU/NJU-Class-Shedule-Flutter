@@ -326,9 +326,9 @@ class _WidgetDebugPageState extends State<WidgetDebugPage> {
             Container(
               padding: const EdgeInsets.all(16),
               color: Colors.blue[50],
-              child: Row(
+              child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   SizedBox(
                     width: 16,
                     height: 16,
