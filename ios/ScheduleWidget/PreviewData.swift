@@ -410,4 +410,149 @@ struct WidgetPreviewData {
             relevance: TimelineEntryRelevance(score: 0) // 今日无课，不需要显示
         )
     }
+
+    // MARK: - Live Activity 预览场景
+
+    /// Live Activity 场景 1：15分钟前（900秒）
+    @available(iOS 16.1, *)
+    static func liveActivity15MinBefore() -> (CourseActivityAttributes, CourseActivityAttributes.ContentState) {
+        let course = sampleCourses[0]  // 计算机组成原理
+
+        let calendar = Calendar.current
+        let now = Date()
+        let startTime = calendar.date(byAdding: .minute, value: 15, to: now)!
+        let endTime = calendar.date(byAdding: .minute, value: 115, to: now)!  // 2小时后
+
+        let attributes = CourseActivityAttributes(
+            courseId: course.id,
+            color: course.color
+        )
+
+        let contentState = CourseActivityAttributes.ContentState(
+            courseName: course.name,
+            classroom: course.classroom,
+            teacher: course.teacher,
+            startTime: startTime,
+            endTime: endTime,
+            secondsRemaining: 900,  // 15分钟 = 900秒
+            motivationalTextLeft: "好好学习",
+            motivationalTextRight: "天天向上"
+        )
+
+        return (attributes, contentState)
+    }
+
+    /// Live Activity 场景 2：5分钟前（300秒）
+    @available(iOS 16.1, *)
+    static func liveActivity5MinBefore() -> (CourseActivityAttributes, CourseActivityAttributes.ContentState) {
+        let course = sampleCourses[1]  // 数据结构
+
+        let calendar = Calendar.current
+        let now = Date()
+        let startTime = calendar.date(byAdding: .minute, value: 5, to: now)!
+        let endTime = calendar.date(byAdding: .minute, value: 105, to: now)!
+
+        let attributes = CourseActivityAttributes(
+            courseId: course.id,
+            color: course.color
+        )
+
+        let contentState = CourseActivityAttributes.ContentState(
+            courseName: course.name,
+            classroom: course.classroom,
+            teacher: course.teacher,
+            startTime: startTime,
+            endTime: endTime,
+            secondsRemaining: 300,  // 5分钟 = 300秒
+            motivationalTextLeft: "放弃幻想",
+            motivationalTextRight: "准备斗争"
+        )
+
+        return (attributes, contentState)
+    }
+
+    /// Live Activity 场景 3：1分钟前（65秒，显示秒数）
+    @available(iOS 16.1, *)
+    static func liveActivity1MinBefore() -> (CourseActivityAttributes, CourseActivityAttributes.ContentState) {
+        let course = sampleCourses[2]  // 操作系统
+
+        let calendar = Calendar.current
+        let now = Date()
+        let startTime = calendar.date(byAdding: .second, value: 65, to: now)!
+        let endTime = calendar.date(byAdding: .minute, value: 100, to: now)!
+
+        let attributes = CourseActivityAttributes(
+            courseId: course.id,
+            color: course.color
+        )
+
+        let contentState = CourseActivityAttributes.ContentState(
+            courseName: course.name,
+            classroom: course.classroom,
+            teacher: course.teacher,
+            startTime: startTime,
+            endTime: endTime,
+            secondsRemaining: 65,  // 1分5秒
+            motivationalTextLeft: "准时到",
+            motivationalTextRight: "不迟到"
+        )
+
+        return (attributes, contentState)
+    }
+
+    /// Live Activity 场景 4：30秒前（即将开始）
+    @available(iOS 16.1, *)
+    static func liveActivity30SecBefore() -> (CourseActivityAttributes, CourseActivityAttributes.ContentState) {
+        let course = sampleCourses[3]  // 软件工程
+
+        let calendar = Calendar.current
+        let now = Date()
+        let startTime = calendar.date(byAdding: .second, value: 30, to: now)!
+        let endTime = calendar.date(byAdding: .minute, value: 100, to: now)!
+
+        let attributes = CourseActivityAttributes(
+            courseId: course.id,
+            color: course.color
+        )
+
+        let contentState = CourseActivityAttributes.ContentState(
+            courseName: course.name,
+            classroom: course.classroom,
+            teacher: course.teacher,
+            startTime: startTime,
+            endTime: endTime,
+            secondsRemaining: 30,  // 30秒
+            motivationalTextLeft: "专注听讲",
+            motivationalTextRight: "认真笔记"
+        )
+
+        return (attributes, contentState)
+    }
+
+    /// Live Activity 场景 5：长课程名测试
+    @available(iOS 16.1, *)
+    static func liveActivityLongName() -> (CourseActivityAttributes, CourseActivityAttributes.ContentState) {
+        let calendar = Calendar.current
+        let now = Date()
+        let startTime = calendar.date(byAdding: .minute, value: 10, to: now)!
+        let endTime = calendar.date(byAdding: .minute, value: 110, to: now)!
+
+        let attributes = CourseActivityAttributes(
+            courseId: "test_long",
+            color: "9C27B0"
+        )
+
+        let contentState = CourseActivityAttributes.ContentState(
+            courseName: "马克思主义基本原理概论与中国特色社会主义理论体系",
+            classroom: "仙II-301",
+            teacher: "张教授",
+            startTime: startTime,
+            endTime: endTime,
+            secondsRemaining: 600,  // 10分钟
+            motivationalTextLeft: "认真学",
+            motivationalTextRight: "好好记"
+        )
+
+        return (attributes, contentState)
+    }
 }

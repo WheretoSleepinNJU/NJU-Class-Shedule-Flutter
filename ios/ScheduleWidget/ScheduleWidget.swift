@@ -70,6 +70,16 @@ struct Provider: TimelineProvider {
             }
         }
 
+        // Schedule Live Activity if on iOS 16.1+
+        if #available(iOS 16.1, *) {
+            let config = LiveActivityConfig.load()
+            LiveActivityManager.shared.scheduleLiveActivity(
+                nextCourse: currentEntry.nextCourse,
+                currentCourse: currentEntry.currentCourse,
+                userConfig: config
+            )
+        }
+
         // Calculate when to request new timeline (end of day or major event)
         let nextRefresh = calculateNextMajorRefresh(entry: currentEntry)
         let timeline = Timeline(entries: entries, policy: .after(nextRefresh))
