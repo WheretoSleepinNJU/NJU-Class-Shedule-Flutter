@@ -1,6 +1,7 @@
 import UIKit
 import Flutter
 import WidgetKit
+import ActivityKit
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -271,6 +272,92 @@ import WidgetKit
       print("❌ [AppDelegate] Failed to parse JSON: \(error)")
       result(FlutterError(code: "PARSE_ERROR", message: error.localizedDescription, details: nil))
     }
+  }
+
+  // Handle Deep Links (URL Scheme)
+  override func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+    print("🔗 [AppDelegate] Received URL: \(url.absoluteString)")
+
+    // Handle njuschedule:// scheme
+    if url.scheme == "njuschedule" {
+      handleDeepLink(url)
+      return true
+    }
+
+    // 友盟测试 (if needed)
+    // if MobClick.handle(url) {
+    //     return true
+    // }
+
+    return super.application(application, open: url, options: options)
+  }
+
+  private func handleDeepLink(_ url: URL) {
+    guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+      print("❌ [AppDelegate] Invalid URL components")
+      return
+    }
+
+    let path = components.host ?? ""
+    print("🔗 [AppDelegate] Deep link path: \(path)")
+
+    switch path {
+    case "arrived":
+      handleArrivedDeepLink(url: url)
+    case "course":
+      handleCourseDeepLink(url: url)
+    default:
+      print("⚠️ [AppDelegate] Unknown deep link path: \(path)")
+    }
+  }
+
+  /// 处理"我已到达"按钮点击
+  /// URL format: njuschedule://arrived/{courseId}
+  private func handleArrivedDeepLink(url: URL) {
+    let pathComponents = url.pathComponents.filter { $0 != "/" }
+    guard let courseId = pathComponents.first else {
+      print("❌ [AppDelegate] No course ID in arrived deep link")
+      return
+    }
+
+    print("✅ [AppDelegate] User arrived for course: \(courseId)")
+
+    // Close Live Activity
+    if #available(iOS 16.1, *) {
+      endLiveActivityForCourse(courseId: courseId)
+    }
+
+    // Refresh widgets to update status
+    if #available(iOS 14.0, *) {
+      WidgetCenter.shared.reloadAllTimelines()
+      print("🔄 [AppDelegate] Widgets refreshed after arrived action")
+    }
+  }
+
+  /// 结束指定课程的 Live Activity
+  @available(iOS 16.1, *)
+  private func endLiveActivityForCourse(courseId: String) {
+    // 由于 CourseActivityAttributes 在 ScheduleWidget target 中，
+    // 我们通过 UserDefaults 通知 Widget 关闭 Live Activity
+    let defaults = UserDefaults(suiteName: "group.top.idealclover.wheretosleepinnju.group")
+    defaults?.set(courseId, forKey: "liveActivityEndRequest")
+    defaults?.set(Date(), forKey: "liveActivityEndRequestTime")
+    defaults?.synchronize()
+
+    print("🛑 [AppDelegate] Requested to end Live Activity for course: \(courseId)")
+  }
+
+  /// 处理课程详情链接（预留）
+  /// URL format: njuschedule://course/{courseId}
+  private func handleCourseDeepLink(url: URL) {
+    let pathComponents = url.pathComponents.filter { $0 != "/" }
+    guard let courseId = pathComponents.first else {
+      print("❌ [AppDelegate] No course ID in course deep link")
+      return
+    }
+
+    print("ℹ️ [AppDelegate] Course detail request: \(courseId)")
+    // 可以在这里打开课程详情页面（如果需要的话）
   }
 
   //友盟测试：iOS9以上使用以下方法
