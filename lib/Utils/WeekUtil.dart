@@ -123,7 +123,7 @@ class WeekUtil {
     DateTime now = DateTime.now();
 
     while (now.weekday != monday) {
-      now = now.subtract(Duration(days: monday));
+      now = now.subtract(const Duration(days: 1));  // Fix: subtract 1 day at a time, not monday days
     }
 
     var formatter = DateFormat('yyyy-MM-dd');

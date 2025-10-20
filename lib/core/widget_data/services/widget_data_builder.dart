@@ -51,12 +51,30 @@ class WidgetDataBuilder {
       currentWeek,
     );
 
+    // 计算明天的星期几和周次
     final tomorrowWeekDay = currentWeekDay == 7 ? 1 : currentWeekDay + 1;
-    final tomorrowCourses = _getCoursesForWeekDay(
-      scheduleModel.activeCourses,
-      tomorrowWeekDay,
-      currentWeek,
-    );
+    // 如果今天是周日，明天（周一）应该是下一周
+    final tomorrowWeek = currentWeekDay == 7 ? currentWeek + 1 : currentWeek;
+    
+    // 获取明天的课程
+    final List<Course> tomorrowCourses;
+    if (tomorrowWeek == currentWeek) {
+      // 明天还是本周，直接使用当前的 activeCourses
+      tomorrowCourses = _getCoursesForWeekDay(
+        scheduleModel.activeCourses,
+        tomorrowWeekDay,
+        tomorrowWeek,
+      );
+    } else {
+      // 明天是下周，需要重新创建 ScheduleModel 来获取下周的活动课程
+      final nextWeekSchedule = ScheduleModel(allCourses, tomorrowWeek);
+      nextWeekSchedule.init();
+      tomorrowCourses = _getCoursesForWeekDay(
+        nextWeekSchedule.activeCourses,
+        tomorrowWeekDay,
+        tomorrowWeek,
+      );
+    }
 
     // 7. 计算当前课程和下一节课
     final currentCourse = _getCurrentCourse(todayCourses, timeTemplate);
@@ -112,22 +130,16 @@ class WidgetDataBuilder {
   }
 
   /// 获取指定星期几的课程
+  /// 注意：activeCourses 已经通过 ScheduleModel.classify() 按周过滤过了
+  /// 这里只需要按星期几过滤，确保与主应用的逻辑完全一致
   List<Course> _getCoursesForWeekDay(
     List<Course> activeCourses,
     int weekDay,
     int currentWeek,
   ) {
     final courses = activeCourses.where((course) {
-      // 过滤出指定星期几的课程
-      if (course.weekTime != weekDay) return false;
-
-      // 检查是否在本周上课
-      try {
-        final weeks = json.decode(course.weeks!) as List;
-        return weeks.contains(currentWeek);
-      } catch (e) {
-        return false;
-      }
+      // 只过滤指定星期几的课程，周过滤已由 ScheduleModel.classify() 完成
+      return course.weekTime == weekDay;
     }).toList();
 
     // 按上课时间排序
@@ -142,8 +154,8 @@ class WidgetDataBuilder {
 
     for (final course in todayCourses) {
       final period = template.getPeriodRange(
-        startPeriod: course.startTime!,
-        periodCount: course.timeCount!,
+        course.startTime!,
+        course.timeCount!,
       );
 
       if (period == null) continue;
