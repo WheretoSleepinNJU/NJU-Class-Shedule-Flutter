@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -19,6 +19,8 @@
 		528000B22E9F9D2100459888 /* WidgetDataModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528000B02E9F9D2100459888 /* WidgetDataModels.swift */; };
 		528000B32E9F9D2100459888 /* WidgetDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528000AF2E9F9D2100459888 /* WidgetDataManager.swift */; };
 		528000B42E9F9D2100459888 /* WidgetDataModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528000B02E9F9D2100459888 /* WidgetDataModels.swift */; };
+		52BEB39F2EA65CA700FD5AD9 /* AppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52BEB39E2EA65CA700FD5AD9 /* AppConstants.swift */; };
+		52BEB3A02EA65CA700FD5AD9 /* AppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52BEB39E2EA65CA700FD5AD9 /* AppConstants.swift */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
@@ -1864,6 +1866,7 @@
 		5280005E2E9F9B1E00459888 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		528000AF2E9F9D2100459888 /* WidgetDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDataManager.swift; sourceTree = "<group>"; };
 		528000B02E9F9D2100459888 /* WidgetDataModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDataModels.swift; sourceTree = "<group>"; };
+		52BEB39E2EA65CA700FD5AD9 /* AppConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppConstants.swift; path = Runner/AppConstants.swift; sourceTree = "<group>"; };
 		52D744212EA142C3007D40A7 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 		52D744222EA142EB007D40A7 /* ScheduleWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ScheduleWidgetExtension.entitlements; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -1882,7 +1885,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		528000732E9F9B1F00459888 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		528000732E9F9B1F00459888 /* Exceptions for "ScheduleWidget" folder in "ScheduleWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -1892,7 +1895,18 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		528000602E9F9B1E00459888 /* ScheduleWidget */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (528000732E9F9B1F00459888 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = ScheduleWidget; sourceTree = "<group>"; };
+		528000602E9F9B1E00459888 /* ScheduleWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				528000732E9F9B1F00459888 /* Exceptions for "ScheduleWidget" folder in "ScheduleWidgetExtension" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = ScheduleWidget;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -5771,6 +5785,7 @@
 				79261F6FDA599D2661D0E8B5 /* Pods */,
 				22C6FB66F31C8AFD5536DB4B /* Frameworks */,
 				525C12EE2EA54CA60087AB96 /* WhereToSleepInNJU.icon */,
+				52BEB39E2EA65CA700FD5AD9 /* AppConstants.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -5918,13 +5933,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -5991,6 +6002,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				52BEB39F2EA65CA700FD5AD9 /* AppConstants.swift in Sources */,
 				528000B12E9F9D2100459888 /* WidgetDataManager.swift in Sources */,
 				528000B22E9F9D2100459888 /* WidgetDataModels.swift in Sources */,
 			);
@@ -6004,6 +6016,7 @@
 				528000B42E9F9D2100459888 /* WidgetDataModels.swift in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
+				52BEB3A02EA65CA700FD5AD9 /* AppConstants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

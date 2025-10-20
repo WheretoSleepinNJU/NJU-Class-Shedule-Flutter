@@ -178,7 +178,7 @@ class LiveActivityManager {
 
     /// 检查并处理来自主应用的关闭请求
     private func checkAndHandleEndRequest() {
-        let defaults = UserDefaults(suiteName: "group.com.flwfdd.mergeSchedule")
+        let defaults = UserDefaults(suiteName: WidgetConstants.appGroupId)
 
         guard let requestedCourseId = defaults?.string(forKey: "liveActivityEndRequest"),
               let requestTime = defaults?.object(forKey: "liveActivityEndRequestTime") as? Date else {
@@ -206,7 +206,7 @@ class LiveActivityManager {
 
     /// 加载时间模板
     private func loadTimeTemplate() -> SchoolTimeTemplate? {
-        let defaults = UserDefaults(suiteName: "group.com.flwfdd.mergeSchedule")
+        let defaults = UserDefaults(suiteName: WidgetConstants.appGroupId)
         guard let jsonString = defaults?.string(forKey: "widgetTimeTemplate"),
               let jsonData = jsonString.data(using: .utf8) else {
             return nil
@@ -244,7 +244,7 @@ struct LiveActivityConfig {
 
     /// 从 SharedPreferences 加载配置
     static func load() -> LiveActivityConfig {
-        let defaults = UserDefaults(suiteName: "group.com.flwfdd.mergeSchedule")
+        let defaults = UserDefaults(suiteName: WidgetConstants.appGroupId)
 
         return LiveActivityConfig(
             isEnabled: defaults?.bool(forKey: "flutter.liveActivityEnabled") ?? true,

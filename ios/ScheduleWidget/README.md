@@ -45,7 +45,7 @@ Add these files to the ScheduleWidget target:
 1. Select **ScheduleWidget** target
 2. Signing & Capabilities tab
 3. Click **+ Capability** → **App Groups**
-4. Enable: `group.com.wheretosleepinnju.scheduleapp`
+4. Enable: `group.top.idealclover.wheretosleepinnju.group`
 
 ### 4. Update Deployment Target
 
@@ -155,7 +155,7 @@ Example:
 
 ### Widget not updating
 - Verify App Group capability is enabled on both targets
-- Check App Group ID matches: `group.com.wheretosleepinnju.scheduleapp`
+- Check App Group ID matches: `group.top.idealclover.wheretosleepinnju.group`
 - Try force-quitting and reopening the app
 
 ### Live Activities not appearing

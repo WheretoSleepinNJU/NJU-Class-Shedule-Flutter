@@ -1,6 +1,27 @@
 import WidgetKit
 import SwiftUI
 
+// MARK: - Widget Constants
+struct WidgetConstants {
+    static let appGroupId = "group.top.idealclover.wheretosleepinnju.group"
+    
+    struct UserDefaultsKeys {
+        static let widgetData = "widget_data"
+        static let liveActivityData = "live_activity_data"
+        static let unifiedDataPackage = "unified_data_package"
+        static let lastUpdateTime = "last_update_time"
+        static let liveActivityEndRequest = "liveActivityEndRequest"
+        static let liveActivityEndRequestTime = "liveActivityEndRequestTime"
+        static let widgetTimeTemplate = "widgetTimeTemplate"
+        
+        // Flutter configuration keys
+        static let liveActivityEnabled = "flutter.liveActivityEnabled"
+        static let widgetApproachingMinutes = "flutter.widgetApproachingMinutes"
+        static let liveActivityTextLeft = "flutter.liveActivityTextLeft"
+        static let liveActivityTextRight = "flutter.liveActivityTextRight"
+    }
+}
+
 // MARK: - Widget Display State
 enum WidgetDisplayState {
     case beforeFirstClass    // 上课前（当天第一节课之前）
@@ -99,8 +120,7 @@ struct Provider: TimelineProvider {
         print("📅 [Widget] Current time: \(Date())")
 
         // Debug: Test direct App Group access
-        let appGroupId = "group.top.idealclover.wheretosleepinnju.group"
-        if let testAppGroup = UserDefaults(suiteName: appGroupId) {
+        if let testAppGroup = UserDefaults(suiteName: WidgetConstants.appGroupId) {
             print("✅ [Widget] Direct App Group access successful")
             if let testData = testAppGroup.data(forKey: "widget_data") {
                 print("✅ [Widget] Direct read successful: \(testData.count) bytes")

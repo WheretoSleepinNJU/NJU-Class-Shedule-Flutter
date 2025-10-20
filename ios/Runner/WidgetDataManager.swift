@@ -5,8 +5,8 @@ import Foundation
 class WidgetDataManager {
     static let shared = WidgetDataManager()
 
-    // App Group ID - 需要在 Xcode 中配置
-    private let appGroupId = "group.top.idealclover.wheretosleepinnju.group"
+    // App Group ID - 使用集中化的常量
+    private let appGroupId = kAppGroupIdentifier
 
     // UserDefaults keys
     private enum Keys {

@@ -31,7 +31,7 @@ App Groups allow data sharing between the main app and widget extensions.
 2. Select the Runner target
 3. Go to **Signing & Capabilities** tab
 4. Click **+ Capability** and add **App Groups**
-5. Enable (or create) an App Group with ID: `group.com.wheretosleepinnju.scheduleapp`
+5. Enable (or create) an App Group with ID: `group.top.idealclover.wheretosleepinnju.group`
 
 ### 2. Add WidgetDataModels.swift to Xcode Project
 
@@ -216,7 +216,7 @@ Each school has its own time period definitions. Courses store `startPeriod` (no
 
 ### "Failed to access App Group"
 - Ensure App Group capability is enabled in Xcode
-- Verify the App Group ID matches: `group.com.wheretosleepinnju.scheduleapp`
+- Verify the App Group ID matches: `group.top.idealclover.wheretosleepinnju.group`
 - Check that both Runner and Widget Extension have the capability
 
 ### "No data found for key"

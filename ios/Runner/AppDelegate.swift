@@ -97,10 +97,9 @@ import ActivityKit
     }
 
     // Save to UserDefaults (App Group)
-    let appGroupId = "group.top.idealclover.wheretosleepinnju.group"
-    print("🔐 [AppDelegate] Attempting to access App Group: \(appGroupId)")
+    print("🔐 [AppDelegate] Attempting to access App Group: \(kAppGroupIdentifier)")
 
-    if let appGroup = UserDefaults(suiteName: appGroupId) {
+    if let appGroup = UserDefaults(suiteName: kAppGroupIdentifier) {
       print("✅ [AppDelegate] App Group accessed successfully")
 
       do {
@@ -137,7 +136,7 @@ import ActivityKit
         result(FlutterError(code: "SAVE_ERROR", message: error.localizedDescription, details: nil))
       }
     } else {
-      print("❌ [AppDelegate] Failed to access App Group: \(appGroupId)")
+      print("❌ [AppDelegate] Failed to access App Group: \(kAppGroupIdentifier)")
       print("⚠️ [AppDelegate] Make sure App Groups capability is enabled")
       result(FlutterError(code: "APP_GROUP_ERROR", message: "Failed to access App Group", details: nil))
     }
@@ -152,7 +151,7 @@ import ActivityKit
     print("Received live activity data: \(args.keys)")
 
     // Save to UserDefaults (App Group)
-    if let appGroup = UserDefaults(suiteName: "group.top.idealclover.wheretosleepinnju.group") {
+    if let appGroup = UserDefaults(suiteName: kAppGroupIdentifier) {
       do {
         let jsonData = try JSONSerialization.data(withJSONObject: args, options: [])
         appGroup.set(jsonData, forKey: "live_activity_data")
@@ -177,7 +176,7 @@ import ActivityKit
     print("Received unified data package")
 
     // Save to UserDefaults (App Group)
-    if let appGroup = UserDefaults(suiteName: "group.top.idealclover.wheretosleepinnju.group") {
+    if let appGroup = UserDefaults(suiteName: kAppGroupIdentifier) {
       do {
         let jsonData = try JSONSerialization.data(withJSONObject: args, options: [])
         appGroup.set(jsonData, forKey: "unified_data_package")
@@ -222,7 +221,7 @@ import ActivityKit
       "model": UIDevice.current.model,
       "supportsWidgets": true,
       "supportsLiveActivities": true,
-      "appGroupId": "group.top.idealclover.wheretosleepinnju.group"
+      "appGroupId": kAppGroupIdentifier
     ]
     result(platformInfo)
   }
@@ -230,8 +229,7 @@ import ActivityKit
   private func handleDebugReadWidgetData(result: @escaping FlutterResult) {
     print("🔍 [AppDelegate] ========== Debug: Reading Widget Data ==========")
 
-    let appGroupId = "group.top.idealclover.wheretosleepinnju.group"
-    guard let appGroup = UserDefaults(suiteName: appGroupId) else {
+    guard let appGroup = UserDefaults(suiteName: kAppGroupIdentifier) else {
       print("❌ [AppDelegate] Failed to access App Group")
       result(FlutterError(code: "APP_GROUP_ERROR", message: "Cannot access App Group", details: nil))
       return
@@ -339,7 +337,7 @@ import ActivityKit
   private func endLiveActivityForCourse(courseId: String) {
     // 由于 CourseActivityAttributes 在 ScheduleWidget target 中，
     // 我们通过 UserDefaults 通知 Widget 关闭 Live Activity
-    let defaults = UserDefaults(suiteName: "group.top.idealclover.wheretosleepinnju.group")
+    let defaults = UserDefaults(suiteName: kAppGroupIdentifier)
     defaults?.set(courseId, forKey: "liveActivityEndRequest")
     defaults?.set(Date(), forKey: "liveActivityEndRequestTime")
     defaults?.synchronize()
