@@ -64,5 +64,7 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
 </dict>
 </plist>
