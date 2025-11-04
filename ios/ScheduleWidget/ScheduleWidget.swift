@@ -179,16 +179,35 @@ struct Provider: TimelineProvider {
 
         print("✅ [Widget] ========== Entry Loaded Successfully ==========")
 
-        // 计算显示状态
-        let displayState = determineDisplayState(data: data)
+        // 检查是否有"已到达"的课程
+        let arrivedCourse = checkArrivedCourse(data: data)
+        
+        // 计算显示状态（考虑已到达的课程）
+        let displayState = determineDisplayState(data: data, arrivedCourse: arrivedCourse)
         print("📊 [Widget] Display State: \(displayState)")
+        
+        // 如果有已到达的课程，调整当前课程和下一节课
+        var adjustedCurrentCourse = data.currentCourse
+        var adjustedNextCourse = data.nextCourse
+        
+        if let arrived = arrivedCourse {
+            // 将已到达的课程设为当前课程
+            adjustedCurrentCourse = arrived
+            // 更新下一节课为已到达课程之后的课程
+            if let arrivedIndex = data.todayCourses.firstIndex(where: { $0.id == arrived.id }),
+               arrivedIndex + 1 < data.todayCourses.count {
+                adjustedNextCourse = data.todayCourses[arrivedIndex + 1]
+            } else {
+                adjustedNextCourse = nil
+            }
+        }
 
         // 创建临时 entry 用于计算 relevance
         let tempEntry = ScheduleEntry(
             date: Date(),
             widgetData: data,
-            nextCourse: data.nextCourse,
-            currentCourse: data.currentCourse,
+            nextCourse: adjustedNextCourse,
+            currentCourse: adjustedCurrentCourse,
             todayCourses: data.todayCourses,
             errorMessage: nil,
             displayState: displayState,
@@ -211,8 +230,60 @@ struct Provider: TimelineProvider {
         )
     }
 
+    // 检查是否有"已到达"的课程
+    private func checkArrivedCourse(data: WidgetScheduleData) -> WidgetCourse? {
+        let defaults = UserDefaults(suiteName: WidgetConstants.appGroupId)
+        
+        guard let arrivedCourseId = defaults?.string(forKey: WidgetConstants.UserDefaultsKeys.arrivedCourseId),
+              let arrivedTime = defaults?.object(forKey: WidgetConstants.UserDefaultsKeys.arrivedCourseTime) as? Date else {
+            return nil
+        }
+        
+        // 在今日课程中查找对应的课程
+        guard let arrivedCourse = data.todayCourses.first(where: { $0.id == arrivedCourseId }) else {
+            // 找不到对应的课程，清除标记
+            defaults?.removeObject(forKey: WidgetConstants.UserDefaultsKeys.arrivedCourseId)
+            defaults?.removeObject(forKey: WidgetConstants.UserDefaultsKeys.arrivedCourseTime)
+            return nil
+        }
+        
+        let now = Date()
+        
+        // 检查已到达的课程是否已经结束
+        if hasCourseEnded(course: arrivedCourse, template: data.timeTemplate, at: now) {
+            // 课程已结束，清除到达状态
+            defaults?.removeObject(forKey: WidgetConstants.UserDefaultsKeys.arrivedCourseId)
+            defaults?.removeObject(forKey: WidgetConstants.UserDefaultsKeys.arrivedCourseTime)
+            return nil
+        }
+        
+        // 只考虑最近30分钟内标记的课程（作为后备机制）
+        guard now.timeIntervalSince(arrivedTime) < 1800 else { // 30 minutes
+            // 清除过期的标记
+            defaults?.removeObject(forKey: WidgetConstants.UserDefaultsKeys.arrivedCourseId)
+            defaults?.removeObject(forKey: WidgetConstants.UserDefaultsKeys.arrivedCourseTime)
+            return nil
+        }
+        
+        return arrivedCourse
+    }
+    
+    // 检查课程是否已经结束
+    private func hasCourseEnded(course: WidgetCourse, template: SchoolTimeTemplate?, at date: Date) -> Bool {
+        guard let template = template,
+              let periodRange = template.getPeriodRange(
+                  startPeriod: course.startPeriod,
+                  periodCount: course.periodCount
+              ),
+              let endTime = parseTime(periodRange.endTime) else {
+            return false
+        }
+        
+        return date > endTime
+    }
+    
     // MARK: - State Determination
-    private func determineDisplayState(data: WidgetScheduleData) -> WidgetDisplayState {
+    private func determineDisplayState(data: WidgetScheduleData, arrivedCourse: WidgetCourse? = nil) -> WidgetDisplayState {
         let now = Date()
         let calendar = Calendar.current
         let currentHour = calendar.component(.hour, from: now)
@@ -227,14 +298,18 @@ struct Provider: TimelineProvider {
             }
         }
 
-        // 2. 正在上课
-        if data.currentCourse != nil {
+        // 2. 正在上课 - 优先检查用户标记的"已到达"课程
+        if let arrived = arrivedCourse {
+            // 用户明确标记为已到达的课程 - 用户意图优先于时间逻辑
+            return .inClass
+        } else if data.currentCourse != nil {
+            // 时间-based 当前课程（仅当没有用户覆盖时）
             return .inClass
         }
 
         // 3. 检查是否即将上课
         if let next = data.nextCourse {
-            if let minutesUntil = getMinutesUntilCourse(next, template: data.timeTemplate),
+            if let minutesUntil = getMinutesUntilCourse(next, template: data.timeTemplate, from: now),
                minutesUntil > 0 && minutesUntil <= approachingMinutes {
                 return .approachingClass
             }
@@ -259,18 +334,6 @@ struct Provider: TimelineProvider {
         return .classesEnded
     }
 
-    private func getMinutesUntilCourse(_ course: WidgetCourse, template: SchoolTimeTemplate) -> Int? {
-        guard let period = template.getPeriodRange(
-            startPeriod: course.startPeriod,
-            periodCount: course.periodCount
-        ) else { return nil }
-
-        guard let startTime = parseTime(period.startTime) else { return nil }
-
-        let now = Date()
-        let minutes = Calendar.current.dateComponents([.minute], from: now, to: startTime).minute
-        return minutes
-    }
 
     // MARK: - Refresh Calculation
     /// 计算下一次主要刷新时间（用于重新生成 timeline）
@@ -513,6 +576,9 @@ struct Provider: TimelineProvider {
     /// 创建指定未来时间的 timeline entry
     /// 模拟在该时间点的 widget 状态
     private func createEntry(at futureDate: Date, data: WidgetScheduleData) -> ScheduleEntry {
+        // 检查是否有"已到达"的课程（仅对当前时间有效，未来时间不考虑）
+        let arrivedCourse: WidgetCourse? = nil // 未来时间不考虑已到达的课程
+        
         // 在指定时间点，重新计算当前课程和下一节课
         let (currentCourse, nextCourse) = findCoursesAt(date: futureDate, data: data)
 

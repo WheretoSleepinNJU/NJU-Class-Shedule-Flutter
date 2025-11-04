@@ -2,6 +2,18 @@ import ActivityKit
 import WidgetKit
 import SwiftUI
 
+// MARK: - Helper Functions
+
+/// 根据教室名称长度计算字体大小
+private func calculateClassroomFontSize(_ classroom: String, baseSize: CGFloat) -> CGFloat {
+    if classroom.count > 15 {
+        return baseSize - 2
+    } else if classroom.count > 10 {
+        return baseSize - 1
+    }
+    return baseSize
+}
+
 /// 课程 Live Activity 属性
 @available(iOS 16.1, *)
 struct CourseActivityAttributes: ActivityAttributes {
@@ -68,8 +80,10 @@ struct CourseActivityWidget: Widget {
                 if let classroom = context.state.classroom {
                     VStack(alignment: .trailing, spacing: 0) {
                         Text(classroom)
-                            .font(.system(size: 11, weight: .bold))
-                            .fixedSize()  // 教室绝对不能截断
+                            .font(.system(size: calculateClassroomFontSize(classroom, baseSize: 11), weight: .bold))
+                            .minimumScaleFactor(0.8)
+                            .lineLimit(2)
+                            .fixedSize(horizontal: false, vertical: true)
 
                         // 倒计时（简化显示）
                         Text(formatSecondsCompact(context.state.secondsRemaining))
@@ -103,9 +117,9 @@ struct CourseActivityWidget: Widget {
 
     private func getCourseColor(_ colorHex: String?) -> Color {
         if let hex = colorHex {
-            return Color(hex: hex)
+            return Color(hex: hex).enhancedForWidget()
         }
-        return .blue
+        return .blue.enhancedForWidget()
     }
 
     /// 格式化秒数为倒计时显示（展开态使用）
@@ -174,8 +188,10 @@ struct LockScreenLiveActivityView: View {
                 HStack(spacing: 3) {
                     if let classroom = context.state.classroom {
                         Text(classroom)
-                            .font(.system(size: 12, weight: .semibold))
-                            .fixedSize()  // 教室绝对不能截断
+                            .font(.system(size: calculateClassroomFontSize(classroom, baseSize: 12), weight: .semibold))
+                            .minimumScaleFactor(0.8)
+                            .lineLimit(2)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
 
                     if let teacher = context.state.teacher {
@@ -252,9 +268,9 @@ struct LockScreenLiveActivityView: View {
 
     private func getCourseColor(_ colorHex: String?) -> Color {
         if let hex = colorHex {
-            return Color(hex: hex)
+            return Color(hex: hex).enhancedForWidget()
         }
-        return .blue
+        return .blue.enhancedForWidget()
     }
 
     private func formatSeconds(_ seconds: Int) -> String {
