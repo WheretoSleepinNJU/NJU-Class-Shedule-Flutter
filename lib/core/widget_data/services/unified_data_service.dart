@@ -10,6 +10,7 @@ import '../communication/native_data_bridge.dart';
 import '../../../Models/CourseModel.dart';
 import '../../../Models/CourseTableModel.dart' as CourseTableDb;
 import '../../../Models/ScheduleModel.dart';
+import '../../../Utils/ColorUtil.dart';
 
 /// 统一数据服务
 /// 为 Widget 和 Live Activity 提供数据支持

@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../Models/CourseModel.dart';
 import '../../../Models/CourseTableModel.dart';
 import '../../../Models/ScheduleModel.dart';
+import '../../../Utils/ColorUtil.dart';
 import '../models/widget_course.dart';
 import '../models/widget_schedule_data.dart';
 import '../models/school_time_template.dart';
