@@ -213,10 +213,10 @@ class UnifiedDataService {
       final weekSchedule = _buildWeekSchedule(activeCoursesForWidget);
       
       // 10. 转换为 Widget 格式（使用课表名称作为标识）
-      final widgetTodayCourses = todayCourses.map((c) => _convertToWidgetCourse(c, scheduleName)).toList();
-      final widgetTomorrowCourses = tomorrowCourses.map((c) => _convertToWidgetCourse(c, scheduleName)).toList();
-      final widgetCurrentCourse = currentCourse != null ? _convertToWidgetCourse(currentCourse, scheduleName) : null;
-      final widgetNextCourse = nextCourse != null ? _convertToWidgetCourse(nextCourse, scheduleName) : null;
+      final widgetTodayCourses = await Future.wait(todayCourses.map((c) => _convertToWidgetCourse(c, scheduleName)));
+      final widgetTomorrowCourses = await Future.wait(tomorrowCourses.map((c) => _convertToWidgetCourse(c, scheduleName)));
+      final widgetCurrentCourse = currentCourse != null ? await _convertToWidgetCourse(currentCourse, scheduleName) : null;
+      final widgetNextCourse = nextCourse != null ? await _convertToWidgetCourse(nextCourse, scheduleName) : null;
 
       // 11. 读取 Widget 配置选项
       final approachingMinutes = _preferences.getInt('widgetApproachingMinutes') ?? 15;
@@ -235,7 +235,7 @@ class UnifiedDataService {
         tomorrowCourses: widgetTomorrowCourses,
         nextCourse: widgetNextCourse,
         currentCourse: widgetCurrentCourse,
-        weekSchedule: _convertWeekScheduleToWidget(weekSchedule, scheduleName),
+        weekSchedule: await _convertWeekScheduleToWidget(weekSchedule, scheduleName),
         todayCourseCount: widgetTodayCourses.length,
         tomorrowCourseCount: widgetTomorrowCourses.length,
         weekCourseCount: scheduleModel.activeCourses.length,
@@ -374,7 +374,7 @@ class UnifiedDataService {
   }
   
   /// 转换为 Widget 课程格式
-  WidgetCourse _convertToWidgetCourse(Course course, String schoolId) {
+  Future<WidgetCourse> _convertToWidgetCourse(Course course, String schoolId) async {
     final courseId = 'course_${course.id ?? 0}_${course.weekTime}_${course.startTime}';
 
     // 解析周次列表
@@ -387,6 +387,10 @@ class UnifiedDataService {
         // ignore
       }
     }
+
+    // 使用与前端相同的颜色逻辑
+    List colorPool = await ColorPool.getColorPool();
+    String? courseColor = course.getColor(colorPool);
 
     // 计算实际节数：timeCount = endTime - startTime，实际节数需要 +1
     // 例如：第3-5节课，startTime=3, endTime=5, timeCount=2, 实际节数=3
@@ -403,7 +407,7 @@ class UnifiedDataService {
       startPeriod: course.startTime ?? 1,
       periodCount: periodCount,  // 使用修正后的节数
       weekDay: course.weekTime ?? 1,
-      color: course.color,
+      color: courseColor,
       schoolId: schoolId,
       weeks: weeksList,
       courseType: course.importType == 1 ? 'import' : 'manual',
@@ -412,16 +416,16 @@ class UnifiedDataService {
   }
   
   /// 转换周课表格式
-  Map<int, List<WidgetCourse>> _convertWeekScheduleToWidget(
+  Future<Map<int, List<WidgetCourse>>> _convertWeekScheduleToWidget(
     Map<int, List<Course>> schedule,
     String schoolId,
-  ) {
+  ) async {
     final widgetSchedule = <int, List<WidgetCourse>>{};
     
     for (final entry in schedule.entries) {
-      final widgetCourses = entry.value
-          .map((c) => _convertToWidgetCourse(c, schoolId))
-          .toList();
+      final widgetCourses = await Future.wait(
+        entry.value.map((c) => _convertToWidgetCourse(c, schoolId))
+      );
       widgetSchedule[entry.key] = widgetCourses;
     }
     

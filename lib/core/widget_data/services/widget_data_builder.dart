@@ -82,26 +82,26 @@ class WidgetDataBuilder {
     final nextCourse = _getNextCourse(todayCourses, timeTemplate);
 
     // 8. 构建周课表
-    final weekSchedule = _buildWeekSchedule(
+    final weekSchedule = await _buildWeekSchedule(
       scheduleModel.activeCourses,
       currentWeek,
     );
 
     // 9. 转换为 Widget 课程格式
-    final widgetTodayCourses = todayCourses
-        .map((c) => _convertToWidgetCourse(c, schoolId))
-        .toList();
+    final widgetTodayCourses = await Future.wait(
+      todayCourses.map((c) => _convertToWidgetCourse(c, schoolId))
+    );
 
-    final widgetTomorrowCourses = tomorrowCourses
-        .map((c) => _convertToWidgetCourse(c, schoolId))
-        .toList();
+    final widgetTomorrowCourses = await Future.wait(
+      tomorrowCourses.map((c) => _convertToWidgetCourse(c, schoolId))
+    );
 
     final widgetCurrentCourse = currentCourse != null
-        ? _convertToWidgetCourse(currentCourse, schoolId)
+        ? await _convertToWidgetCourse(currentCourse, schoolId)
         : null;
 
     final widgetNextCourse = nextCourse != null
-        ? _convertToWidgetCourse(nextCourse, schoolId)
+        ? await _convertToWidgetCourse(nextCourse, schoolId)
         : null;
 
     // 10. 构建 WidgetScheduleData
@@ -208,25 +208,25 @@ class WidgetDataBuilder {
   }
 
   /// 构建整周课表
-  Map<int, List<WidgetCourse>> _buildWeekSchedule(
+  Future<Map<int, List<WidgetCourse>>> _buildWeekSchedule(
     List<Course> activeCourses,
     int currentWeek,
-  ) {
+  ) async {
     final weekSchedule = <int, List<WidgetCourse>>{};
     final schoolId = preferences.getString('school_id') ?? 'nju';
 
     for (int weekDay = 1; weekDay <= 7; weekDay++) {
       final courses = _getCoursesForWeekDay(activeCourses, weekDay, currentWeek);
-      weekSchedule[weekDay] = courses
-          .map((c) => _convertToWidgetCourse(c, schoolId))
-          .toList();
+      weekSchedule[weekDay] = await Future.wait(
+        courses.map((c) => _convertToWidgetCourse(c, schoolId))
+      );
     }
 
     return weekSchedule;
   }
 
   /// 转换为 Widget 课程格式
-  WidgetCourse _convertToWidgetCourse(Course course, String schoolId) {
+  Future<WidgetCourse> _convertToWidgetCourse(Course course, String schoolId) async {
     // 解析 weeks 字段
     List<int> weeks = [];
     try {
@@ -236,6 +236,17 @@ class WidgetDataBuilder {
       weeks = [];
     }
 
+    // 使用与前端相同的颜色逻辑
+    List colorPool = await ColorPool.getColorPool();
+    String? courseColor = course.getColor(colorPool);
+    
+    // Debug logging
+    print('[WidgetDataBuilder] Course: ${course.name}');
+    print('[WidgetDataBuilder]   courseId: ${course.courseId}');
+    print('[WidgetDataBuilder]   original color: ${course.color}');
+    print('[WidgetDataBuilder]   assigned color: $courseColor');
+    print('[WidgetDataBuilder]   colorPool length: ${colorPool.length}');
+
     return WidgetCourse(
       id: course.id?.toString() ?? course.courseId?.toString() ?? '0',
       name: course.name ?? '未命名课程',
@@ -244,7 +255,7 @@ class WidgetDataBuilder {
       startPeriod: course.startTime ?? 1,
       periodCount: course.timeCount ?? 1,
       weekDay: course.weekTime ?? 1,
-      color: course.color,
+      color: courseColor,
       schoolId: schoolId,
       weeks: weeks,
       courseType: null,
