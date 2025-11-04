@@ -319,6 +319,12 @@ import ActivityKit
     }
 
     print("✅ [AppDelegate] User arrived for course: \(courseId)")
+    
+    // 记录已到达的课程
+    let defaults = UserDefaults(suiteName: kAppGroupIdentifier)
+    defaults?.set(courseId, forKey: "arrivedCourseId")
+    defaults?.set(Date(), forKey: "arrivedCourseTime")
+    defaults?.synchronize()
 
     // Close Live Activity
     if #available(iOS 16.1, *) {
