@@ -13,6 +13,8 @@ struct WidgetConstants {
         static let liveActivityEndRequest = "liveActivityEndRequest"
         static let liveActivityEndRequestTime = "liveActivityEndRequestTime"
         static let widgetTimeTemplate = "widgetTimeTemplate"
+        static let arrivedCourseId = "arrivedCourseId"
+        static let arrivedCourseTime = "arrivedCourseTime"
         
         // Flutter configuration keys
         static let liveActivityEnabled = "flutter.liveActivityEnabled"
