@@ -335,11 +335,13 @@ private struct DetailedCourseCard: View {
                 .foregroundColor(.primary)
 
             // 教室 · 教师
-            HStack(spacing: 3) {
+            HStack(alignment: .top, spacing: 3) {
                 if let classroom = course.classroom {
                     Text(classroom)
-                        .font(.system(size: 10, weight: .semibold))
-                        .fixedSize()  // 教室不能截断
+                        .font(.system(size: calculateClassroomFontSize(classroom), weight: .semibold))
+                        .minimumScaleFactor(0.8)
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
 
                 if let teacher = course.teacher {
@@ -395,9 +397,9 @@ private struct DetailedCourseCard: View {
 
     private var courseColor: Color {
         if let hex = course.color {
-            return Color(hex: hex)
+            return Color(hex: hex).enhancedForWidget()
         }
-        return .blue
+        return .blue.enhancedForWidget()
     }
 
     private func getTimeRange() -> String? {
@@ -425,6 +427,16 @@ private struct DetailedCourseCard: View {
             return "\(hour):\(components[1])"
         }
         return timeString
+    }
+    
+    // 根据教室名称长度计算字体大小
+    private func calculateClassroomFontSize(_ classroom: String) -> CGFloat {
+        if classroom.count > 15 {
+            return 8
+        } else if classroom.count > 10 {
+            return 9
+        }
+        return 10
     }
 }
 
@@ -603,7 +615,8 @@ private struct CompactCourseRow: View {
                         Text(classroom)
                             .font(.system(size: 8))
                             .foregroundColor(.secondary)
-                            .fixedSize()  // 教室不能截断
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
                     }
 
                     if let teacher = course.teacher {
@@ -646,9 +659,9 @@ private struct CompactCourseRow: View {
 
     private var courseColor: Color {
         if let hex = course.color {
-            return Color(hex: hex)
+            return Color(hex: hex).enhancedForWidget()
         }
-        return .blue
+        return .blue.enhancedForWidget()
     }
 
     private func getTimeRange() -> String? {
@@ -671,6 +684,16 @@ private struct CompactCourseRow: View {
             return "\(hour):\(components[1])"
         }
         return timeString
+    }
+    
+    // 根据教室名称长度计算字体大小
+    private func calculateClassroomFontSize(_ classroom: String) -> CGFloat {
+        if classroom.count > 15 {
+            return 8
+        } else if classroom.count > 10 {
+            return 9
+        }
+        return 10
     }
 }
 

@@ -449,8 +449,10 @@ private struct LargeDetailedCourseCard: View {
                     HStack(spacing: 3) {
                         if let classroom = course.classroom {
                             Text(classroom)
-                                .font(.system(size: 13, weight: .semibold))
-                                .fixedSize()
+                                .font(.system(size: calculateClassroomFontSize(classroom, baseSize: 13), weight: .semibold))
+                                .minimumScaleFactor(0.8)
+                                .lineLimit(2)
+                                .fixedSize(horizontal: false, vertical: true)
                         }
 
                         if let teacher = course.teacher {
@@ -504,9 +506,9 @@ private struct LargeDetailedCourseCard: View {
 
     private var courseColor: Color {
         if let hex = course.color {
-            return Color(hex: hex)
+            return Color(hex: hex).enhancedForWidget()
         }
-        return .blue
+        return .blue.enhancedForWidget()
     }
 
     private func getStartTime() -> String? {
@@ -537,6 +539,16 @@ private struct LargeDetailedCourseCard: View {
             return "\(hour):\(components[1])"
         }
         return timeString
+    }
+    
+    // 根据教室名称长度计算字体大小
+    private func calculateClassroomFontSize(_ classroom: String, baseSize: CGFloat) -> CGFloat {
+        if classroom.count > 15 {
+            return baseSize - 3
+        } else if classroom.count > 10 {
+            return baseSize - 2
+        }
+        return baseSize
     }
 }
 
@@ -571,7 +583,8 @@ private struct LargeCompactCourseCard: View {
                             Text(classroom)
                                 .font(.system(size: 10))
                                 .foregroundColor(.secondary)
-                                .fixedSize()
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.7)
                         }
 
                         if let teacher = course.teacher {
@@ -625,9 +638,9 @@ private struct LargeCompactCourseCard: View {
 
     private var courseColor: Color {
         if let hex = course.color {
-            return Color(hex: hex)
+            return Color(hex: hex).enhancedForWidget()
         }
-        return .blue
+        return .blue.enhancedForWidget()
     }
 
     private func getStartTime() -> String? {

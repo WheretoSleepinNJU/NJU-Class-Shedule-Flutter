@@ -30,7 +30,7 @@ struct WidgetPreviewData {
         WidgetCourse(
             id: "1",
             name: "计算机组成原理",
-            classroom: "仙II-308",
+            classroom: "非常非常非常长的教室名称",
             teacher: "冯诺曼",
             startPeriod: 1,
             periodCount: 2,
@@ -44,7 +44,7 @@ struct WidgetPreviewData {
         WidgetCourse(
             id: "2",
             name: "数据结构",
-            classroom: "仙II-410",
+            classroom: "非常非常非常长的教室名称",
             teacher: "高德纳",
             startPeriod: 3,
             periodCount: 2,

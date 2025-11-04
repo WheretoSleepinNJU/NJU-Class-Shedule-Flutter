@@ -362,11 +362,13 @@ private struct CourseCardView: View {
                 if isDetailed {
                     // 详细模式：第二行教室·教师，第三行时间
                     // 第二行：教室 · 教师
-                    HStack(spacing: 3) {
+                    HStack(alignment: .top, spacing: 3) {
                         if let classroom = course.classroom {
                             Text(classroom)
-                                .font(.system(size: 11, weight: .semibold))
-                                .fixedSize()  // 教室不能截断
+                                .font(.system(size: calculateClassroomFontSize(classroom), weight: .semibold))
+                                .minimumScaleFactor(0.8)
+                                .lineLimit(2)
+                                .fixedSize(horizontal: false, vertical: true)
                         }
 
                         if let teacher = course.teacher {
@@ -405,7 +407,8 @@ private struct CourseCardView: View {
                             Text(classroom)
                                 .font(.system(size: 8))
                                 .foregroundColor(.secondary)
-                                .fixedSize()  // 教室不能截断
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.7)
                         }
 
                         if let teacher = course.teacher {
@@ -448,14 +451,15 @@ private struct CourseCardView: View {
         }
         .contentShape(Rectangle())
         .widgetURL(URL(string: "njuschedule://course/\(course.id)"))
+        .padding(.leading, 4)
     }
 
     // 获取课程颜色
     private var courseColor: Color {
         if let hex = course.color {
-            return Color(hex: hex)
+            return Color(hex: hex).enhancedForWidget()
         }
-        return .blue
+        return .blue.enhancedForWidget()
     }
 
     // 获取时间范围
@@ -489,6 +493,16 @@ private struct CourseCardView: View {
             return "\(hour):\(components[1])"
         }
         return timeString
+    }
+    
+    // 根据教室名称长度计算字体大小
+    private func calculateClassroomFontSize(_ classroom: String) -> CGFloat {
+        if classroom.count > 15 {
+            return 9
+        } else if classroom.count > 10 {
+            return 10
+        }
+        return 11
     }
 }
 
