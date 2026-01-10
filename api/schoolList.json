@@ -310,7 +310,7 @@
       "extractJSfileiOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/nwafubksjw.js",
       "banner_content": "导入方式：登陆后自动获取当前学期课表\n当前为冬令时，请在2026.5.1后重新导入课表！/n依旧为早期开发版本，如果出现问题请联系1852554085@qq.com",
       "banner_action": "朕知道了",
-      "banner_url": ",
+      "banner_url": "",
       "class_time_list": [
         {
           "start": "08:00",
