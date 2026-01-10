@@ -15,7 +15,7 @@
     const divs = item.querySelectorAll('div');
     if (divs.length < 3) return;
     
-    // 优化课程名提取
+    // 课程名提取
     const courseName = divs[1].textContent
       .replace(/^《【本】/, '')
       .replace(/》\[.*\]$/, '')  // 去掉》[XX]
