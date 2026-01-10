@@ -96,9 +96,9 @@
           weeks: weeks.sort((a, b) => a - b),
           week_time: weekDay,
           start_time: startTime,
-          time_count: endTime - startTime + 1,
+          time_count: endTime - startTime,
           import_type: 1,
-          info: '',
+          info: null,
           data: null
         };
         courses.push(courseData);
