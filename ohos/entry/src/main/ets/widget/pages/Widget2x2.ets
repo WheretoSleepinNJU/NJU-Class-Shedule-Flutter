@@ -120,6 +120,13 @@ struct Widget2x2 {
     .width('100%').height('100%').padding(10)
     .backgroundColor($r('app.color.widget_background'))
     .alignItems(HorizontalAlign.Start)
+    .onClick(() => {
+      postCardAction(this, {
+        action: 'router',
+        abilityName: 'EntryAbility',
+        params: { target: 'main' }
+      });
+    })
   }
 
   // --- 辅助视图 ---
