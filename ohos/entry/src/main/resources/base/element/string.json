@@ -11,6 +11,22 @@
     {
       "name": "EntryAbility_label",
       "value": "wheretosleepinnju"
+    },
+    {
+      "name": "EntryFormAbility_desc",
+      "value": "form_description"
+    },
+    {
+      "name": "EntryFormAbility_label",
+      "value": "form_label"
+    },
+    {
+      "name": "widget_desc",
+      "value": "widget2x2"
+    },
+    {
+      "name": "widget_display_name",
+      "value": "widget"
     }
   ]
 }
