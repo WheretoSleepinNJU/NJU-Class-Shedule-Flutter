@@ -66,8 +66,12 @@ class _MyAppState extends State<MyApp> {
             int themeIndex = model.themeIndex ?? widget.themeIndex;
             String customTheme = model.themeCustomColor ?? widget.themeCustom;
             if (themeIndex < themeDataList.length || customTheme == '') {
-              lightTheme = themeDataList[themeIndex];
-              darkTheme = darkThemeDataList[themeIndex];
+              lightTheme = themeDataList[themeIndex].copyWith(
+                useMaterial3: false
+              );
+              darkTheme = darkThemeDataList[themeIndex].copyWith(
+                useMaterial3: false
+              );
             } else {
               lightTheme = getThemeData(customTheme, Brightness.light);
               darkTheme = getThemeData(customTheme, Brightness.dark);
