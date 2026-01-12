@@ -14,7 +14,7 @@ ThemeData getThemeData(String color, Brightness brightness) {
     ),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
-        primary: Colors.white,
+        foregroundColor: Colors.white,
         backgroundColor: primaryColor,
       ),
     ),

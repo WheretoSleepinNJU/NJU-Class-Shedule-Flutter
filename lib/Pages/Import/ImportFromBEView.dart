@@ -30,25 +30,39 @@ class ImportFromBEView extends StatefulWidget {
   }
 }
 
-JavascriptChannel snackbarJavascriptChannel(BuildContext context) {
-  return JavascriptChannel(
-    name: 'SnackbarJSChannel',
-    onMessageReceived: (JavascriptMessage message) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(message.message),
-      ));
-    },
-  );
-}
-
 class ImportFromBEViewState extends State<ImportFromBEView> {
-  late WebViewController _webViewController;
-  final CookieManager cookieManager = CookieManager();
+  late final WebViewController _webViewController;
+  final WebViewCookieManager cookieManager = WebViewCookieManager();
 
   @override
   void initState() {
     super.initState();
-    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+    
+    _webViewController = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(const Color(0x00000000))
+      ..addJavaScriptChannel(
+        'SnackbarJSChannel',
+        onMessageReceived: (JavaScriptMessage message) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(message.message),
+          ));
+        },
+      )
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageFinished: (String url) {
+            if (widget.config['redirectUrl'] != '' &&
+                url.startsWith(widget.config['redirectUrl'])) {
+              _webViewController.loadRequest(Uri.parse(widget.config['targetUrl']));
+            } else if (url.startsWith(widget.config['targetUrl'])) {
+              import(_webViewController, context);
+            }
+          },
+        ),
+      );
+
+    _webViewController.loadRequest(Uri.parse(widget.config['initialUrl']));
   }
 
   @override
@@ -61,15 +75,12 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
             icon: const Icon(Icons.refresh),
             onPressed: () async {
               await cookieManager.clearCookies();
-              _webViewController.loadUrl(widget.config['initialUrl']);
+              _webViewController.loadRequest(Uri.parse(widget.config['initialUrl']));
             },
           ),
-
-          /// 作弊器
           IconButton(
             icon: const Icon(Icons.gamepad),
             onPressed: () async {
-              // String rsp = "";
               String rsp = "";
               import(_webViewController, context, rsp: rsp);
             },
@@ -99,56 +110,47 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
                     ],
                   ),
             Expanded(
-                child: WebView(
-              initialUrl: widget.config['initialUrl'],
-              javascriptMode: JavascriptMode.unrestricted,
-              onWebViewCreated: (WebViewController webViewController) async {
-                _webViewController = webViewController;
-              },
-              javascriptChannels: <JavascriptChannel>{
-                snackbarJavascriptChannel(context),
-              },
-              onPageFinished: (url) {
-                if (widget.config['redirectUrl'] != '' &&
-                    url.startsWith(widget.config['redirectUrl'])) {
-                  _webViewController.loadUrl(widget.config['targetUrl']);
-                } else if (url.startsWith(widget.config['targetUrl'])) {
-                  import(_webViewController, context);
-                }
-              },
-            ))
+                child: WebViewWidget(controller: _webViewController))
           ]);
         },
       ),
     );
   }
 
-  import(WebViewController controller, BuildContext context,
-      {String? rsp}) async {
+  import(WebViewController controller, BuildContext context, {String? rsp}) async {
     try {
       String response = "";
       CourseTableProvider courseTableProvider = CourseTableProvider();
       Toast.showToast(S.of(context).class_parse_toast_importing, context);
-      if (rsp == null) {
-        await controller.runJavascript(widget.config['preExtractJS'] ?? '');
+      
+      if(rsp == null) {
+        await controller.runJavaScript(widget.config['preExtractJS'] ?? '');
         await Future.delayed(
             Duration(seconds: widget.config['delayTime'] ?? 0));
         Dio dio = Dio();
-        // 他妈的，屁事真多
+        
         String url = '';
         if (Platform.isIOS) {
           url = widget.config['extractJSfileiOS'];
-        } else if (Platform.isAndroid) {
-          url = widget.config['extractJSfileAndroid'];
+        } else {
+          url = widget.config['extractJSfileAndroid'] ?? "";
         }
-        Response rsp = await dio.get(url);
-        String js = rsp.data;
-        response = await controller.runJavascriptReturningResult(js);
+
+        Response serverRsp = await dio.get(url);
+        String js = serverRsp.data;
+        var result = await controller.runJavaScriptReturningResult(js);
+        response = result.toString();
+        
+        if (response.startsWith('"') && response.endsWith('"')) {
+           response = response.substring(1, response.length - 1);
+        }
       } else {
         response = rsp;
       }
+      
       response = Uri.decodeComponent(response.replaceAll('"', ''));
       Map courseTableMap = json.decode(response);
+      
       CourseTable courseTable;
       if (widget.config['class_time_list'] == null &&
           widget.config['semester_start_monday'] == null) {
@@ -176,7 +178,6 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
       CourseProvider courseProvider = CourseProvider();
       await ScopedModel.of<MainStateModel>(context).changeclassTable(index);
       Iterable courses;
-      // 因为这里有的可能会被encode有的不会 所以做下特殊处理...
       if (courseTableMap['courses'].runtimeType != String) {
         courses = courseTableMap['courses'];
       } else if (json.decode(courseTableMap['courses']).runtimeType != String) {
@@ -197,8 +198,9 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
       Toast.showToast(S.of(context).class_parse_toast_success, context);
       Navigator.of(context).pop(true);
     } catch (e) {
-      String response = await controller.runJavascriptReturningResult(
+      var result = await controller.runJavaScriptReturningResult(
           "window.document.getElementsByTagName('html')[0].outerHTML;");
+      String response = result.toString();
       String url = await controller.currentUrl() ?? "";
 
       String now = DateTime.now().toString();
@@ -214,11 +216,14 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
         "url": url,
         "way": "be"
       };
-      await Dio()
+      
+      try {
+        await Dio()
           .post(Url.URL_BACKEND + "/log/log", data: FormData.fromMap(info));
+      } catch (_) {}
 
       UmengCommonSdk.onEvent("class_import", {"type": "be", "action": "fail"});
-      // Toast.showToast(S.of(context).online_parse_error_toast, context);
+      
       showDialog<String>(
           barrierDismissible: false,
           context: context,

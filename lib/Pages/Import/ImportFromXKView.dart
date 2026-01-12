@@ -5,7 +5,7 @@ import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../generated/l10n.dart';
-import '../../Utils/CourseParserXK.dart';
+import '../../Utils/CourseParser.dart';
 import '../../Components/Toast.dart';
 
 class ImportFromXKView extends StatefulWidget {
@@ -19,25 +19,39 @@ class ImportFromXKView extends StatefulWidget {
   }
 }
 
-JavascriptChannel snackbarJavascriptChannel(BuildContext context) {
-  return JavascriptChannel(
-    name: 'SnackbarJSChannel',
-    onMessageReceived: (JavascriptMessage message) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(message.message),
-      ));
-    },
-  );
-}
-
 class _WebViewState extends State<ImportFromXKView> {
-  late WebViewController _webViewController;
-  final CookieManager cookieManager = CookieManager();
+  late final WebViewController _webViewController;
+  final WebViewCookieManager cookieManager = WebViewCookieManager();
 
   @override
   void initState() {
     super.initState();
-    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+
+    _webViewController = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(const Color(0x00000000))
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageFinished: (String url) {
+            if (widget.config['redirectUrl'] != '' &&
+                url.startsWith(widget.config['redirectUrl'])) {
+              _webViewController.loadRequest(Uri.parse(widget.config['targetUrl']));
+            } else if (url.startsWith(widget.config['targetUrl'])) {
+              import(_webViewController, context);
+            }
+          },
+        ),
+      )
+      ..addJavaScriptChannel(
+        'SnackbarJSChannel',
+        onMessageReceived: (JavaScriptMessage message) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(message.message),
+          ));
+        },
+      );
+
+    _webViewController.loadRequest(Uri.parse(widget.config['initialUrl']));
   }
 
   @override
@@ -50,7 +64,7 @@ class _WebViewState extends State<ImportFromXKView> {
             icon: const Icon(Icons.refresh),
             onPressed: () async {
               await cookieManager.clearCookies();
-              _webViewController.loadUrl(widget.config['initialUrl']);
+              _webViewController.loadRequest(Uri.parse(widget.config['initialUrl']));
             },
           )
         ],
@@ -78,25 +92,7 @@ class _WebViewState extends State<ImportFromXKView> {
                     ],
                   ),
             Expanded(
-                child: WebView(
-              initialUrl: widget.config['initialUrl'],
-              javascriptMode: JavascriptMode.unrestricted,
-              onWebViewCreated: (WebViewController webViewController) async {
-                _webViewController = webViewController;
-                await cookieManager.clearCookies();
-              },
-              javascriptChannels: <JavascriptChannel>{
-                snackbarJavascriptChannel(context),
-              },
-              onPageFinished: (url) {
-                if (widget.config['redirectUrl'] != '' &&
-                    url.startsWith(widget.config['redirectUrl'])) {
-                  _webViewController.loadUrl(widget.config['targetUrl']);
-                } else if (url.startsWith(widget.config['targetUrl'])) {
-                  import(_webViewController, context);
-                }
-              },
-            ))
+                child: WebViewWidget(controller: _webViewController))
           ]);
         },
       ),
@@ -105,10 +101,17 @@ class _WebViewState extends State<ImportFromXKView> {
 
   import(WebViewController controller, BuildContext context) async {
     Toast.showToast(S.of(context).class_parse_toast_importing, context);
-    await controller.runJavascript(widget.config['preExtractJS'] ?? '');
+    await controller.runJavaScript(widget.config['preExtractJS'] ?? '');
     await Future.delayed(Duration(seconds: widget.config['delayTime'] ?? 0));
-    String response = await controller
-        .runJavascriptReturningResult(widget.config['extractJS']);
+    
+    var result = await controller
+        .runJavaScriptReturningResult(widget.config['extractJS']);
+    String response = result.toString();
+    
+    if (response.startsWith('"') && response.endsWith('"')) {
+       response = response.substring(1, response.length - 1);
+    }
+    
     response = response.replaceAll('\\u003C', '<').replaceAll('\\"', '"');
 
     CourseParser cp = CourseParser(response);
