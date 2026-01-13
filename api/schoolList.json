@@ -309,7 +309,7 @@
       "extractJSfileAndroid": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/nwafubksjw.js",
       "extractJSfileiOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/nwafubksjw.js",
       "banner_content": "导入方式：登陆后自动获取当前学期课表\n当前为冬令时，请在2026.5.1后重新导入课表！/n依旧为早期开发版本，如果出现问题请联系1852554085@qq.com",
-      "banner_action": "朕知道了",
+      "banner_action": "朕知道了（这个banner无法隐藏我也不知道为什么）",
       "banner_url": "",
       "class_time_list": [
         {
@@ -357,7 +357,7 @@
           "end": "21:35"
         }
       ],
-      "semester_start_monday": "2025-09-08",
+      "semester_start_monday": "2026-03-02",
       "isGrey": true,
       "isGrey3.1.0": false
     }
