@@ -101,8 +101,6 @@ jobs:
             os: ubuntu-latest
           - name: android-aab
             os: ubuntu-latest
-          - name: web
-            os: ubuntu-latest
           - name: linux
             os: ubuntu-latest
           - name: windows
@@ -162,10 +160,6 @@ jobs:
         if: matrix.name == 'android-aab'
         run: flutter build appbundle
 
-      - name: Build Web
-        if: matrix.name == 'web'
-        run: flutter build web --base-href=/FlutterHub/
-
       - name: Build Linux
         if: matrix.name == 'linux'
         run: |
@@ -185,17 +179,6 @@ jobs:
         if: matrix.name == 'macos'
         run: flutter build macos
 
-      # 部署Web平台构建产物到GitHub Pages
-      - name: Deploy to GitHub Pages
-        if: matrix.name == 'web'
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/web
-          publish_branch: gh-pages
-          user_name: 'github-actions[bot]'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
-          commit_message: 'Deploy to GitHub Pages: ${{ steps.read_build_env.outputs.FULL_VERSION }}'
 
       # 根据平台压缩构建产物，为上传做准备
       # 使用不同的命令和文件路径根据平台进行压缩
@@ -209,8 +192,6 @@ jobs:
             mv build/app/outputs/flutter-apk/app-x86_64-release.apk ./app-release-x86_64-${{ steps.read_build_env.outputs.FULL_VERSION }}.apk
           elif [ "${{ matrix.name }}" = "android-aab" ]; then
             mv build/app/outputs/bundle/release/app-release.aab ./app-release-${{ steps.read_build_env.outputs.FULL_VERSION }}.aab
-          elif [ "${{ matrix.name }}" = "web" ]; then
-            zip -r web-release-${{ steps.read_build_env.outputs.FULL_VERSION }}.zip build/web
           elif [ "${{ matrix.name }}" = "linux" ]; then
             zip -r linux-release-${{ steps.read_build_env.outputs.FULL_VERSION }}.zip build/linux/x64/release/bundle
           elif [ "${{ matrix.name }}" = "windows" ]; then
