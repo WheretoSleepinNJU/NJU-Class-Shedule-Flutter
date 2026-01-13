@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
@@ -44,7 +46,13 @@ class _AddViewState extends State<AddView> {
 
   @override
   Widget build(BuildContext context) {
+    bool resizeEnabled = true;
+    if (Platform.isOhos) {
+      resizeEnabled = false;
+    }
+
     return Scaffold(
+        resizeToAvoidBottomInset: resizeEnabled,
         appBar: AppBar(
           title: Text(S.of(context).add_manually_title),
         ),

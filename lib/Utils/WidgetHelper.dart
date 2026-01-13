@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/services.dart';
+import 'package:wheretosleepinnju/Utils/ColorUtil.dart';
 import '../Models/CourseModel.dart';
 import '../Models/CourseTableModel.dart';
 import '../Models/ScheduleModel.dart';
@@ -36,13 +37,15 @@ class WidgetHelper {
       todayCourses.sort((a, b) => (a.startTime ?? 0).compareTo(b.startTime ?? 0));
 
       String dateStr = _getWeekdayStr(todayWeekday);
+
+      List colorPool = await ColorPool.getColorPool();
       
       if (Platform.isAndroid) {
         await _updateAndroidWidget(todayCourses, dateStr, classTimeList);
       } else if (Platform.isIOS) {
         await _updateIOSWidget(todayCourses, dateStr, classTimeList);
       } else if (Platform.isOhos) {
-        await _updateHarmonyWidget(todayCourses, dateStr, classTimeList);
+        await _updateHarmonyWidget(todayCourses, dateStr, classTimeList, colorPool);
       } else {
         print("This platform didn't support Widget");
       }
@@ -74,16 +77,25 @@ class WidgetHelper {
     }
   }
 
-  static Future<void> _updateHarmonyWidget(List<Course> courses, String dateStr, List<Map> classTimeList) async {
+  static Future<void> _updateHarmonyWidget(List<Course> courses, String dateStr, List<Map> classTimeList, List colorPool) async {
     try {
+      print("Flutter[Harmony]: Preparing data for ${courses.length} courses...");
+
       final List<Map<String, dynamic>> courseListJson = courses.map((course) {
         String startStr = _convertNodeToTime(course.startTime!, classTimeList);
         String endStr = _convertNodeToTime(course.startTime! + course.timeCount! - 1, classTimeList, isEnd: true);
         
+        String? calculatedColor = course.getColor(colorPool);
+        
+        // 再进行格式化 (处理 Hex 格式)
+        String fixedColor = _fixColorHex(calculatedColor);
+        
+        print("ColorFix: ${course.name} -> DB:${course.color} -> Calc:$calculatedColor -> Final:$fixedColor");
+
         return {
           "name": course.name ?? "未知课程",
           "classroom": course.classroom ?? "",
-          "color": _fixColorHex(course.color),
+          "color": fixedColor, 
           "startTimeStr": startStr,
           "endTimeStr": endStr,
           "startNode": course.startTime,
@@ -97,10 +109,10 @@ class WidgetHelper {
       };
 
       await _channel.invokeMethod('updateWidget', jsonEncode(widgetData));
-      print("Flutter: Widget update sent! Weekday: $dateStr, Count: ${courses.length}");
+      print("Flutter[Harmony]: Widget update sent! Weekday: $dateStr");
       
     } catch (e) {
-      print("Flutter: Failed to send widget data: $e");
+      print("Flutter[Harmony]: Failed to send widget data: $e");
     }
   }
 
@@ -225,7 +237,8 @@ class WidgetHelper {
     } else if (Platform.isIOS) {
       await _updateIOSWidget(mockCourses, dateStr, mockTimeList);
     } else if (Platform.isOhos) {
-      await _updateHarmonyWidget(mockCourses, dateStr, mockTimeList);
+      List colorPool = await ColorPool.getColorPool();
+      await _updateHarmonyWidget(mockCourses, dateStr, mockTimeList, colorPool);
     } else {
       print("This platform didn't support widget");
     }
