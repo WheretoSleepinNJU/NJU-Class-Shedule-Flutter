@@ -99,15 +99,7 @@ jobs:
           # 定义不同的构建任务，每个任务对应一个平台
           - name: android
             os: ubuntu-latest
-          - name: android-aab
-            os: ubuntu-latest
-          - name: linux
-            os: ubuntu-latest
-          - name: windows
-            os: windows-latest
           - name: ios
-            os: macos-latest
-          - name: macos
             os: macos-latest
 
     steps:
@@ -156,28 +148,10 @@ jobs:
          flutter build apk
          flutter build apk --split-per-abi
 
-      - name: Build Android App Bundle
-        if: matrix.name == 'android-aab'
-        run: flutter build appbundle
-
-      - name: Build Linux
-        if: matrix.name == 'linux'
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install -y ninja-build libgtk-3-dev
-          flutter build linux
-
-      - name: Build Windows
-        if: matrix.name == 'windows'
-        run: flutter build windows
-
       - name: Build iOS
         if: matrix.name == 'ios'
         run: flutter build ios --release --no-codesign
 
-      - name: Build macOS
-        if: matrix.name == 'macos'
-        run: flutter build macos
 
 
       # 根据平台压缩构建产物，为上传做准备
@@ -190,19 +164,11 @@ jobs:
             mv build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk ./app-release-armeabi-v7a-${{ steps.read_build_env.outputs.FULL_VERSION }}.apk
             mv build/app/outputs/flutter-apk/app-arm64-v8a-release.apk ./app-release-arm64-v8a-${{ steps.read_build_env.outputs.FULL_VERSION }}.apk
             mv build/app/outputs/flutter-apk/app-x86_64-release.apk ./app-release-x86_64-${{ steps.read_build_env.outputs.FULL_VERSION }}.apk
-          elif [ "${{ matrix.name }}" = "android-aab" ]; then
-            mv build/app/outputs/bundle/release/app-release.aab ./app-release-${{ steps.read_build_env.outputs.FULL_VERSION }}.aab
-          elif [ "${{ matrix.name }}" = "linux" ]; then
-            zip -r linux-release-${{ steps.read_build_env.outputs.FULL_VERSION }}.zip build/linux/x64/release/bundle
-          elif [ "${{ matrix.name }}" = "windows" ]; then
-            powershell Compress-Archive build/windows/x64/runner/Release windows-release-${{ steps.read_build_env.outputs.FULL_VERSION }}.zip
           elif [ "${{ matrix.name }}" = "ios" ]; then
             mkdir Payload
             cp -r build/ios/iphoneos/Runner.app Payload/
             zip -r ios-release-${{ steps.read_build_env.outputs.FULL_VERSION }}.ipa Payload/
             zip -r ios-release-${{ steps.read_build_env.outputs.FULL_VERSION }}.zip build/ios/iphoneos
-          elif [ "${{ matrix.name }}" = "macos" ]; then
-            zip -r macos-release-${{ steps.read_build_env.outputs.FULL_VERSION }}.zip build/macos/Build/Products/Release
           fi
         shell: bash
 
