@@ -1,0 +1,281 @@
+name: Flutter Release Build CI/CD
+
+# 触发条件配置
+on:
+  push:
+    tags:
+      - 'v*' # 当推送的标签以"v"开头时触发，常用于版本发布
+  workflow_dispatch: # 允许手动触发工作流，便于管理和测试
+
+jobs:
+  # 在 Ubuntu 环境中运行，避免了 macOS 的 sed 问题
+  # 更新 pubspec.yaml 中的版本号
+  # 将新版本号作为输出，供其他 job 使用
+  build_env: # 更新pubspec.yaml中的版本号:
+    runs-on: ubuntu-latest
+    steps:
+      # 检出代码
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 获取全部历史，以便计算版本号
+
+      # 生成版本号
+      - name: Generate Version Number
+        id: generate_version
+        run: |
+          # 标签触发 (e.g. v1.0或1.0) 移除 refs/tags/ 前缀和可选的 'v' 前缀
+          if [[ ${{ github.ref }} == refs/tags/* ]]; then
+            TAG_VERSION=$(echo ${{ github.ref }} | sed -E 's/^refs\/tags\/(v)?//')
+            echo "This is a tag release: $TAG_VERSION"
+          
+          # 分支触发 (e.g. main或feature/new-feature) 移除 refs/heads/ 前缀
+          elif [[ ${{ github.ref }} == refs/heads/* ]]; then
+            TAG_VERSION=$(echo ${{ github.ref }} | sed -E 's/^refs\/heads\///' | sed 's/\//-/g')
+            echo "This is a branch push: $TAG_VERSION"
+          
+          # Pull Request触发 (e.g. pr-123) 提取PR的编号 pr-<number>
+          elif [[ ${{ github.ref }} == refs/pull/* ]]; then
+            PR_NUMBER=$(echo ${{ github.ref }} | sed -E 's/^refs\/pull\/([0-9]+)\/merge$/\1/')
+            TAG_VERSION="pr-$PR_NUMBER"
+            echo "This is a Pull Request: $TAG_VERSION"
+          
+          # 其他情况：直接使用 github.ref 的值 包含任何 "/"会被替换为 "-"
+          else
+            TAG_VERSION=$(echo ${{ github.ref }} | sed 's/\//-/g')
+            echo "This is another trigger: $TAG_VERSION"
+          fi
+          echo "TAG_VERSION=$TAG_VERSION" 
+          COMMIT_COUNT=$(git rev-list --count HEAD) # 计算提交数量
+          SHORT_HASH=$(git rev-parse --short HEAD) # 获取最近一次提交的短哈希
+          BUILD_VERSION="${COMMIT_COUNT}" # 组合成完整的构建版本号
+          echo "BUILD_VERSION=${BUILD_VERSION}" >> $GITHUB_OUTPUT # 设置输出变量
+          echo "Generated BUILD_VERSION: ${BUILD_VERSION}" # 打印完整的构建版本号 (e.g. 34)
+        shell: bash
+
+      # 更新pubspec.yaml中的版本号
+      - name: Update version in pubspec.yaml
+        id: update_version_in_pubspec
+        run: |
+          # 从pubspec.yaml中提取主版本号,(e.g. version: 1.0.0+1，提取1.0.0)
+          MAIN_VERSION=$(grep "^version:" pubspec.yaml | sed -E 's/version: ([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
+          echo "MAIN_VERSION=${MAIN_VERSION}"
+          
+          # 组合新的完整版本号 (e.g. 1.0.0+34)
+          FULL_VERSION="${MAIN_VERSION}+${{ steps.generate_version.outputs.BUILD_VERSION }}"
+          echo "FULL_VERSION=${FULL_VERSION}"
+          
+          # 更新新版本号到pubspec.yaml文件
+          sed -i "s/^version: .*/version: ${FULL_VERSION}/" pubspec.yaml
+          echo "Updated pubspec.yaml content:"
+          cat pubspec.yaml
+          
+          # 验证更新
+          if grep -q "^version: ${FULL_VERSION}" pubspec.yaml; then
+            echo "Version updated successfully to ${FULL_VERSION}"
+          else
+            echo "Failed to update version"
+            echo "Current version line:"
+            grep "^version:" pubspec.yaml
+            exit 1
+          fi
+          
+          echo "FULL_VERSION=${FULL_VERSION}" > _build_env.config
+        shell: bash
+
+      - name: Upload updated pubspec.yaml
+        uses: actions/upload-artifact@v4
+        with:
+          name: build_env_files
+          path: |
+            pubspec.yaml
+            _build_env.config
+
+  build_app:
+    needs: build_env
+    runs-on: ${{ matrix.os }} # 使用矩阵策略中指定的操作系统进行构建
+    strategy:
+      matrix:
+        include:
+          # 定义不同的构建任务，每个任务对应一个平台
+          - name: android
+            os: ubuntu-latest
+          - name: android-aab
+            os: ubuntu-latest
+          - name: web
+            os: ubuntu-latest
+          - name: linux
+            os: ubuntu-latest
+          - name: windows
+            os: windows-latest
+          - name: ios
+            os: macos-latest
+          - name: macos
+            os: macos-latest
+
+    steps:
+      # 检出代码
+      - uses: actions/checkout@v4
+
+      - name: Download updated pubspec.yaml
+        uses: actions/download-artifact@v4
+        with:
+          name: build_env_files
+
+      - name: Replace pubspec.yaml
+        run: |
+          ls
+          cat pubspec.yaml
+          pwd
+          cat _build_env.config
+        shell: bash
+
+      - name: Read FULL_VERSION from _build_env.config
+        id: read_build_env
+        run: |
+          echo "Reading version from _build_env.config..."
+          FULL_VERSION=$(grep 'FULL_VERSION=' _build_env.config | cut -d '=' -f2)
+          echo "FULL_VERSION=${FULL_VERSION}" >> $GITHUB_OUTPUT # 设置输出变量
+        shell: bash
+
+      # 设置Flutter环境
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable  # 使用Flutter的稳定版
+
+      # 显示Flutter版本信息
+      - name: Check Flutter version
+        run: flutter --version
+      
+      # 安装Flutter依赖
+      - name: Install dependencies
+        run: flutter pub get
+
+      # 根据矩阵配置，为不同平台执行构建命令
+      - name: Build Android APK
+        if: matrix.name == 'android'
+        run: |
+         flutter build apk
+         flutter build apk --split-per-abi
+
+      - name: Build Android App Bundle
+        if: matrix.name == 'android-aab'
+        run: flutter build appbundle
+
+      - name: Build Web
+        if: matrix.name == 'web'
+        run: flutter build web --base-href=/FlutterHub/
+
+      - name: Build Linux
+        if: matrix.name == 'linux'
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y ninja-build libgtk-3-dev
+          flutter build linux
+
+      - name: Build Windows
+        if: matrix.name == 'windows'
+        run: flutter build windows
+
+      - name: Build iOS
+        if: matrix.name == 'ios'
+        run: flutter build ios --release --no-codesign
+
+      - name: Build macOS
+        if: matrix.name == 'macos'
+        run: flutter build macos
+
+      # 部署Web平台构建产物到GitHub Pages
+      - name: Deploy to GitHub Pages
+        if: matrix.name == 'web'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/web
+          publish_branch: gh-pages
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'Deploy to GitHub Pages: ${{ steps.read_build_env.outputs.FULL_VERSION }}'
+
+      # 根据平台压缩构建产物，为上传做准备
+      # 使用不同的命令和文件路径根据平台进行压缩
+      # 这里使用了不同的shell命令和条件判断来处理不同的操作系统和构建产物
+      - name: Compress Build
+        run: |
+          if [ "${{ matrix.name }}" = "android" ]; then
+            mv build/app/outputs/flutter-apk/app-release.apk ./app-release-all-${{ steps.read_build_env.outputs.FULL_VERSION }}.apk
+            mv build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk ./app-release-armeabi-v7a-${{ steps.read_build_env.outputs.FULL_VERSION }}.apk
+            mv build/app/outputs/flutter-apk/app-arm64-v8a-release.apk ./app-release-arm64-v8a-${{ steps.read_build_env.outputs.FULL_VERSION }}.apk
+            mv build/app/outputs/flutter-apk/app-x86_64-release.apk ./app-release-x86_64-${{ steps.read_build_env.outputs.FULL_VERSION }}.apk
+          elif [ "${{ matrix.name }}" = "android-aab" ]; then
+            mv build/app/outputs/bundle/release/app-release.aab ./app-release-${{ steps.read_build_env.outputs.FULL_VERSION }}.aab
+          elif [ "${{ matrix.name }}" = "web" ]; then
+            zip -r web-release-${{ steps.read_build_env.outputs.FULL_VERSION }}.zip build/web
+          elif [ "${{ matrix.name }}" = "linux" ]; then
+            zip -r linux-release-${{ steps.read_build_env.outputs.FULL_VERSION }}.zip build/linux/x64/release/bundle
+          elif [ "${{ matrix.name }}" = "windows" ]; then
+            powershell Compress-Archive build/windows/x64/runner/Release windows-release-${{ steps.read_build_env.outputs.FULL_VERSION }}.zip
+          elif [ "${{ matrix.name }}" = "ios" ]; then
+            mkdir Payload
+            cp -r build/ios/iphoneos/Runner.app Payload/
+            zip -r ios-release-${{ steps.read_build_env.outputs.FULL_VERSION }}.ipa Payload/
+            zip -r ios-release-${{ steps.read_build_env.outputs.FULL_VERSION }}.zip build/ios/iphoneos
+          elif [ "${{ matrix.name }}" = "macos" ]; then
+            zip -r macos-release-${{ steps.read_build_env.outputs.FULL_VERSION }}.zip build/macos/Build/Products/Release
+          fi
+        shell: bash
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.name }}-artifact
+          path: |
+            *.apk
+            *.aab
+            *.ipa
+            *.zip
+          if-no-files-found: error
+
+  release:
+    needs: build_app
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Display structure of downloaded files
+        run: ls -R artifacts
+      - name: Read FULL_VERSION from _build_env.config
+        id: read_build_env
+        run: |
+          echo "Reading version from _build_env.config..."
+          FULL_VERSION=$(grep 'FULL_VERSION=' artifacts/build_env_files/_build_env.config | cut -d '=' -f2)
+          echo "FULL_VERSION=${FULL_VERSION}" >> $GITHUB_OUTPUT
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.read_build_env.outputs.FULL_VERSION }}
+          release_name: Release ${{ steps.read_build_env.outputs.FULL_VERSION }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for artifact in artifacts/*/*.{apk,aab,ipa,zip}
+          do
+            if [ -f "$artifact" ]; then
+              asset_name=$(basename "$artifact")
+              echo "Uploading $asset_name"
+              curl --fail -X POST \
+                -H "Authorization: token $GITHUB_TOKEN" \
+                -H "Content-Type: $(file -b --mime-type $artifact)" \
+                --data-binary @"$artifact" \
+                "https://uploads.github.com/repos/${{ github.repository }}/releases/${{ steps.create_release.outputs.id }}/assets?name=$asset_name"
+            fi
+          done
