@@ -13,8 +13,8 @@
       "colorMode": "auto",
       "isDynamic": true,
       "isDefault": true,
-      "updateEnabled": false,
-      "scheduledUpdateTime": "10:30",
+      "updateEnabled": true,
+      "scheduledUpdateTime": "00:00",
       "updateDuration": 1,
       "defaultDimension": "2*2",
       "supportDimensions": [

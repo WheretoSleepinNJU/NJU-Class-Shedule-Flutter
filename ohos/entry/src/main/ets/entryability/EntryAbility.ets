@@ -5,11 +5,8 @@ import dataPreferences from '@ohos.data.preferences';
 import { formBindingData, formProvider, formInfo } from '@kit.FormKit'; // 确保引入 formInfo
 import { MOCK_DATA } from '../widget/mock/MockData';
 import { TodayWidgetData } from '../widget/models/WidgetDataModel';
+import { DEFAULT_WIDGET_DATA, WidgetFormData, DATA_PREFERENCES_NAME, WIDGET_DATA_KEY, FORM_IDS_KEY, CHANNEL_NAME } from '../widget/models/FormData';
 
-const DATA_PREFERENCES_NAME = 'WidgetDataPrefs';
-const WIDGET_DATA_KEY = 'current_day_courses';
-const FORM_IDS_KEY = 'active_form_ids';
-const CHANNEL_NAME = 'wheretosleepinnju/widget';
 
 export default class EntryAbility extends FlutterAbility {
   configureFlutterEngine(flutterEngine: FlutterEngine) {
@@ -41,7 +38,6 @@ export default class EntryAbility extends FlutterAbility {
         result.success(true);
       } catch (err) {
         console.error(`[EntryAbility] Update failed: ${JSON.stringify(err)}`);
-        // JSON.stringify(err) 确保传递给 Flutter 的是字符串
         result.error('UPDATE_ERROR', JSON.stringify(err), null);
       }
     } else {
@@ -60,24 +56,31 @@ export default class EntryAbility extends FlutterAbility {
     }
   }
 
+  // 【核心修改】这里需要使用 WidgetFormData 类
   private async refreshAllWidgets(jsonStr: string) {
     try {
       const currentTime = this.getCurrentTimeStr();
+      let rawData: TodayWidgetData;
 
-      let rawData: TodayWidgetData = JSON.parse(jsonStr);
+      try {
+        // 1. 解析 JSON 并强制转换为 TodayWidgetData 类型
+        rawData = JSON.parse(jsonStr) as TodayWidgetData;
+      } catch (e) {
+        console.error(`[EntryAbility] JSON parse error, using default.`);
+        rawData = DEFAULT_WIDGET_DATA;
+      }
 
-      let formData = formBindingData.createFormBindingData({
-        'widgetData': rawData,
-        'currentTime': currentTime
-      });
+      // 2. 【关键】使用 new WidgetFormData(...) 代替原来的 {} 对象字面量
+      // 这样就消除了 arkts-no-untyped-obj-literals 报错
+      let formBindingObj = new WidgetFormData(rawData, currentTime);
 
-      // 读取 EntryFormAbility 保存的 active_form_ids
+      let formData = formBindingData.createFormBindingData(formBindingObj);
+
       let preferences = await dataPreferences.getPreferences(this.context, DATA_PREFERENCES_NAME);
       let formIds = await preferences.get(FORM_IDS_KEY, []) as Array<string>;
 
       console.info(`[EntryAbility] Updating ${formIds.length} active widgets...`);
 
-      // 遍历 ID 进行更新
       for (const formId of formIds) {
         formProvider.updateForm(formId, formData).catch((err: BusinessError) => {
           console.error(`[EntryAbility] Failed to update form ${formId}: ${err.code}`);
