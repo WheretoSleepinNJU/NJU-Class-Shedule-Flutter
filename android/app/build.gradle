@@ -27,7 +27,8 @@ def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
-    compileSdkVersion 34
+    namespace "com.lilystudio.wheretosleepinnju"
+    compileSdkVersion 35
 
     lintOptions {
         disable 'InvalidPackage'

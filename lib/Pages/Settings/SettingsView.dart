@@ -3,9 +3,9 @@ import '../../generated/l10n.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
-import 'package:share_extend/share_extend.dart';
+// import 'package:share_extend/share_extend.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../ManageTable/ManageTableView.dart';
 import '../Import/ImportView.dart';
 
@@ -166,7 +166,7 @@ class _SettingsViewState extends State<SettingsView> {
                 subtitle: Text(S.of(context).share_subtitle),
                 onTap: () {
                   UmengCommonSdk.onEvent("app_share", {"action": "show"});
-                  ShareExtend.share(S.of(context).share_content, "text");
+                  // ShareExtend.share(S.of(context).share_content, "text");
                 },
               ),
               ListTile(

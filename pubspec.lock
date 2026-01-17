@@ -373,14 +373,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.19.0"
-  js:
-    dependency: transitive
-    description:
-      name: js
-      sha256: f2c445dce49627136094980615a031419f7f3eb393237e4ecd97ac15dea343f3
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.6.7"
   leak_tracker:
     dependency: transitive
     description:
@@ -461,14 +453,22 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.6"
-  package_info:
+  package_info_plus:
     dependency: "direct main"
     description:
-      name: package_info
-      sha256: "6c07d9d82c69e16afeeeeb6866fe43985a20b3b50df243091bfc4a4ad2b03b75"
+      name: package_info_plus
+      sha256: f69da0d3189a4b4ceaeb1a3defb0f329b3b352517f52bed4290f83d4f06bc08d
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.2"
+    version: "9.0.0"
+  package_info_plus_platform_interface:
+    dependency: transitive
+    description:
+      name: package_info_plus_platform_interface
+      sha256: "202a487f08836a592a6bd4f901ac69b3a8f146af552bbd14407b6b41e1c3f086"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.2.1"
   path:
     dependency: transitive
     description:
@@ -573,14 +573,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.0.2"
-  qr_code_scanner:
-    dependency: "direct main"
-    description:
-      name: qr_code_scanner
-      sha256: f23b68d893505a424f0bd2e324ebea71ed88465d572d26bb8d2e78a4749591fd
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.0.1"
   qr_flutter:
     dependency: "direct main"
     description:
@@ -605,14 +597,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.3.2"
-  share_extend:
-    dependency: "direct main"
-    description:
-      name: share_extend
-      sha256: "98c26f04abae42b0d2080102a42a2653a867a4bec862be1e921cb0cf7cc00916"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "2.0.0"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -779,10 +763,11 @@ packages:
   umeng_common_sdk:
     dependency: "direct main"
     description:
-      path: "external/umeng_common_sdk"
-      relative: true
-    source: path
-    version: "1.2.4"
+      name: umeng_common_sdk
+      sha256: "8374ced1ab1d89f596ff71c0eff044d5395337145c9a69a6be02f5d8a678e42c"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.3.0"
   universal_io:
     dependency: transitive
     description:
@@ -930,6 +915,14 @@ packages:
       url: "https://gitcode.com/openharmony-tpc/flutter_packages.git"
     source: git
     version: "3.12.0"
+  win32:
+    dependency: transitive
+    description:
+      name: win32
+      sha256: daf97c9d80197ed7b619040e86c8ab9a9dad285e7671ee7390f9180cc828a51e
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "5.10.1"
   xdg_directories:
     dependency: transitive
     description:
