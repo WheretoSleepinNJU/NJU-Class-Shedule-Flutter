@@ -800,6 +800,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.3.0"
+  umeng_common_sdk_ohos:
+    dependency: "direct main"
+    description:
+      name: umeng_common_sdk_ohos
+      sha256: a3ec72f9b1b15777a8c0f0a3ec2881a8e93f07339732a53f787b432cfe4bedc9
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.2.9"
   universal_io:
     dependency: transitive
     description:

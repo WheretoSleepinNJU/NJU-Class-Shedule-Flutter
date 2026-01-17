@@ -51,8 +51,9 @@ dependencies:
   # Android iOS Linux macOS web Windows
 
   umeng_common_sdk: ^1.2.7
-#    path: ./external/umeng_common_sdk
+  umeng_common_sdk_ohos: 1.2.9
   # Android iOS
+
 #  qr_code_scanner: ^1.0.1
   # Android iOS
   flutter_linkify: ^6.0.0

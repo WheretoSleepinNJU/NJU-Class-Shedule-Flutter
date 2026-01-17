@@ -30,6 +30,10 @@
     },
 
     {
+      "name": "reason_tracking",
+      "value": "需要上传追踪信息用于统计分析"
+    },
+    {
       "name": "reason_read_calendar",
       "value": "需要读取日历以避免重复添加课程"
     },
