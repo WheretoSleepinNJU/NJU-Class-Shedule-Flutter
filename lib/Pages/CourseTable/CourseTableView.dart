@@ -1,4 +1,5 @@
 import '../../Resources/Constant.dart';
+import '../../Utils/WidgetHelper.dart';
 import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -92,6 +93,10 @@ class CourseTableViewState extends State<CourseTableView> {
         await ScopedModel.of<MainStateModel>(context).getTmpWeek();
 
     await _presenter.refreshClasses(index, _nowShowWeekNum);
+
+    WidgetHelper.refreshWidget(index);
+    // WidgetHelper.runMockTest();
+    
     _freeCourseNum = _presenter.freeCourses.length;
 
     try {

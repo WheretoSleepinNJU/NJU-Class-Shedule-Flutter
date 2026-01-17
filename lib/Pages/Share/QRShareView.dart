@@ -18,7 +18,7 @@ class QRShareView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            QrImage(
+            QrImageView(
               data: url,
               version: QrVersions.auto,
               size: 200.0,

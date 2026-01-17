@@ -16,8 +16,29 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  shared_preferences: ^2.0.7
+  shared_preferences: 
+    path: ./external/flutter_packages/packages/shared_preferences/shared_preferences
+  # Android iOS Linux macOS web Windows HarmonyOS
+
+  webview_flutter: 
+    path: ./external/flutter_packages/packages/webview_flutter/webview_flutter
+  # Android iOS HarmonyOS
+
+  path_provider:
+    path: ./external/flutter_packages/packages/path_provider/path_provider
+  # Android iOS Linux macOS     Windows HarmonyOS
+
+  url_launcher: 
+    path: ./external/flutter_packages/packages/url_launcher/url_launcher
   # Android iOS Linux macOS web Windows
+
+  image_picker:
+    path: ./external/flutter_packages/packages/image_picker/image_picker
+  # Android iOS             web harmonyos
+
+  sqflite: ^2.0.0+4
+  # Android iOS       macOS
+  
   flutter_swiper_null_safety_flutter3: ^2.0.0
   # Android iOS Linux macOS web Windows
   scoped_model: ^2.0.0-nullsafety.0
@@ -28,47 +49,61 @@ dependencies:
   # Android iOS             web
   # flutter_search_bar: ^3.0.0-dev.1
   # Android iOS Linux macOS web Windows
-  webview_flutter: ^2.0.13
+
+  umeng_common_sdk: ^1.2.7
+#    path: ./external/umeng_common_sdk
   # Android iOS
-  umeng_common_sdk:
-    path: ./lib/Libs/umeng_common_sdk
-  # Android iOS
-  qr_code_scanner: ^1.0.1
+#  qr_code_scanner: ^1.0.1
   # Android iOS
   flutter_linkify: ^6.0.0
   # Android iOS Linux macOS web Windows
-  image_picker: ^0.8.5+3
-  # Android iOS             web
+  
   # auto_size_text: ^3.0.0
   # Android iOS Linux macOS web Windows
-  path_provider: ^2.0.3
-  # Android iOS Linux macOS     Windows
-  url_launcher: ^6.0.10
-  # Android iOS Linux macOS web Windows
+  
   in_app_review: ^2.0.3
   # Android iOS       macOS
   # 但是只用在 iOS
-  package_info: ^2.0.2
+  package_info_plus: ^9.0.0
   # Android iOS       macOS
   flutter_html: ^3.0.0-alpha.5
   # Android iOS
-  share_extend: ^2.0.0
+#  share_extend: ^2.0.0
   # Android iOS
   fluttertoast: ^8.0.1
   # Android iOS             web
   qr_flutter: ^4.0.0
   # Android iOS Linux macOS web Windows
-  sqflite: ^2.0.0+4
-  # Android iOS       macOS
   html: ^0.15.0
   # Android iOS Linux macOS web Windows
-  dio: ^4.0.6
+  dio: ^5.9.0
   # Android iOS Linux macOS web Windows
   device_calendar: ^4.2.0
+  device_calendar_ohos: 1.0.0
 #  flutter_timezone: ^3.0.0
 
 dependency_overrides:
   scrollable_positioned_list: 0.3.2
+  url_launcher:
+    path: ./external/flutter_packages/packages/url_launcher/url_launcher
+    
+  shared_preferences:
+    path: ./external/flutter_packages/packages/shared_preferences/shared_preferences
+    
+  webview_flutter:
+    path: ./external/flutter_packages/packages/webview_flutter/webview_flutter
+    
+  path_provider:
+    path: ./external/flutter_packages/packages/path_provider/path_provider
+    
+  image_picker:
+    path: ./external/flutter_packages/packages/image_picker/image_picker
+
+  sqflite:
+    path: ./external/flutter_sqflite/sqflite
+
+  sqflite_common:
+    path: ./external/flutter_sqflite/sqflite_common
 
 dev_dependencies:
   flutter_lints: ^1.0.4

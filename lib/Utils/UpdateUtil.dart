@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../generated/l10n.dart';
 import '../Utils/States/MainState.dart';
 import '../Components/Dialog.dart';

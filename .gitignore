@@ -118,3 +118,6 @@ app.*.symbols
 !/dev/ci/**/Gemfile.lock
 !pubspec.lock
 
+flutter_packages/
+build-profile.json5
+external

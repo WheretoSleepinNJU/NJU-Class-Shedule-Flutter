@@ -356,8 +356,10 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                   }),
             ),
             ListTile(
-                title: Text(S.of(context).font_mode_title),
-                subtitle: Text(S.of(context).font_mode_subtitle),
+                // title: Text(S.of(context).font_mode_title),
+                title: Text("字体模式"),
+                // subtitle: Text(S.of(context).font_mode_subtitle),
+                subtitle: Text("设置字体粗细"),
                 trailing: FutureBuilder<bool>(
                     future: _getFontMode(),
                     builder:
@@ -372,8 +374,8 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                             onChanged: (bool value) {
                               UmengCommonSdk.onEvent("more_setting",
                                   {"type": 12, "result": value.toString()});
-                              ScopedModel.of<MainStateModel>(context)
-                                  .setFontMode(value);
+                              // ScopedModel.of<MainStateModel>(context)
+                              //     .setFontMode(value);
                               setState(() {});
                             });
                       }
@@ -480,7 +482,8 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
   }
 
   Future<bool> _getFontMode() async {
-    return await ScopedModel.of<MainStateModel>(context).getFontMode();
+    // return await ScopedModel.of<MainStateModel>(context).getFontMode();
+    return true;
   }
 
   Future<bool> _getHasImgPath() async {
