@@ -76,7 +76,7 @@ dependencies:
   # Android iOS Linux macOS web Windows
   html: ^0.15.0
   # Android iOS Linux macOS web Windows
-  dio: ^4.0.6
+  dio: ^5.9.0
   # Android iOS Linux macOS web Windows
   device_calendar: ^4.2.0
 #  flutter_timezone: ^3.0.0
