@@ -5,7 +5,7 @@ function scheduleHtmlParser() {
     xhr.open(
       "POST",
       "https://yjs2.ruc.edu.cn/gsapp/sys/wdkbapp/modules/xskcb/kfdxnxqcx.do",
-      false
+      false,
     );
     xhr.send();
     var data = JSON.parse(xhr.responseText);
@@ -22,7 +22,7 @@ function scheduleHtmlParser() {
     xhr.open(
       "POST",
       "https://yjs2.ruc.edu.cn/gsapp/sys/wdkbapp/bykb/loadXskbData.do",
-      false
+      false,
     );
     xhr.send(formData);
     return JSON.parse(xhr.responseText).rwList;
@@ -31,40 +31,31 @@ function scheduleHtmlParser() {
   // 3. 解析信息
   function parseInfo(info) {
     const result = [];
-
     const segments = info.split(";");
 
     segments.forEach((seg) => {
-      const match = seg.match(
-        /(.+?)周\s*(?:\((.+?)\))?\s*星期(.+?)\[(.+?)节\](.+)/
-      );
+      // 1-4,6-8周 星期二[3-4节]公学一楼102;3周 星期日[3-4节]公学一楼102
+      const match = seg.match(/(.+?周)\s*星期(.+?)\[(.+?)节\](.*)/);
       if (!match) return;
 
-      const [, weekPart, flag, dayPart, timePart, classroom] = match;
+      const [, weekPart, dayPart, timePart, classroom] = match;
 
       // 解析周次
       const weeks = [];
       weekPart.split(",").forEach((w) => {
-        if (w.includes("-")) {
-          const [start, end] = w.split("-").map(Number);
-          for (let i = start; i <= end; i++) {
-            if (!flag) {
-              weeks.push(i);
-            } else if (flag === "单" && i % 2 === 1) {
-              weeks.push(i);
-            } else if (flag === "双" && i % 2 === 0) {
-              weeks.push(i);
-            }
-          }
-        } else {
-          const week = Number(w);
-          if (!flag) {
-            weeks.push(week);
-          } else if (flag === "单" && week % 2 === 1) {
-            weeks.push(week);
-          } else if (flag === "双" && week % 2 === 0) {
-            weeks.push(week);
-          }
+        var m = w.match(/(\d+)-?(\d+)?(?:(单|双))?周?/);
+        if (!m) return [];
+        var start = parseInt(m[1], 10);
+        var end = parseInt(m[2], 10);
+        if (isNaN(end)) end = start;
+        var flag = { 单: 1, 双: 2 }[m[3]] || 0;
+        for (var w = start; w <= end; w++) {
+          if (
+            flag === 0 ||
+            (flag === 1 && w % 2 === 1) ||
+            (flag === 2 && w % 2 === 0)
+          )
+            weeks.push(w);
         }
       });
 
@@ -99,7 +90,7 @@ function scheduleHtmlParser() {
       JSON.stringify({
         name: "无法获取学期信息",
         courses: [],
-      })
+      }),
     );
   }
 
@@ -108,6 +99,8 @@ function scheduleHtmlParser() {
   var courses = [];
   console.log(rows);
   rows.forEach(function (r) {
+    // 无时间课程直接忽略
+    if (r.PKSJDD == null) return;
     var info = parseInfo(r.PKSJDD);
     info.forEach(function (i) {
       courses.push({
@@ -134,7 +127,7 @@ function scheduleHtmlParser() {
     name: currentTermName,
     courses: courses,
   };
-//   return result;
+  // return result;
   return encodeURIComponent(JSON.stringify(result));
 }
 
