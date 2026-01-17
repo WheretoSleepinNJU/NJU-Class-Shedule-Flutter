@@ -47,7 +47,7 @@ class _AddViewState extends State<AddView> {
   @override
   Widget build(BuildContext context) {
     bool resizeEnabled = true;
-    if (Platform.isOhos) {
+    if (Platform.operatingSystem == 'ohos') {
       resizeEnabled = false;
     }
 

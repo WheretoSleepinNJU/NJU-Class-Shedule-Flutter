@@ -44,7 +44,7 @@ class WidgetHelper {
         await _updateAndroidWidget(todayCourses, dateStr, classTimeList);
       } else if (Platform.isIOS) {
         await _updateIOSWidget(todayCourses, dateStr, classTimeList);
-      } else if (Platform.isOhos) {
+      } else if (Platform.operatingSystem == 'ohos') {
         await _updateHarmonyWidget(todayCourses, dateStr, classTimeList, colorPool);
       } else {
         print("This platform didn't support Widget");
@@ -236,7 +236,7 @@ class WidgetHelper {
       await _updateAndroidWidget(mockCourses, dateStr, mockTimeList);
     } else if (Platform.isIOS) {
       await _updateIOSWidget(mockCourses, dateStr, mockTimeList);
-    } else if (Platform.isOhos) {
+    } else if (Platform.operatingSystem == 'ohos') {
       List colorPool = await ColorPool.getColorPool();
       await _updateHarmonyWidget(mockCourses, dateStr, mockTimeList, colorPool);
     } else {
