@@ -10,7 +10,7 @@
     },
     {
       "name": "EntryAbility_label",
-      "value": "wheretosleepinnju"
+      "value": "南哪课表"
     },
     {
       "name": "EntryFormAbility_desc",
@@ -22,11 +22,20 @@
     },
     {
       "name": "widget_desc",
-      "value": "widget2x2"
+      "value": "课表小组件"
     },
     {
       "name": "widget_display_name",
-      "value": "widget"
+      "value": "南哪课表"
+    },
+
+    {
+      "name": "reason_read_calendar",
+      "value": "需要读取日历以避免重复添加课程"
+    },
+    {
+      "name": "reason_write_calendar",
+      "value": "需要写入权限以将课程导出到系统日历"
     }
   ]
 }

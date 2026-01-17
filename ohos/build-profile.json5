@@ -5,13 +5,13 @@
         "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "certpath": "/Users/idealclover/.ohos/config/default_ohos_beb2R7_SesHgy1vQMNVsuiLAGxWazM3AmhIWVkTJIZI=.cer",
+          "certpath": "/Users/aritxonly/.ohos/config/default_ohos_xCcY_EHXhrc5RmKUoRUS73unyuDoO7Jr2Ts-npDsHF0=.cer",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001B398261471D6CC52EF358DE70526B4F24B20F2BDDAA445813A625D61EAC0FAC264D9AA49FE573EA",
-          "profile": "/Users/idealclover/.ohos/config/default_ohos_beb2R7_SesHgy1vQMNVsuiLAGxWazM3AmhIWVkTJIZI=.p7b",
+          "keyPassword": "0000001BFDB5CD47DA350A32834F306392BA9B0701A5FBF90B9244C5CB07E40C7AA1F384308E63A59B849B",
+          "profile": "/Users/aritxonly/.ohos/config/default_ohos_xCcY_EHXhrc5RmKUoRUS73unyuDoO7Jr2Ts-npDsHF0=.p7b",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "/Users/idealclover/.ohos/config/default_ohos_beb2R7_SesHgy1vQMNVsuiLAGxWazM3AmhIWVkTJIZI=.p12",
-          "storePassword": "0000001BB3D0D32281DE9B2E5700327F43073F63D95C9079672CC8E7C17E49D8742AD9EC6DE134D22C3BB2"
+          "storeFile": "/Users/aritxonly/.ohos/config/default_ohos_xCcY_EHXhrc5RmKUoRUS73unyuDoO7Jr2Ts-npDsHF0=.p12",
+          "storePassword": "0000001B9D0C2CE9DC78343E41F501B54ACFF31EBE7DB84CB0929B6DB7D653DFF3057E8F5A171ADF575C6C"
         }
       }
     ],

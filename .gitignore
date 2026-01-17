@@ -119,3 +119,5 @@ app.*.symbols
 !pubspec.lock
 
 flutter_packages/
+build-profile.json5
+external

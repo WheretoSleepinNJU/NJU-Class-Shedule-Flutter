@@ -105,6 +105,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "4.3.3"
+  device_calendar_ohos:
+    dependency: "direct main"
+    description:
+      name: device_calendar_ohos
+      sha256: "3b5a28106ec72ec8b848db40a089ba7e99c1b7a6d73d08032973e3833c8c8815"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.0"
   dio:
     dependency: "direct main"
     description:
@@ -589,6 +597,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "4.1.0"
+  rrule:
+    dependency: transitive
+    description:
+      name: rrule
+      sha256: f6f6ad5bf7b19d218d4c985d6055d3c9717f1d6efd5d1c0127b1146f1eb3640c
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.2.18"
   scoped_model:
     dependency: "direct main"
     description:
@@ -752,6 +768,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.7.3"
+  time:
+    dependency: transitive
+    description:
+      name: time
+      sha256: "46187cf30bffdab28c56be9a63861b36e4ab7347bf403297595d6a97e10c789f"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.1.6"
   timezone:
     dependency: transitive
     description:

@@ -79,6 +79,7 @@ dependencies:
   dio: ^5.9.0
   # Android iOS Linux macOS web Windows
   device_calendar: ^4.2.0
+  device_calendar_ohos: 1.0.0
 #  flutter_timezone: ^3.0.0
 
 dependency_overrides:
