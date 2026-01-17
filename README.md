@@ -71,3 +71,13 @@
 }
 
 ```
+
+## 部署相关
+
+因为增加了鸿蒙的支持，所以得用鸿蒙的flutter版本
+
+1. 根据 [flutter_flutter oh-3.27.0](https://gitcode.com/openharmony-tpc/flutter_flutter/tree/oh-3.27.0-release) 中的配置文档配置鸿蒙依赖
+2. 运行 `flutter doctor -v` 检查环境变量配置是否正确，Futter与OpenHarmony应都为ok标识
+3. 在 `external` 文件夹中 clone 依赖
+  * `git clone https://gitcode.com/openharmony-tpc/flutter_packages.git` 
+  * `git clone https://gitcode.com/openharmony-sig/flutter_sqflite.git`

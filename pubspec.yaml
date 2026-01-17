@@ -17,23 +17,23 @@ dependencies:
     sdk: flutter
 
   shared_preferences: 
-    path: ./flutter_packages/packages/shared_preferences/shared_preferences
+    path: ./external/flutter_packages/packages/shared_preferences/shared_preferences
   # Android iOS Linux macOS web Windows HarmonyOS
 
   webview_flutter: 
-    path: ./flutter_packages/packages/webview_flutter/webview_flutter
+    path: ./external/flutter_packages/packages/webview_flutter/webview_flutter
   # Android iOS HarmonyOS
 
   path_provider:
-    path: ./flutter_packages/packages/path_provider/path_provider
+    path: ./external/flutter_packages/packages/path_provider/path_provider
   # Android iOS Linux macOS     Windows HarmonyOS
 
   url_launcher: 
-    path: ./flutter_packages/packages/url_launcher/url_launcher
+    path: ./external/flutter_packages/packages/url_launcher/url_launcher
   # Android iOS Linux macOS web Windows
 
   image_picker:
-    path: ./flutter_packages/packages/image_picker/image_picker
+    path: ./external/flutter_packages/packages/image_picker/image_picker
   # Android iOS             web harmonyos
 
   sqflite: ^2.0.0+4
@@ -51,7 +51,7 @@ dependencies:
   # Android iOS Linux macOS web Windows
 
   umeng_common_sdk:
-    path: ./lib/Libs/umeng_common_sdk
+    path: ./external/umeng_common_sdk
   # Android iOS
   qr_code_scanner: ^1.0.1
   # Android iOS
@@ -84,25 +84,25 @@ dependencies:
 dependency_overrides:
   scrollable_positioned_list: 0.3.2
   url_launcher:
-    path: ./flutter_packages/packages/url_launcher/url_launcher
+    path: ./external/flutter_packages/packages/url_launcher/url_launcher
     
   shared_preferences:
-    path: ./flutter_packages/packages/shared_preferences/shared_preferences
+    path: ./external/flutter_packages/packages/shared_preferences/shared_preferences
     
   webview_flutter:
-    path: ./flutter_packages/packages/webview_flutter/webview_flutter
+    path: ./external/flutter_packages/packages/webview_flutter/webview_flutter
     
   path_provider:
-    path: ./flutter_packages/packages/path_provider/path_provider
+    path: ./external/flutter_packages/packages/path_provider/path_provider
     
   image_picker:
-    path: ./flutter_packages/packages/image_picker/image_picker
+    path: ./external/flutter_packages/packages/image_picker/image_picker
 
   sqflite:
-    path: ./flutter_packages/flutter_sqflite/sqflite
+    path: ./external/flutter_sqflite/sqflite
 
   sqflite_common:
-    path: ./flutter_packages/flutter_sqflite/sqflite_common
+    path: ./external/flutter_sqflite/sqflite_common
 
 dev_dependencies:
   flutter_lints: ^1.0.4

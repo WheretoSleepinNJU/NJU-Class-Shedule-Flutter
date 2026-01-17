@@ -280,7 +280,7 @@ packages:
   image_picker:
     dependency: "direct main"
     description:
-      path: "flutter_packages/packages/image_picker/image_picker"
+      path: "external/flutter_packages/packages/image_picker/image_picker"
       relative: true
     source: path
     version: "1.0.2"
@@ -480,7 +480,7 @@ packages:
   path_provider:
     dependency: "direct main"
     description:
-      path: "flutter_packages/packages/path_provider/path_provider"
+      path: "external/flutter_packages/packages/path_provider/path_provider"
       relative: true
     source: path
     version: "2.1.0"
@@ -616,7 +616,7 @@ packages:
   shared_preferences:
     dependency: "direct main"
     description:
-      path: "flutter_packages/packages/shared_preferences/shared_preferences"
+      path: "external/flutter_packages/packages/shared_preferences/shared_preferences"
       relative: true
     source: path
     version: "2.2.0"
@@ -701,14 +701,14 @@ packages:
   sqflite:
     dependency: "direct main"
     description:
-      path: "flutter_packages/flutter_sqflite/sqflite"
+      path: "external/flutter_sqflite/sqflite"
       relative: true
     source: path
     version: "2.2.8+3"
   sqflite_common:
     dependency: "direct overridden"
     description:
-      path: "flutter_packages/flutter_sqflite/sqflite_common"
+      path: "external/flutter_sqflite/sqflite_common"
       relative: true
     source: path
     version: "2.4.5+1"
@@ -779,7 +779,7 @@ packages:
   umeng_common_sdk:
     dependency: "direct main"
     description:
-      path: "lib/Libs/umeng_common_sdk"
+      path: "external/umeng_common_sdk"
       relative: true
     source: path
     version: "1.2.4"
@@ -794,7 +794,7 @@ packages:
   url_launcher:
     dependency: "direct main"
     description:
-      path: "flutter_packages/packages/url_launcher/url_launcher"
+      path: "external/flutter_packages/packages/url_launcher/url_launcher"
       relative: true
     source: path
     version: "6.1.12"
@@ -890,7 +890,7 @@ packages:
   webview_flutter:
     dependency: "direct main"
     description:
-      path: "flutter_packages/packages/webview_flutter/webview_flutter"
+      path: "external/flutter_packages/packages/webview_flutter/webview_flutter"
       relative: true
     source: path
     version: "4.6.0"
