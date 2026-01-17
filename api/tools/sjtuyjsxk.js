@@ -29,7 +29,7 @@ function scheduleHtmlParser() {
       //pattern: xx(-xx)(单/双)周 星期x[x-x节]x
       let pattern = new RegExp(
         "(\\d{1,2})(-(\\d{1,2}))?(单|双)?周 星期(.)\\[(\\d{1,2})(-(\\d{1,2}))?节](.*)",
-        "i"
+        "i",
       );
       let strs = pattern.exec(i);
       if (strs != null) {
@@ -58,8 +58,7 @@ function scheduleHtmlParser() {
         classroom = strs[9];
       } else {
         // 自由时间周数填充
-        for (let z = 1; z <= WEEK_NUM; z++)
-          weeks.push(z);
+        for (let z = 1; z <= WEEK_NUM; z++) weeks.push(z);
       }
       rst["courses"].push({
         name: course_name,

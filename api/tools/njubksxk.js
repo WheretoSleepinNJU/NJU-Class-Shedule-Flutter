@@ -68,7 +68,7 @@ function scheduleHtmlParser() {
     }
   }
   let tables = document.getElementsByClassName("course-body");
-  let table = tables[tables.length - 1]
+  let table = tables[tables.length - 1];
   let elements = table.children;
 
   for (let i = 0; i < elements.length; i++) {
@@ -91,7 +91,7 @@ function scheduleHtmlParser() {
     for (let j = 0; j < infos.length; j++) {
       let info = infos[j].innerHTML;
       if (info == "") continue;
-      info = info.replace(/^\s+|\s+$/gm,'');
+      info = info.replace(/^\s+|\s+$/gm, "");
       // console.log(info);
 
       let strs = info.split(" ");
@@ -130,7 +130,10 @@ function scheduleHtmlParser() {
 
       // Get ClassRoom
       let classRoom = strs[strs.length - 1];
-      if(classRoom.match(/(\d{1,2}|单|双)周$/)) {
+      if (
+        classRoom.match(/(\d{1,2}|单|双)周$/) ||
+        classRoom.includes("自由时间")
+      ) {
         classRoom = "";
       }
 

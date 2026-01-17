@@ -2,18 +2,27 @@ function scheduleHtmlParser() {
   // 1. 获取学期列表
   var getTerms = function () {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'https://ehall.seu.edu.cn/jwapp/sys/wdkb/modules/jshkcb/xnxqcx.do', false);
+    xhr.open(
+      "GET",
+      "https://ehall.seu.edu.cn/jwapp/sys/wdkb/modules/jshkcb/xnxqcx.do",
+      false,
+    );
     xhr.send();
     var data = JSON.parse(xhr.responseText);
     var terms = data.datas.xnxqcx.rows;
-    terms.sort((a, b) => a.PX - b.PX);   // 早→新
+    terms.sort((a, b) => a.PX - b.PX); // 早→新
     return terms;
   };
 
   // 2. 获取课表
   var getRawKb = function (termCode) {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'https://ehall.seu.edu.cn/jwapp/sys/wdkb/modules/xskcb/xskcb.do?XNXQDM=' + termCode, false);
+    xhr.open(
+      "GET",
+      "https://ehall.seu.edu.cn/jwapp/sys/wdkb/modules/xskcb/xskcb.do?XNXQDM=" +
+        termCode,
+      false,
+    );
     xhr.send();
     return JSON.parse(xhr.responseText).datas.xskcb.rows;
   };
@@ -24,10 +33,15 @@ function scheduleHtmlParser() {
     if (!m) return [];
     var start = parseInt(m[1], 10);
     var end = parseInt(m[2], 10);
-    var flag = { '单': 1, '双': 2 }[m[3]] || 0;
+    var flag = { 单: 1, 双: 2 }[m[3]] || 0;
     var arr = [];
     for (var w = start; w <= end; w++) {
-      if (flag === 0 || (flag === 1 && w % 2 === 1) || (flag === 2 && w % 2 === 0)) arr.push(w);
+      if (
+        flag === 0 ||
+        (flag === 1 && w % 2 === 1) ||
+        (flag === 2 && w % 2 === 0)
+      )
+        arr.push(w);
     }
     return arr;
   }
@@ -35,17 +49,19 @@ function scheduleHtmlParser() {
   // 4. 从DOM获取当前学期
   var currentTermCode = null;
   var currentTermName = null;
-  
+
   var terms = getTerms();
   var currentTerm = terms[0];
   currentTermCode = currentTerm.DM;
   currentTermName = currentTerm.MC;
-  
+
   if (!currentTermCode) {
-    return encodeURIComponent(JSON.stringify({
-      name: "无法获取学期信息",
-      courses: []
-    }));
+    return encodeURIComponent(
+      JSON.stringify({
+        name: "无法获取学期信息",
+        courses: [],
+      }),
+    );
   }
 
   // 5. 抓取并转换
@@ -68,16 +84,16 @@ function scheduleHtmlParser() {
       time_count: parseInt(r.JSJC, 10) - parseInt(r.KSJC, 10),
       import_type: 1,
       info: r.ZCMC,
-      data: null
+      data: null,
     });
   });
 
-  console.log('已选择学期：' + currentTermCode + ' ' + currentTermName);
+  console.log("已选择学期：" + currentTermCode + " " + currentTermName);
 
   // 返回符合南哪课表格式的数据
   var result = {
     name: currentTermName,
-    courses: courses
+    courses: courses,
   };
   return encodeURIComponent(JSON.stringify(result));
 }
