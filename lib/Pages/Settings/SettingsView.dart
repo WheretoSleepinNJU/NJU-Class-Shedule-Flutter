@@ -129,15 +129,16 @@ class _SettingsViewState extends State<SettingsView> {
               //   },
               // ),
               // ---
-              ListTile(
-                title: Text(S.of(context).import_or_export_title),
-                subtitle: Text(S.of(context).import_or_export_subtitle),
-                onTap: () {
-                  UmengCommonSdk.onEvent("qr_import", {"action": "show"});
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => const ShareView()));
-                },
-              ),
+              // TODO: 为了鸿蒙先注释掉导入导出功能
+              // ListTile(
+              //   title: Text(S.of(context).import_or_export_title),
+              //   subtitle: Text(S.of(context).import_or_export_subtitle),
+              //   onTap: () {
+              //     UmengCommonSdk.onEvent("qr_import", {"action": "show"});
+              //     Navigator.of(context).push(MaterialPageRoute(
+              //         builder: (BuildContext context) => const ShareView()));
+              //   },
+              // ),
               ListTile(
                 title: Text(S.of(context).manage_table_title),
                 subtitle: Text(S.of(context).manage_table_subtitle),
