@@ -65,13 +65,18 @@ dependencies:
   in_app_review: ^2.0.3
   # Android iOS       macOS
   # 但是只用在 iOS
-  package_info_plus: ^9.0.0
+  package_info_plus:
+    path: ./external/flutter_plus_plugins/packages/package_info_plus/package_info_plus
   # Android iOS       macOS
   flutter_html: ^3.0.0-alpha.5
   # Android iOS
-#  share_extend: ^2.0.0
+  share_extend:
+    git:
+      url: https://gitcode.com/openharmony-sig/fluttertpc_share_extend.git
   # Android iOS
-  fluttertoast: ^8.0.1
+  fluttertoast:
+    git:
+      url: https://gitcode.com/openharmony-sig/flutter_fluttertoast.git
   # Android iOS             web
   qr_flutter: ^4.0.0
   # Android iOS Linux macOS web Windows

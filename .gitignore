@@ -119,4 +119,5 @@ app.*.symbols
 !pubspec.lock
 
 external/flutter_packages
+external/flutter_plus_plugins
 external/flutter_sqflite

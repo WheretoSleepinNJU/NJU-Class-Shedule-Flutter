@@ -3,7 +3,7 @@ import '../../generated/l10n.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
-// import 'package:share_extend/share_extend.dart';
+import 'package:share_extend/share_extend.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../ManageTable/ManageTableView.dart';
@@ -166,7 +166,7 @@ class _SettingsViewState extends State<SettingsView> {
                 subtitle: Text(S.of(context).share_subtitle),
                 onTap: () {
                   UmengCommonSdk.onEvent("app_share", {"action": "show"});
-                  // ShareExtend.share(S.of(context).share_content, "text");
+                  ShareExtend.share(S.of(context).share_content, "text");
                 },
               ),
               ListTile(
@@ -180,6 +180,9 @@ class _SettingsViewState extends State<SettingsView> {
                   } else if (Platform.isAndroid) {
                     status = await _launchURL(Url.QQ_GROUP_ANDROID_URL);
                   }
+                  else if (Platform.operatingSystem == 'ohos') {
+                    status = await _launchURL(Url.QQ_GROUP_OHOS_URL);
+                  }
                   if (!status) {
                     Toast.showToast(S.of(context).QQ_open_fail_toast, context);
                   }
@@ -190,6 +193,9 @@ class _SettingsViewState extends State<SettingsView> {
                     await Clipboard.setData(
                         const ClipboardData(text: Config.IOS_GROUP));
                   } else if (Platform.isAndroid) {
+                    await Clipboard.setData(
+                        const ClipboardData(text: Config.ANDROID_GROUP));
+                  } else if (Platform.operatingSystem == 'ohos') {
                     await Clipboard.setData(
                         const ClipboardData(text: Config.ANDROID_GROUP));
                   }
@@ -206,6 +212,8 @@ class _SettingsViewState extends State<SettingsView> {
                       status = await _launchURL(Url.URL_APPLE);
                     } else if (Platform.isAndroid) {
                       status = await _launchURL(Url.URL_ANDROID);
+                    } else if (Platform.operatingSystem == 'ohos') {
+                      status = await _launchURL(Url.URL_OHOS);
                     }
                     if (!status) {
                       Toast.showToast(
@@ -241,8 +249,20 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   Future<bool> _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
+    if (await canLaunchUrl(Uri.parse(url))) {
+      // 鸿蒙需要额外注册页面打开浏览器链接
+      // https://developer.huawei.com/consumer/cn/forum/topic/0202180808205477445
+      if(Platform.operatingSystem == 'ohos') {
+        await launchUrl(
+          Uri.parse(url),
+          webViewConfiguration:
+          const WebViewConfiguration(headers: <String, String>{
+            'harmony_browser_page': 'pages/LaunchInAppPage'
+          }),
+        );
+      } else {
+        await launchUrl(Uri.parse(url));
+      }
       return true;
     } else {
       return false;
