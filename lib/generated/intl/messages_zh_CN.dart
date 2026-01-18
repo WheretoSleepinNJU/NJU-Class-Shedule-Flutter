@@ -130,6 +130,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "double_week": MessageLookupByLibrary.simpleMessage("双周"),
         "easter_egg": MessageLookupByLibrary.simpleMessage(
             "感谢小百合工作室\n感谢 @ns @lgt @FengChendian @SuperKenVery 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光"),
+        "easter_egg_title": MessageLookupByLibrary.simpleMessage("彩蛋与致谢"),
         "export_classtable_subtitle": MessageLookupByLibrary.simpleMessage(
             "导出当前课表为二维码/链接\n使用公共服务 file.io"),
         "export_classtable_title":

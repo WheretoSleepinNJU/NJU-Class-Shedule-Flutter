@@ -1,4 +1,5 @@
 import '../../generated/l10n.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -78,7 +79,17 @@ class _AboutViewState extends State<AboutView> {
                 onTap: () => launch(Url.BLOG_URL)),
             _generateTitle(S.of(context).open_source_library_title),
             _generateContent(S.of(context).open_source_library_content),
-            _generateTitle(S.of(context).easter_egg),
+            _generateTitle(S.of(context).easter_egg_title),
+            FutureBuilder<String>(
+                future: _getEasterEggContent(S.of(context).easter_egg),
+                builder:
+                    (BuildContext context, AsyncSnapshot<String> snapshot) {
+                  if (!snapshot.hasData) {
+                    return _generateContent(S.of(context).easter_egg);
+                  } else {
+                    return _generateContent(snapshot.data!);
+                  }
+                }),
           ]))
         ]));
   }
@@ -107,5 +118,23 @@ class _AboutViewState extends State<AboutView> {
       ),
       onTap: onTap,
     );
+  }
+
+  static Future<String> _getEasterEggContent(fallbackContent) async {
+    String url = Url.UPDATE_ROOT + '/easterEgg.json';
+    try {
+      Dio dio = Dio();
+      Response response = await dio.get(url);
+
+      if (response.statusCode == 200) {
+        String content = response.data['content'] ?? fallbackContent;
+        if (content.trim().isNotEmpty) {
+          return content;
+        }
+      }
+    } catch (e) {
+      // 忽略网络错误，使用兜底文案
+    }
+    return fallbackContent;
   }
 }
