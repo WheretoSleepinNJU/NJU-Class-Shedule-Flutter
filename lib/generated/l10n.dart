@@ -1910,6 +1910,16 @@ class S {
     );
   }
 
+  /// `彩蛋与致谢`
+  String get easter_egg_title {
+    return Intl.message(
+      '彩蛋与致谢',
+      name: 'easter_egg_title',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `感谢小百合工作室\n感谢 @ns @lgt @FengChendian @SuperKenVery 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光`
   String get easter_egg {
     return Intl.message(

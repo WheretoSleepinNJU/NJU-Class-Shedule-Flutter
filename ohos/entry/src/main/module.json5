@@ -36,6 +36,14 @@
     ],
     "requestPermissions": [
       {
+        "name": "ohos.permission.APP_TRACKING_CONSENT",
+        "reason": "$string:reason_tracking", // 需要在 string.json 中定义
+        "usedScene": {}
+      },
+      {
+        "name": "ohos.permission.GET_NETWORK_INFO"
+      },
+      {
         "name": "ohos.permission.INTERNET"
       },
       {

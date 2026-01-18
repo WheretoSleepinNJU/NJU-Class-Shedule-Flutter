@@ -256,11 +256,12 @@ packages:
   fluttertoast:
     dependency: "direct main"
     description:
-      name: fluttertoast
-      sha256: "90778fe0497fe3a09166e8cf2e0867310ff434b794526589e77ec03cf08ba8e8"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "8.2.14"
+      path: "."
+      ref: HEAD
+      resolved-ref: b904d5000b30d31d0d67fbd96ac53e3320d2e222
+      url: "https://gitcode.com/openharmony-sig/flutter_fluttertoast.git"
+    source: git
+    version: "8.2.2"
   html:
     dependency: "direct main"
     description:
@@ -472,19 +473,18 @@ packages:
   package_info_plus:
     dependency: "direct main"
     description:
-      name: package_info_plus
-      sha256: f69da0d3189a4b4ceaeb1a3defb0f329b3b352517f52bed4290f83d4f06bc08d
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "9.0.0"
+      path: "external/flutter_plus_plugins/packages/package_info_plus/package_info_plus"
+      relative: true
+    source: path
+    version: "4.2.0"
   package_info_plus_platform_interface:
     dependency: transitive
     description:
       name: package_info_plus_platform_interface
-      sha256: "202a487f08836a592a6bd4f901ac69b3a8f146af552bbd14407b6b41e1c3f086"
+      sha256: "9bc8ba46813a4cc42c66ab781470711781940780fd8beddd0c3da62506d3a6c6"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.2.1"
+    version: "2.0.1"
   path:
     dependency: transitive
     description:
@@ -621,6 +621,15 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.3.2"
+  share_extend:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "31c9c2aade0429727c809a9c08412ef5e2395577"
+      url: "https://gitcode.com/openharmony-sig/fluttertpc_share_extend.git"
+    source: git
+    version: "2.0.0"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -800,6 +809,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.3.0"
+  umeng_common_sdk_ohos:
+    dependency: "direct main"
+    description:
+      name: umeng_common_sdk_ohos
+      sha256: a3ec72f9b1b15777a8c0f0a3ec2881a8e93f07339732a53f787b432cfe4bedc9
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.2.9"
   universal_io:
     dependency: transitive
     description:

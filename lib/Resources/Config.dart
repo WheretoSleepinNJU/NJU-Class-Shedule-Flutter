@@ -9,6 +9,7 @@ class Config {
 
   static const String ANDROID_GROUP = '569300290';
   static const String IOS_GROUP = '493247215';
+  static const String OHOS_GROUP = '921608761';
 
   static const int DONATE_DIALOG_DELAY_SECONDS = 10;
   static const int REVIEW_DIALOG_DELAY_SECONDS = 10;

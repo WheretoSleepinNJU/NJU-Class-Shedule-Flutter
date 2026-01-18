@@ -78,13 +78,13 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
               _webViewController.loadRequest(Uri.parse(widget.config['initialUrl']));
             },
           ),
-          IconButton(
-            icon: const Icon(Icons.gamepad),
-            onPressed: () async {
-              String rsp = "";
-              import(_webViewController, context, rsp: rsp);
-            },
-          )
+          // IconButton(
+          //   icon: const Icon(Icons.gamepad),
+          //   onPressed: () async {
+          //     String rsp = "";
+          //     import(_webViewController, context, rsp: rsp);
+          //   },
+          // )
         ],
       ),
       body: Builder(
