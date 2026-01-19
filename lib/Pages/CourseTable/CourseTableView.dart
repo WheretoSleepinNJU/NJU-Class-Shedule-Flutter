@@ -354,7 +354,8 @@ class CourseTableViewState extends State<CourseTableView> {
                                           style: TextButton.styleFrom(
                                               minimumSize: Size.zero,
                                               padding: EdgeInsets.zero,
-                                              backgroundColor: Theme.of(context).colorScheme.primaryContainer),
+                                              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                                              foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer),
                                         ),
                                         TextButton(
                                           child: Text(
@@ -368,7 +369,8 @@ class CourseTableViewState extends State<CourseTableView> {
                                           style: TextButton.styleFrom(
                                               minimumSize: Size.zero,
                                               padding: EdgeInsets.zero,
-                                              backgroundColor:Theme.of(context).colorScheme.primaryContainer),
+                                              backgroundColor:Theme.of(context).colorScheme.primaryContainer,
+                                              foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer),
                                         ),
                                       ],
                                     )
