@@ -82,7 +82,7 @@ class _AboutViewState extends State<AboutView> {
                     builder:
                         (BuildContext context, AsyncSnapshot<bool> snapshot) {
                       if (snapshot.hasData && snapshot.data!) {
-                        return _generateContent(S.of(context).developer);
+                        return _generateTitle(S.of(context).developer);
                       }
                       return Container();
                     })
