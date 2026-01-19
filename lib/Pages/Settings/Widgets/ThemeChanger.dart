@@ -22,7 +22,7 @@ class ThemeChanger extends StatelessWidget {
                     margin:
                         const EdgeInsets.only(left: 15, top: 10, bottom: 10),
                     decoration: BoxDecoration(
-                      color: themeDataList[i].appBarTheme.backgroundColor,
+                      color: themeDataList[i].colorScheme.primary,
                       shape: BoxShape.circle,
                     ),
                     child: InkResponse(onTap: () {

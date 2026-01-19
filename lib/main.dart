@@ -66,12 +66,8 @@ class _MyAppState extends State<MyApp> {
             int themeIndex = model.themeIndex ?? widget.themeIndex;
             String customTheme = model.themeCustomColor ?? widget.themeCustom;
             if (themeIndex < themeDataList.length || customTheme == '') {
-              lightTheme = themeDataList[themeIndex].copyWith(
-                useMaterial3: false
-              );
-              darkTheme = darkThemeDataList[themeIndex].copyWith(
-                useMaterial3: false
-              );
+              lightTheme = themeDataList[themeIndex];
+              darkTheme = darkThemeDataList[themeIndex];
             } else {
               lightTheme = getThemeData(customTheme, Brightness.light);
               darkTheme = getThemeData(customTheme, Brightness.dark);
@@ -91,6 +87,17 @@ class _MyAppState extends State<MyApp> {
               darkTheme: darkTheme,
               themeMode: model.themeMode ?? widget.themeMode,
               home: const CourseTableView(),
+              builder: (context, child) {
+                // 获取当前系统的配置（包含屏幕尺寸、亮度、系统设置的字重等）
+                final mediaQueryData = MediaQuery.of(context);
+                
+                // 强行覆盖 boldText 为 false
+                // 这样无论系统怎么发"变粗"的指令，Flutter 都会无视
+                return MediaQuery(
+                  data: mediaQueryData.copyWith(boldText: false),
+                  child: child!,
+                );
+              },
             );
           },
         ));

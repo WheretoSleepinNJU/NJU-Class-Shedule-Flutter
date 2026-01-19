@@ -485,6 +485,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.1"
+  palette_generator:
+    dependency: "direct main"
+    description:
+      path: "external/flutter_packages/packages/palette_generator"
+      relative: true
+    source: path
+    version: "0.3.3+3"
   path:
     dependency: transitive
     description:

@@ -149,8 +149,6 @@ class _SettingsViewState extends State<SettingsView> {
                           const ManageTableView()));
                 },
               ),
-              // TODO: Refresh multi times when changing themes.
-              const ThemeChanger(),
               ListTile(
                 title: Text(S.of(context).more_settings_title),
                 subtitle: Text(S.of(context).more_settings_subtitle),

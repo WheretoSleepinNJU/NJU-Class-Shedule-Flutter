@@ -35,6 +35,8 @@ dependencies:
   image_picker:
     path: ./external/flutter_packages/packages/image_picker/image_picker
   # Android iOS             web harmonyos
+  palette_generator:
+    path: ./external/flutter_packages/packages/palette_generator
 
   sqflite: ^2.0.0+4
   # Android iOS       macOS
