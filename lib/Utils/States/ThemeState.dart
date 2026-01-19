@@ -1,9 +1,26 @@
 // import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wheretosleepinnju/Utils/ThemeUtil.dart';
 import '../../Resources/Constant.dart';
 
 mixin ThemeStateModel on Model {
+  Future<void> initThemeState() async {
+    final sp = await SharedPreferences.getInstance();
+
+    _themeIndex = sp.getInt("themeIndex") ?? 0;
+    _themeModeIndex = sp.getInt("themeModeIndex") ?? 0;
+    _themeCustomColor = sp.getString("themeCustomColor") ?? '';
+
+    _material3ColorForLight = sp.getBool("themeMaterial3ColorForLight") ?? false;
+    _material3ColorForDark = sp.getBool("themeMaterial3ColorForDark") ?? true;
+
+    ThemeRuntimeConfig.material3Light = _material3ColorForLight;
+    ThemeRuntimeConfig.material3Dark = _material3ColorForDark;
+
+    notifyListeners();
+  }
+
   int? _themeIndex;
 
   get themeIndex => _themeIndex;
@@ -57,6 +74,38 @@ mixin ThemeStateModel on Model {
     SharedPreferences sp = await SharedPreferences.getInstance();
     _themeCustomColor = sp.getString("themeCustomColor") ?? '';
     return themeCustomColor;
+  }
+
+  bool _material3ColorForLight = false;
+  bool _material3ColorForDark = true;
+
+  bool get material3ColorForLight => _material3ColorForLight;
+  bool get material3ColorForDark => _material3ColorForDark;
+
+  void changeMaterial3Color({ bool? light, bool? dark }) async {
+    if (light != null) _material3ColorForLight = light;
+    if (dark != null) _material3ColorForDark = dark;
+
+    ThemeRuntimeConfig.material3Light = _material3ColorForLight;
+    ThemeRuntimeConfig.material3Dark = _material3ColorForDark;
+
+    notifyListeners();
+
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setBool("themeMaterial3ColorForLight", _material3ColorForLight);
+    sp.setBool("themeMaterial3ColorForDark", _material3ColorForDark);
+  }
+
+  Future<bool> getMaterial3ColorForLight() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    _material3ColorForLight = sp.getBool("themeMaterial3ColorForLight") ?? false;
+    return _material3ColorForLight; 
+  }
+
+  Future<bool> getMaterial3ColorForDark() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    _material3ColorForDark = sp.getBool("themeMaterial3ColorForDark") ?? true;
+    return _material3ColorForDark; 
   }
 }
 

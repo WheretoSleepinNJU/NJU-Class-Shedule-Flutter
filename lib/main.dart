@@ -32,8 +32,10 @@ void main() async {
     SystemChrome.setSystemUIOverlayStyle(
         const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
   }
+
   runApp(
-      MyApp(themeConf[0], Constant.themeModeList[themeConf[1]], themeConf[2]));
+      MyApp(themeConf[0], Constant.themeModeList[themeConf[1]], themeConf[2])
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -49,15 +51,19 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  late final MainStateModel _model;
+
   @override
   void initState() {
     super.initState();
+    _model = MainStateModel();
+    _model.initThemeState();
   }
 
   @override
   Widget build(BuildContext context) {
     return ScopedModel<MainStateModel>(
-        model: MainStateModel(),
+        model: _model,
         child: ScopedModelDescendant<MainStateModel>(
           builder: (context, child, model) {
             // print("MainView rebuild.");
@@ -69,8 +75,14 @@ class _MyAppState extends State<MyApp> {
               lightTheme = themeDataList[themeIndex];
               darkTheme = darkThemeDataList[themeIndex];
             } else {
-              lightTheme = getThemeData(customTheme, Brightness.light);
-              darkTheme = getThemeData(customTheme, Brightness.dark);
+              lightTheme = getThemeData(
+                customTheme, Brightness.light, 
+                useSeedScheme: model.material3ColorForLight
+              );
+              darkTheme = getThemeData(
+                customTheme, Brightness.dark,
+                useSeedScheme: model.material3ColorForDark
+              );
             }
             return MaterialApp(
               debugShowCheckedModeBanner: false,

@@ -41,6 +41,11 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
       showCustomClassHeight = !forceZoom;
       showWhiteTitleMode = hasPic;
     });
+
+
+    final model = ScopedModel.of<MainStateModel>(context, rebuildOnChange: false);
+    model.getMaterial3ColorForLight().then((_) => model.notifyListeners());
+    model.getMaterial3ColorForDark().then((_) => model.notifyListeners());
   }
 
   Map<int, DateTime> timeMap = {
@@ -82,21 +87,21 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                         // return DropdownButton(items: items, onChanged: onChanged)
                         return DropdownButton<int>(
                             value: snapshot.data,
-                            items: [
+                            items: const [
                               DropdownMenuItem(
-                                  child: Row(children: const [
+                                  child: Row(children: [
                                     Icon(Icons.settings),
                                     Text('跟随系统')
                                   ]),
                                   value: 0),
                               DropdownMenuItem(
-                                  child: Row(children: const [
+                                  child: Row(children: [
                                     Icon(Icons.wb_sunny),
                                     Text('浅色模式')
                                   ]),
                                   value: 1),
                               DropdownMenuItem(
-                                  child: Row(children: const [
+                                  child: Row(children: [
                                     Icon(Icons.shield_moon),
                                     Text('深色模式')
                                   ]),
@@ -111,8 +116,6 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                             });
                       }
                     })),
-            // TODO: Refresh multi times when changing themes.
-            const ThemeChanger(),
             ListTile(
               title: Text(S.of(context).shuffle_color_pool_title),
               subtitle: Text(S.of(context).shuffle_color_pool_subtitle),
@@ -124,6 +127,34 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
+            ),
+            // TODO: Refresh multi times when changing themes.
+            const ThemeChanger(),
+            ListTile(
+              title: Text(S.of(context).use_material3_scheme_light_title),
+              subtitle: Text(S.of(context).use_material3_scheme_light_subtitle),
+              trailing: Switch(
+                activeColor: Theme.of(context).appBarTheme.backgroundColor,
+                value: ScopedModel.of<MainStateModel>(context).material3ColorForLight,
+                onChanged: (v) {
+                  UmengCommonSdk.onEvent("more_setting", {"type": 20, "result": v.toString()});
+                  ScopedModel.of<MainStateModel>(context).changeMaterial3Color(light: v);
+                  setState(() {});
+                },
+              ),
+            ),
+            ListTile(
+              title: Text(S.of(context).use_material3_scheme_dark_title),
+              subtitle: Text(S.of(context).use_material3_scheme_dark_subtitle),
+              trailing: Switch(
+                activeColor: Theme.of(context).appBarTheme.backgroundColor,
+                value: ScopedModel.of<MainStateModel>(context).material3ColorForDark,
+                onChanged: (v) {
+                  UmengCommonSdk.onEvent("more_setting", {"type": 21, "result": v.toString()});
+                  ScopedModel.of<MainStateModel>(context).changeMaterial3Color(dark: v);
+                  setState(() {});
+                },
+              ),
             ),
             ListTile(
               title: Text(S.of(context).add_backgound_picture_title),

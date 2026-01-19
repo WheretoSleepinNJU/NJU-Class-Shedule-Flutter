@@ -67,10 +67,10 @@ class _AddViewState extends State<AddView> {
                 TextField(
                   controller: _nameController,
                   decoration: InputDecoration(
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Theme.of(context).primaryColor),
-                      ),
+                      // focusedBorder: UnderlineInputBorder(
+                      //   borderSide:
+                      //       BorderSide(color: Theme.of(context).primaryColor),
+                      // ),
                       icon: const Icon(Icons.book),
                       hintText: S.of(context).class_name,
                       errorText: _classNameIsValid
@@ -86,10 +86,10 @@ class _AddViewState extends State<AddView> {
                   controller: _teacherController,
                   focusNode: teacherTextFieldNode,
                   decoration: InputDecoration(
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Theme.of(context).primaryColor),
-                    ),
+                    // focusedBorder: UnderlineInputBorder(
+                    //   borderSide:
+                    //       BorderSide(color: Theme.of(context).primaryColor),
+                    // ),
                     icon: const Icon(Icons.account_circle),
                     hintText: S.of(context).class_teacher,
                   ),
@@ -103,10 +103,10 @@ class _AddViewState extends State<AddView> {
                   keyboardType: TextInputType.multiline,
                   maxLines: null,
                   decoration: InputDecoration(
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Theme.of(context).primaryColor),
-                    ),
+                    // focusedBorder: UnderlineInputBorder(
+                    //   borderSide:
+                    //       BorderSide(color: Theme.of(context).primaryColor),
+                    // ),
                     icon: const Icon(Icons.sticky_note_2),
                     hintText: S.of(context).class_info,
                   ),
@@ -181,10 +181,10 @@ class _AddViewState extends State<AddView> {
                   controller: _placeController,
                   focusNode: placeTextFieldNode,
                   decoration: InputDecoration(
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Theme.of(context).primaryColor),
-                    ),
+                    // focusedBorder: UnderlineInputBorder(
+                    //   borderSide:
+                    //       BorderSide(color: Theme.of(context).primaryColor),
+                    // ),
                     icon: const Icon(Icons.place),
                     hintText: S.of(context).class_room,
                   ),

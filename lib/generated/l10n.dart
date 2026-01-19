@@ -18,17 +18,20 @@ class S {
   static S? _current;
 
   static S get current {
-    assert(_current != null,
-        'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.');
+    assert(
+      _current != null,
+      'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.',
+    );
     return _current!;
   }
 
   static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
   static Future<S> load(Locale locale) {
-    final name = (locale.countryCode?.isEmpty ?? false)
-        ? locale.languageCode
-        : locale.toString();
+    final name =
+        (locale.countryCode?.isEmpty ?? false)
+            ? locale.languageCode
+            : locale.toString();
     final localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
@@ -41,8 +44,10 @@ class S {
 
   static S of(BuildContext context) {
     final instance = S.maybeOf(context);
-    assert(instance != null,
-        'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?');
+    assert(
+      instance != null,
+      'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?',
+    );
     return instance!;
   }
 
@@ -52,12 +57,7 @@ class S {
 
   /// `南哪课表`
   String get app_name {
-    return Intl.message(
-      '南哪课表',
-      name: 'app_name',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('南哪课表', name: 'app_name', desc: '', args: []);
   }
 
   /// `(Flutter LTS)`
@@ -72,42 +72,22 @@ class S {
 
   /// `@`
   String get at {
-    return Intl.message(
-      '@',
-      name: 'at',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('@', name: 'at', desc: '', args: []);
   }
 
   /// `-`
   String get to {
-    return Intl.message(
-      '-',
-      name: 'to',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('-', name: 'to', desc: '', args: []);
   }
 
   /// `月`
   String get month {
-    return Intl.message(
-      '月',
-      name: 'month',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('月', name: 'month', desc: '', args: []);
   }
 
   /// `第 {num} 周`
   String week(Object num) {
-    return Intl.message(
-      '第 $num 周',
-      name: 'week',
-      desc: '',
-      args: [num],
-    );
+    return Intl.message('第 $num 周', name: 'week', desc: '', args: [num]);
   }
 
   /// `{start}-{end} 周`
@@ -142,92 +122,47 @@ class S {
 
   /// `[非本周]`
   String get not_this_week {
-    return Intl.message(
-      '[非本周]',
-      name: 'not_this_week',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('[非本周]', name: 'not_this_week', desc: '', args: []);
   }
 
   /// `单周`
   String get single_week {
-    return Intl.message(
-      '单周',
-      name: 'single_week',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('单周', name: 'single_week', desc: '', args: []);
   }
 
   /// `双周`
   String get double_week {
-    return Intl.message(
-      '双周',
-      name: 'double_week',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('双周', name: 'double_week', desc: '', args: []);
   }
 
   /// `[未开学]`
   String get not_open {
-    return Intl.message(
-      '[未开学]',
-      name: 'not_open',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('[未开学]', name: 'not_open', desc: '', args: []);
   }
 
   /// `自由时间`
   String get free_time {
-    return Intl.message(
-      '自由时间',
-      name: 'free_time',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('自由时间', name: 'free_time', desc: '', args: []);
   }
 
   /// `未知地点`
   String get unknown_place {
-    return Intl.message(
-      '未知地点',
-      name: 'unknown_place',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('未知地点', name: 'unknown_place', desc: '', args: []);
   }
 
   /// `暂无备注`
   String get unknown_info {
-    return Intl.message(
-      '暂无备注',
-      name: 'unknown_info',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('暂无备注', name: 'unknown_info', desc: '', args: []);
   }
 
   /// `自动导入`
   String get import_auto {
-    return Intl.message(
-      '自动导入',
-      name: 'import_auto',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('自动导入', name: 'import_auto', desc: '', args: []);
   }
 
   /// `手动导入`
   String get import_manually {
-    return Intl.message(
-      '手动导入',
-      name: 'import_manually',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('手动导入', name: 'import_manually', desc: '', args: []);
   }
 
   /// `讲座导入`
@@ -252,12 +187,7 @@ class S {
 
   /// `查看`
   String get free_class_button {
-    return Intl.message(
-      '查看',
-      name: 'free_class_button',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('查看', name: 'free_class_button', desc: '', args: []);
   }
 
   /// `隐藏`
@@ -312,12 +242,7 @@ class S {
 
   /// `设置`
   String get settings_title {
-    return Intl.message(
-      '设置',
-      name: 'settings_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('设置', name: 'settings_title', desc: '', args: []);
   }
 
   /// `手动添加`
@@ -422,12 +347,7 @@ class S {
 
   /// `查看全校课表`
   String get all_course_title {
-    return Intl.message(
-      '查看全校课表',
-      name: 'all_course_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('查看全校课表', name: 'all_course_title', desc: '', args: []);
   }
 
   /// `查看南哪全校课表，方便添加和蹭课`
@@ -482,12 +402,7 @@ class S {
 
   /// `课表管理`
   String get manage_table_title {
-    return Intl.message(
-      '课表管理',
-      name: 'manage_table_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('课表管理', name: 'manage_table_title', desc: '', args: []);
   }
 
   /// `添加或删除课表数据`
@@ -502,12 +417,7 @@ class S {
 
   /// `修改主题`
   String get change_theme_title {
-    return Intl.message(
-      '修改主题',
-      name: 'change_theme_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('修改主题', name: 'change_theme_title', desc: '', args: []);
   }
 
   /// `浅色/深色模式切换`
@@ -552,12 +462,7 @@ class S {
 
   /// `修改当前周`
   String get change_week_title {
-    return Intl.message(
-      '修改当前周',
-      name: 'change_week_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('修改当前周', name: 'change_week_title', desc: '', args: []);
   }
 
   /// `当前周数：`
@@ -572,12 +477,7 @@ class S {
 
   /// `反馈`
   String get report_title {
-    return Intl.message(
-      '反馈',
-      name: 'report_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('反馈', name: 'report_title', desc: '', args: []);
   }
 
   /// `加入用户群一起愉快地玩耍吧！\n轻触直接加群，长按复制群号`
@@ -592,12 +492,7 @@ class S {
 
   /// `投喂`
   String get donate_title {
-    return Intl.message(
-      '投喂',
-      name: 'donate_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('投喂', name: 'donate_title', desc: '', args: []);
   }
 
   /// `给傻翠买支棒棒糖吧！`
@@ -612,12 +507,7 @@ class S {
 
   /// `分享此应用`
   String get share_title {
-    return Intl.message(
-      '分享此应用',
-      name: 'share_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('分享此应用', name: 'share_title', desc: '', args: []);
   }
 
   /// `把南哪课表分享给更多小伙伴吧！`
@@ -642,12 +532,7 @@ class S {
 
   /// `关于`
   String get about_title {
-    return Intl.message(
-      '关于',
-      name: 'about_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('关于', name: 'about_title', desc: '', args: []);
   }
 
   /// `自定义选项`
@@ -712,12 +597,7 @@ class S {
 
   /// `显示月份`
   String get show_month_title {
-    return Intl.message(
-      '显示月份',
-      name: 'show_month_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('显示月份', name: 'show_month_title', desc: '', args: []);
   }
 
   /// `在课表的左上角显示当前月份`
@@ -732,12 +612,7 @@ class S {
 
   /// `显示日期`
   String get show_date_title {
-    return Intl.message(
-      '显示日期',
-      name: 'show_date_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('显示日期', name: 'show_date_title', desc: '', args: []);
   }
 
   /// `显示当前周的日期`
@@ -812,12 +687,7 @@ class S {
 
   /// `强制缩放`
   String get force_zoom_title {
-    return Intl.message(
-      '强制缩放',
-      name: 'force_zoom_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('强制缩放', name: 'force_zoom_title', desc: '', args: []);
   }
 
   /// `强制缩放课程表为一页`
@@ -825,6 +695,46 @@ class S {
     return Intl.message(
       '强制缩放课程表为一页',
       name: 'force_zoom_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `柔和色调(浅色)`
+  String get use_material3_scheme_light_title {
+    return Intl.message(
+      '柔和色调(浅色)',
+      name: 'use_material3_scheme_light_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `浅色模式使用 Material 3 色板`
+  String get use_material3_scheme_light_subtitle {
+    return Intl.message(
+      '浅色模式使用 Material 3 色板',
+      name: 'use_material3_scheme_light_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `柔和色调(深色)`
+  String get use_material3_scheme_dark_title {
+    return Intl.message(
+      '柔和色调(深色)',
+      name: 'use_material3_scheme_dark_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `深色模式使用 Material 3 色板`
+  String get use_material3_scheme_dark_subtitle {
+    return Intl.message(
+      '深色模式使用 Material 3 色板',
+      name: 'use_material3_scheme_dark_subtitle',
       desc: '',
       args: [],
     );
@@ -952,42 +862,22 @@ class S {
 
   /// `讲座列表`
   String get lecture_title {
-    return Intl.message(
-      '讲座列表',
-      name: 'lecture_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('讲座列表', name: 'lecture_title', desc: '', args: []);
   }
 
   /// `暂无名称`
   String get lecture_no_name {
-    return Intl.message(
-      '暂无名称',
-      name: 'lecture_no_name',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('暂无名称', name: 'lecture_no_name', desc: '', args: []);
   }
 
   /// `暂无时间`
   String get lecture_no_time {
-    return Intl.message(
-      '暂无时间',
-      name: 'lecture_no_time',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('暂无时间', name: 'lecture_no_time', desc: '', args: []);
   }
 
   /// `暂无老师`
   String get lecture_no_teacher {
-    return Intl.message(
-      '暂无老师',
-      name: 'lecture_no_teacher',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('暂无老师', name: 'lecture_no_teacher', desc: '', args: []);
   }
 
   /// `暂无地点`
@@ -1002,22 +892,12 @@ class S {
 
   /// `暂无信息`
   String get lecture_no_info {
-    return Intl.message(
-      '暂无信息',
-      name: 'lecture_no_info',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('暂无信息', name: 'lecture_no_info', desc: '', args: []);
   }
 
   /// `搜索讲座`
   String get lecture_search {
-    return Intl.message(
-      '搜索讲座',
-      name: 'lecture_search',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('搜索讲座', name: 'lecture_search', desc: '', args: []);
   }
 
   /// `主讲人：`
@@ -1212,12 +1092,7 @@ class S {
 
   /// `导入中 请稍后`
   String get importing_toast {
-    return Intl.message(
-      '导入中 请稍后',
-      name: 'importing_toast',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('导入中 请稍后', name: 'importing_toast', desc: '', args: []);
   }
 
   /// `二维码无效，可能为链接过期`
@@ -1312,22 +1187,12 @@ class S {
 
   /// `导出课程表`
   String get export_title {
-    return Intl.message(
-      '导出课程表',
-      name: 'export_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('导出课程表', name: 'export_title', desc: '', args: []);
   }
 
   /// `二维码导入`
   String get import_qr_title {
-    return Intl.message(
-      '二维码导入',
-      name: 'import_qr_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('二维码导入', name: 'import_qr_title', desc: '', args: []);
   }
 
   /// `重置颜色池成功 >v<`
@@ -1392,42 +1257,22 @@ class S {
 
   /// `确认`
   String get ok {
-    return Intl.message(
-      '确认',
-      name: 'ok',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('确认', name: 'ok', desc: '', args: []);
   }
 
   /// `取消`
   String get cancel {
-    return Intl.message(
-      '取消',
-      name: 'cancel',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('取消', name: 'cancel', desc: '', args: []);
   }
 
   /// `添加课程`
   String get add_manually_title {
-    return Intl.message(
-      '添加课程',
-      name: 'add_manually_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('添加课程', name: 'add_manually_title', desc: '', args: []);
   }
 
   /// `课程名称`
   String get class_name {
-    return Intl.message(
-      '课程名称',
-      name: 'class_name',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('课程名称', name: 'class_name', desc: '', args: []);
   }
 
   /// `请输入课程名称`
@@ -1442,32 +1287,17 @@ class S {
 
   /// `上课老师`
   String get class_teacher {
-    return Intl.message(
-      '上课老师',
-      name: 'class_teacher',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('上课老师', name: 'class_teacher', desc: '', args: []);
   }
 
   /// `备注`
   String get class_info {
-    return Intl.message(
-      '备注',
-      name: 'class_info',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('备注', name: 'class_info', desc: '', args: []);
   }
 
   /// `上课地点`
   String get class_room {
-    return Intl.message(
-      '上课地点',
-      name: 'class_room',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('上课地点', name: 'class_room', desc: '', args: []);
   }
 
   /// `选择上课时间`
@@ -1522,12 +1352,7 @@ class S {
 
   /// `添加课程`
   String get add_class {
-    return Intl.message(
-      '添加课程',
-      name: 'add_class',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('添加课程', name: 'add_class', desc: '', args: []);
   }
 
   /// `添加成功！>v<`
@@ -1582,12 +1407,7 @@ class S {
 
   /// `导入课程表`
   String get import_title {
-    return Intl.message(
-      '导入课程表',
-      name: 'import_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('导入课程表', name: 'import_title', desc: '', args: []);
   }
 
   /// `注意：如加载失败，请连接南京大学VPN\n试试浏览器访问教务网，没准系统又抽风了\n听起来有点离谱，不过在南京大学，倒也正常`
@@ -1612,62 +1432,32 @@ class S {
 
   /// `用户名`
   String get username {
-    return Intl.message(
-      '用户名',
-      name: 'username',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('用户名', name: 'username', desc: '', args: []);
   }
 
   /// `密码`
   String get password {
-    return Intl.message(
-      '密码',
-      name: 'password',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('密码', name: 'password', desc: '', args: []);
   }
 
   /// `验证码`
   String get captcha {
-    return Intl.message(
-      '验证码',
-      name: 'captcha',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('验证码', name: 'captcha', desc: '', args: []);
   }
 
   /// `点击刷新`
   String get tap_to_refresh {
-    return Intl.message(
-      '点击刷新',
-      name: 'tap_to_refresh',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('点击刷新', name: 'tap_to_refresh', desc: '', args: []);
   }
 
   /// `记住密码`
   String get remember_password {
-    return Intl.message(
-      '记住密码',
-      name: 'remember_password',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('记住密码', name: 'remember_password', desc: '', args: []);
   }
 
   /// `导入`
   String get import {
-    return Intl.message(
-      '导入',
-      name: 'import',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('导入', name: 'import', desc: '', args: []);
   }
 
   /// `密码错误 = =||`
@@ -1912,12 +1702,7 @@ class S {
 
   /// `彩蛋与致谢`
   String get easter_egg_title {
-    return Intl.message(
-      '彩蛋与致谢',
-      name: 'easter_egg_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('彩蛋与致谢', name: 'easter_egg_title', desc: '', args: []);
   }
 
   /// `感谢小百合工作室\n感谢 @ns @lgt @FengChendian @SuperKenVery 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光`
@@ -1982,12 +1767,7 @@ class S {
 
   /// `欢迎使用南哪课表！`
   String get welcome_title {
-    return Intl.message(
-      '欢迎使用南哪课表！',
-      name: 'welcome_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('欢迎使用南哪课表！', name: 'welcome_title', desc: '', args: []);
   }
 
   /// `修改当前周数请前往设置ww`

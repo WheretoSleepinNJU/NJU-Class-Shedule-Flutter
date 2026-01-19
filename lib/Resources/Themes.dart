@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:wheretosleepinnju/Utils/ThemeUtil.dart';
+import 'dart:collection';
 import '../Utils/ColorUtil.dart';
 
 class AppThemes {
@@ -15,7 +17,9 @@ class AppThemes {
     '#638190',
   ];
 
-  static ThemeData build(String hex, Brightness brightness) {
+  static ThemeData build(String hex, Brightness brightness, {
+    required bool useSeedScheme,
+  }) {
     final rawSeed = HexColor(hex);
     final isDark = brightness == Brightness.dark;
 
@@ -27,16 +31,12 @@ class AppThemes {
     // 旧版逻辑回顾：
     // - Light: 直接用 Hex 原色
     // - Dark:  使用 "Light模式下计算出的 Primary" (这样能保持鲜艳，而不是 M3 默认的粉彩色)
-    Color targetPrimary;
-    if (isDark) {
-      targetPrimary = ColorScheme.fromSeed(
-        seedColor: rawSeed,
-        brightness: Brightness.dark,
-      ).primary;
-    } else {
-      // Light 模式直接用原色
-      targetPrimary = rawSeed; 
-    }
+
+    final Color targetPrimary = useSeedScheme
+      ? (isDark
+        ? ColorScheme.fromSeed(seedColor: rawSeed, brightness: Brightness.dark).primary
+        : ColorScheme.fromSeed(seedColor: rawSeed, brightness: Brightness.light).primary)
+      : rawSeed;
 
     // 背景色层级设定
     final background = isDark ? const Color(0xFF0F0F11) : const Color(0xFFF8F8FA);
@@ -47,7 +47,7 @@ class AppThemes {
     // 强制覆盖 primary 为我们计算出的 targetPrimary
     final scheme = baseScheme.copyWith(
       primary: targetPrimary,
-      onPrimary: Colors.white, 
+      // onPrimary: Colors.white, 
       
       background: background,
       surface: background,
@@ -185,11 +185,47 @@ class AppThemes {
   }
 }
 
-ThemeData getThemeData(String hex, Brightness brightness) =>
-    AppThemes.build(hex, brightness);
+class _PresetThemeList extends ListBase<ThemeData> {
+  final Brightness brightness;
+  _PresetThemeList(this.brightness);
 
-final List<ThemeData> themeDataList =
-    AppThemes.presetHexColors.map((c) => getThemeData(c, Brightness.light)).toList();
+  // 两份缓存：useSeedScheme=true/false
+  List<ThemeData>? _cacheSeedOn;
+  List<ThemeData>? _cacheSeedOff;
 
-final List<ThemeData> darkThemeDataList =
-    AppThemes.presetHexColors.map((c) => getThemeData(c, Brightness.dark)).toList();
+  bool get _useSeedScheme {
+    if (brightness == Brightness.dark) return ThemeRuntimeConfig.material3Dark;
+    return ThemeRuntimeConfig.material3Light;
+  }
+
+  List<ThemeData> _resolve() {
+    if (_useSeedScheme) {
+      return _cacheSeedOn ??= AppThemes.presetHexColors
+          .map((c) => getThemeData(c, brightness, useSeedScheme: true))
+          .toList(growable: false);
+    } else {
+      return _cacheSeedOff ??= AppThemes.presetHexColors
+          .map((c) => getThemeData(c, brightness, useSeedScheme: false))
+          .toList(growable: false);
+    }
+  }
+
+  @override
+  int get length => AppThemes.presetHexColors.length;
+
+  @override
+  set length(int newLength) => throw UnsupportedError('read-only');
+
+  @override
+  ThemeData operator [](int index) => _resolve()[index];
+
+  @override
+  void operator []=(int index, ThemeData value) =>
+      throw UnsupportedError('read-only');
+}
+
+ThemeData getThemeData(String hex, Brightness brightness, { required bool useSeedScheme }) =>
+    AppThemes.build(hex, brightness, useSeedScheme: useSeedScheme);
+
+final themeDataList = _PresetThemeList(Brightness.light);
+final darkThemeDataList = _PresetThemeList(Brightness.dark);
