@@ -149,8 +149,6 @@ class _SettingsViewState extends State<SettingsView> {
                           const ManageTableView()));
                 },
               ),
-              // TODO: Refresh multi times when changing themes.
-              const ThemeChanger(),
               ListTile(
                 title: Text(S.of(context).more_settings_title),
                 subtitle: Text(S.of(context).more_settings_subtitle),
@@ -250,20 +248,8 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   Future<bool> _launchURL(String url) async {
-    if (await canLaunchUrl(Uri.parse(url))) {
-      // 鸿蒙需要额外注册页面打开浏览器链接
-      // https://developer.huawei.com/consumer/cn/forum/topic/0202180808205477445
-      if(Platform.operatingSystem == 'ohos') {
-        await launchUrl(
-          Uri.parse(url),
-          webViewConfiguration:
-          const WebViewConfiguration(headers: <String, String>{
-            'harmony_browser_page': 'pages/LaunchInAppPage'
-          }),
-        );
-      } else {
-        await launchUrl(Uri.parse(url));
-      }
+    if (await canLaunch(url)) {
+      await launch(url);
       return true;
     } else {
       return false;

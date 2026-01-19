@@ -34,6 +34,8 @@ class UpdateUtil {
       url = Url.UPDATE_ROOT + '/ios.json';
     } else if (Platform.isAndroid) {
       url = Url.UPDATE_ROOT + '/android.json';
+    } else if (Platform.operatingSystem == 'ohos') {
+      url = Url.UPDATE_ROOT + '/ohos.json';
     } else {
       return;
     }

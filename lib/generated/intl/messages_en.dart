@@ -320,6 +320,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "to": MessageLookupByLibrary.simpleMessage("-"),
         "unknown_info": MessageLookupByLibrary.simpleMessage("暂无备注"),
         "unknown_place": MessageLookupByLibrary.simpleMessage("未知地点"),
+        "use_material3_scheme_dark_subtitle":
+            MessageLookupByLibrary.simpleMessage("深色模式使用 Material 3 色板"),
+        "use_material3_scheme_dark_title":
+            MessageLookupByLibrary.simpleMessage("强调色柔和(深色)"),
+        "use_material3_scheme_light_subtitle":
+            MessageLookupByLibrary.simpleMessage("浅色模式使用 Material 3 色板"),
+        "use_material3_scheme_light_title":
+            MessageLookupByLibrary.simpleMessage("强调色柔和(浅色)"),
         "username": MessageLookupByLibrary.simpleMessage("用户名"),
         "username_error_toast":
             MessageLookupByLibrary.simpleMessage("用户名错误 TvT"),

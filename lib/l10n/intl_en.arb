@@ -1,4 +1,5 @@
 {
+  "@@locale": "en",
   "app_name": "南哪课表",
   "flutter_lts": "(Flutter LTS)",
   "at": "@",
@@ -77,6 +78,10 @@
   "if_show_freeclass_subtitle": "设置是否显示自由时间课程",
   "force_zoom_title": "强制缩放",
   "force_zoom_subtitle": "强制缩放课程表为一页",
+  "use_material3_scheme_light_title": "强调色柔和(浅色)",
+  "use_material3_scheme_light_subtitle": "浅色模式使用 Material 3 色板",
+  "use_material3_scheme_dark_title": "强调色柔和(深色)",
+  "use_material3_scheme_dark_subtitle": "深色模式使用 Material 3 色板",
   "add_backgound_picture_title": "上传背景图片",
   "add_backgound_picture_subtitle": "上传背景图片",
   "delete_backgound_picture_title": "清除背景图片",

@@ -2,6 +2,8 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:convert';
 import 'dart:collection';
+import 'package:wheretosleepinnju/Pages/Settings/Widgets/ThemeChanger.dart';
+
 import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
@@ -39,6 +41,11 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
       showCustomClassHeight = !forceZoom;
       showWhiteTitleMode = hasPic;
     });
+
+
+    final model = ScopedModel.of<MainStateModel>(context, rebuildOnChange: false);
+    model.getMaterial3ColorForLight().then((_) => model.notifyListeners());
+    model.getMaterial3ColorForDark().then((_) => model.notifyListeners());
   }
 
   Map<int, DateTime> timeMap = {
@@ -80,21 +87,21 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                         // return DropdownButton(items: items, onChanged: onChanged)
                         return DropdownButton<int>(
                             value: snapshot.data,
-                            items: [
+                            items: const [
                               DropdownMenuItem(
-                                  child: Row(children: const [
+                                  child: Row(children: [
                                     Icon(Icons.settings),
                                     Text('跟随系统')
                                   ]),
                                   value: 0),
                               DropdownMenuItem(
-                                  child: Row(children: const [
+                                  child: Row(children: [
                                     Icon(Icons.wb_sunny),
                                     Text('浅色模式')
                                   ]),
                                   value: 1),
                               DropdownMenuItem(
-                                  child: Row(children: const [
+                                  child: Row(children: [
                                     Icon(Icons.shield_moon),
                                     Text('深色模式')
                                   ]),
@@ -120,6 +127,34 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
+            ),
+            // TODO: Refresh multi times when changing themes.
+            const ThemeChanger(),
+            ListTile(
+              title: Text(S.of(context).use_material3_scheme_light_title),
+              subtitle: Text(S.of(context).use_material3_scheme_light_subtitle),
+              trailing: Switch(
+                activeColor: Theme.of(context).appBarTheme.backgroundColor,
+                value: ScopedModel.of<MainStateModel>(context).material3ColorForLight,
+                onChanged: (v) {
+                  UmengCommonSdk.onEvent("more_setting", {"type": 20, "result": v.toString()});
+                  ScopedModel.of<MainStateModel>(context).changeMaterial3Color(light: v);
+                  setState(() {});
+                },
+              ),
+            ),
+            ListTile(
+              title: Text(S.of(context).use_material3_scheme_dark_title),
+              subtitle: Text(S.of(context).use_material3_scheme_dark_subtitle),
+              trailing: Switch(
+                activeColor: Theme.of(context).appBarTheme.backgroundColor,
+                value: ScopedModel.of<MainStateModel>(context).material3ColorForDark,
+                onChanged: (v) {
+                  UmengCommonSdk.onEvent("more_setting", {"type": 21, "result": v.toString()});
+                  ScopedModel.of<MainStateModel>(context).changeMaterial3Color(dark: v);
+                  setState(() {});
+                },
+              ),
             ),
             ListTile(
               title: Text(S.of(context).add_backgound_picture_title),
@@ -147,8 +182,13 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                 final String path = directory.path;
                 String fileName = '$path/background_$num.jpg';
                 await image.saveTo(fileName);
+
+                bool isWhiteMode = await ColorUtil.shouldApplyWhiteMode(fileName);
+
                 await ScopedModel.of<MainStateModel>(context)
                     .setBgImgPath(fileName);
+                ScopedModel.of<MainStateModel>(context)
+                    .setWhiteMode(isWhiteMode);
                 // print('New image added.');
                 Toast.showToast(
                     S.of(context).add_backgound_picture_success_toast, context);
@@ -355,31 +395,31 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                     }
                   }),
             ),
-            ListTile(
-                // title: Text(S.of(context).font_mode_title),
-                title: Text("字体模式"),
-                // subtitle: Text(S.of(context).font_mode_subtitle),
-                subtitle: Text("设置字体粗细"),
-                trailing: FutureBuilder<bool>(
-                    future: _getFontMode(),
-                    builder:
-                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                      if (!snapshot.hasData) {
-                        return Container(width: 0);
-                      } else {
-                        return Switch(
-                            activeColor:
-                                Theme.of(context).appBarTheme.backgroundColor,
-                            value: snapshot.data!,
-                            onChanged: (bool value) {
-                              UmengCommonSdk.onEvent("more_setting",
-                                  {"type": 12, "result": value.toString()});
-                              // ScopedModel.of<MainStateModel>(context)
-                              //     .setFontMode(value);
-                              setState(() {});
-                            });
-                      }
-                    })),
+            // ListTile(
+            //     // title: Text(S.of(context).font_mode_title),
+            //     title: Text("字体模式"),
+            //     // subtitle: Text(S.of(context).font_mode_subtitle),
+            //     subtitle: Text("设置字体粗细"),
+            //     trailing: FutureBuilder<bool>(
+            //         future: _getFontMode(),
+            //         builder:
+            //             (BuildContext context, AsyncSnapshot<bool> snapshot) {
+            //           if (!snapshot.hasData) {
+            //             return Container(width: 0);
+            //           } else {
+            //             return Switch(
+            //                 activeColor:
+            //                     Theme.of(context).appBarTheme.backgroundColor,
+            //                 value: snapshot.data!,
+            //                 onChanged: (bool value) {
+            //                   UmengCommonSdk.onEvent("more_setting",
+            //                       {"type": 12, "result": value.toString()});
+            //                   // ScopedModel.of<MainStateModel>(context)
+            //                   //     .setFontMode(value);
+            //                   setState(() {});
+            //                 });
+            //           }
+            //         })),
             ListTile(
               title: Text(S.of(context).force_zoom_title),
               subtitle: Text(S.of(context).force_zoom_subtitle),

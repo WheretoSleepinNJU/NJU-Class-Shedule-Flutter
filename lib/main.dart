@@ -32,8 +32,10 @@ void main() async {
     SystemChrome.setSystemUIOverlayStyle(
         const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
   }
+
   runApp(
-      MyApp(themeConf[0], Constant.themeModeList[themeConf[1]], themeConf[2]));
+      MyApp(themeConf[0], Constant.themeModeList[themeConf[1]], themeConf[2])
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -49,15 +51,19 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  late final MainStateModel _model;
+
   @override
   void initState() {
     super.initState();
+    _model = MainStateModel();
+    _model.initThemeState();
   }
 
   @override
   Widget build(BuildContext context) {
     return ScopedModel<MainStateModel>(
-        model: MainStateModel(),
+        model: _model,
         child: ScopedModelDescendant<MainStateModel>(
           builder: (context, child, model) {
             // print("MainView rebuild.");
@@ -66,15 +72,17 @@ class _MyAppState extends State<MyApp> {
             int themeIndex = model.themeIndex ?? widget.themeIndex;
             String customTheme = model.themeCustomColor ?? widget.themeCustom;
             if (themeIndex < themeDataList.length || customTheme == '') {
-              lightTheme = themeDataList[themeIndex].copyWith(
-                useMaterial3: false
-              );
-              darkTheme = darkThemeDataList[themeIndex].copyWith(
-                useMaterial3: false
-              );
+              lightTheme = themeDataList[themeIndex];
+              darkTheme = darkThemeDataList[themeIndex];
             } else {
-              lightTheme = getThemeData(customTheme, Brightness.light);
-              darkTheme = getThemeData(customTheme, Brightness.dark);
+              lightTheme = getThemeData(
+                customTheme, Brightness.light, 
+                useSeedScheme: model.material3ColorForLight
+              );
+              darkTheme = getThemeData(
+                customTheme, Brightness.dark,
+                useSeedScheme: model.material3ColorForDark
+              );
             }
             return MaterialApp(
               debugShowCheckedModeBanner: false,
@@ -91,6 +99,17 @@ class _MyAppState extends State<MyApp> {
               darkTheme: darkTheme,
               themeMode: model.themeMode ?? widget.themeMode,
               home: const CourseTableView(),
+              builder: (context, child) {
+                // 获取当前系统的配置（包含屏幕尺寸、亮度、系统设置的字重等）
+                final mediaQueryData = MediaQuery.of(context);
+                
+                // 强行覆盖 boldText 为 false
+                // 这样无论系统怎么发"变粗"的指令，Flutter 都会无视
+                return MediaQuery(
+                  data: mediaQueryData.copyWith(boldText: false),
+                  child: child!,
+                );
+              },
             );
           },
         ));

@@ -315,7 +315,7 @@ class _ImportViewState extends State<ImportView> {
                         ? Theme.of(context).primaryColor
                         : Colors.white)),
             alignment: Alignment.topCenter,
-            padding: const EdgeInsets.only(top: 5.0, bottom: 5.0)),
+            padding: const EdgeInsets.only(top: 5.0, bottom: 25.0)),
         onTap: () {
           UmengCommonSdk.onEvent(
               "class_import", {"type": "be", "action": "more"});

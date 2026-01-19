@@ -78,22 +78,25 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
               width: double.infinity,
               margin: const EdgeInsets.all(10),
               child: Column(children: <Widget>[
-                MaterialBanner(
-                  forceActionsBelow: true,
-                  content: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerLeft,
-                      child: Text(S.of(context).import_banner,
-                          style: const TextStyle(color: Colors.white))),
-                  backgroundColor: Theme.of(context).primaryColor,
-                  actions: [
-                    TextButton(
-                        style: TextButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            backgroundColor: Theme.of(context).primaryColor),
-                        child: Text(S.of(context).import_banner_action),
-                        onPressed: () => launch(Url.URL_NJU_VPN))
-                  ],
+                // MaterialBanner(
+                //   forceActionsBelow: true,
+                //   content: FittedBox(
+                //       fit: BoxFit.scaleDown,
+                //       alignment: Alignment.centerLeft,
+                //       child: Text(S.of(context).import_banner,
+                //           style: const TextStyle(color: Colors.white))),
+                //   backgroundColor: Theme.of(context).primaryColor,
+                //   actions: [
+                //     TextButton(
+                //         style: TextButton.styleFrom(
+                //             foregroundColor: Colors.white,
+                //             backgroundColor: Theme.of(context).primaryColor),
+                //         child: Text(S.of(context).import_banner_action),
+                //         onPressed: () => launch(Url.URL_NJU_VPN))
+                //   ],
+                // ),
+                Container(
+                  padding: const EdgeInsets.all(5),
                 ),
                 TextField(
                   controller: _usrController,
@@ -108,6 +111,9 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
                   onEditingComplete: () =>
                       FocusScope.of(context).requestFocus(pwdTextFieldNode),
                 ),
+                Container(
+                  padding: const EdgeInsets.all(5),
+                ),
                 TextField(
                   controller: _pwdController,
                   decoration: InputDecoration(
@@ -121,6 +127,9 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
                   obscureText: true,
                   onEditingComplete: () =>
                       FocusScope.of(context).requestFocus(captchaTextFieldNode),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(5),
                 ),
                 Row(children: <Widget>[
                   Flexible(
@@ -176,28 +185,31 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
                 //   onChanged: (newValue) {},
                 //   controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
                 // ),
-                Row(
-                  children: <Widget>[
-                    SizedBox(
-                        height: 44.0,
-                        width: 24.0,
-                        child: Checkbox(
-                          value: _checkboxSelected,
-                          checkColor:
-                              Theme.of(context).brightness == Brightness.light
-                                  ? Colors.white
-                                  : Colors.black,
-                          onChanged: (value) {
-                            setState(() {
-                              _checkboxSelected = value!;
-                            });
-                          },
-                        )),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 10),
-                    ),
-                    Text(S.of(context).remember_password),
-                  ],
+                // Row(
+                //   children: <Widget>[
+                //     SizedBox(
+                //         height: 44.0,
+                //         width: 24.0,
+                //         child: Checkbox(
+                //           value: _checkboxSelected,
+                //           checkColor:
+                //               Theme.of(context).brightness == Brightness.light
+                //                   ? Colors.white
+                //                   : Colors.black,
+                //           onChanged: (value) {
+                //             setState(() {
+                //               _checkboxSelected = value!;
+                //             });
+                //           },
+                //         )),
+                //     const Padding(
+                //       padding: EdgeInsets.only(left: 10),
+                //     ),
+                //     Text(S.of(context).remember_password),
+                //   ],
+                // ),
+                Container(
+                  padding: const EdgeInsets.all(5),
                 ),
                 SizedBox(
                   width: double.infinity,

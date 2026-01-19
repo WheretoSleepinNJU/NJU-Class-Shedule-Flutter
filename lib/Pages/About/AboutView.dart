@@ -1,3 +1,4 @@
+import 'dart:io';
 import '../../generated/l10n.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +75,18 @@ class _AboutViewState extends State<AboutView> {
             _generateTitle(S.of(context).github_open_source),
             _generateContent(Url.OPEN_SOURCE_URL,
                 onTap: () => launch(Url.OPEN_SOURCE_URL)),
-            _generateTitle(S.of(context).developer),
+            // 针对华为鸿蒙，获取彩蛋来确定是否要展示开发者
+            Platform.operatingSystem == 'ohos'
+                ? FutureBuilder(
+                    future: _showDeveloperOhos(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                      if (snapshot.hasData && snapshot.data!) {
+                        return _generateTitle(S.of(context).developer);
+                      }
+                      return Container();
+                    })
+                : _generateTitle(S.of(context).developer),
             _generateContent(S.of(context).introduction,
                 onTap: () => launch(Url.BLOG_URL)),
             _generateTitle(S.of(context).open_source_library_title),
@@ -118,6 +130,22 @@ class _AboutViewState extends State<AboutView> {
       ),
       onTap: onTap,
     );
+  }
+
+  static Future<bool> _showDeveloperOhos() async {
+    String url = Url.UPDATE_ROOT + '/easterEgg.json';
+    try {
+      Dio dio = Dio();
+      Response response = await dio.get(url);
+
+      if (response.statusCode == 200) {
+        bool showDeveloper = response.data['showDeveloperOhos'] ?? false;
+        return showDeveloper;
+      }
+    } catch (e) {
+      // 忽略网络错误，使用兜底文案
+    }
+    return false;
   }
 
   static Future<String> _getEasterEggContent(fallbackContent) async {

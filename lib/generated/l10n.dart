@@ -830,6 +830,46 @@ class S {
     );
   }
 
+  /// `强调色柔和(浅色)`
+  String get use_material3_scheme_light_title {
+    return Intl.message(
+      '强调色柔和(浅色)',
+      name: 'use_material3_scheme_light_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `浅色模式使用 Material 3 色板`
+  String get use_material3_scheme_light_subtitle {
+    return Intl.message(
+      '浅色模式使用 Material 3 色板',
+      name: 'use_material3_scheme_light_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `强调色柔和(深色)`
+  String get use_material3_scheme_dark_title {
+    return Intl.message(
+      '强调色柔和(深色)',
+      name: 'use_material3_scheme_dark_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `深色模式使用 Material 3 色板`
+  String get use_material3_scheme_dark_subtitle {
+    return Intl.message(
+      '深色模式使用 Material 3 色板',
+      name: 'use_material3_scheme_dark_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `上传背景图片`
   String get add_backgound_picture_title {
     return Intl.message(
