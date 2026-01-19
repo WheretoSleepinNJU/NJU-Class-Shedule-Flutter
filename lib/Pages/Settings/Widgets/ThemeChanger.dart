@@ -27,7 +27,7 @@ class ThemeChanger extends StatelessWidget {
             child: Text(
               '选择强调色',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w400,
                   ),
             ),
           ),
@@ -48,8 +48,10 @@ class ThemeChanger extends StatelessWidget {
                     lightPrimary: lightPrimary,
                     darkPrimary: darkPrimary,
                     // 策略：哪个模式关闭 M3，就把对应小圆画成空心
-                    lightOutlined: !useM3Light,
-                    darkOutlined: !useM3Dark,
+                    lightOutlined: false,
+                    darkOutlined: false,
+                    // lightOutlined: !useM3Light,
+                    // darkOutlined: !useM3Dark,
                     isSelected: i == selectedIndex,
                     onTap: () {
                       UmengCommonSdk.onEvent("theme_change", {"type": i});
