@@ -174,7 +174,7 @@ class CourseTablePresenter {
                               } else if (Platform.isAndroid) {
                                 _launchURL(Url.QQ_GROUP_ANDROID_URL);
                               } else if (Platform.operatingSystem == 'ohos') {
-                                _launchURL(Url.URL_OHOS);
+                                _launchURL(Url.QQ_GROUP_OHOS_URL);
                               }
                               Navigator.of(context).pop();
                             })),

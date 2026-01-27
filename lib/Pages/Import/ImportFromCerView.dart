@@ -177,6 +177,8 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
                             launch(Url.QQ_GROUP_APPLE_URL);
                           } else if (Platform.isAndroid) {
                             launch(Url.QQ_GROUP_ANDROID_URL);
+                          } else if (Platform.operatingSystem == 'ohos') {
+                            launch(Url.QQ_GROUP_OHOS_URL);
                           }
                           Navigator.of(context).pop();
                         })),

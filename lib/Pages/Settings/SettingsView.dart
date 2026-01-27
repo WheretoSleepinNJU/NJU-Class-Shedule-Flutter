@@ -178,8 +178,7 @@ class _SettingsViewState extends State<SettingsView> {
                     status = await _launchURL(Url.QQ_GROUP_APPLE_URL);
                   } else if (Platform.isAndroid) {
                     status = await _launchURL(Url.QQ_GROUP_ANDROID_URL);
-                  }
-                  else if (Platform.operatingSystem == 'ohos') {
+                  } else if (Platform.operatingSystem == 'ohos') {
                     status = await _launchURL(Url.QQ_GROUP_OHOS_URL);
                   }
                   if (!status) {
@@ -196,7 +195,7 @@ class _SettingsViewState extends State<SettingsView> {
                         const ClipboardData(text: Config.ANDROID_GROUP));
                   } else if (Platform.operatingSystem == 'ohos') {
                     await Clipboard.setData(
-                        const ClipboardData(text: Config.ANDROID_GROUP));
+                        const ClipboardData(text: Config.OHOS_GROUP));
                   }
                   Toast.showToast(S.of(context).QQ_copy_success_toast, context);
                 },

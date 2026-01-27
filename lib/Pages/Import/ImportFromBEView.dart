@@ -131,9 +131,11 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
         
         String url = '';
         if (Platform.isIOS) {
-          url = widget.config['extractJSfileiOS'];
-        } else {
+          url = widget.config['extractJSfileiOS'] ?? "";;
+        } else if (Platform.isAndroid){
           url = widget.config['extractJSfileAndroid'] ?? "";
+        } else if (Platform.operatingSystem == 'ohos') {
+          url = widget.config['extractJSfileOHOS'] ?? "";
         }
 
         Response serverRsp = await dio.get(url);
@@ -246,6 +248,8 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
                             launch(Url.QQ_GROUP_APPLE_URL);
                           } else if (Platform.isAndroid) {
                             launch(Url.QQ_GROUP_ANDROID_URL);
+                          } else if (Platform.operatingSystem == 'ohos') {
+                            launch(Url.QQ_GROUP_OHOS_URL);
                           }
                           Navigator.of(context).pop();
                         })),
