@@ -85,7 +85,7 @@ function scheduleHtmlParser() {
       weeks: weeks,
       week_time: parseInt(raw.SKXQ, 10),
       start_time: parseInt(raw.KSJC, 10),
-      time_count: parseInt(raw.JSJC, 10) - parseInt(raw.KSJC, 10) + 1,
+      time_count: parseInt(raw.JSJC, 10) - parseInt(raw.KSJC, 10), // 不 +1
       import_type: 1,
       info: raw.ZCMC,
       data: null,
