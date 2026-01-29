@@ -20,7 +20,7 @@ function scheduleHtmlParser() {
     xhr.open(
       "GET",
       "https://ehall.seu.edu.cn/jwapp/sys/wdkb/modules/xskcb/xskcb.do?XNXQDM=" +
-        termCode,
+      termCode,
       false,
     );
     xhr.send();
