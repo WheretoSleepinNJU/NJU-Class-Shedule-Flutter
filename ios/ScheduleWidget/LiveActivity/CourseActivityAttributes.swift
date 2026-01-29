@@ -82,7 +82,7 @@ struct CourseActivityWidget: Widget {
                         Text(classroom)
                             .font(.system(size: calculateClassroomFontSize(classroom, baseSize: 11), weight: .bold))
                             .minimumScaleFactor(0.8)
-                            .lineLimit(2)
+                            .lineLimit(1)
                             .fixedSize(horizontal: false, vertical: true)
 
                         // 倒计时（简化显示）
