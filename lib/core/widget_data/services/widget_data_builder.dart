@@ -77,11 +77,7 @@ class WidgetDataBuilder {
       );
     }
 
-    // 7. 计算当前课程和下一节课
-    final currentCourse = _getCurrentCourse(todayCourses, timeTemplate);
-    final nextCourse = _getNextCourse(todayCourses, timeTemplate);
-
-    // 8. 构建周课表
+    // 7. 构建周课表
     final weekSchedule = await _buildWeekSchedule(
       scheduleModel.activeCourses,
       currentWeek,
@@ -96,17 +92,9 @@ class WidgetDataBuilder {
       tomorrowCourses.map((c) => _convertToWidgetCourse(c, schoolId))
     );
 
-    final widgetCurrentCourse = currentCourse != null
-        ? await _convertToWidgetCourse(currentCourse, schoolId)
-        : null;
-
-    final widgetNextCourse = nextCourse != null
-        ? await _convertToWidgetCourse(nextCourse, schoolId)
-        : null;
-
-    // 10. 构建 WidgetScheduleData
+    // 8. 构建 WidgetScheduleData
     return WidgetScheduleData(
-      version: '1.0',
+      version: '2.0',
       timestamp: now,
       schoolId: schoolId,
       schoolName: schoolName,
@@ -116,11 +104,7 @@ class WidgetDataBuilder {
       semesterName: semesterName,
       todayCourses: widgetTodayCourses,
       tomorrowCourses: widgetTomorrowCourses,
-      nextCourse: widgetNextCourse,
-      currentCourse: widgetCurrentCourse,
       weekSchedule: weekSchedule,
-      todayCourseCount: widgetTodayCourses.length,
-      tomorrowCourseCount: widgetTomorrowCourses.length,
       weekCourseCount: allCourses.length,
       hasCoursesToday: widgetTodayCourses.isNotEmpty,
       hasCoursesTomorrow: widgetTomorrowCourses.isNotEmpty,
@@ -146,65 +130,6 @@ class WidgetDataBuilder {
     // 按上课时间排序
     courses.sort((a, b) => a.startTime!.compareTo(b.startTime!));
     return courses;
-  }
-
-  /// 获取当前正在上的课程
-  Course? _getCurrentCourse(List<Course> todayCourses, SchoolTimeTemplate template) {
-    final now = DateTime.now();
-    final currentTime = now.hour * 60 + now.minute; // 转换为分钟数
-
-    for (final course in todayCourses) {
-      final period = template.getPeriodRange(
-        course.startTime!,
-        course.timeCount!,
-      );
-
-      if (period == null) continue;
-
-      final startMinutes = _timeToMinutes(period.startTime);
-      final endMinutes = _timeToMinutes(period.endTime);
-
-      if (currentTime >= startMinutes && currentTime <= endMinutes) {
-        return course;
-      }
-    }
-
-    return null;
-  }
-
-  /// 获取下一节课
-  Course? _getNextCourse(List<Course> todayCourses, SchoolTimeTemplate template) {
-    final now = DateTime.now();
-    final currentTime = now.hour * 60 + now.minute;
-
-    for (final course in todayCourses) {
-      final period = template.getPeriodRange(
-        course.startTime!,
-        course.timeCount!,
-      );
-
-      if (period == null) continue;
-
-      final startMinutes = _timeToMinutes(period.startTime);
-
-      if (currentTime < startMinutes) {
-        return course;
-      }
-    }
-
-    return null;
-  }
-
-  /// 将时间字符串转换为分钟数
-  int _timeToMinutes(String timeString) {
-    try {
-      final parts = timeString.split(':');
-      final hour = int.parse(parts[0]);
-      final minute = int.parse(parts[1]);
-      return hour * 60 + minute;
-    } catch (e) {
-      return 0;
-    }
   }
 
   /// 构建整周课表

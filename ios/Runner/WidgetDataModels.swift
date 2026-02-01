@@ -58,11 +58,7 @@ struct WidgetScheduleData: Codable {
     let semesterName: String
     let todayCourses: [WidgetCourse]
     let tomorrowCourses: [WidgetCourse]
-    let nextCourse: WidgetCourse?
-    let currentCourse: WidgetCourse?
     let weekSchedule: [String: [WidgetCourse]]  // Int keys are strings in JSON
-    let todayCourseCount: Int
-    let tomorrowCourseCount: Int
     let weekCourseCount: Int
     let hasCoursesToday: Bool
     let hasCoursesTomorrow: Bool

@@ -113,12 +113,18 @@ struct WidgetPreviewData {
         )
     ]
 
+    private static func previewDate(hour: Int, minute: Int) -> Date {
+        let calendar = Calendar.current
+        let now = Date()
+        return calendar.date(bySettingHour: hour, minute: minute, second: 0, of: now) ?? now
+    }
+
     // MARK: - 预览场景
 
     /// 场景 1：上课前（早上 7:30，今天有 6 门课）
     static func beforeFirstClass() -> ScheduleEntry {
         let widgetData = WidgetScheduleData(
-            version: "1.0",
+            version: "2.0",
             timestamp: "2025-01-15T07:30:00Z",
             schoolId: "nju",
             schoolName: "南京大学",
@@ -128,11 +134,7 @@ struct WidgetPreviewData {
             semesterName: "2024-2025学年第一学期",
             todayCourses: sampleCourses,
             tomorrowCourses: [],
-            nextCourse: sampleCourses[0],
-            currentCourse: nil,
             weekSchedule: [:],
-            todayCourseCount: 6,
-            tomorrowCourseCount: 0,
             weekCourseCount: 24,
             hasCoursesToday: true,
             hasCoursesTomorrow: false,
@@ -144,21 +146,18 @@ struct WidgetPreviewData {
         )
 
         return ScheduleEntry(
-            date: Date(),
+            date: previewDate(hour: 7, minute: 30),
             widgetData: widgetData,
-            nextCourse: sampleCourses[0],
-            currentCourse: nil,
-            todayCourses: sampleCourses,
             errorMessage: nil,
-            displayState: .beforeFirstClass,
-            relevance: TimelineEntryRelevance(score: 10) // 今日还有课，但时间较远
+            relevance: TimelineEntryRelevance(score: 10), // 今日还有课，但时间较远
+            arrivedCourse: nil
         )
     }
 
     /// 场景 2：即将上课（距离第一门课 10 分钟）
     static func approachingClass() -> ScheduleEntry {
         let widgetData = WidgetScheduleData(
-            version: "1.0",
+            version: "2.0",
             timestamp: "2025-01-15T07:50:00Z",
             schoolId: "nju",
             schoolName: "南京大学",
@@ -168,11 +167,7 @@ struct WidgetPreviewData {
             semesterName: "2024-2025学年第一学期",
             todayCourses: sampleCourses,
             tomorrowCourses: [],
-            nextCourse: sampleCourses[0],
-            currentCourse: nil,
             weekSchedule: [:],
-            todayCourseCount: 6,
-            tomorrowCourseCount: 0,
             weekCourseCount: 24,
             hasCoursesToday: true,
             hasCoursesTomorrow: false,
@@ -184,21 +179,18 @@ struct WidgetPreviewData {
         )
 
         return ScheduleEntry(
-            date: Date(),
+            date: previewDate(hour: 7, minute: 50),
             widgetData: widgetData,
-            nextCourse: sampleCourses[0],
-            currentCourse: nil,
-            todayCourses: sampleCourses,
             errorMessage: nil,
-            displayState: .approachingClass,
-            relevance: TimelineEntryRelevance(score: 75) // 10分钟内即将上课，高优先级 (100 - 10*5 = 50，但这里用75)
+            relevance: TimelineEntryRelevance(score: 75), // 10分钟内即将上课，高优先级 (100 - 10*5 = 50，但这里用75)
+            arrivedCourse: nil
         )
     }
 
     /// 场景 3：课间休息（第二门课已结束，距离第三门课还有一段时间）
     static func betweenClasses() -> ScheduleEntry {
         let widgetData = WidgetScheduleData(
-            version: "1.0",
+            version: "2.0",
             timestamp: "2025-01-15T13:00:00Z",
             schoolId: "nju",
             schoolName: "南京大学",
@@ -208,11 +200,7 @@ struct WidgetPreviewData {
             semesterName: "2024-2025学年第一学期",
             todayCourses: sampleCourses,
             tomorrowCourses: [],
-            nextCourse: sampleCourses[2],  // 第三门课是下一门
-            currentCourse: nil,
             weekSchedule: [:],
-            todayCourseCount: 6,
-            tomorrowCourseCount: 0,
             weekCourseCount: 24,
             hasCoursesToday: true,
             hasCoursesTomorrow: false,
@@ -224,21 +212,18 @@ struct WidgetPreviewData {
         )
 
         return ScheduleEntry(
-            date: Date(),
+            date: previewDate(hour: 13, minute: 0),
             widgetData: widgetData,
-            nextCourse: sampleCourses[2],
-            currentCourse: nil,
-            todayCourses: sampleCourses,
             errorMessage: nil,
-            displayState: .betweenClasses,
-            relevance: TimelineEntryRelevance(score: 10) // 今日还有课，但不是马上
+            relevance: TimelineEntryRelevance(score: 10), // 今日还有课，但不是马上
+            arrivedCourse: nil
         )
     }
 
     /// 场景 4：上课中（正在上第三门课，还有 3 门课）
     static func inClass() -> ScheduleEntry {
         let widgetData = WidgetScheduleData(
-            version: "1.0",
+            version: "2.0",
             timestamp: "2025-01-15T14:30:00Z",
             schoolId: "nju",
             schoolName: "南京大学",
@@ -248,11 +233,7 @@ struct WidgetPreviewData {
             semesterName: "2024-2025学年第一学期",
             todayCourses: sampleCourses,
             tomorrowCourses: [],
-            nextCourse: sampleCourses[3],
-            currentCourse: sampleCourses[2],
             weekSchedule: [:],
-            todayCourseCount: 6,
-            tomorrowCourseCount: 0,
             weekCourseCount: 24,
             hasCoursesToday: true,
             hasCoursesTomorrow: false,
@@ -264,21 +245,18 @@ struct WidgetPreviewData {
         )
 
         return ScheduleEntry(
-            date: Date(),
+            date: previewDate(hour: 14, minute: 30),
             widgetData: widgetData,
-            nextCourse: sampleCourses[3],
-            currentCourse: sampleCourses[2],
-            todayCourses: sampleCourses,
             errorMessage: nil,
-            displayState: .inClass,
-            relevance: TimelineEntryRelevance(score: 100, duration: 60) // 正在上课，最高优先级
+            relevance: TimelineEntryRelevance(score: 100, duration: 60), // 正在上课，最高优先级
+            arrivedCourse: nil
         )
     }
 
     /// 场景 5：课程结束（今日所有课程已结束）
     static func classesEnded() -> ScheduleEntry {
         let widgetData = WidgetScheduleData(
-            version: "1.0",
+            version: "2.0",
             timestamp: "2025-01-15T18:00:00Z",
             schoolId: "nju",
             schoolName: "南京大学",
@@ -288,11 +266,7 @@ struct WidgetPreviewData {
             semesterName: "2024-2025学年第一学期",
             todayCourses: [],
             tomorrowCourses: Array(sampleCourses.prefix(3)),
-            nextCourse: nil,
-            currentCourse: nil,
             weekSchedule: [:],
-            todayCourseCount: 0,
-            tomorrowCourseCount: 3,
             weekCourseCount: 24,
             hasCoursesToday: false,
             hasCoursesTomorrow: true,
@@ -304,14 +278,11 @@ struct WidgetPreviewData {
         )
 
         return ScheduleEntry(
-            date: Date(),
+            date: previewDate(hour: 18, minute: 0),
             widgetData: widgetData,
-            nextCourse: nil,
-            currentCourse: nil,
-            todayCourses: [],
             errorMessage: nil,
-            displayState: .classesEnded,
-            relevance: TimelineEntryRelevance(score: 0) // 课程已结束，不需要显示
+            relevance: TimelineEntryRelevance(score: 0), // 课程已结束，不需要显示
+            arrivedCourse: nil
         )
     }
 
@@ -320,7 +291,7 @@ struct WidgetPreviewData {
         let tomorrowCourses = Array(sampleCourses.prefix(3))
 
         let widgetData = WidgetScheduleData(
-            version: "1.0",
+            version: "2.0",
             timestamp: "2025-01-15T21:30:00Z",
             schoolId: "nju",
             schoolName: "南京大学",
@@ -330,11 +301,7 @@ struct WidgetPreviewData {
             semesterName: "2024-2025学年第一学期",
             todayCourses: [],
             tomorrowCourses: tomorrowCourses,
-            nextCourse: nil,
-            currentCourse: nil,
             weekSchedule: [:],
-            todayCourseCount: 0,
-            tomorrowCourseCount: 3,
             weekCourseCount: 24,
             hasCoursesToday: false,
             hasCoursesTomorrow: true,
@@ -346,14 +313,11 @@ struct WidgetPreviewData {
         )
 
         return ScheduleEntry(
-            date: Date(),
+            date: previewDate(hour: 21, minute: 30),
             widgetData: widgetData,
-            nextCourse: nil,
-            currentCourse: nil,
-            todayCourses: [],
             errorMessage: nil,
-            displayState: .tomorrowPreview,
-            relevance: TimelineEntryRelevance(score: 5) // 明日预览，很低优先级
+            relevance: TimelineEntryRelevance(score: 5), // 明日预览，很低优先级
+            arrivedCourse: nil
         )
     }
 
@@ -362,19 +326,16 @@ struct WidgetPreviewData {
         return ScheduleEntry(
             date: Date(),
             widgetData: nil,
-            nextCourse: nil,
-            currentCourse: nil,
-            todayCourses: [],
             errorMessage: "打开应用更新数据",
-            displayState: .error,
-            relevance: TimelineEntryRelevance(score: 0) // 错误状态，不显示
+            relevance: TimelineEntryRelevance(score: 0), // 错误状态，不显示
+            arrivedCourse: nil
         )
     }
 
     /// 场景 8：今日无课
     static func noCourses() -> ScheduleEntry {
         let widgetData = WidgetScheduleData(
-            version: "1.0",
+            version: "2.0",
             timestamp: "2025-01-15T10:00:00Z",
             schoolId: "nju",
             schoolName: "南京大学",
@@ -384,11 +345,7 @@ struct WidgetPreviewData {
             semesterName: "2024-2025学年第一学期",
             todayCourses: [],
             tomorrowCourses: [],
-            nextCourse: nil,
-            currentCourse: nil,
             weekSchedule: [:],
-            todayCourseCount: 0,
-            tomorrowCourseCount: 0,
             weekCourseCount: 24,
             hasCoursesToday: false,
             hasCoursesTomorrow: false,
@@ -400,14 +357,11 @@ struct WidgetPreviewData {
         )
 
         return ScheduleEntry(
-            date: Date(),
+            date: previewDate(hour: 10, minute: 0),
             widgetData: widgetData,
-            nextCourse: nil,
-            currentCourse: nil,
-            todayCourses: [],
             errorMessage: nil,
-            displayState: .classesEnded,
-            relevance: TimelineEntryRelevance(score: 0) // 今日无课，不需要显示
+            relevance: TimelineEntryRelevance(score: 0), // 今日无课，不需要显示
+            arrivedCourse: nil
         )
     }
 

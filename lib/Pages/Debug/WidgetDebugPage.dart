@@ -115,14 +115,12 @@ class _WidgetDebugPageState extends State<WidgetDebugPage> {
       _addLog('✅ 数据读取成功:');
       _addLog('  学校: ${data.schoolName}');
       _addLog('  当前周次: ${data.currentWeek}');
-      _addLog('  今日课程数: ${data.todayCourseCount}');
-      _addLog('  明日课程数: ${data.tomorrowCourseCount}');
+      _addLog('  今日课程数: ${data.todayCourses.length}');
+      _addLog('  明日课程数: ${data.tomorrowCourses.length}');
       _addLog('  总课程数: ${data.totalCourses}');
-      if (data.nextCourse != null) {
-        _addLog('  下节课: ${data.nextCourse!.name}');
-      }
-      if (data.currentCourse != null) {
-        _addLog('  当前课: ${data.currentCourse!.name}');
+      final nextCourseInfo = data.getNextCourseInfo();
+      if (nextCourseInfo != null) {
+        _addLog('  下节课: ${nextCourseInfo.split("\n").first}');
       }
     } catch (e) {
       _addLog('❌ 读取失败: $e');

@@ -83,9 +83,7 @@ class UnifiedDataService {
     try {
       print('[UnifiedDataService] 开始更新 Widget 数据...');
       final data = await getWidgetData();
-      print('[UnifiedDataService] Widget 数据构建成功: ${data.todayCourseCount} 门今日课程, ${data.tomorrowCourseCount} 门明日课程');
-      print('[UnifiedDataService] 当前课程: ${data.currentCourse?.name ?? "无"}');
-      print('[UnifiedDataService] 下节课程: ${data.nextCourse?.name ?? "无"}');
+      print('[UnifiedDataService] Widget 数据构建成功: ${data.todayCourses.length} 门今日课程, ${data.tomorrowCourses.length} 门明日课程');
 
       final result = await _bridge.sendWidgetData(data);
       if (result) {
@@ -204,26 +202,19 @@ class UnifiedDataService {
       final tomorrowWeek = currentWeekDay == 7 ? currentWeek + 1 : currentWeek;
       final tomorrowCourses = _filterCoursesForTomorrow(allCourses, tomorrowWeek, tomorrowWeekDay);
 
-      // 9. 计算当前课程和下一节课
-      final now = DateTime.now();
-      final currentCourse = _getCurrentCourse(todayCourses, now, timeTemplate);
-      final nextCourse = _getNextCourse(todayCourses, now, timeTemplate);
-
-      // 10. 构建周课表（使用本周课程）
+      // 9. 构建周课表（使用本周课程）
       final weekSchedule = _buildWeekSchedule(activeCoursesForWidget);
       
       // 10. 转换为 Widget 格式（使用课表名称作为标识）
       final widgetTodayCourses = await Future.wait(todayCourses.map((c) => _convertToWidgetCourse(c, scheduleName)));
       final widgetTomorrowCourses = await Future.wait(tomorrowCourses.map((c) => _convertToWidgetCourse(c, scheduleName)));
-      final widgetCurrentCourse = currentCourse != null ? await _convertToWidgetCourse(currentCourse, scheduleName) : null;
-      final widgetNextCourse = nextCourse != null ? await _convertToWidgetCourse(nextCourse, scheduleName) : null;
 
       // 11. 读取 Widget 配置选项
       final approachingMinutes = _preferences.getInt('widgetApproachingMinutes') ?? 15;
       final tomorrowPreviewHour = _preferences.getInt('widgetTomorrowPreviewHour') ?? 21;
 
       return WidgetScheduleData(
-        version: '1.0',
+        version: '2.0',
         timestamp: DateTime.now(),
         schoolId: timeTemplate.schoolId,  // 使用时间模板中的 schoolId
         schoolName: timeTemplate.schoolName,  // 使用时间模板中的 schoolName
@@ -233,11 +224,7 @@ class UnifiedDataService {
         semesterName: '${DateTime.now().year}学年',
         todayCourses: widgetTodayCourses,
         tomorrowCourses: widgetTomorrowCourses,
-        nextCourse: widgetNextCourse,
-        currentCourse: widgetCurrentCourse,
         weekSchedule: await _convertWeekScheduleToWidget(weekSchedule, scheduleName),
-        todayCourseCount: widgetTodayCourses.length,
-        tomorrowCourseCount: widgetTomorrowCourses.length,
         weekCourseCount: scheduleModel.activeCourses.length,
         hasCoursesToday: widgetTodayCourses.isNotEmpty,
         hasCoursesTomorrow: widgetTomorrowCourses.isNotEmpty,
@@ -283,70 +270,6 @@ class UnifiedDataService {
     return filtered;
   }
   
-  /// 获取当前正在上的课程
-  Course? _getCurrentCourse(List<Course> todayCourses, DateTime now, SchoolTimeTemplate timeTemplate) {
-    final currentPeriod = _getCurrentPeriod(now, timeTemplate);
-    if (currentPeriod == 0) return null;
-    
-    for (final course in todayCourses) {
-      final startPeriod = course.startTime ?? 0;
-      final endPeriod = startPeriod + (course.timeCount ?? 1) - 1;
-      
-      if (currentPeriod >= startPeriod && currentPeriod <= endPeriod) {
-        return course;
-      }
-    }
-    
-    return null;
-  }
-  
-  /// 获取下一节课
-  Course? _getNextCourse(List<Course> todayCourses, DateTime now, SchoolTimeTemplate timeTemplate) {
-    final currentPeriod = _getCurrentPeriod(now, timeTemplate);
-    
-    for (final course in todayCourses) {
-      final startPeriod = course.startTime ?? 0;
-      if (startPeriod > currentPeriod) {
-        return course;
-      }
-    }
-    
-    return null;
-  }
-  
-  /// 获取当前节次（基于时间模板）
-  int _getCurrentPeriod(DateTime now, SchoolTimeTemplate timeTemplate) {
-    final hour = now.hour;
-    final minute = now.minute;
-    final totalMinutes = hour * 60 + minute;
-    
-    for (int i = 0; i < timeTemplate.periods.length; i++) {
-      final period = timeTemplate.periods[i];
-      final startMinutes = _parseTimeToMinutes(period.startTime);
-      final endMinutes = _parseTimeToMinutes(period.endTime);
-      
-      if (totalMinutes >= startMinutes && totalMinutes <= endMinutes) {
-        return i + 1;
-      }
-    }
-    
-    return 0; // 非上课时间
-  }
-  
-  /// 解析时间为分钟数
-  int _parseTimeToMinutes(String timeStr) {
-    try {
-      final parts = timeStr.split(':');
-      if (parts.length == 2) {
-        final hour = int.parse(parts[0]);
-        final minute = int.parse(parts[1]);
-        return hour * 60 + minute;
-      }
-    } catch (e) {
-      // ignore
-    }
-    return 0;
-  }
   
   /// 构建周课表
   /// 复用课表前端逻辑：使用本周课程（activeCourses + multiCourses[0]）
@@ -449,7 +372,7 @@ class UnifiedDataService {
     final defaultTemplate = SchoolTimeTemplate.nanjingUniversity;
 
     return WidgetScheduleData(
-      version: '1.0',
+      version: '2.0',
       timestamp: DateTime.now(),
       schoolId: defaultTemplate.schoolId,
       schoolName: defaultTemplate.schoolName,
@@ -459,11 +382,7 @@ class UnifiedDataService {
       semesterName: '${DateTime.now().year}学年',
       todayCourses: [],
       tomorrowCourses: [],
-      nextCourse: null,
-      currentCourse: null,
       weekSchedule: {},
-      todayCourseCount: 0,
-      tomorrowCourseCount: 0,
       weekCourseCount: 0,
       hasCoursesToday: false,
       hasCoursesTomorrow: false,

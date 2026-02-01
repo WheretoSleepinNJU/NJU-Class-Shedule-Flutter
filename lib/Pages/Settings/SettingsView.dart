@@ -164,8 +164,8 @@ class _SettingsViewState extends State<SettingsView> {
               // Widget settings - iOS only
               if (Platform.isIOS)
                 ListTile(
-                  title: const Text('小组件和实时活动设置'),
-                  subtitle: const Text('自定义小组件和实时活动显示选项'),
+                  title: const Text('小组件设置'),
+                  subtitle: const Text('自定义小组件显示选项'),
                   onTap: () {
                     UmengCommonSdk.onEvent("widget_setting", {"action": "show"});
                     Navigator.of(context).push(MaterialPageRoute(

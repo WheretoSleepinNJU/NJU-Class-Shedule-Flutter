@@ -15,15 +15,11 @@ class WidgetScheduleData {
   // 核心课程数据
   final List<WidgetCourse> todayCourses;     // 今日课程（已排序）
   final List<WidgetCourse> tomorrowCourses;  // 明日课程（已排序）
-  final WidgetCourse? nextCourse;            // 下一节课
-  final WidgetCourse? currentCourse;         // 当前课程（如果正在上课）
   
   // 本周课表
   final Map<int, List<WidgetCourse>> weekSchedule; // 本周每天课程
   
   // 统计信息
-  final int todayCourseCount;
-  final int tomorrowCourseCount;
   final int weekCourseCount;
   final bool hasCoursesToday;
   final bool hasCoursesTomorrow;
@@ -38,7 +34,7 @@ class WidgetScheduleData {
   final int? tomorrowPreviewHour;          // 明日预览开始时间（小时），默认21
 
   WidgetScheduleData({
-    this.version = '1.0',
+    this.version = '2.0',
     required this.timestamp,
     required this.schoolId,
     required this.schoolName,
@@ -48,11 +44,7 @@ class WidgetScheduleData {
     required this.semesterName,
     required this.todayCourses,
     required this.tomorrowCourses,
-    this.nextCourse,
-    this.currentCourse,
     required this.weekSchedule,
-    required this.todayCourseCount,
-    required this.tomorrowCourseCount,
     required this.weekCourseCount,
     required this.hasCoursesToday,
     required this.hasCoursesTomorrow,
@@ -75,13 +67,9 @@ class WidgetScheduleData {
     'semesterName': semesterName,
     'todayCourses': todayCourses.map((c) => c.toJson()).toList(),
     'tomorrowCourses': tomorrowCourses.map((c) => c.toJson()).toList(),
-    'nextCourse': nextCourse?.toJson(),
-    'currentCourse': currentCourse?.toJson(),
     'weekSchedule': weekSchedule.map((k, v) => 
       MapEntry(k.toString(), v.map((c) => c.toJson()).toList())
     ),
-    'todayCourseCount': todayCourseCount,
-    'tomorrowCourseCount': tomorrowCourseCount,
     'weekCourseCount': weekCourseCount,
     'hasCoursesToday': hasCoursesToday,
     'hasCoursesTomorrow': hasCoursesTomorrow,
@@ -94,7 +82,7 @@ class WidgetScheduleData {
 
   // JSON 反序列化
   factory WidgetScheduleData.fromJson(Map<String, dynamic> json) => WidgetScheduleData(
-    version: json['version'] ?? '1.0',
+    version: json['version'] ?? '2.0',
     timestamp: DateTime.parse(json['timestamp']),
     schoolId: json['schoolId'],
     schoolName: json['schoolName'],
@@ -108,19 +96,11 @@ class WidgetScheduleData {
     tomorrowCourses: (json['tomorrowCourses'] as List)
         .map((c) => WidgetCourse.fromJson(c))
         .toList(),
-    nextCourse: json['nextCourse'] != null 
-        ? WidgetCourse.fromJson(json['nextCourse']) 
-        : null,
-    currentCourse: json['currentCourse'] != null 
-        ? WidgetCourse.fromJson(json['currentCourse']) 
-        : null,
     weekSchedule: (json['weekSchedule'] as Map<String, dynamic>)
         .map((k, v) => MapEntry(
             int.parse(k), 
             (v as List).map((c) => WidgetCourse.fromJson(c)).toList()
         )),
-    todayCourseCount: json['todayCourseCount'],
-    tomorrowCourseCount: json['tomorrowCourseCount'],
     weekCourseCount: json['weekCourseCount'],
     hasCoursesToday: json['hasCoursesToday'],
     hasCoursesTomorrow: json['hasCoursesTomorrow'],
@@ -135,10 +115,10 @@ class WidgetScheduleData {
 
   /// 获取今日课程时间文本
   String getTodayScheduleText() {
-    if (!hasCoursesToday) return '今天没有课程';
+    if (todayCourses.isEmpty) return '今天没有课程';
     
     final buffer = StringBuffer();
-    buffer.writeln('今天有 $todayCourseCount 节课：');
+    buffer.writeln('今天有 ${todayCourses.length} 节课：');
     
     for (final course in todayCourses) {
       final timeRange = timeTemplate.getPeriodRange(course.startPeriod, course.periodCount);
@@ -154,15 +134,44 @@ class WidgetScheduleData {
 
   /// 获取下一节课信息
   String? getNextCourseInfo() {
-    if (nextCourse == null) return null;
-    
-    final course = nextCourse!;
+    final course = _findNextCourse();
+    if (course == null) return null;
+
     final timeRange = timeTemplate.getPeriodRange(course.startPeriod, course.periodCount);
     final timeText = timeRange != null ? '${timeRange.startTime}-${timeRange.endTime}' : '第${course.startPeriod}节';
     
     return '${course.name}\n⏰ $timeText\n📍 ${course.classroom ?? '待定'}';
   }
 
+  /// 查找下一节课（基于当前时间）
+  WidgetCourse? _findNextCourse() {
+    final now = DateTime.now();
+    final currentMinutes = now.hour * 60 + now.minute;
+
+    for (final course in todayCourses) {
+      final period = timeTemplate.getPeriodRange(course.startPeriod, course.periodCount);
+      if (period == null) continue;
+
+      final startMinutes = _timeToMinutes(period.startTime);
+      if (currentMinutes < startMinutes) {
+        return course;
+      }
+    }
+
+    return null;
+  }
+
+  int _timeToMinutes(String timeString) {
+    try {
+      final parts = timeString.split(':');
+      final hour = int.parse(parts[0]);
+      final minute = int.parse(parts[1]);
+      return hour * 60 + minute;
+    } catch (e) {
+      return 0;
+    }
+  }
+
   @override
-  String toString() => 'WidgetScheduleData($schoolId: $schoolName, week $currentWeek, $todayCourseCount today courses)';
+  String toString() => 'WidgetScheduleData($schoolId: $schoolName, week $currentWeek, ${todayCourses.length} today courses)';
 }

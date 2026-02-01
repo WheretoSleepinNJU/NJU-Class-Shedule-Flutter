@@ -189,16 +189,6 @@ class WidgetDataManager {
         return loadWidgetData()?.todayCourses
     }
 
-    /// 获取下一节课
-    func getNextCourse() -> WidgetCourse? {
-        return loadWidgetData()?.nextCourse
-    }
-
-    /// 获取当前课程
-    func getCurrentCourse() -> WidgetCourse? {
-        return loadWidgetData()?.currentCourse
-    }
-
     /// 获取学校时间模板
     func getTimeTemplate() -> SchoolTimeTemplate? {
         return loadWidgetData()?.timeTemplate
