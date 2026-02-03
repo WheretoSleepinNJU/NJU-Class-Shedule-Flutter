@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:wheretosleepinnju/Utils/ColorUtil.dart';
+import '../core/widget_data/utils/widget_refresh_helper.dart';
 import '../Models/CourseModel.dart';
 import '../Models/CourseTableModel.dart';
 import '../Models/ScheduleModel.dart';
@@ -69,9 +70,20 @@ class WidgetHelper {
 
   static Future<void> _updateIOSWidget(List<Course> courses, String dateStr, List<Map> classTimeList) async {
     try {
-      print("Flutter[iOS]: Updating widget...");
-      // TODO: 实现 iOS Logic (WidgetKit)
-      // iOS 通常需要使用 App Groups 和 UserDefaults 共享数据
+      print("Flutter[iOS]: Updating widget via UnifiedDataService...");
+      // 使用新版 WidgetRefreshHelper 进行刷新
+      // 需要导入 'package:wheretosleepinnju/core/widget_data/utils/widget_refresh_helper.dart';
+      // 注意：这里我们使用 manualRefresh，它会清除缓存并强制重新计算
+      // 实际上 WidgetHelper 的调用者已经提供了很多数据，但 UnifiedDataService 
+      // 有自己的一套完整获取和处理数据的逻辑，为了保证数据一致性（特别是 App Group 数据），
+      // 我们选择触发 Service 的完整刷新流程，而不是手动传递这里的 courses 参数。
+      bool success = await WidgetRefreshHelper.manualRefresh();
+      
+      if (success) {
+        print("Flutter[iOS]: Widget update triggered successfully");
+      } else {
+        print("Flutter[iOS]: Widget update failed or skipped");
+      }
     } catch (e) {
       print("Flutter[iOS]: Failed to update: $e");
     }

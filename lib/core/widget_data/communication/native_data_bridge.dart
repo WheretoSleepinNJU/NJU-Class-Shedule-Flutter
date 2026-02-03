@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/services.dart';
 import '../models/widget_schedule_data.dart';
 import '../models/live_activity_data.dart';
@@ -181,8 +182,18 @@ class NativeDataBridge {
   
   /// 获取当前平台
   String _getCurrentPlatform() {
-    // 可以根据运行环境判断平台
-    return 'ios'; // 暂时默认为 iOS
+    if (Platform.isIOS) return 'ios';
+    if (Platform.isAndroid) return 'android';
+    if (Platform.isMacOS) return 'macos';
+    if (Platform.isWindows) return 'windows';
+    if (Platform.isLinux) return 'linux';
+    if (Platform.isFuchsia) return 'fuchsia';
+    // 对 HarmonyOS 的判断通常依赖特定的环境标记，如果 dart:io 标准库未更新支持
+    // 可以通过其他方式或保持默认，这里假设可能是 android 或 linux 内核，
+    // 或者通过 Platform.operatingSystem 判断字符串
+    if (Platform.operatingSystem == 'ohos') return 'ohos';
+    
+    return Platform.operatingSystem;
   }
   
   /// 创建数据包头部信息

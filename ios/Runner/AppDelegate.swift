@@ -150,10 +150,20 @@ import ActivityKit
 
     print("Received live activity data: \(args.keys)")
 
+    // Extract the 'activities' array to match the structure expected by WidgetDataManager.loadLiveActivityData()
+    // Flutter sends: {'activities': [...], 'timestamp': ..., 'platform': ...}
+    // Swift Reader expects: [LiveActivityData] (Array)
+    guard let activitiesData = args["activities"] else {
+        print("❌ [AppDelegate] Missing 'activities' field in live activity data")
+        result(FlutterError(code: "INVALID_DATA", message: "Missing 'activities' field", details: nil))
+        return
+    }
+
     // Save to UserDefaults (App Group)
     if let appGroup = UserDefaults(suiteName: kAppGroupIdentifier) {
       do {
-        let jsonData = try JSONSerialization.data(withJSONObject: args, options: [])
+        // We serialize the array directly
+        let jsonData = try JSONSerialization.data(withJSONObject: activitiesData, options: [])
         appGroup.set(jsonData, forKey: "live_activity_data")
         appGroup.synchronize()
         print("Live activity data saved successfully")
