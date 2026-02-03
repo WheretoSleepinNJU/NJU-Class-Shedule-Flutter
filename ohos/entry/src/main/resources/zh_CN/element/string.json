@@ -1,0 +1,24 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "模块描述"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "南哪课表"
+    },
+    {
+      "name": "reason_read_calendar",
+      "value": "需要读取日历以避免重复添加课程"
+    },
+    {
+      "name": "reason_write_calendar",
+      "value": "需要写入权限以将课程导出到系统日历"
+    }
+  ]
+}

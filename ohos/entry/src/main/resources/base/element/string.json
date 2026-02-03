@@ -1,0 +1,45 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "module description"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "南哪课表"
+    },
+    {
+      "name": "EntryFormAbility_desc",
+      "value": "form_description"
+    },
+    {
+      "name": "EntryFormAbility_label",
+      "value": "form_label"
+    },
+    {
+      "name": "widget_desc",
+      "value": "课表小组件"
+    },
+    {
+      "name": "widget_display_name",
+      "value": "南哪课表"
+    },
+
+    {
+      "name": "reason_tracking",
+      "value": "需要上传追踪信息用于统计分析"
+    },
+    {
+      "name": "reason_read_calendar",
+      "value": "需要读取日历以避免重复添加课程"
+    },
+    {
+      "name": "reason_write_calendar",
+      "value": "需要写入权限以将课程导出到系统日历"
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "app": {
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "/Users/idealclover/.ohos/config/default_ohos_beb2R7_SesHgy1vQMNVsuiLAGxWazM3AmhIWVkTJIZI=.cer",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001BF90CFA08F94FEC217A5BDED0FBC9F2E39FABF81AFE1C23A66779005F36CDF54085B70F752C3750",
+          "profile": "/Users/idealclover/.ohos/config/default_ohos_beb2R7_SesHgy1vQMNVsuiLAGxWazM3AmhIWVkTJIZI=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "/Users/idealclover/.ohos/config/default_ohos_beb2R7_SesHgy1vQMNVsuiLAGxWazM3AmhIWVkTJIZI=.p12",
+          "storePassword": "0000001B0EB9475D41787C234F0C56E888D9E651C65D5E07F0E16291F5430ACE295320E24E0A08920198E8"
+        }
+      }
+    ],
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "default",
+        "compatibleSdkVersion": "5.0.0(12)",
+        "runtimeOS": "HarmonyOS",
+        "targetSdkVersion": "6.0.0(20)",
+        "buildOption": {
+          "strictMode": {
+            "useNormalizedOHMUrl": true
+          }
+        },
+      }
+    ],
+    "buildModeSet": [
+      {
+        "name": "debug"
+      },
+      {
+        "name": "profile"
+      },
+      {
+        "name": "release"
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    }
+  ]
+}

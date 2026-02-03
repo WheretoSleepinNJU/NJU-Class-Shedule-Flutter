@@ -8,6 +8,7 @@ class Url {
 
   static const String URL_APPLE = "https://pay.idealclover.cn/apple_new/1";
   static const String URL_ANDROID = "https://pay.idealclover.cn/android_new/1";
+  static const String URL_OHOS = "https://pay.idealclover.cn/ohos_new/1";
 
   // static final String URL_APPLE = "https://pay.idealclover.cn/apple";
   // static final String URL_ANDROID = "https://pay.idealclover.cn/android";
@@ -19,6 +20,8 @@ class Url {
       'https://jq.qq.com/?_wv=1027&k=5hL1ccO';
   static const String QQ_GROUP_ANDROID_URL =
       'https://jq.qq.com/?_wv=1027&k=5PNwtkh';
+  static const String QQ_GROUP_OHOS_URL =
+      'https://qm.qq.com/q/kM9VK0Ghby';
 
   static const String OPEN_SOURCE_URL =
       'https://github.com/idealclover/NJU-Class-Shedule-Flutter';

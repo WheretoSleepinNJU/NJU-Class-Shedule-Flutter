@@ -1,4 +1,7 @@
+import 'package:flutter/services.dart';
+
 import '../../Resources/Constant.dart';
+import '../../Utils/WidgetHelper.dart';
 import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -92,6 +95,10 @@ class CourseTableViewState extends State<CourseTableView> {
         await ScopedModel.of<MainStateModel>(context).getTmpWeek();
 
     await _presenter.refreshClasses(index, _nowShowWeekNum);
+
+    WidgetHelper.refreshWidget(index);
+    // WidgetHelper.runMockTest();
+    
     _freeCourseNum = _presenter.freeCourses.length;
 
     try {
@@ -201,16 +208,46 @@ class CourseTableViewState extends State<CourseTableView> {
                   }
                   // double height = MediaQuery.of(context).size.height;
                   FlutterNativeSplash.remove();
+
+                  Color? mainColor;
+                  if (_isWhiteMode == null) {
+                    mainColor = null;
+                  } else {
+                    mainColor = _isWhiteMode! ? Colors.white : Colors.black;
+                  }
+
+                  SystemUiOverlayStyle overlayStyle;
+                  if (_isWhiteMode == null) {
+                    overlayStyle = Theme.of(context).brightness == Brightness.dark
+                        ? SystemUiOverlayStyle.light
+                        : SystemUiOverlayStyle.dark;
+                  } else {
+                    overlayStyle = _isWhiteMode!
+                        ? SystemUiOverlayStyle.light
+                        : SystemUiOverlayStyle.dark;
+                  }
+
+                  Color? appBarColor;
+                  if (_isWhiteMode == null) {
+                    appBarColor = null;
+                  } else {
+                    appBarColor = Colors.transparent;
+                  }
+
                   return Scaffold(
+                    extendBodyBehindAppBar: true,
                     appBar: AppBar(
+                        backgroundColor: appBarColor,
+                        systemOverlayStyle: overlayStyle,
+                        iconTheme: IconThemeData(color: mainColor),
                         centerTitle: true,
                         title: Column(children: [
 //                          TextView(),
                           Text(S.of(context).app_name,
-                              style: const TextStyle(fontSize: 18)),
+                              style: TextStyle(fontSize: 18, color: mainColor)),
                           GestureDetector(
                               child: Text((nowWeek),
-                                  style: const TextStyle(fontSize: 14)),
+                                  style: TextStyle(fontSize: 14, color: mainColor)),
                               onTap: () {
                                 setState(() {
                                   weekSelectorVisibility =
@@ -254,8 +291,11 @@ class CourseTableViewState extends State<CourseTableView> {
                       //           fit: BoxFit.cover,
                       //         ),
                       //       ),
-                      // child:
-                      Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
+                      Padding(
+                      padding: EdgeInsets.only(
+                        top: MediaQuery.of(context).padding.top + kToolbarHeight
+                      ),
+                      child: Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
                         WeekSelector(model, weekSelectorVisibility),
                         WeekTitle(
                             _maxShowDays,
@@ -297,11 +337,9 @@ class CourseTableViewState extends State<CourseTableView> {
                                       child: Text(
                                           S.of(context).free_class_banner(
                                               _freeCourseNum.toString()),
-                                          style: const TextStyle(
-                                              color: Colors.white))),
-                                  backgroundColor: Theme.of(context)
-                                      .appBarTheme
-                                      .backgroundColor,
+                                          style: TextStyle(
+                                              color:  Theme.of(context).colorScheme.onSurface))),
+                                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
                                   actions: [
                                     Row(
                                       children: [
@@ -316,9 +354,8 @@ class CourseTableViewState extends State<CourseTableView> {
                                           style: TextButton.styleFrom(
                                               minimumSize: Size.zero,
                                               padding: EdgeInsets.zero,
-                                              backgroundColor: Theme.of(context)
-                                                  .appBarTheme
-                                                  .backgroundColor),
+                                              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                                              foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer),
                                         ),
                                         TextButton(
                                           child: Text(
@@ -332,26 +369,22 @@ class CourseTableViewState extends State<CourseTableView> {
                                           style: TextButton.styleFrom(
                                               minimumSize: Size.zero,
                                               padding: EdgeInsets.zero,
-                                              backgroundColor: Theme.of(context)
-                                                  .appBarTheme
-                                                  .backgroundColor),
+                                              backgroundColor:Theme.of(context).colorScheme.primaryContainer,
+                                              foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer),
                                         ),
                                       ],
                                     )
                                   ],
                                 )),
                       ]),
-                      // ),
+                      ),
                     ]),
                     floatingActionButton: _isShowAddButton
                         ? Padding(
                             padding:
                                 const EdgeInsets.only(bottom: 50.0, left: 10.0),
                             child: FloatingActionButton(
-                              backgroundColor: Theme.of(context).brightness ==
-                                      Brightness.light
-                                  ? Theme.of(context).primaryColor
-                                  : Colors.white,
+                              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
                               onPressed: () async {
                                 Navigator.of(context)
                                     .push(MaterialPageRoute(
@@ -361,9 +394,9 @@ class CourseTableViewState extends State<CourseTableView> {
                                         ScopedModel.of<MainStateModel>(context)
                                             .refresh());
                               },
-                              child: const Icon(
+                              child: Icon(
                                 Icons.add,
-                                color: Colors.white,
+                                color: Theme.of(context).colorScheme.onPrimaryContainer,
                               ),
                             ))
                         : Container(),

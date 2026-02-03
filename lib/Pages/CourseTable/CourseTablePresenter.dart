@@ -150,9 +150,11 @@ class CourseTablePresenter {
                               UmengCommonSdk.onEvent(
                                   "import_dialog", {"action": "donate"});
                               if (Platform.isIOS) {
-                                launch(Url.URL_APPLE);
+                                _launchURL(Url.URL_APPLE);
                               } else if (Platform.isAndroid) {
-                                launch(Url.URL_ANDROID);
+                                _launchURL(Url.URL_ANDROID);
+                              } else if (Platform.operatingSystem == 'ohos') {
+                                _launchURL(Url.URL_OHOS);
                               }
                               Navigator.of(context).pop();
                             })),
@@ -168,9 +170,11 @@ class CourseTablePresenter {
                               UmengCommonSdk.onEvent(
                                   "import_dialog", {"action": "bug"});
                               if (Platform.isIOS) {
-                                launch(Url.QQ_GROUP_APPLE_URL);
+                                _launchURL(Url.QQ_GROUP_APPLE_URL);
                               } else if (Platform.isAndroid) {
-                                launch(Url.QQ_GROUP_ANDROID_URL);
+                                _launchURL(Url.QQ_GROUP_ANDROID_URL);
+                              } else if (Platform.operatingSystem == 'ohos') {
+                                _launchURL(Url.QQ_GROUP_OHOS_URL);
                               }
                               Navigator.of(context).pop();
                             })),
@@ -188,6 +192,15 @@ class CourseTablePresenter {
                   ])),
               overrideActions: const [],
             ));
+  }
+
+  Future<bool> _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+      return true;
+    } else {
+      return false;
+    }
   }
 
   Future<bool> changeWeek(

@@ -13,6 +13,7 @@
       "extractJS": "",
       "extractJSfileAndroid": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/njubksjw2.js",
       "extractJSfileiOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/njubksjw2.js",
+      "extractJSfileOHOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/njubksjw2.js",
       "banner_content": "注意：如加载失败，请连接南京大学VPN\n试试浏览器访问教务网，没准系统又抽风了\n听起来有点离谱，不过在南京大学，倒也正常",
       "banner_action": "下载南京大学VPN",
       "banner_url": "https://vpn.nju.edu.cn",
@@ -32,6 +33,7 @@
       "extractJS": "",
       "extractJSfileAndroid": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/njubksxk.js",
       "extractJSfileiOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/njubksxk.js",
+      "extractJSfileOHOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/njubksxk.js",
       "banner_content": "注意：如加载失败，请连接南京大学VPN\n试试浏览器访问教务网，没准系统又抽风了\n听起来有点离谱，不过在南京大学，倒也正常",
       "banner_action": "下载南京大学VPN",
       "banner_url": "https://vpn.nju.edu.cn",
@@ -51,6 +53,7 @@
       "extractJS": "",
       "extractJSfileAndroid": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/njuyjsjw.js",
       "extractJSfileiOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/njuyjsjw.js",
+      "extractJSfileOHOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/njuyjsjw.js",
       "banner_content": "注意：如加载失败，请连接南京大学VPN\n试试浏览器访问教务网，没准系统又抽风了\n听起来有点离谱，不过在南京大学，倒也正常",
       "banner_action": "下载南京大学VPN",
       "banner_url": "https://vpn.nju.edu.cn",
@@ -70,6 +73,7 @@
       "extractJS": "",
       "extractJSfileAndroid": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/njuyjsxk.js",
       "extractJSfileiOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/njuyjsxk.js",
+      "extractJSfileOHOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/njuyjsxk.js",
       "banner_content": "导入方式：登陆后点击「我的选课」进入选课页\n注意：如加载失败，请连接南京大学VPN\n试试浏览器访问教务网，没准教务系统又抽风了\n听起来有点离谱，不过在南京大学，倒也正常",
       "banner_action": "下载南京大学VPN",
       "banner_url": "https://vpn.nju.edu.cn",
@@ -89,6 +93,7 @@
       "extractJS": "",
       "extractJSfileAndroid": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/seubksjw.js",
       "extractJSfileiOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/seubksjw.js",
+      "extractJSfileOHOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/seubksjw.js",
       "banner_content": "导入方式：登陆后自动获取当前学期课表\n注意：如加载失败，请连接东南大学VPN\n试试浏览器访问教务网，没准教务系统又抽风了",
       "banner_action": "下载东南大学VPN",
       "banner_url": "https://vpn.seu.edu.cn",
@@ -146,7 +151,7 @@
           "end": "21:25"
         }
       ],
-      "semester_start_monday": "2025-09-22",
+      "semester_start_monday": "2026-03-02",
       "isGrey": true,
       "isGrey3.1.0": false
     },
@@ -163,6 +168,7 @@
       "extractJS": "",
       "extractJSfileAndroid": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/sjtuyjsxk.js",
       "extractJSfileiOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/sjtuyjsxk.js",
+      "extractJSfileOHOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/sjtuyjsxk.js",
       "banner_content": "导入方式：登陆后点击「我的选课」进入选课页\n注意：如加载失败，请连接上交VPN\n试试浏览器访问教务网，没准教务系统又抽风了",
       "banner_action": "使用上海交通大学VPN",
       "banner_url": "https://net.sjtu.edu.cn/wlfw/VPN.htm",
@@ -233,6 +239,73 @@
       "isGrey3.1.0": false
     },
     {
+      "title": "西北农林科技大学本科生教务系统",
+      "pinyin": "xibeinonglinkejidaxuebksjiaowu",
+      "description": "西北怎么不算一种南哪儿呢",
+      "page_title": "统一身份认证",
+      "initialUrl": "https://authserver.nwafu.edu.cn/authserver/login?service=https%3A%2F%2Fnewehall.nwafu.edu.cn%2Fjwapp%2Fsys%2Fwdkbby%2F*default%2Findex.do",
+      "redirectUrl": "",
+      "targetUrl": "https://newehall.nwafu.edu.cn/jwapp/sys/wdkbby/*default/index.do#/xskcb",
+      "preExtractJS": "",
+      "delayTime": 3,
+      "extractJS": "",
+      "extractJSfileAndroid": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/nwafubksjw.js",
+      "extractJSfileiOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/nwafubksjw.js",
+      "extractJSfileOHOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/nwafubksjw.js",
+      "banner_content": "导入方式：登陆后自动获取当前学期课表\n当前为冬令时，请在2026.5.1后重新导入课表！\n依旧为早期开发版本，如果出现问题请联系\n1852554085@qq.com",
+      "banner_action": "朕知道了",
+      "banner_url": "",
+      "class_time_list": [
+        {
+          "start": "08:00",
+          "end": "08:45"
+        },
+        {
+          "start": "08:55",
+          "end": "09:40"
+        },
+        {
+          "start": "10:10",
+          "end": "10:55"
+        },
+        {
+          "start": "11:05",
+          "end": "11:50"
+        },
+        {
+          "start": "14:00",
+          "end": "14:45"
+        },
+        {
+          "start": "14:55",
+          "end": "15:40"
+        },
+        {
+          "start": "16:00",
+          "end": "16:45"
+        },
+        {
+          "start": "16:55",
+          "end": "17:40"
+        },
+        {
+          "start": "19:00",
+          "end": "19:45"
+        },
+        {
+          "start": "19:50",
+          "end": "20:35"
+        },
+        {
+          "start": "20:40",
+          "end": "21:35"
+        }
+      ],
+      "semester_start_monday": "2025-09-08",
+      "isGrey": true,
+      "isGrey3.1.0": false
+    },
+    {
       "title": "中国人民大学研究生教育信息系统",
       "pinyin": "zhongguorenmindaxuejiaowu",
       "description": "耶！南哪课表占领世界！",
@@ -245,6 +318,7 @@
       "extractJS": "",
       "extractJSfileAndroid": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/rucyjsjw.js",
       "extractJSfileiOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/rucyjsjw.js",
+      "extractJSfileOHOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/rucyjsjw.js",
       "banner_content": "导入方式：登陆后自动获取当前学期课表\n注意：如加载失败，请连接东南大学VPN\n试试浏览器访问教务网，没准教务系统又抽风了",
       "banner_action": "使用中国人民大学VPN",
       "banner_url": "https://vpn.ruc.edu.cn",

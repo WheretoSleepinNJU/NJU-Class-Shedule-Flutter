@@ -24,25 +24,39 @@ class ImportFromCerView extends StatefulWidget {
   }
 }
 
-JavascriptChannel snackbarJavascriptChannel(BuildContext context) {
-  return JavascriptChannel(
-    name: 'SnackbarJSChannel',
-    onMessageReceived: (JavascriptMessage message) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(message.message),
-      ));
-    },
-  );
-}
-
 class ImportFromCerViewState extends State<ImportFromCerView> {
-  late WebViewController _webViewController;
-  final CookieManager cookieManager = CookieManager();
+  late final WebViewController _webViewController;
+  final WebViewCookieManager cookieManager = WebViewCookieManager();
 
   @override
   void initState() {
     super.initState();
-    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+
+    _webViewController = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(const Color(0x00000000))
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageFinished: (String url) {
+            if (widget.config['redirectUrl'] != '' &&
+                url.startsWith(widget.config['redirectUrl'])) {
+              _webViewController.loadRequest(Uri.parse(widget.config['targetUrl']));
+            } else if (url.startsWith(widget.config['targetUrl'])) {
+              import(_webViewController, context);
+            }
+          },
+        ),
+      )
+      ..addJavaScriptChannel(
+        'SnackbarJSChannel',
+        onMessageReceived: (JavaScriptMessage message) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(message.message),
+          ));
+        },
+      );
+
+    _webViewController.loadRequest(Uri.parse(widget.config['initialUrl']));
   }
 
   @override
@@ -55,19 +69,9 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
             icon: const Icon(Icons.refresh),
             onPressed: () async {
               await cookieManager.clearCookies();
-              _webViewController.loadUrl(widget.config['initialUrl']);
+              _webViewController.loadRequest(Uri.parse(widget.config['initialUrl']));
             },
           ),
-
-          /// 作弊器
-          // IconButton(
-          //   icon: const Icon(Icons.gamepad),
-          //   onPressed: () async {
-          //     Response response = await Dio().get(
-          //         "https://clover-1254951786.cos.ap-shanghai.myqcloud.com/Projects/wheretosleepinnju/debug/testfiles/jw.html");
-          //     import(_webViewController, context, res: response.data);
-          //   },
-          // )
         ],
       ),
       body: Builder(
@@ -93,25 +97,7 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
                     ],
                   ),
             Expanded(
-                child: WebView(
-              initialUrl: widget.config['initialUrl'],
-              javascriptMode: JavascriptMode.unrestricted,
-              onWebViewCreated: (WebViewController webViewController) async {
-                _webViewController = webViewController;
-                await cookieManager.clearCookies();
-              },
-              javascriptChannels: <JavascriptChannel>{
-                snackbarJavascriptChannel(context),
-              },
-              onPageFinished: (url) {
-                if (widget.config['redirectUrl'] != '' &&
-                    url.startsWith(widget.config['redirectUrl'])) {
-                  _webViewController.loadUrl(widget.config['targetUrl']);
-                } else if (url.startsWith(widget.config['targetUrl'])) {
-                  import(_webViewController, context);
-                }
-              },
-            ))
+                child: WebViewWidget(controller: _webViewController))
           ]);
         },
       ),
@@ -122,14 +108,19 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
       {String? res}) async {
     String response = "";
     if (res != null) {
-      /// 测试数据
       response = res;
     } else {
       Toast.showToast(S.of(context).class_parse_toast_importing, context);
-      await controller.runJavascript(widget.config['preExtractJS'] ?? '');
+      await controller.runJavaScript(widget.config['preExtractJS'] ?? '');
       await Future.delayed(Duration(seconds: widget.config['delayTime'] ?? 0));
-      response = await controller
-          .runJavascriptReturningResult(widget.config['extractJS']);
+      
+      var result = await controller
+          .runJavaScriptReturningResult(widget.config['extractJS']);
+      response = result.toString();
+      
+      if (response.startsWith('"') && response.endsWith('"')) {
+         response = response.substring(1, response.length - 1);
+      }
     }
     response = response.replaceAll('\\u003C', '<').replaceAll('\\"', '"');
 
@@ -163,7 +154,7 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
       }
 
       UmengCommonSdk.onEvent("class_import", {"type": "cer", "action": "fail"});
-      // Toast.showToast(S.of(context).class_parse_error_toast, context);
+      
       showDialog<String>(
           barrierDismissible: false,
           context: context,
@@ -186,6 +177,8 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
                             launch(Url.QQ_GROUP_APPLE_URL);
                           } else if (Platform.isAndroid) {
                             launch(Url.QQ_GROUP_ANDROID_URL);
+                          } else if (Platform.operatingSystem == 'ohos') {
+                            launch(Url.QQ_GROUP_OHOS_URL);
                           }
                           Navigator.of(context).pop();
                         })),

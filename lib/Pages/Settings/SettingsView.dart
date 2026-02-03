@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../ManageTable/ManageTableView.dart';
 import '../Import/ImportView.dart';
 
@@ -129,15 +129,16 @@ class _SettingsViewState extends State<SettingsView> {
               //   },
               // ),
               // ---
-              ListTile(
-                title: Text(S.of(context).import_or_export_title),
-                subtitle: Text(S.of(context).import_or_export_subtitle),
-                onTap: () {
-                  UmengCommonSdk.onEvent("qr_import", {"action": "show"});
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => const ShareView()));
-                },
-              ),
+              // TODO: 为了鸿蒙先注释掉导入导出功能
+              // ListTile(
+              //   title: Text(S.of(context).import_or_export_title),
+              //   subtitle: Text(S.of(context).import_or_export_subtitle),
+              //   onTap: () {
+              //     UmengCommonSdk.onEvent("qr_import", {"action": "show"});
+              //     Navigator.of(context).push(MaterialPageRoute(
+              //         builder: (BuildContext context) => const ShareView()));
+              //   },
+              // ),
               ListTile(
                 title: Text(S.of(context).manage_table_title),
                 subtitle: Text(S.of(context).manage_table_subtitle),
@@ -148,8 +149,6 @@ class _SettingsViewState extends State<SettingsView> {
                           const ManageTableView()));
                 },
               ),
-              // TODO: Refresh multi times when changing themes.
-              const ThemeChanger(),
               ListTile(
                 title: Text(S.of(context).more_settings_title),
                 subtitle: Text(S.of(context).more_settings_subtitle),
@@ -179,6 +178,8 @@ class _SettingsViewState extends State<SettingsView> {
                     status = await _launchURL(Url.QQ_GROUP_APPLE_URL);
                   } else if (Platform.isAndroid) {
                     status = await _launchURL(Url.QQ_GROUP_ANDROID_URL);
+                  } else if (Platform.operatingSystem == 'ohos') {
+                    status = await _launchURL(Url.QQ_GROUP_OHOS_URL);
                   }
                   if (!status) {
                     Toast.showToast(S.of(context).QQ_open_fail_toast, context);
@@ -192,6 +193,9 @@ class _SettingsViewState extends State<SettingsView> {
                   } else if (Platform.isAndroid) {
                     await Clipboard.setData(
                         const ClipboardData(text: Config.ANDROID_GROUP));
+                  } else if (Platform.operatingSystem == 'ohos') {
+                    await Clipboard.setData(
+                        const ClipboardData(text: Config.OHOS_GROUP));
                   }
                   Toast.showToast(S.of(context).QQ_copy_success_toast, context);
                 },
@@ -206,6 +210,8 @@ class _SettingsViewState extends State<SettingsView> {
                       status = await _launchURL(Url.URL_APPLE);
                     } else if (Platform.isAndroid) {
                       status = await _launchURL(Url.URL_ANDROID);
+                    } else if (Platform.operatingSystem == 'ohos') {
+                      status = await _launchURL(Url.URL_OHOS);
                     }
                     if (!status) {
                       Toast.showToast(
