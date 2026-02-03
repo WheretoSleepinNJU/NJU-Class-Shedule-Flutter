@@ -56,7 +56,50 @@
 		<false/>
 		<key>io.flutter.embedded_views_preview</key>
 		<true/>
+<<<<<<< HEAD
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+=======
+	</dict>
+	<key>NSBonjourServices</key>
+	<array>
+		<string></string>
+	</array>
+	<key>NSCalendarsUsageDescription</key>
+	<string>南哪课表需要日历权限，才能将课程导入系统日历。</string>
+	<key>NSCameraUsageDescription</key>
+	<string>南哪课表需要相机权限，才能扫码导入课程。</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string></string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>南哪课表需要相册权限，才能选择背景图片。</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
+	<key>io.flutter.embedded_views_preview</key>
+	<true/>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
+>>>>>>> copilot/merge-pr-1
 </dict>
 </plist>

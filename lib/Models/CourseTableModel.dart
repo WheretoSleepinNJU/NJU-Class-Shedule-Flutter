@@ -36,7 +36,7 @@ class CourseTable {
   CourseTable.fromMap(Map<String, dynamic> map) {
     id = map[columnId];
     name = map[columnName];
-    data = map[data];
+    data = map[columnData];
   }
 }
 

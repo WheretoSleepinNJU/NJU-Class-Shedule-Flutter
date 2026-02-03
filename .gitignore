@@ -118,6 +118,20 @@ app.*.symbols
 !/dev/ci/**/Gemfile.lock
 !pubspec.lock
 
+# External packages
 external/flutter_packages
 external/flutter_plus_plugins
 external/flutter_sqflite
+
+# FVM Version Cache
+.fvm/
+
+# Claude Code
+.claude/
+CLAUDE.md
+
+# SweetPad
+buildServer.json
+
+# Reference
+reference
