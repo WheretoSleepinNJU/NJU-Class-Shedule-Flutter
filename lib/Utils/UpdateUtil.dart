@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../generated/l10n.dart';
 import '../Utils/States/MainState.dart';
 import '../Components/Dialog.dart';
@@ -34,6 +34,8 @@ class UpdateUtil {
       url = Url.UPDATE_ROOT + '/ios.json';
     } else if (Platform.isAndroid) {
       url = Url.UPDATE_ROOT + '/android.json';
+    } else if (Platform.operatingSystem == 'ohos') {
+      url = Url.UPDATE_ROOT + '/ohos.json';
     } else {
       return;
     }

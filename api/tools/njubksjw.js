@@ -10,7 +10,7 @@ function scheduleHtmlParser() {
     "周日",
   ];
   let name = document.querySelector(
-    "body > div:nth-child(10) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(1)"
+    "body > div:nth-child(10) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(1)",
   ).textContent;
   let rst = { name: name, courses: [] };
   let table_1 = document.getElementsByClassName("TABLE_TR_01");

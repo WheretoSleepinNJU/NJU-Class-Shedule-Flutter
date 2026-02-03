@@ -57,11 +57,11 @@
         if (/自由时间/.test(seg)) {
           const weeks = parseWeeks(
             seg.match(/([\d\-,]+)周/)?.[1] || "1-18",
-            seg
+            seg,
           );
           courses.push({
             name: courseName,
-            classroom: "自由时间",
+            classroom: "自由地点",
             class_number: classNumber,
             teacher,
             test_time: testTime,
@@ -83,7 +83,7 @@
         // 周三 2-4节 1-3周,10-13周 仙Ⅱ-304
         // 周二 5-8节 2-18周(双) 仙1-216
         const m = seg.match(
-          /([一二三四五六日])?\s*(\d+)-(\d+)节\s*([\d\-,周]+(?:\([单双]\))?)\s*(.+)/
+          /([一二三四五六日])?\s*(\d+)-(\d+)节\s*([\d\-,周]+(?:\([单双]\))?)\s*(.+)/,
         );
 
         if (!m) return;

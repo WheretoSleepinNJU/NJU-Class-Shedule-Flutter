@@ -830,6 +830,46 @@ class S {
     );
   }
 
+  /// `强调色柔和(浅色)`
+  String get use_material3_scheme_light_title {
+    return Intl.message(
+      '强调色柔和(浅色)',
+      name: 'use_material3_scheme_light_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `浅色模式使用 Material 3 色板`
+  String get use_material3_scheme_light_subtitle {
+    return Intl.message(
+      '浅色模式使用 Material 3 色板',
+      name: 'use_material3_scheme_light_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `强调色柔和(深色)`
+  String get use_material3_scheme_dark_title {
+    return Intl.message(
+      '强调色柔和(深色)',
+      name: 'use_material3_scheme_dark_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `深色模式使用 Material 3 色板`
+  String get use_material3_scheme_dark_subtitle {
+    return Intl.message(
+      '深色模式使用 Material 3 色板',
+      name: 'use_material3_scheme_dark_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `上传背景图片`
   String get add_backgound_picture_title {
     return Intl.message(
@@ -1905,6 +1945,16 @@ class S {
     return Intl.message(
       'shared_preferences: ^2.0.7\nflutter_swiper_null_safety: ^1.0.2\nscoped_model: ^2.0.0-nullsafety.0\nazlistview: ^2.0.0-nullsafety.0\nwebview_flutter: ^2.0.13\nflutter_linkify: ^5.0.2\nimage_picker: ^0.8.4\npackage_info: ^2.0.2\npath_provider: ^2.0.3\nurl_launcher: ^6.0.10\nflutter_html: ^2.1.3\nfluttertoast: ^8.0.1\nsqflite: ^2.0.0+4\nhtml: ^0.15.0\ndio: ^4.0.0\ndevice_calendar: ^4.2.0\nflutter_native_timezone: ^2.0.0',
       name: 'open_source_library_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `彩蛋与致谢`
+  String get easter_egg_title {
+    return Intl.message(
+      '彩蛋与致谢',
+      name: 'easter_egg_title',
       desc: '',
       args: [],
     );

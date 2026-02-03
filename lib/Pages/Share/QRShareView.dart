@@ -1,5 +1,6 @@
 import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class QRShareView extends StatelessWidget {
   final String url;
@@ -17,11 +18,11 @@ class QRShareView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // QrImage(
-            //   data: url,
-            //   version: QrVersions.auto,
-            //   size: 200.0,
-            // ),
+            QrImageView(
+              data: url,
+              version: QrVersions.auto,
+              size: 200.0,
+            ),
             const Padding(padding: EdgeInsets.all(10)),
             Text(
               S.of(context).import_from_qrcode_content,

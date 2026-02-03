@@ -78,22 +78,25 @@ class ImportFromJWPresenter {
     MainStateModel.of(context).changeclassTable(courseTable.id!);
     CourseProvider courseProvider = CourseProvider();
     await courseProvider.insert(Course(
-        courseTable.id, "自动导入的课程", "[1,2,3,4,5,6,7]", 3, 5, 1, 0,
+        courseTable.id, "自动导入的课程", "[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]", 3, 5, 1, 0,
         teacher: "测试教师", classroom: '测试地点'));
     await courseProvider.insert(Course(
-        courseTable.id, "手动导入的课程", "[1,2,3,4,5,6,7]", 3, 7, 1, 1,
+        courseTable.id, "手动导入的课程", "[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]", 3, 7, 1, 1,
         teacher: "测试教师", classroom: '仙林校区'));
     await courseProvider.insert(Course(
-        courseTable.id, "自动导入的课程", "[1,2,3,4,5,6,7]", 2, 5, 1, 0,
+        courseTable.id, "单周展示的课程", "[1,3,5,7,9,11,13,15,17,19,21]", 2, 5, 1, 0,
         teacher: "测试教师", classroom: '测试地点'));
     await courseProvider.insert(Course(
-        courseTable.id, "有时间冲突的课程1", "[1,2,3,4,5,6,7]", 4, 2, 1, 0,
+        courseTable.id, "双周展示的课程", "[2,4,6,8,10,12,14,16,18,20,22]", 2, 8, 1, 0,
         teacher: "测试教师", classroom: '测试地点'));
     await courseProvider.insert(Course(
-        courseTable.id, "有时间冲突的课程2", "[1,2,3,4,5,6,7]", 4, 2, 1, 0,
+        courseTable.id, "有时间冲突的课程1", "[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]", 4, 2, 1, 0,
         teacher: "测试教师", classroom: '测试地点'));
     await courseProvider.insert(Course(
-        courseTable.id, "自由时间课程", "[1,2,3,4,5,6,7]", 0, 0, 0, 0,
+        courseTable.id, "有时间冲突的课程2", "[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]", 4, 2, 1, 0,
+        teacher: "测试教师", classroom: '测试地点'));
+    await courseProvider.insert(Course(
+        courseTable.id, "自由时间课程", "[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]", 0, 0, 0, 0,
         classroom: '测试地点'));
     return true;
   }

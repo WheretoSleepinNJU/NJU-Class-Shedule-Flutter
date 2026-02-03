@@ -1,0 +1,32 @@
+{
+  "color": [
+    {
+      "name": "start_window_background",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "item_title_font",
+      "value": "#E6000000"
+    },
+    {
+      "name": "widget_background",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "widget_font_primary",
+      "value": "#333333"
+    },
+    {
+      "name": "widget_font_secondary",
+      "value": "#666666"
+    },
+    {
+      "name": "widget_font_tertiary",
+      "value": "#999999"
+    },
+    {
+      "name": "widget_fill_color",
+      "value": "#F7F8FA"
+    }
+  ]
+}

@@ -5,7 +5,7 @@ function scheduleHtmlParser() {
     xhr.open(
       "POST",
       "https://yjs2.ruc.edu.cn/gsapp/sys/wdkbapp/modules/xskcb/kfdxnxqcx.do",
-      false
+      false,
     );
     xhr.send();
     var data = JSON.parse(xhr.responseText);
@@ -22,7 +22,7 @@ function scheduleHtmlParser() {
     xhr.open(
       "POST",
       "https://yjs2.ruc.edu.cn/gsapp/sys/wdkbapp/bykb/loadXskbData.do",
-      false
+      false,
     );
     xhr.send(formData);
     return JSON.parse(xhr.responseText).rwList;
@@ -35,9 +35,7 @@ function scheduleHtmlParser() {
 
     segments.forEach((seg) => {
       // 1-4,6-8周 星期二[3-4节]公学一楼102;3周 星期日[3-4节]公学一楼102
-      const match = seg.match(
-        /(.+?周)\s*星期(.+?)\[(.+?)节\](.*)/
-      );
+      const match = seg.match(/(.+?周)\s*星期(.+?)\[(.+?)节\](.*)/);
       if (!match) return;
 
       const [, weekPart, dayPart, timePart, classroom] = match;
@@ -50,9 +48,14 @@ function scheduleHtmlParser() {
         var start = parseInt(m[1], 10);
         var end = parseInt(m[2], 10);
         if (isNaN(end)) end = start;
-        var flag = { '单': 1, '双': 2 }[m[3]] || 0;
+        var flag = { 单: 1, 双: 2 }[m[3]] || 0;
         for (var w = start; w <= end; w++) {
-          if (flag === 0 || (flag === 1 && w % 2 === 1) || (flag === 2 && w % 2 === 0)) weeks.push(w);
+          if (
+            flag === 0 ||
+            (flag === 1 && w % 2 === 1) ||
+            (flag === 2 && w % 2 === 0)
+          )
+            weeks.push(w);
         }
       });
 
@@ -87,7 +90,7 @@ function scheduleHtmlParser() {
       JSON.stringify({
         name: "无法获取学期信息",
         courses: [],
-      })
+      }),
     );
   }
 
@@ -97,7 +100,7 @@ function scheduleHtmlParser() {
   console.log(rows);
   rows.forEach(function (r) {
     // 无时间课程直接忽略
-    if(r.PKSJDD == null) return;
+    if (r.PKSJDD == null) return;
     var info = parseInfo(r.PKSJDD);
     info.forEach(function (i) {
       courses.push({

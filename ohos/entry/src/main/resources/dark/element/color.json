@@ -1,0 +1,24 @@
+{
+  "color": [
+    {
+      "name": "widget_background",
+      "value": "#121212"
+    },
+    {
+      "name": "widget_font_primary",
+      "value": "#E6E6E6"
+    },
+    {
+      "name": "widget_font_secondary",
+      "value": "#AAAAAA"
+    },
+    {
+      "name": "widget_font_tertiary",
+      "value": "#666666"
+    },
+    {
+      "name": "widget_fill_color",
+      "value": "#1E1E1E"
+    }
+  ]
+}

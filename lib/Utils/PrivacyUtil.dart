@@ -15,7 +15,9 @@ class PrivacyUtil {
   Future<bool> checkPrivacy(BuildContext context, bool isForce) async {
     try {
       Dio dio = Dio();
-      String url = Url.UPDATE_ROOT + '/privacy.json';
+      String url = Platform.operatingSystem == 'ohos'
+          ? Url.UPDATE_ROOT + '/privacy_ohos.json'
+          : Url.UPDATE_ROOT + '/privacy.json';
       Response response = await dio.get(url);
       if (response.statusCode != HttpStatus.ok) return false;
       SharedPreferences sp = await SharedPreferences.getInstance();
