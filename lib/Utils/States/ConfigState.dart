@@ -15,6 +15,15 @@ mixin ConfigStateModel on Model {
   int _lastCheckUpdateTime = 0;
   int _coolDownTime = 600;
 
+  // Widget configuration
+  int _widgetApproachingMinutes = 15;
+  int _widgetTomorrowPreviewHour = 21;
+
+  // Live Activity configuration
+  bool _liveActivityEnabled = true;  // 是否启用 Live Activity（使用与小组件相同的"即将上课提醒时间"）
+  String _liveActivityTextLeft = "好好学习";  // 左侧励志文本
+  String _liveActivityTextRight = "天天向上";  // 右侧励志文本
+
   void setShowWeekend(bool showWeekend) async {
     _showWeekend = showWeekend;
     notifyListeners();
@@ -225,5 +234,94 @@ mixin ConfigStateModel on Model {
     // IMPORTANT: don't notify listeners
     SharedPreferences sp = await SharedPreferences.getInstance();
     sp.setInt("coolDownTime", _coolDownTime);
+  }
+
+  // Widget configuration getters and setters
+  void setWidgetApproachingMinutes(int minutes) async {
+    _widgetApproachingMinutes = minutes;
+    notifyListeners();
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setInt("widgetApproachingMinutes", _widgetApproachingMinutes);
+  }
+
+  Future<int> getWidgetApproachingMinutes() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    int? minutes = sp.getInt("widgetApproachingMinutes");
+    if (minutes != null) {
+      _widgetApproachingMinutes = minutes;
+      return minutes;
+    }
+    return _widgetApproachingMinutes;
+  }
+
+  void setWidgetTomorrowPreviewHour(int hour) async {
+    _widgetTomorrowPreviewHour = hour;
+    notifyListeners();
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setInt("widgetTomorrowPreviewHour", _widgetTomorrowPreviewHour);
+  }
+
+  Future<int> getWidgetTomorrowPreviewHour() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    int? hour = sp.getInt("widgetTomorrowPreviewHour");
+    if (hour != null) {
+      _widgetTomorrowPreviewHour = hour;
+      return hour;
+    }
+    return _widgetTomorrowPreviewHour;
+  }
+
+  // Live Activity Enabled
+  void setLiveActivityEnabled(bool enabled) async {
+    _liveActivityEnabled = enabled;
+    notifyListeners();
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setBool("liveActivityEnabled", _liveActivityEnabled);
+  }
+
+  Future<bool> getLiveActivityEnabled() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    bool? enabled = sp.getBool("liveActivityEnabled");
+    if (enabled != null) {
+      _liveActivityEnabled = enabled;
+      return enabled;
+    }
+    return _liveActivityEnabled;
+  }
+
+  // Live Activity Text Left
+  void setLiveActivityTextLeft(String text) async {
+    _liveActivityTextLeft = text;
+    notifyListeners();
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setString("liveActivityTextLeft", _liveActivityTextLeft);
+  }
+
+  Future<String> getLiveActivityTextLeft() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    String? text = sp.getString("liveActivityTextLeft");
+    if (text != null && text.isNotEmpty) {
+      _liveActivityTextLeft = text;
+      return text;
+    }
+    return _liveActivityTextLeft;
+  }
+
+  // Live Activity Text Right
+  void setLiveActivityTextRight(String text) async {
+    _liveActivityTextRight = text;
+    notifyListeners();
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setString("liveActivityTextRight", _liveActivityTextRight);
+  }
+
+  Future<String> getLiveActivityTextRight() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    String? text = sp.getString("liveActivityTextRight");
+    if (text != null && text.isNotEmpty) {
+      _liveActivityTextRight = text;
+      return text;
+    }
+    return _liveActivityTextRight;
   }
 }

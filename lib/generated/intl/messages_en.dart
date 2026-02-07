@@ -41,6 +41,10 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m9(start, end) => "${start}-${end} 周";
 
+  static String m10(hour) => "${hour}:00";
+
+  static String m11(minutes) => "${minutes} min";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "QQ_copy_success_toast":
@@ -347,6 +351,28 @@ class MessageLookup extends MessageLookupByLibrary {
         "welcome_title": MessageLookupByLibrary.simpleMessage("欢迎使用南哪课表！"),
         "white_title_mode_subtitle":
             MessageLookupByLibrary.simpleMessage("如果背景图片是暗色的话"),
-        "white_title_mode_title": MessageLookupByLibrary.simpleMessage("白色标题模式")
+        "white_title_mode_title":
+            MessageLookupByLibrary.simpleMessage("白色标题模式"),
+        "widget_and_live_activity_settings_subtitle":
+            MessageLookupByLibrary.simpleMessage(
+                "Customize widget and live activity display options"),
+        "widget_and_live_activity_settings_title":
+            MessageLookupByLibrary.simpleMessage(
+                "Widget & Live Activity Settings"),
+        "widget_approaching_minutes_subtitle":
+            MessageLookupByLibrary.simpleMessage(
+                "How many minutes before class to show \"approaching\" state"),
+        "widget_approaching_minutes_title":
+            MessageLookupByLibrary.simpleMessage(
+                "Approaching Class Alert Time"),
+        "widget_hour_unit": m10,
+        "widget_minutes_unit": m11,
+        "widget_settings_saved":
+            MessageLookupByLibrary.simpleMessage("Widget settings saved"),
+        "widget_tomorrow_preview_hour_subtitle":
+            MessageLookupByLibrary.simpleMessage(
+                "At what time in evening to show tomorrow\'s classes"),
+        "widget_tomorrow_preview_hour_title":
+            MessageLookupByLibrary.simpleMessage("Tomorrow Preview Start Time")
       };
 }

@@ -72,9 +72,10 @@ dependencies:
   # Android iOS       macOS
   flutter_html: ^3.0.0-alpha.5
   # Android iOS
+  # https://gitcode.com/openharmony-sig/fluttertpc_share_extend/pull/8
   share_extend:
     git:
-      url: https://gitcode.com/openharmony-sig/fluttertpc_share_extend.git
+      url: https://gitcode.com/fuchuanyang/fluttertpc_share_extend.git
   # Android iOS
   fluttertoast:
     git:

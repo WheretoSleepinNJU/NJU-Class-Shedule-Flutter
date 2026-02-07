@@ -1,5 +1,6 @@
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../core/widget_data/utils/widget_refresh_helper.dart';
 
 mixin WeekStateModel on Model {
   int? _weekIndex;
@@ -16,6 +17,9 @@ mixin WeekStateModel on Model {
     sp.setInt("weekIndex", weekIndex);
     // 同时更新 tmpWeekIndex
     sp.setInt("tmpWeekIndex", weekIndex);
+    
+    // 刷新 Widget
+    await WidgetRefreshHelper.refreshAfterWeekChanged();
   }
 
   Future<int> getWeek() async {

@@ -41,6 +41,10 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m9(start, end) => "${start}-${end} 周";
 
+  static String m10(hour) => "${hour}:00";
+
+  static String m11(minutes) => "${minutes} 分钟";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "QQ_copy_success_toast":
@@ -347,6 +351,23 @@ class MessageLookup extends MessageLookupByLibrary {
         "welcome_title": MessageLookupByLibrary.simpleMessage("欢迎使用南哪课表！"),
         "white_title_mode_subtitle":
             MessageLookupByLibrary.simpleMessage("如果背景图片是暗色的话"),
-        "white_title_mode_title": MessageLookupByLibrary.simpleMessage("白色标题模式")
+        "white_title_mode_title":
+            MessageLookupByLibrary.simpleMessage("白色标题模式"),
+        "widget_and_live_activity_settings_subtitle":
+            MessageLookupByLibrary.simpleMessage("自定义小组件显示选项"),
+        "widget_and_live_activity_settings_title":
+            MessageLookupByLibrary.simpleMessage("小组件设置"),
+        "widget_approaching_minutes_subtitle":
+            MessageLookupByLibrary.simpleMessage("在课程开始前多久显示\"即将上课\"状态"),
+        "widget_approaching_minutes_title":
+            MessageLookupByLibrary.simpleMessage("即将上课提醒时间"),
+        "widget_hour_unit": m10,
+        "widget_minutes_unit": m11,
+        "widget_settings_saved":
+            MessageLookupByLibrary.simpleMessage("小组件设置已保存"),
+        "widget_tomorrow_preview_hour_subtitle":
+            MessageLookupByLibrary.simpleMessage("晚上几点后显示明天的课程"),
+        "widget_tomorrow_preview_hour_title":
+            MessageLookupByLibrary.simpleMessage("明日预览开始时间")
       };
 }

@@ -2039,6 +2039,96 @@ class S {
       args: [],
     );
   }
+
+  /// `Widget & Live Activity Settings`
+  String get widget_and_live_activity_settings_title {
+    return Intl.message(
+      'Widget & Live Activity Settings',
+      name: 'widget_and_live_activity_settings_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Customize widget and live activity display options`
+  String get widget_and_live_activity_settings_subtitle {
+    return Intl.message(
+      'Customize widget and live activity display options',
+      name: 'widget_and_live_activity_settings_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Approaching Class Alert Time`
+  String get widget_approaching_minutes_title {
+    return Intl.message(
+      'Approaching Class Alert Time',
+      name: 'widget_approaching_minutes_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How many minutes before class to show "approaching" state`
+  String get widget_approaching_minutes_subtitle {
+    return Intl.message(
+      'How many minutes before class to show "approaching" state',
+      name: 'widget_approaching_minutes_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tomorrow Preview Start Time`
+  String get widget_tomorrow_preview_hour_title {
+    return Intl.message(
+      'Tomorrow Preview Start Time',
+      name: 'widget_tomorrow_preview_hour_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `At what time in evening to show tomorrow's classes`
+  String get widget_tomorrow_preview_hour_subtitle {
+    return Intl.message(
+      'At what time in evening to show tomorrow\'s classes',
+      name: 'widget_tomorrow_preview_hour_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{minutes} min`
+  String widget_minutes_unit(Object minutes) {
+    return Intl.message(
+      '$minutes min',
+      name: 'widget_minutes_unit',
+      desc: '',
+      args: [minutes],
+    );
+  }
+
+  /// `{hour}:00`
+  String widget_hour_unit(Object hour) {
+    return Intl.message(
+      '$hour:00',
+      name: 'widget_hour_unit',
+      desc: '',
+      args: [hour],
+    );
+  }
+
+  /// `Widget settings saved`
+  String get widget_settings_saved {
+    return Intl.message(
+      'Widget settings saved',
+      name: 'widget_settings_saved',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
