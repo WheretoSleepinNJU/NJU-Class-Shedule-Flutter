@@ -101,7 +101,17 @@ class Course {
   }
 
   String? getColor(List colorPool) {
-    if (color != null) return color;
+    final rawColor = color?.trim();
+    if (rawColor != null && rawColor.isNotEmpty) {
+      final normalized = rawColor.startsWith('#') ? rawColor.substring(1) : rawColor;
+      final isValidHex = RegExp(r'^[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$').hasMatch(normalized);
+      if (isValidHex) {
+        return rawColor.startsWith('#') ? rawColor : '#$rawColor';
+      }
+    }
+    if (courseId == null || colorPool.isEmpty) {
+      return colorList.first;
+    }
     return colorList[colorPool[courseId! % colorPool.length] as int];
   }
 }
