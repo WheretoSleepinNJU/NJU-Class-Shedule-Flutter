@@ -460,20 +460,20 @@ class S {
     );
   }
 
-  /// `导入/导出课表`
+  /// `QR Import/Export`
   String get import_or_export_title {
     return Intl.message(
-      '导入/导出课表',
+      'QR Import/Export',
       name: 'import_or_export_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `使用南哪课表内置的导入/导出功能`
+  /// `Offline share: import/export via QR or share string (separate from online import)`
   String get import_or_export_subtitle {
     return Intl.message(
-      '使用南哪课表内置的导入/导出功能',
+      'Offline share: import/export via QR or share string (separate from online import)',
       name: 'import_or_export_subtitle',
       desc: '',
       args: [],
@@ -1190,261 +1190,341 @@ class S {
     );
   }
 
-  /// `导出当前课表`
+  /// `Export current timetable`
   String get export_classtable_title {
     return Intl.message(
-      '导出当前课表',
+      'Export current timetable',
       name: 'export_classtable_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `导出当前课表为二维码/链接\n使用公共服务 file.io`
+  /// `Export current timetable as QR code or share string`
   String get export_classtable_subtitle {
     return Intl.message(
-      '导出当前课表为二维码/链接\n使用公共服务 file.io',
+      'Export current timetable as QR code or share string',
       name: 'export_classtable_subtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `二维码导入课表`
+  /// `Offline Schedule Import`
   String get import_from_qrcode_title {
     return Intl.message(
-      '二维码导入课表',
+      'Offline Schedule Import',
       name: 'import_from_qrcode_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `从他人分享的二维码导入课表`
+  /// `Import offline from QR or share string (not the online importer)`
   String get import_from_qrcode_subtitle {
     return Intl.message(
-      '从他人分享的二维码导入课表',
+      'Import offline from QR or share string (not the online importer)',
       name: 'import_from_qrcode_subtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `扫描二维码导入此课表\n南哪课表-设置-导入/导出课表-二维码导入课表\n有效期一周，扫描一次后过期`
+  /// `Scan a QR code or paste a share string to import this timetable\nWhereToSleepInNJU - Settings - Import/Export Timetable`
   String get import_from_qrcode_content {
     return Intl.message(
-      '扫描二维码导入此课表\n南哪课表-设置-导入/导出课表-二维码导入课表\n有效期一周，扫描一次后过期',
+      'Scan a QR code or paste a share string to import this timetable\nWhereToSleepInNJU - Settings - Import/Export Timetable',
       name: 'import_from_qrcode_content',
       desc: '',
       args: [],
     );
   }
 
-  /// `网络错误，请重试`
+  /// `Network error, please retry`
   String get network_error_toast {
     return Intl.message(
-      '网络错误，请重试',
+      'Network error, please retry',
       name: 'network_error_toast',
       desc: '',
       args: [],
     );
   }
 
-  /// `导入中 请稍后`
+  /// `Importing, please wait`
   String get importing_toast {
     return Intl.message(
-      '导入中 请稍后',
+      'Importing, please wait',
       name: 'importing_toast',
       desc: '',
       args: [],
     );
   }
 
-  /// `二维码无效，可能为链接过期`
+  /// `Invalid share string or QR code`
   String get qrcode_url_error_toast {
     return Intl.message(
-      '二维码无效，可能为链接过期',
+      'Invalid share string or QR code',
       name: 'qrcode_url_error_toast',
       desc: '',
       args: [],
     );
   }
 
-  /// `读取课表名称失败，可能为链接错误`
+  /// `Failed to read timetable name`
   String get qrcode_name_error_toast {
     return Intl.message(
-      '读取课表名称失败，可能为链接错误',
+      'Failed to read timetable name',
       name: 'qrcode_name_error_toast',
       desc: '',
       args: [],
     );
   }
 
-  /// `读取课程表，可能是 bug`
+  /// `Failed to read timetable data`
   String get qrcode_read_error_toast {
     return Intl.message(
-      '读取课程表，可能是 bug',
+      'Failed to read timetable data',
       name: 'qrcode_read_error_toast',
       desc: '',
       args: [],
     );
   }
 
-  /// `导入课表失败，可能是 bug`
+  /// `Import failed. This may be a bug.`
   String get online_parse_error_toast {
     return Intl.message(
-      '导入课表失败，可能是 bug',
+      'Import failed. This may be a bug.',
       name: 'online_parse_error_toast',
       desc: '',
       args: [],
     );
   }
 
-  /// `Oops，导入失败惹 TvT`
+  /// `Oops, import failed TvT`
   String get parse_error_dialog_title {
     return Intl.message(
-      'Oops，导入失败惹 TvT',
+      'Oops, import failed TvT',
       name: 'parse_error_dialog_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `看起来导入失败了，都怪傻翠！\n\n本次导入错误码：{code}\n\n点击下方按钮将复制该错误码并加入用户群，你可以报告傻翠并等待修复，当然，也可以试试其他方式是否可以正常导入`
+  /// `It looks like import failed.\n\nError code: {code}\n\nTap the button below to copy this code and join the user group to report the issue, or try another import method.`
   String parse_error_dialog_content(Object code) {
     return Intl.message(
-      '看起来导入失败了，都怪傻翠！\n\n本次导入错误码：$code\n\n点击下方按钮将复制该错误码并加入用户群，你可以报告傻翠并等待修复，当然，也可以试试其他方式是否可以正常导入',
+      'It looks like import failed.\n\nError code: $code\n\nTap the button below to copy this code and join the user group to report the issue, or try another import method.',
       name: 'parse_error_dialog_content',
       desc: '',
       args: [code],
     );
   }
 
-  /// `加入用户群报告问题`
+  /// `Join Group to Report`
   String get parse_error_dialog_add_group {
     return Intl.message(
-      '加入用户群报告问题',
+      'Join Group to Report',
       name: 'parse_error_dialog_add_group',
       desc: '',
       args: [],
     );
   }
 
-  /// `试试其他导入方式`
+  /// `Try Other Methods`
   String get parse_error_dialog_other_ways {
     return Intl.message(
-      '试试其他导入方式',
+      'Try Other Methods',
       name: 'parse_error_dialog_other_ways',
       desc: '',
       args: [],
     );
   }
 
-  /// `导入完成`
+  /// `Import completed`
   String get import_success_toast {
     return Intl.message(
-      '导入完成',
+      'Import completed',
       name: 'import_success_toast',
       desc: '',
       args: [],
     );
   }
 
-  /// `导出课程表`
+  /// `Export Timetable`
   String get export_title {
     return Intl.message(
-      '导出课程表',
+      'Export Timetable',
       name: 'export_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `二维码导入`
+  /// `QR Import`
   String get import_qr_title {
     return Intl.message(
-      '二维码导入',
+      'QR Import',
       name: 'import_qr_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `重置颜色池成功 >v<`
+  /// `Color pool reset successfully >v<`
   String get shuffle_color_pool_success_toast {
     return Intl.message(
-      '重置颜色池成功 >v<',
+      'Color pool reset successfully >v<',
       name: 'shuffle_color_pool_success_toast',
       desc: '',
       args: [],
     );
   }
 
-  /// `当前周未修改 >v<`
+  /// `Current week unchanged >v<`
   String get nowweek_not_edited_success_toast {
     return Intl.message(
-      '当前周未修改 >v<',
+      'Current week unchanged >v<',
       name: 'nowweek_not_edited_success_toast',
       desc: '',
       args: [],
     );
   }
 
-  /// `修改当前周成功 >v<`
+  /// `Current week updated >v<`
   String get nowweek_edited_success_toast {
     return Intl.message(
-      '修改当前周成功 >v<',
+      'Current week updated >v<',
       name: 'nowweek_edited_success_toast',
       desc: '',
       args: [],
     );
   }
 
-  /// `打开失败，可能是未安装 TIM/QQ`
+  /// `Open failed. TIM/QQ may not be installed.`
   String get QQ_open_fail_toast {
     return Intl.message(
-      '打开失败，可能是未安装 TIM/QQ',
+      'Open failed. TIM/QQ may not be installed.',
       name: 'QQ_open_fail_toast',
       desc: '',
       args: [],
     );
   }
 
-  /// `已复制群号到剪贴板`
+  /// `Group number copied to clipboard`
   String get QQ_copy_success_toast {
     return Intl.message(
-      '已复制群号到剪贴板',
+      'Group number copied to clipboard',
       name: 'QQ_copy_success_toast',
       desc: '',
       args: [],
     );
   }
 
-  /// `打开失败`
+  /// `Failed to open`
   String get pay_open_fail_toast {
     return Intl.message(
-      '打开失败',
+      'Failed to open',
       name: 'pay_open_fail_toast',
       desc: '',
       args: [],
     );
   }
 
-  /// `确认`
+  /// `OK`
   String get ok {
     return Intl.message(
-      '确认',
+      'OK',
       name: 'ok',
       desc: '',
       args: [],
     );
   }
 
-  /// `取消`
+  /// `Cancel`
   String get cancel {
     return Intl.message(
-      '取消',
+      'Cancel',
       name: 'cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import from Gallery`
+  String get qr_scan_from_gallery_button {
+    return Intl.message(
+      'Import from Gallery',
+      name: 'qr_scan_from_gallery_button',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import from Clipboard`
+  String get qr_scan_from_clipboard_button {
+    return Intl.message(
+      'Import from Clipboard',
+      name: 'qr_scan_from_clipboard_button',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Received {received}/{total}`
+  String qr_scan_parts_received_toast(Object received, Object total) {
+    return Intl.message(
+      'Received $received/$total',
+      name: 'qr_scan_parts_received_toast',
+      desc: '',
+      args: [received, total],
+    );
+  }
+
+  /// `Unsupported QR protocol version`
+  String get qr_error_unsupported_protocol {
+    return Intl.message(
+      'Unsupported QR protocol version',
+      name: 'qr_error_unsupported_protocol',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `QR checksum mismatch`
+  String get qr_error_checksum_mismatch {
+    return Intl.message(
+      'QR checksum mismatch',
+      name: 'qr_error_checksum_mismatch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `QR data is corrupted`
+  String get qr_error_payload_corrupted {
+    return Intl.message(
+      'QR data is corrupted',
+      name: 'qr_error_payload_corrupted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copy Full Share String`
+  String get qr_share_copy_button {
+    return Intl.message(
+      'Copy Full Share String',
+      name: 'qr_share_copy_button',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copied full share string`
+  String get qr_share_copy_success_toast {
+    return Intl.message(
+      'Copied full share string',
+      name: 'qr_share_copy_success_toast',
       desc: '',
       args: [],
     );
