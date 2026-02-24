@@ -20,28 +20,28 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
-  static String m0(start, end) => "第 ${start}-${end} 节";
+  static String m0(start, end) => "Period ${start}-${end}";
 
-  static String m1(num) => "第 ${num} 节";
+  static String m1(num) => "Period ${num}";
 
-  static String m2(className) => "确定删除课程【 ${className} 】吗？";
+  static String m2(className) => "Delete class [${className}]?";
 
-  static String m3(num) => "另有 ${num} 节「自由时间」课程 >>";
+  static String m3(num) => "${num} more \"Free Time\" classes >>";
 
-  static String m4(num) => "加入当前课表(${num}人已添加)";
+  static String m4(num) => "Add to current timetable (${num} added)";
 
-  static String m5(num) => "已添加(${num}人已添加)";
+  static String m5(num) => "Added (${num} added)";
 
-  static String m6(num) => "已结束(${num}人已添加)";
+  static String m6(num) => "Ended (${num} added)";
 
   static String m7(code) =>
       "It looks like import failed.\n\nError code: ${code}\n\nTap the button below to copy this code and join the user group to report the issue, or try another import method.";
 
   static String m8(received, total) => "Received ${received}/${total}";
 
-  static String m9(num) => "第 ${num} 周";
+  static String m9(num) => "Week ${num}";
 
-  static String m10(start, end) => "${start}-${end} 周";
+  static String m10(start, end) => "Week ${start}-${end}";
 
   static String m11(hour) => "${hour}:00";
 
@@ -53,90 +53,104 @@ class MessageLookup extends MessageLookupByLibrary {
             "Group number copied to clipboard"),
         "QQ_open_fail_toast": MessageLookupByLibrary.simpleMessage(
             "Open failed. TIM/QQ may not be installed."),
-        "about_title": MessageLookupByLibrary.simpleMessage("关于"),
+        "about_title": MessageLookupByLibrary.simpleMessage("About"),
         "add_backgound_picture_subtitle":
-            MessageLookupByLibrary.simpleMessage("上传背景图片"),
+            MessageLookupByLibrary.simpleMessage("Upload background image"),
         "add_backgound_picture_success_toast":
-            MessageLookupByLibrary.simpleMessage("更换背景图片成功ww"),
+            MessageLookupByLibrary.simpleMessage("Background updated"),
         "add_backgound_picture_title":
-            MessageLookupByLibrary.simpleMessage("上传背景图片"),
-        "add_class": MessageLookupByLibrary.simpleMessage("添加课程"),
+            MessageLookupByLibrary.simpleMessage("Upload Background"),
+        "add_class": MessageLookupByLibrary.simpleMessage("Add Course"),
         "add_class_table_dialog_title":
-            MessageLookupByLibrary.simpleMessage("请输入课程表名称"),
+            MessageLookupByLibrary.simpleMessage("Enter timetable name"),
         "add_class_table_success_toast":
-            MessageLookupByLibrary.simpleMessage("添加课程表成功"),
+            MessageLookupByLibrary.simpleMessage("Timetable added"),
         "add_manually_success_toast":
-            MessageLookupByLibrary.simpleMessage("添加成功！>v<"),
-        "add_manually_title": MessageLookupByLibrary.simpleMessage("添加课程"),
-        "all_course_subtitle":
-            MessageLookupByLibrary.simpleMessage("查看南哪全校课表，方便添加和蹭课"),
-        "all_course_title": MessageLookupByLibrary.simpleMessage("查看全校课表"),
+            MessageLookupByLibrary.simpleMessage("Added successfully"),
+        "add_manually_title":
+            MessageLookupByLibrary.simpleMessage("Add Course"),
+        "all_course_subtitle": MessageLookupByLibrary.simpleMessage(
+            "Browse public courses and add classes"),
+        "all_course_title":
+            MessageLookupByLibrary.simpleMessage("Campus Timetable"),
         "already_newest_version_toast":
-            MessageLookupByLibrary.simpleMessage("已经是最新版本了呦～"),
-        "app_name": MessageLookupByLibrary.simpleMessage("南哪课表"),
+            MessageLookupByLibrary.simpleMessage("Already latest version"),
+        "app_name": MessageLookupByLibrary.simpleMessage("NJU Timetable"),
         "at": MessageLookupByLibrary.simpleMessage("@"),
-        "bug_and_report": MessageLookupByLibrary.simpleMessage("似乎有bug，我要反馈"),
+        "bug_and_report":
+            MessageLookupByLibrary.simpleMessage("Found a bug, report it"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
-        "captcha": MessageLookupByLibrary.simpleMessage("验证码"),
+        "captcha": MessageLookupByLibrary.simpleMessage("Captcha"),
         "captcha_error_toast":
-            MessageLookupByLibrary.simpleMessage("验证码错误 > <"),
+            MessageLookupByLibrary.simpleMessage("Wrong captcha"),
         "change_theme_mode_subtitle":
-            MessageLookupByLibrary.simpleMessage("是否跟随系统切换模式"),
+            MessageLookupByLibrary.simpleMessage("Follow system appearance"),
         "change_theme_mode_title":
-            MessageLookupByLibrary.simpleMessage("浅色/深色模式切换"),
-        "change_theme_title": MessageLookupByLibrary.simpleMessage("修改主题"),
-        "change_week_subtitle": MessageLookupByLibrary.simpleMessage("当前周数："),
-        "change_week_title": MessageLookupByLibrary.simpleMessage("修改当前周"),
-        "check_privacy_button": MessageLookupByLibrary.simpleMessage("隐私政策"),
-        "check_update_button": MessageLookupByLibrary.simpleMessage("检查更新"),
+            MessageLookupByLibrary.simpleMessage("Light/Dark Mode"),
+        "change_theme_title": MessageLookupByLibrary.simpleMessage("Theme"),
+        "change_week_subtitle":
+            MessageLookupByLibrary.simpleMessage("Current week:"),
+        "change_week_title":
+            MessageLookupByLibrary.simpleMessage("Change Current Week"),
+        "check_privacy_button":
+            MessageLookupByLibrary.simpleMessage("Privacy Policy"),
+        "check_update_button":
+            MessageLookupByLibrary.simpleMessage("Check Updates"),
         "choose_class_time_dialog_title":
-            MessageLookupByLibrary.simpleMessage("选择上课时间"),
+            MessageLookupByLibrary.simpleMessage("Select Class Time"),
         "class_duration": m0,
-        "class_height_subtitle":
-            MessageLookupByLibrary.simpleMessage("仅当强制缩放关闭时生效"),
-        "class_height_title": MessageLookupByLibrary.simpleMessage("自定义课程显示长度"),
-        "class_info": MessageLookupByLibrary.simpleMessage("备注"),
-        "class_name": MessageLookupByLibrary.simpleMessage("课程名称"),
-        "class_name_empty": MessageLookupByLibrary.simpleMessage("请输入课程名称"),
+        "class_height_subtitle": MessageLookupByLibrary.simpleMessage(
+            "Only works when force zoom is off"),
+        "class_height_title":
+            MessageLookupByLibrary.simpleMessage("Custom Class Height"),
+        "class_info": MessageLookupByLibrary.simpleMessage("Notes"),
+        "class_name": MessageLookupByLibrary.simpleMessage("Course Name"),
+        "class_name_empty":
+            MessageLookupByLibrary.simpleMessage("Please enter course name"),
         "class_num_invalid_dialog_content":
-            MessageLookupByLibrary.simpleMessage("课程结束节数应大于起始节数"),
+            MessageLookupByLibrary.simpleMessage(
+                "End period must be greater than start period"),
         "class_num_invalid_dialog_title":
-            MessageLookupByLibrary.simpleMessage("课程节数不合法"),
+            MessageLookupByLibrary.simpleMessage("Invalid period range"),
         "class_parse_error_toast":
-            MessageLookupByLibrary.simpleMessage("课程解析失败 = =|| 可将课表反馈至翠翠"),
-        "class_parse_toast_fail":
-            MessageLookupByLibrary.simpleMessage("出现异常，建议提交反馈"),
-        "class_parse_toast_importing":
-            MessageLookupByLibrary.simpleMessage("数据识别与导入中~"),
+            MessageLookupByLibrary.simpleMessage("Failed to parse timetable"),
+        "class_parse_toast_fail": MessageLookupByLibrary.simpleMessage(
+            "Unexpected error, please send feedback"),
+        "class_parse_toast_importing": MessageLookupByLibrary.simpleMessage(
+            "Parsing and importing data..."),
         "class_parse_toast_success":
-            MessageLookupByLibrary.simpleMessage("数据存储成功 >v<"),
-        "class_room": MessageLookupByLibrary.simpleMessage("上课地点"),
+            MessageLookupByLibrary.simpleMessage("Data saved"),
+        "class_room": MessageLookupByLibrary.simpleMessage("Location"),
         "class_single": m1,
         "class_table_manage_title":
-            MessageLookupByLibrary.simpleMessage("课表管理"),
-        "class_teacher": MessageLookupByLibrary.simpleMessage("上课老师"),
-        "del_class_table_dialog_content":
-            MessageLookupByLibrary.simpleMessage("此操作无法恢复，这将删除该课程表下的所有课程。"),
+            MessageLookupByLibrary.simpleMessage("Timetable Management"),
+        "class_teacher": MessageLookupByLibrary.simpleMessage("Teacher"),
+        "del_class_table_dialog_content": MessageLookupByLibrary.simpleMessage(
+            "This cannot be undone. All courses in this timetable will be deleted."),
         "del_class_table_dialog_title":
-            MessageLookupByLibrary.simpleMessage("确认删除"),
+            MessageLookupByLibrary.simpleMessage("Confirm Delete"),
         "del_class_table_success_toast":
-            MessageLookupByLibrary.simpleMessage("删除课程表成功"),
+            MessageLookupByLibrary.simpleMessage("Timetable deleted"),
         "delete_backgound_picture_subtitle":
-            MessageLookupByLibrary.simpleMessage("恢复默认白色背景"),
+            MessageLookupByLibrary.simpleMessage(
+                "Restore default white background"),
         "delete_backgound_picture_success_toast":
-            MessageLookupByLibrary.simpleMessage("已恢复默认背景ww"),
+            MessageLookupByLibrary.simpleMessage("Background reset"),
         "delete_backgound_picture_title":
-            MessageLookupByLibrary.simpleMessage("清除背景图片"),
+            MessageLookupByLibrary.simpleMessage("Clear Background"),
         "delete_class_dialog_content": m2,
         "delete_class_dialog_title":
-            MessageLookupByLibrary.simpleMessage("删除课程"),
-        "developer": MessageLookupByLibrary.simpleMessage("开发者 idealclover"),
-        "donate_subtitle": MessageLookupByLibrary.simpleMessage("给傻翠买支棒棒糖吧！"),
-        "donate_title": MessageLookupByLibrary.simpleMessage("投喂"),
-        "double_week": MessageLookupByLibrary.simpleMessage("双周"),
+            MessageLookupByLibrary.simpleMessage("Delete Class"),
+        "developer":
+            MessageLookupByLibrary.simpleMessage("Developer: idealclover"),
+        "donate_subtitle": MessageLookupByLibrary.simpleMessage(
+            "Buy the developer a lollipop"),
+        "donate_title": MessageLookupByLibrary.simpleMessage("Donate"),
+        "double_week": MessageLookupByLibrary.simpleMessage("Even weeks"),
         "easter_egg": MessageLookupByLibrary.simpleMessage(
-            "感谢小百合工作室\n感谢 @ns @lgt @FengChendian @SuperKenVery 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光"),
-        "easter_egg_title": MessageLookupByLibrary.simpleMessage("彩蛋与致谢"),
+            "Thanks to Lily Studio and all contributors."),
+        "easter_egg_title":
+            MessageLookupByLibrary.simpleMessage("Acknowledgements"),
         "export_classtable_subtitle": MessageLookupByLibrary.simpleMessage(
             "Export current timetable as QR code or share string"),
         "export_classtable_title":
@@ -144,138 +158,161 @@ class MessageLookup extends MessageLookupByLibrary {
         "export_title":
             MessageLookupByLibrary.simpleMessage("Export Timetable"),
         "export_to_system_calendar_fail_toast":
-            MessageLookupByLibrary.simpleMessage("导出日历失败，请检查是否授予权限"),
-        "export_to_system_calendar_subtitle":
-            MessageLookupByLibrary.simpleMessage("请确保当前周数正确，如需修改请在系统日历中操作"),
+            MessageLookupByLibrary.simpleMessage(
+                "Calendar export failed; check permission"),
+        "export_to_system_calendar_subtitle": MessageLookupByLibrary.simpleMessage(
+            "Make sure current week is correct; adjust in system calendar if needed"),
         "export_to_system_calendar_success_toast":
-            MessageLookupByLibrary.simpleMessage("导出成功"),
+            MessageLookupByLibrary.simpleMessage("Export succeeded"),
         "export_to_system_calendar_title":
-            MessageLookupByLibrary.simpleMessage("导出到系统日历"),
-        "fix_week_dialog_content":
-            MessageLookupByLibrary.simpleMessage("检测到学期周数与当前不一致，是否立即矫正？"),
-        "fix_week_dialog_title": MessageLookupByLibrary.simpleMessage("周数矫正"),
+            MessageLookupByLibrary.simpleMessage("Export to System Calendar"),
+        "fix_week_dialog_content": MessageLookupByLibrary.simpleMessage(
+            "Detected week mismatch. Correct now?"),
+        "fix_week_dialog_title":
+            MessageLookupByLibrary.simpleMessage("Week Correction"),
         "fix_week_toast_success":
-            MessageLookupByLibrary.simpleMessage("矫正周数成功！OvO"),
+            MessageLookupByLibrary.simpleMessage("Week corrected"),
         "flutter_lts": MessageLookupByLibrary.simpleMessage("(Flutter LTS)"),
-        "force_zoom_subtitle":
-            MessageLookupByLibrary.simpleMessage("强制缩放课程表为一页"),
-        "force_zoom_title": MessageLookupByLibrary.simpleMessage("强制缩放"),
+        "force_zoom_subtitle": MessageLookupByLibrary.simpleMessage(
+            "Force timetable into one page"),
+        "force_zoom_title": MessageLookupByLibrary.simpleMessage("Force Zoom"),
         "free_class_banner": m3,
-        "free_class_button": MessageLookupByLibrary.simpleMessage("查看"),
-        "free_time": MessageLookupByLibrary.simpleMessage("自由时间"),
-        "github_open_source": MessageLookupByLibrary.simpleMessage("GitHub 开源"),
-        "go_to_settings_toast":
-            MessageLookupByLibrary.simpleMessage("修改当前周数请前往设置ww"),
-        "hide_add_button_subtitle":
-            MessageLookupByLibrary.simpleMessage("隐藏主界面右下角添加按钮"),
-        "hide_add_button_title": MessageLookupByLibrary.simpleMessage("隐藏添加按钮"),
-        "hide_free_class_button": MessageLookupByLibrary.simpleMessage("隐藏"),
+        "free_class_button": MessageLookupByLibrary.simpleMessage("View"),
+        "free_time": MessageLookupByLibrary.simpleMessage("Free Time"),
+        "github_open_source":
+            MessageLookupByLibrary.simpleMessage("GitHub Open Source"),
+        "go_to_settings_toast": MessageLookupByLibrary.simpleMessage(
+            "Go to Settings to change current week"),
+        "hide_add_button_subtitle": MessageLookupByLibrary.simpleMessage(
+            "Hide bottom-right add button"),
+        "hide_add_button_title":
+            MessageLookupByLibrary.simpleMessage("Hide Add Button"),
+        "hide_free_class_button": MessageLookupByLibrary.simpleMessage("Hide"),
         "hide_free_class_dialog_content": MessageLookupByLibrary.simpleMessage(
-            "确认隐藏自由时间课程？\n您可在[设置]-[自定义选项]-[显示自由时间课程]选项中再次启用显示该模块～"),
+            "Hide free time classes?\nYou can re-enable them in Settings > More Settings > Show Free Time Classes."),
         "hide_free_class_dialog_title":
-            MessageLookupByLibrary.simpleMessage("隐藏自由时间课程"),
+            MessageLookupByLibrary.simpleMessage("Hide Free Time Classes"),
         "if_show_classtime_subtitle":
-            MessageLookupByLibrary.simpleMessage("设置是否显示课程时间"),
+            MessageLookupByLibrary.simpleMessage("Whether to show class time"),
         "if_show_classtime_title":
-            MessageLookupByLibrary.simpleMessage("显示课程时间"),
-        "if_show_freeclass_subtitle":
-            MessageLookupByLibrary.simpleMessage("设置是否显示自由时间课程"),
+            MessageLookupByLibrary.simpleMessage("Show Class Time"),
+        "if_show_freeclass_subtitle": MessageLookupByLibrary.simpleMessage(
+            "Whether to show free time classes"),
         "if_show_freeclass_title":
-            MessageLookupByLibrary.simpleMessage("显示自由时间课程"),
-        "if_show_weekend_subtitle":
-            MessageLookupByLibrary.simpleMessage("设置是否显示周六周日"),
-        "if_show_weekend_title": MessageLookupByLibrary.simpleMessage("显示周末"),
-        "import": MessageLookupByLibrary.simpleMessage("导入"),
-        "import_auto": MessageLookupByLibrary.simpleMessage("自动导入"),
+            MessageLookupByLibrary.simpleMessage("Show Free Time Classes"),
+        "if_show_weekend_subtitle": MessageLookupByLibrary.simpleMessage(
+            "Whether to show Saturday and Sunday"),
+        "if_show_weekend_title":
+            MessageLookupByLibrary.simpleMessage("Show Weekend"),
+        "import": MessageLookupByLibrary.simpleMessage("Import"),
+        "import_auto": MessageLookupByLibrary.simpleMessage("Auto Import"),
         "import_banner": MessageLookupByLibrary.simpleMessage(
-            "注意：如加载失败，请连接南京大学VPN\n试试浏览器访问教务网，没准系统又抽风了\n听起来有点离谱，不过在南京大学，倒也正常"),
+            "If loading fails, connect to NJU VPN.\nTry opening the academic site in browser first."),
         "import_banner_action":
-            MessageLookupByLibrary.simpleMessage("下载南京大学VPN"),
-        "import_from_JW_title": MessageLookupByLibrary.simpleMessage("导入课程表"),
+            MessageLookupByLibrary.simpleMessage("Download NJU VPN"),
+        "import_from_JW_title":
+            MessageLookupByLibrary.simpleMessage("Import Timetable"),
         "import_from_NJU_cer_subtitle":
-            MessageLookupByLibrary.simpleMessage("推荐通过统一认证进行登录导入"),
+            MessageLookupByLibrary.simpleMessage("Recommended import method"),
         "import_from_NJU_cer_title":
-            MessageLookupByLibrary.simpleMessage("南京大学本科生统一认证"),
-        "import_from_NJU_subtitle":
-            MessageLookupByLibrary.simpleMessage("20级前同学可使用此方法登录导入"),
-        "import_from_NJU_title":
-            MessageLookupByLibrary.simpleMessage("南京大学本科生教务系统"),
+            MessageLookupByLibrary.simpleMessage("NJU Unified Authentication"),
+        "import_from_NJU_subtitle": MessageLookupByLibrary.simpleMessage(
+            "For students before grade 2020"),
+        "import_from_NJU_title": MessageLookupByLibrary.simpleMessage(
+            "NJU Undergraduate Academic System"),
         "import_from_NJU_xk_subtitle":
-            MessageLookupByLibrary.simpleMessage("新选课系统，尚不稳定的备选导入方式"),
+            MessageLookupByLibrary.simpleMessage("New system, fallback option"),
         "import_from_NJU_xk_title":
-            MessageLookupByLibrary.simpleMessage("南京大学本科生选课系统"),
-        "import_from_lecture": MessageLookupByLibrary.simpleMessage("讲座导入"),
+            MessageLookupByLibrary.simpleMessage("NJU Course Selection System"),
+        "import_from_lecture":
+            MessageLookupByLibrary.simpleMessage("Lecture Import"),
         "import_from_qrcode_content": MessageLookupByLibrary.simpleMessage(
             "Scan a QR code or paste a share string to import this timetable\nWhereToSleepInNJU - Settings - Import/Export Timetable"),
         "import_from_qrcode_subtitle": MessageLookupByLibrary.simpleMessage(
             "Import offline from QR or share string (not the online importer)"),
         "import_from_qrcode_title":
             MessageLookupByLibrary.simpleMessage("Offline Schedule Import"),
-        "import_inline":
-            MessageLookupByLibrary.simpleMessage("内置导入：应用内自带的导入方式"),
-        "import_manually": MessageLookupByLibrary.simpleMessage("手动导入"),
+        "import_inline": MessageLookupByLibrary.simpleMessage(
+            "Built-in import: bundled in app"),
+        "import_manually":
+            MessageLookupByLibrary.simpleMessage("Manual Import"),
         "import_manually_subtitle":
-            MessageLookupByLibrary.simpleMessage("手动添加课程表数据"),
-        "import_manually_title": MessageLookupByLibrary.simpleMessage("手动添加"),
-        "import_more_schools": MessageLookupByLibrary.simpleMessage("适配更多学校"),
-        "import_online":
-            MessageLookupByLibrary.simpleMessage("在线导入：从服务器获取的最新配置"),
+            MessageLookupByLibrary.simpleMessage("Manually add timetable data"),
+        "import_manually_title":
+            MessageLookupByLibrary.simpleMessage("Manual Add"),
+        "import_more_schools":
+            MessageLookupByLibrary.simpleMessage("Support more schools"),
+        "import_online": MessageLookupByLibrary.simpleMessage(
+            "Online import: latest config from server"),
         "import_or_export_subtitle": MessageLookupByLibrary.simpleMessage(
             "Offline share: import/export via QR or share string (separate from online import)"),
         "import_or_export_title":
             MessageLookupByLibrary.simpleMessage("QR Import/Export"),
         "import_qr_title": MessageLookupByLibrary.simpleMessage("QR Import"),
-        "import_settings_title": MessageLookupByLibrary.simpleMessage("导入课程表"),
-        "import_subtitle": MessageLookupByLibrary.simpleMessage("自动导入课程表数据"),
+        "import_settings_title":
+            MessageLookupByLibrary.simpleMessage("Import Timetable"),
+        "import_subtitle": MessageLookupByLibrary.simpleMessage(
+            "Automatically import timetable data"),
         "import_success_toast":
             MessageLookupByLibrary.simpleMessage("Import completed"),
-        "import_title": MessageLookupByLibrary.simpleMessage("导入课程表"),
+        "import_title":
+            MessageLookupByLibrary.simpleMessage("Import Timetable"),
         "importing_toast":
             MessageLookupByLibrary.simpleMessage("Importing, please wait"),
         "introduction": MessageLookupByLibrary.simpleMessage(
-            "博客：https://idealclover.top\nEmail：idealclover@163.com"),
+            "Blog: https://idealclover.top\nEmail: idealclover@163.com"),
         "lecture_add": m4,
         "lecture_add_expired_toast":
-            MessageLookupByLibrary.simpleMessage("讲座已经结束了喵～"),
-        "lecture_add_fail_toast":
-            MessageLookupByLibrary.simpleMessage("讲座添加失败，可能是学期不对"),
+            MessageLookupByLibrary.simpleMessage("Lecture has ended"),
+        "lecture_add_fail_toast": MessageLookupByLibrary.simpleMessage(
+            "Failed to add lecture, maybe wrong semester"),
         "lecture_add_success_toast":
-            MessageLookupByLibrary.simpleMessage("讲座已添加至当前课表～"),
+            MessageLookupByLibrary.simpleMessage("Lecture added"),
         "lecture_added": m5,
         "lecture_added_toast":
-            MessageLookupByLibrary.simpleMessage("这个讲座已经添加过啦～"),
-        "lecture_bottom":
-            MessageLookupByLibrary.simpleMessage("讲座列表由南哪助手团队提供与维护"),
+            MessageLookupByLibrary.simpleMessage("Lecture already added"),
+        "lecture_bottom": MessageLookupByLibrary.simpleMessage(
+            "Lecture list provided by NJU Assistant team"),
         "lecture_cast_dialog_content": MessageLookupByLibrary.simpleMessage(
-            "该讲座时间不完全对应课表节数，已为您匹配最近课程时间，请在课程详情中关注该讲座具体时间\n\n确认添加该讲座至当前课表？"),
+            "Lecture time does not exactly match class periods. Closest period was chosen.\n\nAdd this lecture to current timetable?"),
         "lecture_cast_dialog_title":
-            MessageLookupByLibrary.simpleMessage("讲座时间不完全对应"),
+            MessageLookupByLibrary.simpleMessage("Lecture time mismatch"),
         "lecture_expired": m6,
-        "lecture_no_classroom": MessageLookupByLibrary.simpleMessage("暂无地点"),
-        "lecture_no_info": MessageLookupByLibrary.simpleMessage("暂无信息"),
-        "lecture_no_name": MessageLookupByLibrary.simpleMessage("暂无名称"),
-        "lecture_no_teacher": MessageLookupByLibrary.simpleMessage("暂无老师"),
-        "lecture_no_time": MessageLookupByLibrary.simpleMessage("暂无时间"),
-        "lecture_refresh_fail_toast":
-            MessageLookupByLibrary.simpleMessage("刷新失败了喵，检查下网络吧"),
+        "lecture_no_classroom":
+            MessageLookupByLibrary.simpleMessage("No location"),
+        "lecture_no_info": MessageLookupByLibrary.simpleMessage("No info"),
+        "lecture_no_name": MessageLookupByLibrary.simpleMessage("No name"),
+        "lecture_no_teacher":
+            MessageLookupByLibrary.simpleMessage("No speaker"),
+        "lecture_no_time": MessageLookupByLibrary.simpleMessage("No time"),
+        "lecture_refresh_fail_toast": MessageLookupByLibrary.simpleMessage(
+            "Refresh failed, check network"),
         "lecture_refresh_success_toast":
-            MessageLookupByLibrary.simpleMessage("讲座列表刷新成功"),
-        "lecture_search": MessageLookupByLibrary.simpleMessage("搜索讲座"),
-        "lecture_teacher_title": MessageLookupByLibrary.simpleMessage("主讲人："),
-        "lecture_title": MessageLookupByLibrary.simpleMessage("讲座列表"),
-        "love_and_donate": MessageLookupByLibrary.simpleMessage("完美导入！投喂傻翠w"),
-        "love_but_no_money": MessageLookupByLibrary.simpleMessage("感谢制作，但我没钱"),
+            MessageLookupByLibrary.simpleMessage("Lecture list refreshed"),
+        "lecture_search":
+            MessageLookupByLibrary.simpleMessage("Search lectures"),
+        "lecture_teacher_title":
+            MessageLookupByLibrary.simpleMessage("Speaker:"),
+        "lecture_title": MessageLookupByLibrary.simpleMessage("Lectures"),
+        "love_and_donate": MessageLookupByLibrary.simpleMessage(
+            "Import complete! Buy the developer a coffee"),
+        "love_but_no_money":
+            MessageLookupByLibrary.simpleMessage("Great app, but no budget"),
         "manage_table_subtitle":
-            MessageLookupByLibrary.simpleMessage("添加或删除课表数据"),
-        "manage_table_title": MessageLookupByLibrary.simpleMessage("课表管理"),
-        "month": MessageLookupByLibrary.simpleMessage("月"),
-        "more_settings_subtitle":
-            MessageLookupByLibrary.simpleMessage("课表样式设置，高级设置与试验功能"),
-        "more_settings_title": MessageLookupByLibrary.simpleMessage("自定义选项"),
+            MessageLookupByLibrary.simpleMessage("Add or delete timetables"),
+        "manage_table_title":
+            MessageLookupByLibrary.simpleMessage("Timetable Management"),
+        "month": MessageLookupByLibrary.simpleMessage("Month"),
+        "more_settings_subtitle": MessageLookupByLibrary.simpleMessage(
+            "Appearance, advanced and experimental settings"),
+        "more_settings_title":
+            MessageLookupByLibrary.simpleMessage("More Settings"),
         "network_error_toast":
             MessageLookupByLibrary.simpleMessage("Network error, please retry"),
-        "not_open": MessageLookupByLibrary.simpleMessage("[未开学]"),
-        "not_this_week": MessageLookupByLibrary.simpleMessage("[非本周]"),
+        "not_open":
+            MessageLookupByLibrary.simpleMessage("[Semester not started]"),
+        "not_this_week":
+            MessageLookupByLibrary.simpleMessage("[Not this week]"),
         "nowweek_edited_success_toast":
             MessageLookupByLibrary.simpleMessage("Current week updated >v<"),
         "nowweek_not_edited_success_toast":
@@ -286,7 +323,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "open_source_library_content": MessageLookupByLibrary.simpleMessage(
             "shared_preferences: ^2.0.7\nflutter_swiper_null_safety: ^1.0.2\nscoped_model: ^2.0.0-nullsafety.0\nazlistview: ^2.0.0-nullsafety.0\nwebview_flutter: ^2.0.13\nflutter_linkify: ^5.0.2\nimage_picker: ^0.8.4\npackage_info: ^2.0.2\npath_provider: ^2.0.3\nurl_launcher: ^6.0.10\nflutter_html: ^2.1.3\nfluttertoast: ^8.0.1\nsqflite: ^2.0.0+4\nhtml: ^0.15.0\ndio: ^4.0.0\ndevice_calendar: ^4.2.0\nflutter_native_timezone: ^2.0.0"),
         "open_source_library_title":
-            MessageLookupByLibrary.simpleMessage("所使用到的开源库"),
+            MessageLookupByLibrary.simpleMessage("Open Source Libraries"),
         "parse_error_dialog_add_group":
             MessageLookupByLibrary.simpleMessage("Join Group to Report"),
         "parse_error_dialog_content": m7,
@@ -294,9 +331,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Try Other Methods"),
         "parse_error_dialog_title":
             MessageLookupByLibrary.simpleMessage("Oops, import failed TvT"),
-        "password": MessageLookupByLibrary.simpleMessage("密码"),
+        "password": MessageLookupByLibrary.simpleMessage("Password"),
         "password_error_toast":
-            MessageLookupByLibrary.simpleMessage("密码错误 = =||"),
+            MessageLookupByLibrary.simpleMessage("Wrong password"),
         "pay_open_fail_toast":
             MessageLookupByLibrary.simpleMessage("Failed to open"),
         "qr_error_checksum_mismatch":
@@ -320,62 +357,69 @@ class MessageLookup extends MessageLookupByLibrary {
             "Failed to read timetable data"),
         "qrcode_url_error_toast": MessageLookupByLibrary.simpleMessage(
             "Invalid share string or QR code"),
-        "remember_password": MessageLookupByLibrary.simpleMessage("记住密码"),
+        "remember_password":
+            MessageLookupByLibrary.simpleMessage("Remember password"),
         "report_subtitle": MessageLookupByLibrary.simpleMessage(
-            "加入用户群一起愉快地玩耍吧！\n轻触直接加群，长按复制群号"),
-        "report_title": MessageLookupByLibrary.simpleMessage("反馈"),
-        "settings_title": MessageLookupByLibrary.simpleMessage("设置"),
+            "Join user group for support.\nTap to join, long press to copy group number"),
+        "report_title": MessageLookupByLibrary.simpleMessage("Feedback"),
+        "settings_title": MessageLookupByLibrary.simpleMessage("Settings"),
         "share_content": MessageLookupByLibrary.simpleMessage(
-            "南哪课表-南大同学的专属课表APP，导课表、蹭好课、找讲座，快来试试吧！ https://nju.app"),
-        "share_subtitle":
-            MessageLookupByLibrary.simpleMessage("把南哪课表分享给更多小伙伴吧！"),
-        "share_title": MessageLookupByLibrary.simpleMessage("分享此应用"),
-        "show_date_subtitle": MessageLookupByLibrary.simpleMessage("显示当前周的日期"),
-        "show_date_title": MessageLookupByLibrary.simpleMessage("显示日期"),
-        "show_month_subtitle":
-            MessageLookupByLibrary.simpleMessage("在课表的左上角显示当前月份"),
-        "show_month_title": MessageLookupByLibrary.simpleMessage("显示月份"),
+            "NJU Timetable for NJU students. Import timetable, find courses and lectures: https://nju.app"),
+        "share_subtitle": MessageLookupByLibrary.simpleMessage(
+            "Share NJU Timetable with friends"),
+        "share_title": MessageLookupByLibrary.simpleMessage("Share App"),
+        "show_date_subtitle":
+            MessageLookupByLibrary.simpleMessage("Show dates for current week"),
+        "show_date_title": MessageLookupByLibrary.simpleMessage("Show Date"),
+        "show_month_subtitle": MessageLookupByLibrary.simpleMessage(
+            "Show current month in top-left corner"),
+        "show_month_title": MessageLookupByLibrary.simpleMessage("Show Month"),
         "shuffle_color_pool_subtitle":
-            MessageLookupByLibrary.simpleMessage("重置课程颜色池"),
+            MessageLookupByLibrary.simpleMessage("Reset color pool"),
         "shuffle_color_pool_success_toast":
             MessageLookupByLibrary.simpleMessage(
                 "Color pool reset successfully >v<"),
         "shuffle_color_pool_title":
-            MessageLookupByLibrary.simpleMessage("重置课程颜色"),
-        "single_week": MessageLookupByLibrary.simpleMessage("单周"),
-        "tap_to_refresh": MessageLookupByLibrary.simpleMessage("点击刷新"),
+            MessageLookupByLibrary.simpleMessage("Reset Course Colors"),
+        "single_week": MessageLookupByLibrary.simpleMessage("Odd weeks"),
+        "tap_to_refresh":
+            MessageLookupByLibrary.simpleMessage("Tap to refresh"),
         "to": MessageLookupByLibrary.simpleMessage("-"),
-        "unknown_info": MessageLookupByLibrary.simpleMessage("暂无备注"),
-        "unknown_place": MessageLookupByLibrary.simpleMessage("未知地点"),
+        "unknown_info": MessageLookupByLibrary.simpleMessage("No notes"),
+        "unknown_place":
+            MessageLookupByLibrary.simpleMessage("Unknown location"),
         "use_material3_scheme_dark_subtitle":
-            MessageLookupByLibrary.simpleMessage("深色模式使用 Material 3 色板"),
+            MessageLookupByLibrary.simpleMessage(
+                "Use Material 3 palette in dark mode"),
         "use_material3_scheme_dark_title":
-            MessageLookupByLibrary.simpleMessage("强调色柔和(深色)"),
+            MessageLookupByLibrary.simpleMessage("Softer Accent (Dark)"),
         "use_material3_scheme_light_subtitle":
-            MessageLookupByLibrary.simpleMessage("浅色模式使用 Material 3 色板"),
+            MessageLookupByLibrary.simpleMessage(
+                "Use Material 3 palette in light mode"),
         "use_material3_scheme_light_title":
-            MessageLookupByLibrary.simpleMessage("强调色柔和(浅色)"),
-        "username": MessageLookupByLibrary.simpleMessage("用户名"),
+            MessageLookupByLibrary.simpleMessage("Softer Accent (Light)"),
+        "username": MessageLookupByLibrary.simpleMessage("Username"),
         "username_error_toast":
-            MessageLookupByLibrary.simpleMessage("用户名错误 TvT"),
-        "view_lecture_subtitle":
-            MessageLookupByLibrary.simpleMessage("查看南哪最新讲座信息，可一键导入至课表"),
-        "view_lecture_title": MessageLookupByLibrary.simpleMessage("查看/添加讲座"),
+            MessageLookupByLibrary.simpleMessage("Wrong username"),
+        "view_lecture_subtitle": MessageLookupByLibrary.simpleMessage(
+            "Browse latest lectures and import with one tap"),
+        "view_lecture_title": MessageLookupByLibrary.simpleMessage("Lectures"),
         "week": m9,
         "week_duration": m10,
-        "week_num_invalid_dialog_content":
-            MessageLookupByLibrary.simpleMessage("课程结束周数应大于起始周数"),
+        "week_num_invalid_dialog_content": MessageLookupByLibrary.simpleMessage(
+            "End week must be greater than start week"),
         "week_num_invalid_dialog_title":
-            MessageLookupByLibrary.simpleMessage("课程周数不合法"),
-        "welcome_content": MessageLookupByLibrary.simpleMessage(
-            "2021.08\n又是新的学期啦\n21届的新同学都要来了，瞬间有种自己太老了的感觉hhhhhh\n\n2021.2\n不知不觉小作文更新这么长了～\n\n又是新的一年，新的一学期了。\n\n过去的这一年或许大家都经历了很多，疫情来了，翠翠毕业了，紫荆站关闭了。或许，哪次教务系统更新之后，南哪课表就再也用不起来了。\n\n所以，如果南哪课表还不错，可以在它还在的时候，一起安利给周围的小伙伴吗～\n\n过去的时光，我们都辛苦了，未来，一起加油。\n\n“敬自己一杯，因为值得。”\n\n2020.9\n这是翠翠离开南大的第一个秋天。不过放心，南哪课表还在维护。\n\n离开校园，其实想说的话有很多，但却又不知道从哪里说起，说些什么，却总会在被社会毒打的时候怀念起在南大的快乐时光。\n\n大概，衷心希望学弟学妹们珍惜大学生活w\n\n2020.5\n在付出了另一个¥688后，南哪课表终于上线 APP Store 啦！感谢大家一直以来的支持！\n\n2020.2\n2020年2月全部投喂收入将捐赠以支援湖北疫情\n(2020.3补充：已捐赠)\n\n2019.9\nHi！我是项目作者傻翠～\n\n看起来你已经导入我南教务处成功啦！撒花撒花！\n\n建议大家还是和自己教务系统中的课表对一下～避免出现什么bug～如果有bug的话欢迎反馈给我！设置-反馈中有交流群的群号～\n\n坦率地讲，从安卓移植到全平台是一个痛苦的过程。之前的APP多少是建立在开源项目的基础上，而这个重构项目算是自己从零开始搭起来的。其中也做了不少取舍与妥协，还有可能出现之前所没有过的bug，如果不巧遇到bug，欢迎向我反馈。\n\n写这个项目是一个吃力不讨好的事。单是苹果的开发者账号就要688/年，更不用提为了开发iOS版而单独买的MacBook。所以如果小伙伴想让这个项目持续下去的话，欢迎投喂傻翠。\n\n放心，这个弹框每次导入只会弹出一次，所以不会影响你的正常使用。\n\n希望南哪课表可以陪伴学弟学妹们走过每一学期ww\n\n傻翠"),
+            MessageLookupByLibrary.simpleMessage("Invalid week range"),
+        "welcome_content":
+            MessageLookupByLibrary.simpleMessage("Welcome to NJU Timetable."),
         "welcome_content_html": MessageLookupByLibrary.simpleMessage(
-            "<p><b>2021.08</b></p><p>又是新的学期啦</p><p>21届的新同学都要来了，瞬间有种自己太老了的感觉hhhhhh</p><p><b>2021.2</b></p><p>不知不觉小作文更新这么长了～</p><p>又是新的一年，新的一学期了。</p><p>过去的这一年或许大家都经历了很多，疫情来了，翠翠毕业了，紫荆站关闭了。或许，哪次教务系统更新之后，南哪课表就再也用不起来了。</p><p>所以，如果南哪课表还不错，可以在它还在的时候，一起安利给周围的小伙伴吗～</p><p>过去的时光，我们都辛苦了，未来，一起加油。</p><p>“敬自己一杯，因为值得。”</p><p><b>2020.9</b></p><p>这是翠翠离开南大的第一个秋天。不过放心，南哪课表还在维护。</p><p>离开校园，其实想说的话有很多，但却又不知道从哪里说起，说些什么，却总会在被社会毒打的时候怀念起在南大的快乐时光。</p><p>大概，衷心希望学弟学妹们珍惜大学生活w</p><p><b>2020.5</b></p><p>在付出了另一个¥688后，南哪课表终于上线 APP Store 啦！感谢大家一直以来的支持！</p><p><b>2020.2</b></p><p>2020年2月全部投喂收入将捐赠以支援湖北疫情</p><p>(2020.3补充：已捐赠)</p><p><b>2019.9</b></p><p>Hi！我是项目作者傻翠～</p><p>看起来你已经导入我南教务处成功啦！撒花撒花！</p><p>建议大家还是和自己教务系统中的课表对一下～避免出现什么bug～如果有bug的话欢迎反馈给我！设置-反馈中有交流群的群号～</p><p>坦率地讲，从安卓移植到全平台是一个痛苦的过程。之前的APP多少是建立在开源项目的基础上，而这个重构项目算是自己从零开始搭起来的。其中也做了不少取舍与妥协，还有可能出现之前所没有过的bug，如果不巧遇到bug，欢迎向我反馈。</p><p>写这个项目是一个吃力不讨好的事。单是苹果的开发者账号就要688/年，更不用提为了开发iOS版而单独买的MacBook。所以如果小伙伴想让这个项目持续下去的话，欢迎投喂傻翠。</p><p>放心，这个弹框每次导入只会弹出一次，所以不会影响你的正常使用。</p><p>希望南哪课表可以陪伴学弟学妹们走过每一学期ww</p><p>傻翠</p>"),
-        "welcome_title": MessageLookupByLibrary.simpleMessage("欢迎使用南哪课表！"),
+            "<p>Welcome to NJU Timetable.</p>"),
+        "welcome_title":
+            MessageLookupByLibrary.simpleMessage("Welcome to NJU Timetable!"),
         "white_title_mode_subtitle":
-            MessageLookupByLibrary.simpleMessage("如果背景图片是暗色的话"),
+            MessageLookupByLibrary.simpleMessage("Useful for dark backgrounds"),
         "white_title_mode_title":
-            MessageLookupByLibrary.simpleMessage("白色标题模式"),
+            MessageLookupByLibrary.simpleMessage("White Title Mode"),
         "widget_and_live_activity_settings_subtitle":
             MessageLookupByLibrary.simpleMessage(
                 "Customize widget and live activity display options"),
