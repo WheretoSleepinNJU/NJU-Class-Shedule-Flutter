@@ -1,59 +1,16 @@
 {
-  "fill-specializations" : [
-    {
-      "value" : "automatic"
-    },
-    {
-      "appearance" : "dark",
-      "value" : "automatic"
-    }
-  ],
+  "fill" : {
+    "automatic-gradient" : "extended-gray:1.00000,1.00000"
+  },
   "groups" : [
     {
       "layers" : [
         {
-          "blend-mode-specializations" : [
-            {
-              "appearance" : "dark",
-              "value" : "normal"
-            }
-          ],
-          "fill-specializations" : [
-            {
-              "appearance" : "dark",
-              "value" : "automatic"
-            }
-          ],
-          "glass" : false,
-          "image-name" : "nju.svg",
-          "name" : "nju",
-          "opacity-specializations" : [
-            {
-              "appearance" : "dark",
-              "value" : 0.8
-            }
-          ],
-          "position" : {
-            "scale" : 1,
-            "translation-in-points" : [
-              0,
-              20
-            ]
-          }
-        },
-        {
-          "image-name" : "efx.svg",
-          "name" : "efx",
-          "position" : {
-            "scale" : 1,
-            "translation-in-points" : [
-              0,
-              20
-            ]
-          }
+          "image-name" : "Top.png",
+          "name" : "Top"
         }
       ],
-      "lighting" : "individual",
+      "name" : "top",
       "shadow" : {
         "kind" : "neutral",
         "opacity" : 0.5
@@ -66,18 +23,23 @@
     {
       "layers" : [
         {
+          "blend-mode" : "normal",
           "glass" : true,
-          "image-name" : "bottom.png",
-          "name" : "bottom",
-          "position" : {
-            "scale" : 1,
-            "translation-in-points" : [
-              0,
-              20
-            ]
-          }
+          "hidden" : false,
+          "image-name-specializations" : [
+            {
+              "value" : "Bottom.png"
+            },
+            {
+              "appearance" : "light",
+              "value" : "Bottom 2.png"
+            }
+          ],
+          "name" : "Bottom 2",
+          "opacity" : 1
         }
       ],
+      "name" : "bottom",
       "shadow" : {
         "kind" : "neutral",
         "opacity" : 0.5
