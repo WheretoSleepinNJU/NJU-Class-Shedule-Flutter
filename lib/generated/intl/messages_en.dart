@@ -28,7 +28,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m3(num) => "${num} more \"Free Time\" classes >>";
 
-  static String m4(num) => "Add to current timetable (${num} added)";
+  static String m4(num) => "Add to current schedule (${num} added)";
 
   static String m5(num) => "Added (${num} added)";
 
@@ -62,9 +62,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Upload Background"),
         "add_class": MessageLookupByLibrary.simpleMessage("Add Course"),
         "add_class_table_dialog_title":
-            MessageLookupByLibrary.simpleMessage("Enter timetable name"),
+            MessageLookupByLibrary.simpleMessage("Enter schedule name"),
         "add_class_table_success_toast":
-            MessageLookupByLibrary.simpleMessage("Timetable added"),
+            MessageLookupByLibrary.simpleMessage("Schedule added"),
         "add_manually_success_toast":
             MessageLookupByLibrary.simpleMessage("Added successfully"),
         "add_manually_title":
@@ -72,10 +72,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "all_course_subtitle": MessageLookupByLibrary.simpleMessage(
             "Browse public courses and add classes"),
         "all_course_title":
-            MessageLookupByLibrary.simpleMessage("Campus Timetable"),
+            MessageLookupByLibrary.simpleMessage("Campus Schedule"),
         "already_newest_version_toast":
             MessageLookupByLibrary.simpleMessage("Already latest version"),
-        "app_name": MessageLookupByLibrary.simpleMessage("NJU Timetable"),
+        "app_name": MessageLookupByLibrary.simpleMessage("NJU Schedule"),
         "at": MessageLookupByLibrary.simpleMessage("@"),
         "bug_and_report":
             MessageLookupByLibrary.simpleMessage("Found a bug, report it"),
@@ -113,7 +113,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "class_num_invalid_dialog_title":
             MessageLookupByLibrary.simpleMessage("Invalid period range"),
         "class_parse_error_toast":
-            MessageLookupByLibrary.simpleMessage("Failed to parse timetable"),
+            MessageLookupByLibrary.simpleMessage("Failed to parse schedule"),
         "class_parse_toast_fail": MessageLookupByLibrary.simpleMessage(
             "Unexpected error, please send feedback"),
         "class_parse_toast_importing": MessageLookupByLibrary.simpleMessage(
@@ -123,14 +123,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "class_room": MessageLookupByLibrary.simpleMessage("Location"),
         "class_single": m1,
         "class_table_manage_title":
-            MessageLookupByLibrary.simpleMessage("Timetable Management"),
+            MessageLookupByLibrary.simpleMessage("Schedule Management"),
         "class_teacher": MessageLookupByLibrary.simpleMessage("Teacher"),
         "del_class_table_dialog_content": MessageLookupByLibrary.simpleMessage(
-            "This cannot be undone. All courses in this timetable will be deleted."),
+            "This cannot be undone. All courses in this schedule will be deleted."),
         "del_class_table_dialog_title":
             MessageLookupByLibrary.simpleMessage("Confirm Delete"),
         "del_class_table_success_toast":
-            MessageLookupByLibrary.simpleMessage("Timetable deleted"),
+            MessageLookupByLibrary.simpleMessage("Schedule deleted"),
         "delete_backgound_picture_subtitle":
             MessageLookupByLibrary.simpleMessage(
                 "Restore default white background"),
@@ -152,11 +152,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "easter_egg_title":
             MessageLookupByLibrary.simpleMessage("Acknowledgements"),
         "export_classtable_subtitle": MessageLookupByLibrary.simpleMessage(
-            "Export current timetable as QR code or share string"),
+            "Export current schedule as QR code or share string"),
         "export_classtable_title":
-            MessageLookupByLibrary.simpleMessage("Export current timetable"),
-        "export_title":
-            MessageLookupByLibrary.simpleMessage("Export Timetable"),
+            MessageLookupByLibrary.simpleMessage("Export current schedule"),
+        "export_title": MessageLookupByLibrary.simpleMessage("Export Schedule"),
         "export_to_system_calendar_fail_toast":
             MessageLookupByLibrary.simpleMessage(
                 "Calendar export failed; check permission"),
@@ -174,7 +173,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Week corrected"),
         "flutter_lts": MessageLookupByLibrary.simpleMessage("(Flutter LTS)"),
         "force_zoom_subtitle": MessageLookupByLibrary.simpleMessage(
-            "Force timetable into one page"),
+            "Force schedule into one page"),
         "force_zoom_title": MessageLookupByLibrary.simpleMessage("Force Zoom"),
         "free_class_banner": m3,
         "free_class_button": MessageLookupByLibrary.simpleMessage("View"),
@@ -211,7 +210,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_banner_action":
             MessageLookupByLibrary.simpleMessage("Download NJU VPN"),
         "import_from_JW_title":
-            MessageLookupByLibrary.simpleMessage("Import Timetable"),
+            MessageLookupByLibrary.simpleMessage("Import Schedule"),
         "import_from_NJU_cer_subtitle":
             MessageLookupByLibrary.simpleMessage("Recommended import method"),
         "import_from_NJU_cer_title":
@@ -227,7 +226,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_from_lecture":
             MessageLookupByLibrary.simpleMessage("Lecture Import"),
         "import_from_qrcode_content": MessageLookupByLibrary.simpleMessage(
-            "Scan a QR code or paste a share string to import this timetable\nWhereToSleepInNJU - Settings - Import/Export Timetable"),
+            "Scan a QR code or paste a share string to import this schedule\nWhereToSleepInNJU - Settings - Import/Export Schedule"),
         "import_from_qrcode_subtitle": MessageLookupByLibrary.simpleMessage(
             "Import offline from QR or share string (not the online importer)"),
         "import_from_qrcode_title":
@@ -237,7 +236,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_manually":
             MessageLookupByLibrary.simpleMessage("Manual Import"),
         "import_manually_subtitle":
-            MessageLookupByLibrary.simpleMessage("Manually add timetable data"),
+            MessageLookupByLibrary.simpleMessage("Manually add schedule data"),
         "import_manually_title":
             MessageLookupByLibrary.simpleMessage("Manual Add"),
         "import_more_schools":
@@ -250,13 +249,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("QR Import/Export"),
         "import_qr_title": MessageLookupByLibrary.simpleMessage("QR Import"),
         "import_settings_title":
-            MessageLookupByLibrary.simpleMessage("Import Timetable"),
+            MessageLookupByLibrary.simpleMessage("Import Schedule"),
         "import_subtitle": MessageLookupByLibrary.simpleMessage(
-            "Automatically import timetable data"),
+            "Automatically import schedule data"),
         "import_success_toast":
             MessageLookupByLibrary.simpleMessage("Import completed"),
-        "import_title":
-            MessageLookupByLibrary.simpleMessage("Import Timetable"),
+        "import_title": MessageLookupByLibrary.simpleMessage("Import Schedule"),
         "importing_toast":
             MessageLookupByLibrary.simpleMessage("Importing, please wait"),
         "introduction": MessageLookupByLibrary.simpleMessage(
@@ -274,7 +272,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "lecture_bottom": MessageLookupByLibrary.simpleMessage(
             "Lecture list provided by NJU Assistant team"),
         "lecture_cast_dialog_content": MessageLookupByLibrary.simpleMessage(
-            "Lecture time does not exactly match class periods. Closest period was chosen.\n\nAdd this lecture to current timetable?"),
+            "Lecture time does not exactly match class periods. Closest period was chosen.\n\nAdd this lecture to current schedule?"),
         "lecture_cast_dialog_title":
             MessageLookupByLibrary.simpleMessage("Lecture time mismatch"),
         "lecture_expired": m6,
@@ -299,9 +297,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "love_but_no_money":
             MessageLookupByLibrary.simpleMessage("Great app, but no budget"),
         "manage_table_subtitle":
-            MessageLookupByLibrary.simpleMessage("Add or delete timetables"),
+            MessageLookupByLibrary.simpleMessage("Add or delete schedules"),
         "manage_table_title":
-            MessageLookupByLibrary.simpleMessage("Timetable Management"),
+            MessageLookupByLibrary.simpleMessage("Schedule Management"),
         "month": MessageLookupByLibrary.simpleMessage("Month"),
         "more_settings_subtitle": MessageLookupByLibrary.simpleMessage(
             "Appearance, advanced and experimental settings"),
@@ -352,9 +350,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "qr_share_copy_success_toast":
             MessageLookupByLibrary.simpleMessage("Copied full share string"),
         "qrcode_name_error_toast": MessageLookupByLibrary.simpleMessage(
-            "Failed to read timetable name"),
+            "Failed to read schedule name"),
         "qrcode_read_error_toast": MessageLookupByLibrary.simpleMessage(
-            "Failed to read timetable data"),
+            "Failed to read schedule data"),
         "qrcode_url_error_toast": MessageLookupByLibrary.simpleMessage(
             "Invalid share string or QR code"),
         "remember_password":
@@ -364,9 +362,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "report_title": MessageLookupByLibrary.simpleMessage("Feedback"),
         "settings_title": MessageLookupByLibrary.simpleMessage("Settings"),
         "share_content": MessageLookupByLibrary.simpleMessage(
-            "NJU Timetable for NJU students. Import timetable, find courses and lectures: https://nju.app"),
+            "NJU Schedule for NJU students. Import schedule, find courses and lectures: https://nju.app"),
         "share_subtitle": MessageLookupByLibrary.simpleMessage(
-            "Share NJU Timetable with friends"),
+            "Share NJU Schedule with friends"),
         "share_title": MessageLookupByLibrary.simpleMessage("Share App"),
         "show_date_subtitle":
             MessageLookupByLibrary.simpleMessage("Show dates for current week"),
@@ -411,11 +409,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "week_num_invalid_dialog_title":
             MessageLookupByLibrary.simpleMessage("Invalid week range"),
         "welcome_content":
-            MessageLookupByLibrary.simpleMessage("Welcome to NJU Timetable."),
+            MessageLookupByLibrary.simpleMessage("Welcome to NJU Schedule."),
         "welcome_content_html": MessageLookupByLibrary.simpleMessage(
-            "<p>Welcome to NJU Timetable.</p>"),
+            "<p>Welcome to NJU Schedule.</p>"),
         "welcome_title":
-            MessageLookupByLibrary.simpleMessage("Welcome to NJU Timetable!"),
+            MessageLookupByLibrary.simpleMessage("Welcome to NJU Schedule!"),
         "white_title_mode_subtitle":
             MessageLookupByLibrary.simpleMessage("Useful for dark backgrounds"),
         "white_title_mode_title":

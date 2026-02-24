@@ -50,10 +50,10 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
-  /// `NJU Timetable`
+  /// `NJU Schedule`
   String get app_name {
     return Intl.message(
-      'NJU Timetable',
+      'NJU Schedule',
       name: 'app_name',
       desc: '',
       args: [],
@@ -330,30 +330,30 @@ class S {
     );
   }
 
-  /// `Manually add timetable data`
+  /// `Manually add schedule data`
   String get import_manually_subtitle {
     return Intl.message(
-      'Manually add timetable data',
+      'Manually add schedule data',
       name: 'import_manually_subtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Import Timetable`
+  /// `Import Schedule`
   String get import_from_JW_title {
     return Intl.message(
-      'Import Timetable',
+      'Import Schedule',
       name: 'import_from_JW_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `Automatically import timetable data`
+  /// `Automatically import schedule data`
   String get import_subtitle {
     return Intl.message(
-      'Automatically import timetable data',
+      'Automatically import schedule data',
       name: 'import_subtitle',
       desc: '',
       args: [],
@@ -420,10 +420,10 @@ class S {
     );
   }
 
-  /// `Campus Timetable`
+  /// `Campus Schedule`
   String get all_course_title {
     return Intl.message(
-      'Campus Timetable',
+      'Campus Schedule',
       name: 'all_course_title',
       desc: '',
       args: [],
@@ -480,20 +480,20 @@ class S {
     );
   }
 
-  /// `Timetable Management`
+  /// `Schedule Management`
   String get manage_table_title {
     return Intl.message(
-      'Timetable Management',
+      'Schedule Management',
       name: 'manage_table_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `Add or delete timetables`
+  /// `Add or delete schedules`
   String get manage_table_subtitle {
     return Intl.message(
-      'Add or delete timetables',
+      'Add or delete schedules',
       name: 'manage_table_subtitle',
       desc: '',
       args: [],
@@ -620,20 +620,20 @@ class S {
     );
   }
 
-  /// `Share NJU Timetable with friends`
+  /// `Share NJU Schedule with friends`
   String get share_subtitle {
     return Intl.message(
-      'Share NJU Timetable with friends',
+      'Share NJU Schedule with friends',
       name: 'share_subtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `NJU Timetable for NJU students. Import timetable, find courses and lectures: https://nju.app`
+  /// `NJU Schedule for NJU students. Import schedule, find courses and lectures: https://nju.app`
   String get share_content {
     return Intl.message(
-      'NJU Timetable for NJU students. Import timetable, find courses and lectures: https://nju.app',
+      'NJU Schedule for NJU students. Import schedule, find courses and lectures: https://nju.app',
       name: 'share_content',
       desc: '',
       args: [],
@@ -820,10 +820,10 @@ class S {
     );
   }
 
-  /// `Force timetable into one page`
+  /// `Force schedule into one page`
   String get force_zoom_subtitle {
     return Intl.message(
-      'Force timetable into one page',
+      'Force schedule into one page',
       name: 'force_zoom_subtitle',
       desc: '',
       args: [],
@@ -1070,10 +1070,10 @@ class S {
     );
   }
 
-  /// `Add to current timetable ({num} added)`
+  /// `Add to current schedule ({num} added)`
   String lecture_add(Object num) {
     return Intl.message(
-      'Add to current timetable ($num added)',
+      'Add to current schedule ($num added)',
       name: 'lecture_add',
       desc: '',
       args: [num],
@@ -1130,10 +1130,10 @@ class S {
     );
   }
 
-  /// `Lecture time does not exactly match class periods. Closest period was chosen.\n\nAdd this lecture to current timetable?`
+  /// `Lecture time does not exactly match class periods. Closest period was chosen.\n\nAdd this lecture to current schedule?`
   String get lecture_cast_dialog_content {
     return Intl.message(
-      'Lecture time does not exactly match class periods. Closest period was chosen.\n\nAdd this lecture to current timetable?',
+      'Lecture time does not exactly match class periods. Closest period was chosen.\n\nAdd this lecture to current schedule?',
       name: 'lecture_cast_dialog_content',
       desc: '',
       args: [],
@@ -1190,20 +1190,20 @@ class S {
     );
   }
 
-  /// `Export current timetable`
+  /// `Export current schedule`
   String get export_classtable_title {
     return Intl.message(
-      'Export current timetable',
+      'Export current schedule',
       name: 'export_classtable_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `Export current timetable as QR code or share string`
+  /// `Export current schedule as QR code or share string`
   String get export_classtable_subtitle {
     return Intl.message(
-      'Export current timetable as QR code or share string',
+      'Export current schedule as QR code or share string',
       name: 'export_classtable_subtitle',
       desc: '',
       args: [],
@@ -1230,10 +1230,10 @@ class S {
     );
   }
 
-  /// `Scan a QR code or paste a share string to import this timetable\nWhereToSleepInNJU - Settings - Import/Export Timetable`
+  /// `Scan a QR code or paste a share string to import this schedule\nWhereToSleepInNJU - Settings - Import/Export Schedule`
   String get import_from_qrcode_content {
     return Intl.message(
-      'Scan a QR code or paste a share string to import this timetable\nWhereToSleepInNJU - Settings - Import/Export Timetable',
+      'Scan a QR code or paste a share string to import this schedule\nWhereToSleepInNJU - Settings - Import/Export Schedule',
       name: 'import_from_qrcode_content',
       desc: '',
       args: [],
@@ -1270,20 +1270,20 @@ class S {
     );
   }
 
-  /// `Failed to read timetable name`
+  /// `Failed to read schedule name`
   String get qrcode_name_error_toast {
     return Intl.message(
-      'Failed to read timetable name',
+      'Failed to read schedule name',
       name: 'qrcode_name_error_toast',
       desc: '',
       args: [],
     );
   }
 
-  /// `Failed to read timetable data`
+  /// `Failed to read schedule data`
   String get qrcode_read_error_toast {
     return Intl.message(
-      'Failed to read timetable data',
+      'Failed to read schedule data',
       name: 'qrcode_read_error_toast',
       desc: '',
       args: [],
@@ -1350,10 +1350,10 @@ class S {
     );
   }
 
-  /// `Export Timetable`
+  /// `Export Schedule`
   String get export_title {
     return Intl.message(
-      'Export Timetable',
+      'Export Schedule',
       name: 'export_title',
       desc: '',
       args: [],
@@ -1660,10 +1660,10 @@ class S {
     );
   }
 
-  /// `Import Timetable`
+  /// `Import Schedule`
   String get import_settings_title {
     return Intl.message(
-      'Import Timetable',
+      'Import Schedule',
       name: 'import_settings_title',
       desc: '',
       args: [],
@@ -1700,10 +1700,10 @@ class S {
     );
   }
 
-  /// `Import Timetable`
+  /// `Import Schedule`
   String get import_title {
     return Intl.message(
-      'Import Timetable',
+      'Import Schedule',
       name: 'import_title',
       desc: '',
       args: [],
@@ -1830,10 +1830,10 @@ class S {
     );
   }
 
-  /// `Failed to parse timetable`
+  /// `Failed to parse schedule`
   String get class_parse_error_toast {
     return Intl.message(
-      'Failed to parse timetable',
+      'Failed to parse schedule',
       name: 'class_parse_error_toast',
       desc: '',
       args: [],
@@ -1890,30 +1890,30 @@ class S {
     );
   }
 
-  /// `Timetable Management`
+  /// `Schedule Management`
   String get class_table_manage_title {
     return Intl.message(
-      'Timetable Management',
+      'Schedule Management',
       name: 'class_table_manage_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `Enter timetable name`
+  /// `Enter schedule name`
   String get add_class_table_dialog_title {
     return Intl.message(
-      'Enter timetable name',
+      'Enter schedule name',
       name: 'add_class_table_dialog_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `Timetable added`
+  /// `Schedule added`
   String get add_class_table_success_toast {
     return Intl.message(
-      'Timetable added',
+      'Schedule added',
       name: 'add_class_table_success_toast',
       desc: '',
       args: [],
@@ -1930,20 +1930,20 @@ class S {
     );
   }
 
-  /// `This cannot be undone. All courses in this timetable will be deleted.`
+  /// `This cannot be undone. All courses in this schedule will be deleted.`
   String get del_class_table_dialog_content {
     return Intl.message(
-      'This cannot be undone. All courses in this timetable will be deleted.',
+      'This cannot be undone. All courses in this schedule will be deleted.',
       name: 'del_class_table_dialog_content',
       desc: '',
       args: [],
     );
   }
 
-  /// `Timetable deleted`
+  /// `Schedule deleted`
   String get del_class_table_success_toast {
     return Intl.message(
-      'Timetable deleted',
+      'Schedule deleted',
       name: 'del_class_table_success_toast',
       desc: '',
       args: [],
@@ -2080,30 +2080,30 @@ class S {
     );
   }
 
-  /// `Welcome to NJU Timetable.`
+  /// `Welcome to NJU Schedule.`
   String get welcome_content {
     return Intl.message(
-      'Welcome to NJU Timetable.',
+      'Welcome to NJU Schedule.',
       name: 'welcome_content',
       desc: '',
       args: [],
     );
   }
 
-  /// `<p>Welcome to NJU Timetable.</p>`
+  /// `<p>Welcome to NJU Schedule.</p>`
   String get welcome_content_html {
     return Intl.message(
-      '<p>Welcome to NJU Timetable.</p>',
+      '<p>Welcome to NJU Schedule.</p>',
       name: 'welcome_content_html',
       desc: '',
       args: [],
     );
   }
 
-  /// `Welcome to NJU Timetable!`
+  /// `Welcome to NJU Schedule!`
   String get welcome_title {
     return Intl.message(
-      'Welcome to NJU Timetable!',
+      'Welcome to NJU Schedule!',
       name: 'welcome_title',
       desc: '',
       args: [],
