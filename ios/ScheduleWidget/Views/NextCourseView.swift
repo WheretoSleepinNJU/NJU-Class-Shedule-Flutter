@@ -53,7 +53,7 @@ struct NextCourseView: View {
                 .padding()
             }
         }
-        .widgetURL(URL(string: "njuschedule://course/\(course.id)"))
+        .widgetURL(URL(string: "ncs://course/\(course.id)"))
     }
 
     private func getTimePeriod() -> ClassPeriod? {

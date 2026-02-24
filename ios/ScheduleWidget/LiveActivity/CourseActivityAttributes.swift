@@ -252,7 +252,7 @@ struct LockScreenLiveActivityView: View {
                 }
 
                 // "我已到达"按钮
-                Link(destination: URL(string: "njuschedule://arrived/\(context.attributes.courseId)")!) {
+                Link(destination: URL(string: "ncs://arrived/\(context.attributes.courseId)")!) {
                     Text("我已到达")
                         .font(.system(size: 12, weight: .semibold))
                         .padding(.horizontal, 14)

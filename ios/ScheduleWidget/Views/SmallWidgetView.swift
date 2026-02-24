@@ -266,7 +266,7 @@ private struct ApproachingClassView: View {
             Spacer()
 
             // "我已到达"按钮
-            Link(destination: URL(string: "njuschedule://arrived/\(nextCourse.id)")!) {
+            Link(destination: URL(string: "ncs://arrived/\(nextCourse.id)")!) {
                 HStack {
                     Spacer()
                     Text("我已到达")
@@ -450,7 +450,7 @@ private struct CourseCardView: View {
             )
         }
         .contentShape(Rectangle())
-        .widgetURL(URL(string: "njuschedule://course/\(course.id)"))
+        .widgetURL(URL(string: "ncs://course/\(course.id)"))
         .padding(.leading, 4)
     }
 

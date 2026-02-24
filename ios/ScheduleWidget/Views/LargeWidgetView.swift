@@ -275,7 +275,7 @@ private struct LargeApproachingClassView: View {
     }
 
     private var arrivedButton: some View {
-        Link(destination: URL(string: "njuschedule://arrived/\(nextCourse.id)")!) {
+        Link(destination: URL(string: "ncs://arrived/\(nextCourse.id)")!) {
             HStack {
                 Spacer()
                 Text("我已到达")
@@ -501,7 +501,7 @@ private struct LargeDetailedCourseCard: View {
             )
         }
         .contentShape(Rectangle())
-        .widgetURL(URL(string: "njuschedule://course/\(course.id)"))
+        .widgetURL(URL(string: "ncs://course/\(course.id)"))
     }
 
     private var courseColor: Color {
@@ -633,7 +633,7 @@ private struct LargeCompactCourseCard: View {
             )
         }
         .contentShape(Rectangle())
-        .widgetURL(URL(string: "njuschedule://course/\(course.id)"))
+        .widgetURL(URL(string: "ncs://course/\(course.id)"))
     }
 
     private var courseColor: Color {
