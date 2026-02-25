@@ -1880,6 +1880,16 @@ class S {
     );
   }
 
+  /// `京ICP备2024045824号-2A`
+  String get beian_info {
+    return Intl.message(
+      '京ICP备2024045824号-2A',
+      name: 'beian_info',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `已经是最新版本了呦～`
   String get already_newest_version_toast {
     return Intl.message(

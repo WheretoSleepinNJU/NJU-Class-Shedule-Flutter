@@ -73,6 +73,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("已经是最新版本了呦～"),
         "app_name": MessageLookupByLibrary.simpleMessage("南哪课表"),
         "at": MessageLookupByLibrary.simpleMessage("@"),
+        "beian_info":
+            MessageLookupByLibrary.simpleMessage("京ICP备2024045824号-2A"),
         "bug_and_report": MessageLookupByLibrary.simpleMessage("似乎有bug，我要反馈"),
         "cancel": MessageLookupByLibrary.simpleMessage("取消"),
         "captcha": MessageLookupByLibrary.simpleMessage("验证码"),

@@ -183,6 +183,7 @@
   "del_class_table_dialog_content": "此操作无法恢复，这将删除该课程表下的所有课程。",
   "del_class_table_success_toast": "删除课程表成功",
   "check_update_button": "检查更新",
+  "beian_info": "京ICP备2024045824号-2A",
   "already_newest_version_toast": "已经是最新版本了呦～",
   "check_privacy_button": "隐私政策",
   "github_open_source": "GitHub 开源",

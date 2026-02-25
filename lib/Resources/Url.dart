@@ -27,6 +27,8 @@ class Url {
       'https://github.com/idealclover/NJU-Class-Shedule-Flutter';
   static const String BLOG_URL = 'https://idealclover.top';
 
+  static const String BEIAN_URL = 'https://beian.miit.gov.cn';
+
   // TODO: change URL to production
   static const String UPDATE_ROOT =
       'https://cdn.idealclover.cn/Projects/wheretosleepinnju/production';
