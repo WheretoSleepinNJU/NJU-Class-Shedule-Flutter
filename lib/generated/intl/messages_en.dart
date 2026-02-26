@@ -440,6 +440,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "At what time in evening to show tomorrow\'s classes"),
         "widget_tomorrow_preview_hour_title":
-            MessageLookupByLibrary.simpleMessage("Tomorrow Preview Start Time")
+            MessageLookupByLibrary.simpleMessage("Tomorrow Preview Start Time"),
+        "if_show_non_current_week_courses_subtitle":
+            MessageLookupByLibrary.simpleMessage(
+                "Whether to show courses that are not scheduled for the current week"),
+        "if_show_non_current_week_courses_title":
+            MessageLookupByLibrary.simpleMessage("Show Non-Current Week Courses")
       };
 }

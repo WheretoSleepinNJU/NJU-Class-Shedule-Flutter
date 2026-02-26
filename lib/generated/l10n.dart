@@ -2220,6 +2220,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Show Non-Current Week Courses`
+  String get if_show_non_current_week_courses_title {
+    return Intl.message(
+      'Show Non-Current Week Courses',
+      name: 'if_show_non_current_week_courses_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Whether to show courses that are not scheduled for the current week`
+  String get if_show_non_current_week_courses_subtitle {
+    return Intl.message(
+      'Whether to show courses that are not scheduled for the current week',
+      name: 'if_show_non_current_week_courses_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

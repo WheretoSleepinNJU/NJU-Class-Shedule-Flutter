@@ -14,6 +14,7 @@ mixin ConfigStateModel on Model {
   String? _bgImgPath = "";
   int _lastCheckUpdateTime = 0;
   int _coolDownTime = 600;
+  bool _showNonCurrentWeekCourses = true;
 
   // Widget configuration
   int _widgetApproachingMinutes = 15;
@@ -234,6 +235,23 @@ mixin ConfigStateModel on Model {
     // IMPORTANT: don't notify listeners
     SharedPreferences sp = await SharedPreferences.getInstance();
     sp.setInt("coolDownTime", _coolDownTime);
+  }
+
+  void setShowNonCurrentWeekCourses(bool showNonCurrentWeekCourses) async {
+    _showNonCurrentWeekCourses = showNonCurrentWeekCourses;
+    notifyListeners();
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setBool("showNonCurrentWeekCourses", _showNonCurrentWeekCourses);
+  }
+
+  Future<bool> getShowNonCurrentWeekCourses() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    bool? showNonCurrentWeekCourses = sp.getBool("showNonCurrentWeekCourses");
+    if (showNonCurrentWeekCourses != null) {
+      _showNonCurrentWeekCourses = showNonCurrentWeekCourses;
+      return showNonCurrentWeekCourses;
+    }
+    return _showNonCurrentWeekCourses;
   }
 
   // Widget configuration getters and setters

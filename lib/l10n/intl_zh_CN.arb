@@ -216,5 +216,7 @@
   "widget_tomorrow_preview_hour_subtitle": "晚上几点后显示明天的课程",
   "widget_minutes_unit": "{minutes} 分钟",
   "widget_hour_unit": "{hour}:00",
-  "widget_settings_saved": "小组件设置已保存"
+  "widget_settings_saved": "小组件设置已保存",
+  "if_show_non_current_week_courses_title": "显示非本周课程",
+  "if_show_non_current_week_courses_subtitle": "设置是否显示非本周课程"
 }

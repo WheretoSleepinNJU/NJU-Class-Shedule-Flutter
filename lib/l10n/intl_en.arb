@@ -216,5 +216,7 @@
   "widget_tomorrow_preview_hour_subtitle": "At what time in evening to show tomorrow's classes",
   "widget_minutes_unit": "{minutes} min",
   "widget_hour_unit": "{hour}:00",
-  "widget_settings_saved": "Widget settings saved"
+  "widget_settings_saved": "Widget settings saved",
+  "if_show_non_current_week_courses_title": "Show Non-Current Week Courses",
+  "if_show_non_current_week_courses_subtitle": "Whether to show courses that are not scheduled for the current week"
 }
