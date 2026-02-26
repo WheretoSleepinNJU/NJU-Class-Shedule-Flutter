@@ -70,7 +70,7 @@ dependencies:
   package_info_plus:
     path: ./external/flutter_plus_plugins/packages/package_info_plus/package_info_plus
   # Android iOS       macOS
-  flutter_html: ^3.0.0-alpha.5
+  flutter_html: ^3.0.0-beta.2
   # Android iOS
   # https://gitcode.com/openharmony-sig/fluttertpc_share_extend/pull/8
   share_extend:
