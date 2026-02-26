@@ -83,7 +83,7 @@ class WeekUtil {
   static String getTmpMonthName(int biasWeek) {
     DateTime now = DateTime.now();
     now = now.add(Duration(days: biasWeek * 7));
-    var formatter = DateFormat('MMM');
+    var formatter = DateFormat('MMM', 'en_US');
     return formatter.format(now);
   }
 
