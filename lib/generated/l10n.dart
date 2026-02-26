@@ -460,20 +460,20 @@ class S {
     );
   }
 
-  /// `二维码导入/导出课表`
+  /// `导入/导出课表`
   String get import_or_export_title {
     return Intl.message(
-      '二维码导入/导出课表',
+      '导入/导出课表',
       name: 'import_or_export_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `离线分享：二维码/分享串导入导出（区别于在线导入）`
+  /// `通过二维码/分享串导入导出`
   String get import_or_export_subtitle {
     return Intl.message(
-      '离线分享：二维码/分享串导入导出（区别于在线导入）',
+      '通过二维码/分享串导入导出',
       name: 'import_or_export_subtitle',
       desc: '',
       args: [],
@@ -1210,20 +1210,20 @@ class S {
     );
   }
 
-  /// `离线导入课表`
+  /// `导入课表`
   String get import_from_qrcode_title {
     return Intl.message(
-      '离线导入课表',
+      '导入课表',
       name: 'import_from_qrcode_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `从二维码或分享串离线导入（不走教务在线导入）`
+  /// `从二维码或分享串导入课表`
   String get import_from_qrcode_subtitle {
     return Intl.message(
-      '从二维码或分享串离线导入（不走教务在线导入）',
+      '从二维码或分享串导入课表',
       name: 'import_from_qrcode_subtitle',
       desc: '',
       args: [],

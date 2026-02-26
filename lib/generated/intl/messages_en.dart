@@ -213,9 +213,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_from_qrcode_content": MessageLookupByLibrary.simpleMessage(
             "扫描二维码或粘贴分享串导入此课表\n南哪课表-设置-导入/导出课表"),
         "import_from_qrcode_subtitle":
-            MessageLookupByLibrary.simpleMessage("从二维码或分享串离线导入（不走教务在线导入）"),
+            MessageLookupByLibrary.simpleMessage("从二维码或分享串导入课表"),
         "import_from_qrcode_title":
-            MessageLookupByLibrary.simpleMessage("离线导入课表"),
+            MessageLookupByLibrary.simpleMessage("导入课表"),
         "import_inline":
             MessageLookupByLibrary.simpleMessage("内置导入：应用内自带的导入方式"),
         "import_manually": MessageLookupByLibrary.simpleMessage("手动导入"),
@@ -226,9 +226,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_online":
             MessageLookupByLibrary.simpleMessage("在线导入：从服务器获取的最新配置"),
         "import_or_export_subtitle":
-            MessageLookupByLibrary.simpleMessage("离线分享：二维码/分享串导入导出（区别于在线导入）"),
+            MessageLookupByLibrary.simpleMessage("通过二维码/分享串导入导出"),
         "import_or_export_title":
-            MessageLookupByLibrary.simpleMessage("二维码导入/导出课表"),
+            MessageLookupByLibrary.simpleMessage("导入/导出课表"),
         "import_qr_title": MessageLookupByLibrary.simpleMessage("二维码导入"),
         "import_settings_title": MessageLookupByLibrary.simpleMessage("导入课程表"),
         "import_subtitle": MessageLookupByLibrary.simpleMessage("自动导入课程表数据"),
