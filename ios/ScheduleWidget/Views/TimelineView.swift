@@ -60,7 +60,7 @@ struct TimelineCourseCard: View {
     let isCurrent: Bool
 
     var body: some View {
-        Link(destination: URL(string: "njuschedule://course/\(course.id)")!) {
+        Link(destination: URL(string: "ncs://course/\(course.id)")!) {
             HStack(spacing: 12) {
                 // Time column
                 VStack(spacing: 4) {

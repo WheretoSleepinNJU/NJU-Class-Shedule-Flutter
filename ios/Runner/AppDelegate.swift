@@ -286,8 +286,8 @@ import ActivityKit
   override func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
     print("🔗 [AppDelegate] Received URL: \(url.absoluteString)")
 
-    // Handle njuschedule:// scheme
-    if url.scheme == "njuschedule" {
+    // Handle ncs:// scheme
+    if url.scheme == "ncs" {
       handleDeepLink(url)
       return true
     }
@@ -320,7 +320,7 @@ import ActivityKit
   }
 
   /// 处理"我已到达"按钮点击
-  /// URL format: njuschedule://arrived/{courseId}
+  /// URL format: ncs://arrived/{courseId}
   private func handleArrivedDeepLink(url: URL) {
     let pathComponents = url.pathComponents.filter { $0 != "/" }
     guard let courseId = pathComponents.first else {
@@ -362,7 +362,7 @@ import ActivityKit
   }
 
   /// 处理课程详情链接（预留）
-  /// URL format: njuschedule://course/{courseId}
+  /// URL format: ncs://course/{courseId}
   private func handleCourseDeepLink(url: URL) {
     let pathComponents = url.pathComponents.filter { $0 != "/" }
     guard let courseId = pathComponents.first else {

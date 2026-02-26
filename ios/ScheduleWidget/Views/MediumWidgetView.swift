@@ -386,7 +386,7 @@ private struct DetailedCourseCard: View {
                 .padding(.leading, -10)
             }
         )
-        .widgetURL(URL(string: "njuschedule://course/\(course.id)"))
+        .widgetURL(URL(string: "ncs://course/\(course.id)"))
     }
 
     // 自适应间距：根据课程名称长度动态调整
@@ -527,7 +527,7 @@ private struct ArrivedButtonView: View {
         VStack {
             Spacer()
 
-            Link(destination: URL(string: "njuschedule://arrived/\(courseId)")!) {
+            Link(destination: URL(string: "ncs://arrived/\(courseId)")!) {
                 VStack(spacing: 8) {
                     Image(systemName: "location.fill")
                         .font(.system(size: 24))
@@ -591,7 +591,7 @@ private struct CompactCourseRow: View {
     let timeTemplate: SchoolTimeTemplate?
 
     var body: some View {
-        Link(destination: URL(string: "njuschedule://course/\(course.id)")!) {
+        Link(destination: URL(string: "ncs://course/\(course.id)")!) {
             VStack(alignment: .leading, spacing: 1) {
                 // 课程名
                 Text(course.name)

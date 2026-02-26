@@ -37,13 +37,15 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m7(code) =>
       "看起来导入失败了，都怪傻翠！\n\n本次导入错误码：${code}\n\n点击下方按钮将复制该错误码并加入用户群，你可以报告傻翠并等待修复，当然，也可以试试其他方式是否可以正常导入";
 
-  static String m8(num) => "第 ${num} 周";
+  static String m8(received, total) => "已接收 ${received}/${total}";
 
-  static String m9(start, end) => "${start}-${end} 周";
+  static String m9(num) => "第 ${num} 周";
 
-  static String m10(hour) => "${hour}:00";
+  static String m10(start, end) => "${start}-${end} 周";
 
-  static String m11(minutes) => "${minutes} 分钟";
+  static String m11(hour) => "${hour}:00";
+
+  static String m12(minutes) => "${minutes} 分钟";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -137,8 +139,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "easter_egg": MessageLookupByLibrary.simpleMessage(
             "感谢小百合工作室\n感谢 @ns @lgt @FengChendian @SuperKenVery 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光"),
         "easter_egg_title": MessageLookupByLibrary.simpleMessage("彩蛋与致谢"),
-        "export_classtable_subtitle": MessageLookupByLibrary.simpleMessage(
-            "导出当前课表为二维码/链接\n使用公共服务 file.io"),
+        "export_classtable_subtitle":
+            MessageLookupByLibrary.simpleMessage("导出当前课表为二维码或分享串"),
         "export_classtable_title":
             MessageLookupByLibrary.simpleMessage("导出当前课表"),
         "export_title": MessageLookupByLibrary.simpleMessage("导出课程表"),
@@ -205,11 +207,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("南京大学本科生选课系统"),
         "import_from_lecture": MessageLookupByLibrary.simpleMessage("讲座导入"),
         "import_from_qrcode_content": MessageLookupByLibrary.simpleMessage(
-            "扫描二维码导入此课表\n南哪课表-设置-导入/导出课表-二维码导入课表\n有效期一周，扫描一次后过期"),
+            "扫描二维码或粘贴分享串导入此课表\n南哪课表-设置-导入/导出课表"),
         "import_from_qrcode_subtitle":
-            MessageLookupByLibrary.simpleMessage("从他人分享的二维码导入课表"),
+            MessageLookupByLibrary.simpleMessage("从二维码或分享串离线导入（不走教务在线导入）"),
         "import_from_qrcode_title":
-            MessageLookupByLibrary.simpleMessage("二维码导入课表"),
+            MessageLookupByLibrary.simpleMessage("离线导入课表"),
         "import_inline":
             MessageLookupByLibrary.simpleMessage("内置导入：应用内自带的导入方式"),
         "import_manually": MessageLookupByLibrary.simpleMessage("手动导入"),
@@ -220,9 +222,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_online":
             MessageLookupByLibrary.simpleMessage("在线导入：从服务器获取的最新配置"),
         "import_or_export_subtitle":
-            MessageLookupByLibrary.simpleMessage("使用南哪课表内置的导入/导出功能"),
+            MessageLookupByLibrary.simpleMessage("离线分享：二维码/分享串导入导出（区别于在线导入）"),
         "import_or_export_title":
-            MessageLookupByLibrary.simpleMessage("导入/导出课表"),
+            MessageLookupByLibrary.simpleMessage("二维码导入/导出课表"),
         "import_qr_title": MessageLookupByLibrary.simpleMessage("二维码导入"),
         "import_settings_title": MessageLookupByLibrary.simpleMessage("导入课程表"),
         "import_subtitle": MessageLookupByLibrary.simpleMessage("自动导入课程表数据"),
@@ -294,12 +296,26 @@ class MessageLookup extends MessageLookupByLibrary {
         "password_error_toast":
             MessageLookupByLibrary.simpleMessage("密码错误 = =||"),
         "pay_open_fail_toast": MessageLookupByLibrary.simpleMessage("打开失败"),
+        "qr_error_checksum_mismatch":
+            MessageLookupByLibrary.simpleMessage("二维码数据校验失败"),
+        "qr_error_payload_corrupted":
+            MessageLookupByLibrary.simpleMessage("二维码数据损坏"),
+        "qr_error_unsupported_protocol":
+            MessageLookupByLibrary.simpleMessage("二维码协议版本不支持"),
+        "qr_scan_from_clipboard_button":
+            MessageLookupByLibrary.simpleMessage("从剪贴板导入"),
+        "qr_scan_from_gallery_button":
+            MessageLookupByLibrary.simpleMessage("从相册导入二维码"),
+        "qr_scan_parts_received_toast": m8,
+        "qr_share_copy_button": MessageLookupByLibrary.simpleMessage("复制完整分享串"),
+        "qr_share_copy_success_toast":
+            MessageLookupByLibrary.simpleMessage("已复制完整分享串"),
         "qrcode_name_error_toast":
             MessageLookupByLibrary.simpleMessage("读取课表名称失败，可能为链接错误"),
         "qrcode_read_error_toast":
             MessageLookupByLibrary.simpleMessage("读取课程表，可能是 bug"),
         "qrcode_url_error_toast":
-            MessageLookupByLibrary.simpleMessage("二维码无效，可能为链接过期"),
+            MessageLookupByLibrary.simpleMessage("分享串或二维码无效"),
         "remember_password": MessageLookupByLibrary.simpleMessage("记住密码"),
         "report_subtitle": MessageLookupByLibrary.simpleMessage(
             "加入用户群一起愉快地玩耍吧！\n轻触直接加群，长按复制群号"),
@@ -340,8 +356,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "view_lecture_subtitle":
             MessageLookupByLibrary.simpleMessage("查看南哪最新讲座信息，可一键导入至课表"),
         "view_lecture_title": MessageLookupByLibrary.simpleMessage("查看/添加讲座"),
-        "week": m8,
-        "week_duration": m9,
+        "week": m9,
+        "week_duration": m10,
         "week_num_invalid_dialog_content":
             MessageLookupByLibrary.simpleMessage("课程结束周数应大于起始周数"),
         "week_num_invalid_dialog_title":
@@ -363,8 +379,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("在课程开始前多久显示\"即将上课\"状态"),
         "widget_approaching_minutes_title":
             MessageLookupByLibrary.simpleMessage("即将上课提醒时间"),
-        "widget_hour_unit": m10,
-        "widget_minutes_unit": m11,
+        "widget_hour_unit": m11,
+        "widget_minutes_unit": m12,
         "widget_settings_saved":
             MessageLookupByLibrary.simpleMessage("小组件设置已保存"),
         "widget_tomorrow_preview_hour_subtitle":

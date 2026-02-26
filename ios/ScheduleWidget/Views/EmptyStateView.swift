@@ -24,7 +24,7 @@ struct ErrorView: View {
     let message: String
 
     var body: some View {
-        Link(destination: URL(string: "njuschedule://refresh")!) {
+        Link(destination: URL(string: "ncs://refresh")!) {
             VStack(spacing: 8) {
                 Image(systemName: "exclamationmark.triangle")
                     .font(.system(size: 32))

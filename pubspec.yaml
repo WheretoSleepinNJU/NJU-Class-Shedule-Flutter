@@ -56,7 +56,7 @@ dependencies:
   umeng_common_sdk_ohos: 1.2.9
   # Android iOS
 
-#  qr_code_scanner: ^1.0.1
+  qr_code_scanner: ^1.0.1
   # Android iOS
   flutter_linkify: ^6.0.0
   # Android iOS Linux macOS web Windows
@@ -83,6 +83,8 @@ dependencies:
   # Android iOS             web
   qr_flutter: ^4.0.0
   # Android iOS Linux macOS web Windows
+  zxing2: ^0.2.3
+  es_compression: ^2.0.14
   html: ^0.15.0
   # Android iOS Linux macOS web Windows
   dio: ^5.9.0

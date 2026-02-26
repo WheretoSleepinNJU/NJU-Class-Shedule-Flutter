@@ -462,9 +462,9 @@ Text(teacher)
 ### URL Scheme
 
 **Widget 点击跳转：**
-- 主屏 Widget → `njuschedule://course/{courseId}`
-- 锁屏 Widget → `njuschedule://today`
-- Live Activity → `njuschedule://course/{courseId}`
+- 主屏 Widget → `ncs://course/{courseId}`
+- 锁屏 Widget → `ncs://today`
+- Live Activity → `ncs://course/{courseId}`
 
 **跳转目标：**
 - 课程详情页（显示课程完整信息）

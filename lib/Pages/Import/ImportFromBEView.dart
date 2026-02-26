@@ -16,6 +16,7 @@ import '../../Components/Toast.dart';
 import '../../Models/CourseModel.dart';
 import '../../Models/CourseTableModel.dart';
 import '../../Resources/Url.dart';
+import '../../Utils/CourseImportCodec.dart';
 
 class ImportFromBEView extends StatefulWidget {
   final String? title;
@@ -190,9 +191,8 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
       List<Map<String, dynamic>> coursesMap =
           List<Map<String, dynamic>>.from(courses);
       for (var courseMap in coursesMap) {
-        courseMap.remove('id');
-        courseMap['tableid'] = index;
-        Course course = Course.fromMap(courseMap);
+        final dbMap = CourseImportCodec.onlineCourseToDbMap(courseMap, tableId: index);
+        Course course = Course.fromMap(dbMap);
         await courseProvider.insert(course);
       }
       UmengCommonSdk.onEvent(
