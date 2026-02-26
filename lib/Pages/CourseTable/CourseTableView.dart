@@ -124,20 +124,12 @@ class CourseTableViewState extends State<CourseTableView> {
     int height = await ScopedModel.of<MainStateModel>(context).getClassHeight();
 
     if (_isForceZoom) {
-      if ((!_isShowFreeClass) || (_freeCourseNum == 0)) {
-        _classTitleHeight = (_screenHeight -
-                kToolbarHeight -
-                MediaQuery.of(context).padding.top -
-                (_isShowDate ? _weekTitleHeight * 1.2 : _weekTitleHeight)) /
-            _maxShowClasses;
-      } else {
-        _classTitleHeight = (_screenHeight -
-                kToolbarHeight -
-                _snackbarHeight -
-                MediaQuery.of(context).padding.top -
-                (_isShowDate ? _weekTitleHeight * 1.2 : _weekTitleHeight)) /
-            _maxShowClasses;
-      }
+      // 强制缩放时，课程表填满整个屏幕，FreeClass 浮动覆盖在上方
+      _classTitleHeight = (_screenHeight -
+              kToolbarHeight -
+              MediaQuery.of(context).padding.top -
+              (_isShowDate ? _weekTitleHeight * 1.2 : _weekTitleHeight)) /
+          _maxShowClasses;
     } else if (height.toDouble() != 0) {
       _classTitleHeight = height.toDouble();
     } else {
@@ -372,6 +364,13 @@ class CourseTableViewState extends State<CourseTableView> {
                                               model.changeTmpWeek(targetWeek);
                                               UmengCommonSdk.onEvent("week_choose",
                                                   {"action": "swipe"});
+                                              // 切换周次时重置 FreeClass 显示状态
+                                              if (!_isFreeClassVisible) {
+                                                setState(() {
+                                                  _isFreeClassVisible = true;
+                                                  _lastScrollOffset = 0;
+                                                });
+                                              }
                                             }
                                           },
                                           itemBuilder: (BuildContext context,
