@@ -35,6 +35,9 @@ class CourseTableView extends StatefulWidget {
 class CourseTableViewState extends State<CourseTableView> {
   final CourseTablePresenter _presenter = CourseTablePresenter();
   PageController? _weekPageController;
+  ScrollController? _scrollController;
+  bool _isFreeClassVisible = true;
+  double _lastScrollOffset = 0;
   late bool _isShowWeekend;
   late bool _isShowClassTime;
   late bool _isShowFreeClass;
@@ -200,14 +203,42 @@ class CourseTableViewState extends State<CourseTableView> {
     });
   }
 
+  void _onScroll() {
+    if (_scrollController == null) return;
+    final currentOffset = _scrollController!.offset;
+    final direction = currentOffset - _lastScrollOffset;
+    
+    // 下滑（内容向上滚动）隐藏，上滑（内容向下滚动）显示
+    if (direction > 2) {
+      // 下滑超过阈值，隐藏
+      if (_isFreeClassVisible) {
+        setState(() {
+          _isFreeClassVisible = false;
+        });
+      }
+    } else if (direction < -2) {
+      // 上滑超过阈值，显示
+      if (!_isFreeClassVisible) {
+        setState(() {
+          _isFreeClassVisible = true;
+        });
+      }
+    }
+    _lastScrollOffset = currentOffset;
+  }
+
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
+    _scrollController!.addListener(_onScroll);
     basicCheck();
   }
 
   @override
   void dispose() {
+    _scrollController?.removeListener(_onScroll);
+    _scrollController?.dispose();
     _weekPageController?.dispose();
     super.dispose();
   }
@@ -372,6 +403,7 @@ class CourseTableViewState extends State<CourseTableView> {
                                                                             .grey),
                                                               ));
                                                   return SingleChildScrollView(
+                                                      controller: _scrollController,
                                                       child: Row(
                                                           crossAxisAlignment:
                                                               CrossAxisAlignment
@@ -403,10 +435,12 @@ class CourseTableViewState extends State<CourseTableView> {
                                 ]),
                             // FreeClass 浮动在底部，不遮挡课程内容
                             if ((_isShowFreeClass) && (_freeCourseNum > 0))
-                              Positioned(
+                              AnimatedPositioned(
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeInOut,
                                 left: 0,
                                 right: 0,
-                                bottom: 40.0,
+                                bottom: _isFreeClassVisible ? 40.0 : -100.0,
                                 child: Padding(
                                   // 1. 侧边 Padding，让组件不贴屏幕边缘，产生悬浮感
                                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
