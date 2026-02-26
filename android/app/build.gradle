@@ -30,6 +30,10 @@ android {
     namespace "com.lilystudio.wheretosleepinnju"
     compileSdkVersion 35
 
+    sourceSets {
+        main.jniLibs.srcDirs += 'src/main/jniLibs'
+    }
+
     lintOptions {
         disable 'InvalidPackage'
         disable "Instantiatable"
