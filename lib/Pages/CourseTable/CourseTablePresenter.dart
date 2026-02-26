@@ -49,21 +49,30 @@ class CourseTablePresenter {
   }
 
   Future<List<Widget>?> getClassesWidgetList(
-      BuildContext context, double height, double width, int nowWeek) async {
+      BuildContext context, double height, double width, int nowWeek, bool showNonCurrentWeekCourses) async {
     List colorPool = await ColorPool.getColorPool();
+    
+    // Filter hideCourses based on setting
+    List<Course> filteredHideCourses = showNonCurrentWeekCourses ? hideCourses : [];
+    
+    // Filter multiCourses - only show if the first course is for current week or setting is enabled
+    List<List<Course>> filteredMultiCourses = showNonCurrentWeekCourses 
+        ? multiCourses 
+        : multiCourses.where((courses) => isThisWeek(courses[0], nowWeek)).toList();
+    
     List<Widget> result = List.generate(
-            hideCourses.length,
+            filteredHideCourses.length,
             (int i) => CourseWidget(
-                  hideCourses[i],
+                  filteredHideCourses[i],
                   Config.HIDE_CLASS_COLOR,
                   height,
                   width,
                   false,
                   false,
-                  () => showClassDialog(context, hideCourses[i], false),
+                  () => showClassDialog(context, filteredHideCourses[i], false),
                   () => showDeleteDialog(
                     context,
-                    hideCourses[i],
+                    filteredHideCourses[i],
                   ),
                 )) +
         List.generate(
@@ -79,16 +88,16 @@ class CourseTablePresenter {
                   () => showDeleteDialog(context, activeCourses[i]),
                 )) +
         List.generate(
-            multiCourses.length,
+            filteredMultiCourses.length,
             (int i) => CourseWidget(
-                multiCourses[i][0],
-                multiCourses[i][0].getColor(colorPool)!,
+                filteredMultiCourses[i][0],
+                filteredMultiCourses[i][0].getColor(colorPool)!,
                 height,
                 width,
-                isThisWeek(multiCourses[i][0], nowWeek),
+                isThisWeek(filteredMultiCourses[i][0], nowWeek),
                 true,
-                () => showMultiClassDialog(context, i, nowWeek),
-                () => showDeleteDialog(context, multiCourses[i][0])));
+                () => showMultiClassDialog(context, multiCourses.indexOf(filteredMultiCourses[i]), nowWeek),
+                () => showDeleteDialog(context, filteredMultiCourses[i][0])));
     return result;
   }
 

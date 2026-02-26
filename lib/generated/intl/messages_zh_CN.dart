@@ -386,6 +386,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "widget_tomorrow_preview_hour_subtitle":
             MessageLookupByLibrary.simpleMessage("晚上几点后显示明天的课程"),
         "widget_tomorrow_preview_hour_title":
-            MessageLookupByLibrary.simpleMessage("明日预览开始时间")
+            MessageLookupByLibrary.simpleMessage("明日预览开始时间"),
+        "if_show_non_current_week_courses_subtitle":
+            MessageLookupByLibrary.simpleMessage("设置是否显示非本周课程"),
+        "if_show_non_current_week_courses_title":
+            MessageLookupByLibrary.simpleMessage("显示非本周课程")
       };
 }

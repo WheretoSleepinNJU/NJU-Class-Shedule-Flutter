@@ -41,6 +41,7 @@ class CourseTableViewState extends State<CourseTableView> {
   late bool _isShowMonth;
   late bool _isShowDate;
   late bool _isForceZoom;
+  late bool _isShowNonCurrentWeekCourses;
   late List<Map> _classTimeList;
   late bool _isShowAddButton;
   late bool? _isWhiteMode;
@@ -75,6 +76,7 @@ class CourseTableViewState extends State<CourseTableView> {
     _isShowMonth = await ScopedModel.of<MainStateModel>(context).getShowMonth();
     _isShowDate = await ScopedModel.of<MainStateModel>(context).getShowDate();
     _isForceZoom = await ScopedModel.of<MainStateModel>(context).getForceZoom();
+    _isShowNonCurrentWeekCourses = await ScopedModel.of<MainStateModel>(context).getShowNonCurrentWeekCourses();
 
     _isShowAddButton =
         await ScopedModel.of<MainStateModel>(context).getAddButton();
@@ -140,7 +142,7 @@ class CourseTableViewState extends State<CourseTableView> {
     }
 
     List<Widget>? classWidgets = await _presenter.getClassesWidgetList(
-        context, _classTitleHeight, _weekTitleWidth, _nowShowWeekNum);
+        context, _classTitleHeight, _weekTitleWidth, _nowShowWeekNum, _isShowNonCurrentWeekCourses);
 
     return classWidgets!;
   }
