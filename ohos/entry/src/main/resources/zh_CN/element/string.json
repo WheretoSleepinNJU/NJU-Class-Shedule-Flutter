@@ -23,10 +23,6 @@
     {
       "name": "reason_camera",
       "value": "需要相机权限以扫描二维码导入课表"
-    },
-    {
-      "name": "reason_read_image_video",
-      "value": "需要读取相册权限以从相册选择二维码图片"
     }
   ]
 }
