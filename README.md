@@ -96,4 +96,4 @@
 * 切到 OHOS 构建环境：`source tool/switch_flutter_env.sh ohos`
 * 切回官方 Flutter（Android/iOS 常用）：`source tool/switch_flutter_env.sh official`
 
-切换后建议运行 `flutter doctor -v` 或 `fvm flutter doctor -v` 做一次确认。
+切换后建议运行 `flutter doctor -v` 或 `fvm flutter doctor -v` 做一次确认，并执行 `flutter clean` 以清除之前环境的构建缓存。
