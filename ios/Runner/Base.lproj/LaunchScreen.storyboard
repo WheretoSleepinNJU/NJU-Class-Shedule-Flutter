@@ -23,7 +23,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" fixedFrame="YES" image="BrandingImage" translatesAutoresizingMaskIntoConstraints="NO" id="ZNn-TW-qas">
-                                <rect key="frame" x="132" y="362" width="128" height="128"/>
+                                <rect key="frame" x="68" y="298" width="256" height="256"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                         </subviews>

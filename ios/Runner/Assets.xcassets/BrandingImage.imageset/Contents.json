@@ -1,11 +1,6 @@
 {
   "images" : [
     {
-      "filename" : "BrandingImage.png",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
       "filename" : "top.png",
       "idiom" : "universal",
       "scale" : "1x"
