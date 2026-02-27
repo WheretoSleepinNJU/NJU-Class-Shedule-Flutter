@@ -1,21 +1,9 @@
 import 'dart:convert';
 
-import 'package:es_compression/brotli.dart' as br;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wheretosleepinnju/Pages/Share/qr_payload_codec.dart';
 
 void main() {
-  bool isBrotliRuntimeAvailable() {
-    try {
-      br.brotli.encode(utf8.encode('ping'));
-      return true;
-    } catch (_) {
-      return false;
-    }
-  }
-
-  final bool brotliAvailable = isBrotliRuntimeAvailable();
-
   Map<String, dynamic> samplePayload() {
     return QrPayloadCodec.buildSchedulePayload(
       tableName: '测试课表',
@@ -42,7 +30,6 @@ void main() {
   }
 
   test('single frame encode/decode works', () {
-    if (!brotliAvailable) return;
     final payload = samplePayload();
     final encoded = QrPayloadCodec.encodePayload(payload);
     final frames = QrPayloadCodec.buildFramesFromEncodedPayload(encoded, maxPartLength: 4096);
@@ -55,11 +42,10 @@ void main() {
 
     final decoded = QrPayloadCodec.decodeEncodedPayload(parsed.payload);
     expect(decoded['t'], kNcsQrType);
-    expect(decoded['alg'], kNcsQrAlgBrotli);
+    expect(decoded['alg'], kNcsQrAlgGzip);
   });
 
   test('multi frame split/merge works', () {
-    if (!brotliAvailable) return;
     final payload = samplePayload();
     final encoded = QrPayloadCodec.encodePayload(payload);
     final frames = QrPayloadCodec.buildFramesFromEncodedPayload(encoded, maxPartLength: 24);
@@ -83,7 +69,6 @@ void main() {
   });
 
   test('checksum mismatch is rejected', () {
-    if (!brotliAvailable) return;
     final payload = samplePayload();
     final encoded = QrPayloadCodec.encodePayload(payload);
     final decoded = QrPayloadCodec.decodeEncodedPayload(encoded);
@@ -96,7 +81,6 @@ void main() {
   });
 
   test('invalid encoded payload is rejected', () {
-    if (!brotliAvailable) return;
     expect(() => QrPayloadCodec.decodeEncodedPayload(base64UrlEncode(utf8.encode('{"a":1}'))),
         throwsA(isA<FormatException>()));
   });

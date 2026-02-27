@@ -256,7 +256,7 @@ class _QRScanViewState extends State<QRScanView> {
       if (code == 'checksum_mismatch') {
         return S.of(context).qr_error_checksum_mismatch;
       }
-      if (code == 'base64_decode_failed' || code == 'brotli_decode_failed') {
+      if (code == 'base64_decode_failed' || code == 'gzip_decode_failed') {
         return S.of(context).qr_error_payload_corrupted;
       }
     }

@@ -68,7 +68,7 @@ class _ShareViewState extends State<ShareView> {
       final singleShareText = '$kNcsQrScheme://$kNcsQrHost/$kNcsQrVersion/s/$encoded';
       debugPrint(
         '[QR_EXPORT] courses=${allCoursesMap.length} jsonBytes=${bundle.jsonBytes} '
-        'brotliBytes=${bundle.brotliBytes} base64Chars=${bundle.base64Chars} '
+        'compressedBytes=${bundle.compressedBytes} base64Chars=${bundle.base64Chars} '
         'frames=${frames.length} partLimit=${QrPayloadCodec.defaultPartMaxLength}',
       );
       Navigator.of(context).push(MaterialPageRoute(

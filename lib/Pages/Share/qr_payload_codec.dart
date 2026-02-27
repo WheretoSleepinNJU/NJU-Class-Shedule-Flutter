@@ -1,11 +1,11 @@
 import 'dart:convert';
-import 'package:es_compression/brotli.dart' as br;
+import 'package:archive/archive.dart';
 import '../../Utils/CourseImportCodec.dart';
 
 const String kNcsQrScheme = 'ncs';
 const String kNcsQrHost = 'qr';
 const String kNcsQrVersion = 'v1';
-const String kNcsQrAlgBrotli = 'br';
+const String kNcsQrAlgGzip = 'gz';
 const String kNcsQrType = 'ncs_qr_schedule';
 const int kNcsQrPayloadMaxChars = 20000;
 const int kNcsQrMaxDecompressedBytes = 256 * 1024;
@@ -36,13 +36,13 @@ class ParsedQrFrame {
 class EncodedPayloadBundle {
   final String encodedPayload;
   final int jsonBytes;
-  final int brotliBytes;
+  final int compressedBytes;
   final int base64Chars;
 
   const EncodedPayloadBundle({
     required this.encodedPayload,
     required this.jsonBytes,
-    required this.brotliBytes,
+    required this.compressedBytes,
     required this.base64Chars,
   });
 }
@@ -64,7 +64,7 @@ class QrPayloadCodec {
     return <String, dynamic>{
       't': kNcsQrType,
       'v': 1,
-      'alg': kNcsQrAlgBrotli,
+      'alg': kNcsQrAlgGzip,
       'meta': <String, dynamic>{
         'app': 'wheretosleepinnju',
         'exportedAt': DateTime.now().toUtc().toIso8601String(),
@@ -81,12 +81,15 @@ class QrPayloadCodec {
 
   static EncodedPayloadBundle encodePayloadWithStats(Map<String, dynamic> payload) {
     final rawBytes = utf8.encode(jsonEncode(payload));
-    final compressed = br.brotli.encode(rawBytes);
+    final compressed = GZipEncoder().encode(rawBytes);
+    if (compressed == null) {
+      throw const FormatException('gzip_encode_failed');
+    }
     final encoded = base64UrlEncode(compressed);
     return EncodedPayloadBundle(
       encodedPayload: encoded,
       jsonBytes: rawBytes.length,
-      brotliBytes: compressed.length,
+      compressedBytes: compressed.length,
       base64Chars: encoded.length,
     );
   }
@@ -103,9 +106,9 @@ class QrPayloadCodec {
     }
     late final List<int> decoded;
     try {
-      decoded = br.brotli.decode(compressed);
+      decoded = GZipDecoder().decodeBytes(compressed);
     } catch (_) {
-      throw const FormatException('brotli_decode_failed');
+      throw const FormatException('gzip_decode_failed');
     }
     if (decoded.length > kNcsQrMaxDecompressedBytes) {
       throw const FormatException('decompressed_payload_too_large');
@@ -232,7 +235,7 @@ class QrPayloadCodec {
     if (payload['v'] != 1) {
       throw const FormatException('unsupported_payload_version');
     }
-    if (payload['alg'] != kNcsQrAlgBrotli) {
+    if (payload['alg'] != kNcsQrAlgGzip) {
       throw const FormatException('unsupported_payload_algorithm');
     }
     final table = payload['table'];
