@@ -65,6 +65,26 @@
           ],
           "when": "inuse"
         }
+      },
+      {
+        "name": "ohos.permission.CAMERA",
+        "reason": "$string:reason_camera",
+        "usedScene": {
+          "abilities": [
+            "EntryAbility"
+          ],
+          "when": "inuse"
+        }
+      },
+      {
+        "name": "ohos.permission.READ_IMAGEVIDEO",
+        "reason": "$string:reason_read_image_video",
+        "usedScene": {
+          "abilities": [
+            "EntryAbility"
+          ],
+          "when": "inuse"
+        }
       }
     ],
     "extensionAbilities": [
