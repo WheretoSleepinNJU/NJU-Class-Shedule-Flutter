@@ -454,6 +454,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.8.8"
+  js:
+    dependency: transitive
+    description:
+      name: js
+      sha256: c1b2e9b5ea78c45e1a0788d29606ba27dc5f71f019f32ca5140f61ef071838cf
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.7.1"
   leak_tracker:
     dependency: transitive
     description:
@@ -534,6 +542,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.0"
+  mobile_scanner:
+    dependency: "direct main"
+    description:
+      path: "external/fluttertpc_mobile_scanner"
+      relative: true
+    source: path
+    version: "3.5.6"
   package_config:
     dependency: transitive
     description:
@@ -668,14 +683,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.0.2"
-  qr_code_scanner_plus:
-    dependency: "direct main"
-    description:
-      name: qr_code_scanner_plus
-      sha256: b764e5004251c58d9dee0c295e6006e05bd8d249e78ac3383abdb5afe0a996cd
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "2.0.14"
   qr_flutter:
     dependency: "direct main"
     description:

@@ -37,6 +37,9 @@ dependencies:
   # Android iOS             web harmonyos
   palette_generator:
     path: ./external/flutter_packages/packages/palette_generator
+  mobile_scanner:
+    path: ./external/fluttertpc_mobile_scanner
+
 
   sqflite: ^2.0.0+4
   # Android iOS       macOS
@@ -56,8 +59,7 @@ dependencies:
   umeng_common_sdk_ohos: 1.2.9
   # Android iOS
 
-  qr_code_scanner_plus: ^2.0.13
-  # Android iOS
+  # Android iOS macOS web
   flutter_linkify: ^6.0.0
   # Android iOS Linux macOS web Windows
   

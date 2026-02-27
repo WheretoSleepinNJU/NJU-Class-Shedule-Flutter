@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
-import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:zxing2/qrcode.dart';
 
 import '../../Components/Toast.dart';
@@ -21,28 +21,14 @@ class QRScanView extends StatefulWidget {
 }
 
 class _QRScanViewState extends State<QRScanView> {
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  QRViewController? _controller;
+  final MobileScannerController _controller = MobileScannerController();
 
   final Map<String, _MultiGroupBuffer> _groups = <String, _MultiGroupBuffer>{};
   bool _isCompleting = false;
 
   @override
-  void reassemble() {
-    super.reassemble();
-    if (_controller == null) {
-      return;
-    }
-    if (Platform.isAndroid) {
-      _controller!.pauseCamera();
-    } else if (Platform.isIOS) {
-      _controller!.resumeCamera();
-    }
-  }
-
-  @override
   void dispose() {
-    _controller?.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -55,19 +41,39 @@ class _QRScanViewState extends State<QRScanView> {
       body: Column(
         children: <Widget>[
           Expanded(
-              child: QRView(
-            key: qrKey,
-            onQRViewCreated: _onQRViewCreated,
-            overlay: QrScannerOverlayShape(
-              borderColor: Theme.of(context).brightness == Brightness.light
-                  ? Theme.of(context).primaryColor
-                  : Colors.white,
-              borderRadius: 10,
-              borderLength: 30,
-              borderWidth: 10,
-              cutOutSize: 300,
+            child: Stack(
+              children: [
+                MobileScanner(
+                  controller: _controller,
+                  onDetect: (BarcodeCapture capture) {
+                    final List<Barcode> barcodes = capture.barcodes;
+                    for (final barcode in barcodes) {
+                      final raw = barcode.rawValue;
+                      if (raw == null || raw.isEmpty) {
+                        continue;
+                      }
+                      _handleRaw(raw);
+                    }
+                  },
+                ),
+                Center(
+                  child: Container(
+                    width: 300,
+                    height: 300,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? Theme.of(context).primaryColor
+                            : Colors.white,
+                        width: 4,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          )),
+          ),
           SafeArea(
             top: false,
             child: Padding(
@@ -124,17 +130,6 @@ class _QRScanViewState extends State<QRScanView> {
       if (!mounted) return;
       Toast.showToast(S.of(context).qrcode_url_error_toast, context);
     }
-  }
-
-  void _onQRViewCreated(QRViewController controller) {
-    _controller = controller;
-    controller.scannedDataStream.listen((scanData) {
-      final raw = scanData.code;
-      if (raw == null || raw.isEmpty) {
-        return;
-      }
-      _handleRaw(raw);
-    });
   }
 
   Future<void> _pickFromGallery() async {
