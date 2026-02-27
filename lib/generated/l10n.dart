@@ -1290,10 +1290,10 @@ class S {
     );
   }
 
-  /// `从相册导入二维码`
+  /// `相册导入二维码`
   String get qr_scan_from_gallery_button {
     return Intl.message(
-      '从相册导入二维码',
+      '相册导入二维码',
       name: 'qr_scan_from_gallery_button',
       desc: '',
       args: [],

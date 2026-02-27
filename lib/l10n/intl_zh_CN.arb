@@ -124,7 +124,7 @@
   "qrcode_url_error_toast": "分享串或二维码无效",
   "qrcode_name_error_toast": "读取课表名称失败，可能为链接错误",
   "qrcode_read_error_toast": "读取课程表，可能是 bug",
-  "qr_scan_from_gallery_button": "从相册导入二维码",
+  "qr_scan_from_gallery_button": "相册导入二维码",
   "qr_scan_from_clipboard_button": "从剪贴板导入",
   "qr_scan_parts_received_toast": "已接收 {received}/{total}",
   "qr_error_unsupported_protocol": "二维码协议版本不支持",

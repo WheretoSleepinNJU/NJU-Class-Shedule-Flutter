@@ -309,7 +309,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "qr_scan_from_clipboard_button":
             MessageLookupByLibrary.simpleMessage("从剪贴板导入"),
         "qr_scan_from_gallery_button":
-            MessageLookupByLibrary.simpleMessage("从相册导入二维码"),
+            MessageLookupByLibrary.simpleMessage("相册导入二维码"),
         "qr_scan_parts_received_toast": m8,
         "qr_share_copy_button": MessageLookupByLibrary.simpleMessage("复制完整分享串"),
         "qr_share_copy_success_toast":
