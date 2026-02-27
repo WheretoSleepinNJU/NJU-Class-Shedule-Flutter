@@ -6,6 +6,11 @@
       "scale" : "1x"
     },
     {
+      "filename" : "top.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
       "filename" : "BrandingImage@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
