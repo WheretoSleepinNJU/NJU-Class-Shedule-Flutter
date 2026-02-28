@@ -470,10 +470,10 @@ class S {
     );
   }
 
-  /// `使用南哪课表内置的导入/导出功能`
+  /// `通过二维码/分享串导入导出`
   String get import_or_export_subtitle {
     return Intl.message(
-      '使用南哪课表内置的导入/导出功能',
+      '通过二维码/分享串导入导出',
       name: 'import_or_export_subtitle',
       desc: '',
       args: [],
@@ -1200,40 +1200,40 @@ class S {
     );
   }
 
-  /// `导出当前课表为二维码/链接\n使用公共服务 file.io`
+  /// `导出当前课表为二维码或分享串`
   String get export_classtable_subtitle {
     return Intl.message(
-      '导出当前课表为二维码/链接\n使用公共服务 file.io',
+      '导出当前课表为二维码或分享串',
       name: 'export_classtable_subtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `二维码导入课表`
+  /// `导入课表`
   String get import_from_qrcode_title {
     return Intl.message(
-      '二维码导入课表',
+      '导入课表',
       name: 'import_from_qrcode_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `从他人分享的二维码导入课表`
+  /// `从二维码或分享串导入课表`
   String get import_from_qrcode_subtitle {
     return Intl.message(
-      '从他人分享的二维码导入课表',
+      '从二维码或分享串导入课表',
       name: 'import_from_qrcode_subtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `扫描二维码导入此课表\n南哪课表-设置-导入/导出课表-二维码导入课表\n有效期一周，扫描一次后过期`
+  /// `扫描二维码或粘贴分享串导入此课表\n南哪课表-设置-导入/导出课表`
   String get import_from_qrcode_content {
     return Intl.message(
-      '扫描二维码导入此课表\n南哪课表-设置-导入/导出课表-二维码导入课表\n有效期一周，扫描一次后过期',
+      '扫描二维码或粘贴分享串导入此课表\n南哪课表-设置-导入/导出课表',
       name: 'import_from_qrcode_content',
       desc: '',
       args: [],
@@ -1260,10 +1260,10 @@ class S {
     );
   }
 
-  /// `二维码无效，可能为链接过期`
+  /// `分享串或二维码无效`
   String get qrcode_url_error_toast {
     return Intl.message(
-      '二维码无效，可能为链接过期',
+      '分享串或二维码无效',
       name: 'qrcode_url_error_toast',
       desc: '',
       args: [],
@@ -1285,6 +1285,86 @@ class S {
     return Intl.message(
       '读取课程表，可能是 bug',
       name: 'qrcode_read_error_toast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `相册导入二维码`
+  String get qr_scan_from_gallery_button {
+    return Intl.message(
+      '相册导入二维码',
+      name: 'qr_scan_from_gallery_button',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `从剪贴板导入`
+  String get qr_scan_from_clipboard_button {
+    return Intl.message(
+      '从剪贴板导入',
+      name: 'qr_scan_from_clipboard_button',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `已接收 {received}/{total}`
+  String qr_scan_parts_received_toast(Object received, Object total) {
+    return Intl.message(
+      '已接收 $received/$total',
+      name: 'qr_scan_parts_received_toast',
+      desc: '',
+      args: [received, total],
+    );
+  }
+
+  /// `二维码协议版本不支持`
+  String get qr_error_unsupported_protocol {
+    return Intl.message(
+      '二维码协议版本不支持',
+      name: 'qr_error_unsupported_protocol',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `二维码数据校验失败`
+  String get qr_error_checksum_mismatch {
+    return Intl.message(
+      '二维码数据校验失败',
+      name: 'qr_error_checksum_mismatch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `二维码数据损坏`
+  String get qr_error_payload_corrupted {
+    return Intl.message(
+      '二维码数据损坏',
+      name: 'qr_error_payload_corrupted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `复制完整分享串`
+  String get qr_share_copy_button {
+    return Intl.message(
+      '复制完整分享串',
+      name: 'qr_share_copy_button',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `已复制完整分享串`
+  String get qr_share_copy_success_toast {
+    return Intl.message(
+      '已复制完整分享串',
+      name: 'qr_share_copy_success_toast',
       desc: '',
       args: [],
     );
@@ -1490,21 +1570,21 @@ class S {
     );
   }
 
-  /// `备注`
-  String get class_info {
-    return Intl.message(
-      '备注',
-      name: 'class_info',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `上课地点`
   String get class_room {
     return Intl.message(
       '上课地点',
       name: 'class_room',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `备注`
+  String get class_info {
+    return Intl.message(
+      '备注',
+      name: 'class_info',
       desc: '',
       args: [],
     );
@@ -1880,6 +1960,16 @@ class S {
     );
   }
 
+  /// `京ICP备2024045824号-2A`
+  String get beian_info {
+    return Intl.message(
+      '京ICP备2024045824号-2A',
+      name: 'beian_info',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `已经是最新版本了呦～`
   String get already_newest_version_toast {
     return Intl.message(
@@ -2035,6 +2125,116 @@ class S {
     return Intl.message(
       '修改当前周数请前往设置ww',
       name: 'go_to_settings_toast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `小组件设置`
+  String get widget_and_live_activity_settings_title {
+    return Intl.message(
+      '小组件设置',
+      name: 'widget_and_live_activity_settings_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `自定义小组件显示选项`
+  String get widget_and_live_activity_settings_subtitle {
+    return Intl.message(
+      '自定义小组件显示选项',
+      name: 'widget_and_live_activity_settings_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `即将上课提醒时间`
+  String get widget_approaching_minutes_title {
+    return Intl.message(
+      '即将上课提醒时间',
+      name: 'widget_approaching_minutes_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `在课程开始前多久显示"即将上课"状态`
+  String get widget_approaching_minutes_subtitle {
+    return Intl.message(
+      '在课程开始前多久显示"即将上课"状态',
+      name: 'widget_approaching_minutes_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `明日预览开始时间`
+  String get widget_tomorrow_preview_hour_title {
+    return Intl.message(
+      '明日预览开始时间',
+      name: 'widget_tomorrow_preview_hour_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `晚上几点后显示明天的课程`
+  String get widget_tomorrow_preview_hour_subtitle {
+    return Intl.message(
+      '晚上几点后显示明天的课程',
+      name: 'widget_tomorrow_preview_hour_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{minutes} 分钟`
+  String widget_minutes_unit(Object minutes) {
+    return Intl.message(
+      '$minutes 分钟',
+      name: 'widget_minutes_unit',
+      desc: '',
+      args: [minutes],
+    );
+  }
+
+  /// `{hour}:00`
+  String widget_hour_unit(Object hour) {
+    return Intl.message(
+      '$hour:00',
+      name: 'widget_hour_unit',
+      desc: '',
+      args: [hour],
+    );
+  }
+
+  /// `小组件设置已保存`
+  String get widget_settings_saved {
+    return Intl.message(
+      '小组件设置已保存',
+      name: 'widget_settings_saved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `显示非本周课程`
+  String get if_show_non_current_week_courses_title {
+    return Intl.message(
+      '显示非本周课程',
+      name: 'if_show_non_current_week_courses_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `设置是否显示非本周课程`
+  String get if_show_non_current_week_courses_subtitle {
+    return Intl.message(
+      '设置是否显示非本周课程',
+      name: 'if_show_non_current_week_courses_subtitle',
       desc: '',
       args: [],
     );

@@ -92,7 +92,7 @@ class _ManageTableViewState extends State<ManageTableView> {
         (int i) => Container(
             color: _selectedIndex == courseTables[i]['id']
                 ? Theme.of(context).primaryColor
-                : Theme.of(context).colorScheme.background,
+                : Theme.of(context).colorScheme.surface,
             child: ListTile(
               title: Text(courseTables[i]['name'],
                   style: TextStyle(

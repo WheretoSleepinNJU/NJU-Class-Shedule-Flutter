@@ -19,6 +19,10 @@
     {
       "name": "reason_write_calendar",
       "value": "需要写入权限以将课程导出到系统日历"
+    },
+    {
+      "name": "reason_camera",
+      "value": "需要相机权限以扫描二维码导入课表"
     }
   ]
 }

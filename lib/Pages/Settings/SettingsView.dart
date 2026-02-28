@@ -14,13 +14,13 @@ import '../Lecture/LecturesView.dart';
 import '../About/AboutView.dart';
 import '../AddCourse/AddCourseView.dart';
 import 'MoreSettingsView.dart';
+import 'WidgetSettingsView.dart';
 import '../Share/ShareView.dart';
 import '../../Components/Toast.dart';
 import '../../Resources/Config.dart';
 import '../../Resources/Url.dart';
 
 import 'Widgets/WeekChanger.dart';
-import 'Widgets/ThemeChanger.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({Key? key}) : super(key: key);
@@ -128,17 +128,15 @@ class _SettingsViewState extends State<SettingsView> {
               //     if (status == true) Navigator.of(context).pop(status);
               //   },
               // ),
-              // ---
-              // TODO: 为了鸿蒙先注释掉导入导出功能
-              // ListTile(
-              //   title: Text(S.of(context).import_or_export_title),
-              //   subtitle: Text(S.of(context).import_or_export_subtitle),
-              //   onTap: () {
-              //     UmengCommonSdk.onEvent("qr_import", {"action": "show"});
-              //     Navigator.of(context).push(MaterialPageRoute(
-              //         builder: (BuildContext context) => const ShareView()));
-              //   },
-              // ),
+              ListTile(
+                title: Text(S.of(context).import_or_export_title),
+                subtitle: Text(S.of(context).import_or_export_subtitle),
+                onTap: () {
+                  UmengCommonSdk.onEvent("qr_import", {"action": "show"});
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => const ShareView()));
+                },
+              ),
               ListTile(
                 title: Text(S.of(context).manage_table_title),
                 subtitle: Text(S.of(context).manage_table_subtitle),
@@ -159,6 +157,18 @@ class _SettingsViewState extends State<SettingsView> {
                           const MoreSettingsView()));
                 },
               ),
+              // Widget settings - iOS only
+              if (Platform.isIOS)
+                ListTile(
+                  title: Text(S.of(context).widget_and_live_activity_settings_title),
+                  subtitle: Text(S.of(context).widget_and_live_activity_settings_subtitle),
+                  onTap: () {
+                    UmengCommonSdk.onEvent("widget_setting", {"action": "show"});
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            const WidgetSettingsView()));
+                  },
+                ),
               const WeekChanger(),
               ListTile(
                 title: Text(S.of(context).share_title),

@@ -53,6 +53,19 @@ class _AboutViewState extends State<AboutView> {
                   }
                 }),
             TextButton(
+              style: TextButton.styleFrom(
+                  foregroundColor:
+                      Theme.of(context).brightness == Brightness.light
+                          ? Theme.of(context).primaryColor
+                          : Colors.white,
+                  backgroundColor: Colors.transparent),
+              child: Text(S.of(context).beian_info),
+              onPressed: () => launch(Url.BEIAN_URL),
+            ),
+            Container(
+              padding: const EdgeInsets.all(15.0),
+            ),
+            TextButton(
               child: Text(S.of(context).check_update_button),
               onPressed: () {
                 UpdateUtil updateUtil = UpdateUtil();

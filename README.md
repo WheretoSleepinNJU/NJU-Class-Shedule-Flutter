@@ -74,12 +74,27 @@
 
 ## 部署相关
 
-因为增加了鸿蒙的支持，所以得用鸿蒙的flutter版本
+因为增加了鸿蒙支持，需要使用鸿蒙 Flutter 版本。
 
-1. 根据 [flutter_flutter oh-3.27.0](https://gitcode.com/openharmony-tpc/flutter_flutter/tree/oh-3.27.0-release) 中的配置文档配置鸿蒙依赖
-2. 运行 `flutter doctor -v` 检查环境变量配置是否正确，Futter与OpenHarmony应都为ok标识
-3. 在 `external` 文件夹中 clone 依赖
+1. 根据 [flutter_flutter oh-3.27.0](https://gitcode.com/openharmony-tpc/flutter_flutter/tree/oh-3.27.0-release) 配置鸿蒙依赖
+2. 加载项目环境变量：`source tool/setup_ohos_env.sh`
+3. 安装并使用指定版本：`fvm install oh-3.27.0-release && fvm use 3.27.5-ohos-1.0.3` （这里很奇怪，下载的版本号和cache版本号不一样）
+4. 运行 `fvm flutter doctor -v` 检查环境变量配置，Flutter 与 OpenHarmony 都应为 `ok`
+5. 在 `external` 文件夹中 clone 依赖（若尚未 clone）
   * `cd external`
   * `git clone https://gitcode.com/openharmony-tpc/flutter_packages.git` 
   * `git clone https://gitcode.com/openharmony-sig/flutter_sqflite.git`
   * `git clone https://gitcode.com/openharmony-sig/flutter_plus_plugins.git`
+  * `git clone https://gitcode.com/openharmony-sig/fluttertpc_mobile_scanner.git`
+6. 如果在中国大陆网络下载失败，执行：
+  * `export USE_CN_FLUTTER_MIRROR=1`
+  * `source tool/setup_ohos_env.sh`
+
+### 快速切换构建环境
+
+为了在 Android/iOS 与 OHOS 间减少手动操作，可在当前终端直接切换：
+
+* 切到 OHOS 构建环境：`source tool/switch_flutter_env.sh ohos`
+* 切回官方 Flutter（Android/iOS 常用）：`source tool/switch_flutter_env.sh official`
+
+切换后建议运行 `flutter doctor -v` 或 `fvm flutter doctor -v` 做一次确认，并执行 `flutter clean` 以清除之前环境的构建缓存。

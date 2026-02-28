@@ -28,14 +28,16 @@ void main() async {
   // UmengCommonSdk.onEvent("privacy_accept", {"result":"accept"});
 
   /// 原生安卓上去除状态栏遮罩
+  /// https://blog.csdn.net/q515656712/article/details/139235710
   if (Platform.isAndroid) {
-    SystemChrome.setSystemUIOverlayStyle(
-        const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        systemNavigationBarColor: Colors.transparent,
+        statusBarColor: Colors.transparent));
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   }
 
   runApp(
-      MyApp(themeConf[0], Constant.themeModeList[themeConf[1]], themeConf[2])
-  );
+      MyApp(themeConf[0], Constant.themeModeList[themeConf[1]], themeConf[2]));
 }
 
 class MyApp extends StatefulWidget {
@@ -75,14 +77,10 @@ class _MyAppState extends State<MyApp> {
               lightTheme = themeDataList[themeIndex];
               darkTheme = darkThemeDataList[themeIndex];
             } else {
-              lightTheme = getThemeData(
-                customTheme, Brightness.light, 
-                useSeedScheme: model.material3ColorForLight
-              );
-              darkTheme = getThemeData(
-                customTheme, Brightness.dark,
-                useSeedScheme: model.material3ColorForDark
-              );
+              lightTheme = getThemeData(customTheme, Brightness.light,
+                  useSeedScheme: model.material3ColorForLight);
+              darkTheme = getThemeData(customTheme, Brightness.dark,
+                  useSeedScheme: model.material3ColorForDark);
             }
             return MaterialApp(
               debugShowCheckedModeBanner: false,
@@ -102,7 +100,7 @@ class _MyAppState extends State<MyApp> {
               builder: (context, child) {
                 // 获取当前系统的配置（包含屏幕尺寸、亮度、系统设置的字重等）
                 final mediaQueryData = MediaQuery.of(context);
-                
+
                 // 强行覆盖 boldText 为 false
                 // 这样无论系统怎么发"变粗"的指令，Flutter 都会无视
                 return MediaQuery(

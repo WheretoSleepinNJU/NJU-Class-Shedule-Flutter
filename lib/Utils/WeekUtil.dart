@@ -83,7 +83,7 @@ class WeekUtil {
   static String getTmpMonthName(int biasWeek) {
     DateTime now = DateTime.now();
     now = now.add(Duration(days: biasWeek * 7));
-    var formatter = DateFormat('MMM');
+    var formatter = DateFormat('MMM', 'en_US');
     return formatter.format(now);
   }
 
@@ -123,7 +123,7 @@ class WeekUtil {
     DateTime now = DateTime.now();
 
     while (now.weekday != monday) {
-      now = now.subtract(Duration(days: monday));
+      now = now.subtract(const Duration(days: 1));  // Fix: subtract 1 day at a time, not monday days
     }
 
     var formatter = DateFormat('yyyy-MM-dd');

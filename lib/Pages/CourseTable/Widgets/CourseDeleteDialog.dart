@@ -5,6 +5,7 @@ import 'package:scoped_model/scoped_model.dart';
 import '../../../Models/CourseModel.dart';
 import '../../../Utils/States/MainState.dart';
 import '../../../Components/Dialog.dart';
+import '../../../core/widget_data/utils/widget_refresh_helper.dart';
 
 class CourseDeleteDialog extends StatelessWidget {
   final Course course;
@@ -24,6 +25,9 @@ class CourseDeleteDialog extends StatelessWidget {
         UmengCommonSdk.onEvent("class_delete", {"action": "accept"});
         CourseProvider courseProvider = CourseProvider();
         await courseProvider.delete(course.id!);
+        
+        // 刷新 Widget
+        await WidgetRefreshHelper.refreshAfterCourseDeleted();
         ScopedModel.of<MainStateModel>(context).refresh();
         Navigator.of(context).pop();
       },

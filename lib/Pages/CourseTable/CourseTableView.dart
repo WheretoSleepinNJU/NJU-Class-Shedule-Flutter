@@ -22,7 +22,6 @@ import '../../Models/CourseTableModel.dart';
 import '../../Models/CourseModel.dart';
 
 import 'Widgets/BackgroundImage.dart';
-import 'Widgets/WeekSelector.dart';
 import 'Widgets/ClassTitle.dart';
 import 'Widgets/WeekTitle.dart';
 
@@ -35,17 +34,23 @@ class CourseTableView extends StatefulWidget {
 
 class CourseTableViewState extends State<CourseTableView> {
   final CourseTablePresenter _presenter = CourseTablePresenter();
+  PageController? _weekPageController;
+  ScrollController? _scrollController;
+  bool _isFreeClassVisible = true;
+  double _lastScrollOffset = 0;
   late bool _isShowWeekend;
   late bool _isShowClassTime;
   late bool _isShowFreeClass;
   late bool _isShowMonth;
   late bool _isShowDate;
   late bool _isForceZoom;
+  late bool _isShowNonCurrentWeekCourses;
   late List<Map> _classTimeList;
   late bool _isShowAddButton;
   late bool? _isWhiteMode;
   late int _maxShowClasses;
   late int _maxShowDays;
+  late int _tableIndex;
   late int _nowWeekNum;
   late int _nowShowWeekNum;
   late double _screenWidth;
@@ -58,11 +63,9 @@ class CourseTableViewState extends State<CourseTableView> {
   late String _bgImgPath;
   int _freeCourseNum = 0;
 
-  bool weekSelectorVisibility = false;
-
   List<Course> multiClassesDialog = [];
 
-  Future<List<Widget>>? _getData(BuildContext context) async {
+  Future<bool>? _getData(BuildContext context) async {
 //    await courseTablePresenter.insertMockData();
 
     _isShowWeekend =
@@ -75,6 +78,8 @@ class CourseTableViewState extends State<CourseTableView> {
     _isShowMonth = await ScopedModel.of<MainStateModel>(context).getShowMonth();
     _isShowDate = await ScopedModel.of<MainStateModel>(context).getShowDate();
     _isForceZoom = await ScopedModel.of<MainStateModel>(context).getForceZoom();
+    _isShowNonCurrentWeekCourses = await ScopedModel.of<MainStateModel>(context)
+        .getShowNonCurrentWeekCourses();
 
     _isShowAddButton =
         await ScopedModel.of<MainStateModel>(context).getAddButton();
@@ -89,21 +94,21 @@ class CourseTableViewState extends State<CourseTableView> {
     }
 
     _maxShowDays = _isShowWeekend ? 7 : 5;
-    int index = await ScopedModel.of<MainStateModel>(context).getClassTable();
+    _tableIndex = await ScopedModel.of<MainStateModel>(context).getClassTable();
     _nowWeekNum = await ScopedModel.of<MainStateModel>(context).getWeek();
     _nowShowWeekNum =
         await ScopedModel.of<MainStateModel>(context).getTmpWeek();
 
-    await _presenter.refreshClasses(index, _nowShowWeekNum);
+    await _presenter.refreshClasses(_tableIndex, _nowShowWeekNum);
 
-    WidgetHelper.refreshWidget(index);
+    WidgetHelper.refreshWidget(_tableIndex);
     // WidgetHelper.runMockTest();
-    
+
     _freeCourseNum = _presenter.freeCourses.length;
 
     try {
       CourseTableProvider courseTableProvider = CourseTableProvider();
-      _classTimeList = await courseTableProvider.getClassTimeList(index);
+      _classTimeList = await courseTableProvider.getClassTimeList(_tableIndex);
       _maxShowClasses = _classTimeList.length;
     } catch (e) {
       _classTimeList = Constant.CLASS_TIME_LIST;
@@ -119,30 +124,54 @@ class CourseTableViewState extends State<CourseTableView> {
     int height = await ScopedModel.of<MainStateModel>(context).getClassHeight();
 
     if (_isForceZoom) {
-      if ((!_isShowFreeClass) || (_freeCourseNum == 0)) {
-        _classTitleHeight = (_screenHeight -
-                kToolbarHeight -
-                MediaQuery.of(context).padding.top -
-                (_isShowDate ? _weekTitleHeight * 1.2 : _weekTitleHeight)) /
-            _maxShowClasses;
-      } else {
-        _classTitleHeight = (_screenHeight -
-                kToolbarHeight -
-                _snackbarHeight -
-                MediaQuery.of(context).padding.top -
-                (_isShowDate ? _weekTitleHeight * 1.2 : _weekTitleHeight)) /
-            _maxShowClasses;
-      }
+      // 强制缩放时，课程表填满整个屏幕，FreeClass 浮动覆盖在上方
+      _classTitleHeight = (_screenHeight -
+              kToolbarHeight -
+              MediaQuery.of(context).padding.top -
+              (_isShowDate ? _weekTitleHeight * 1.2 : _weekTitleHeight)) /
+          _maxShowClasses;
     } else if (height.toDouble() != 0) {
       _classTitleHeight = height.toDouble();
     } else {
       _classTitleHeight = 52;
     }
 
-    List<Widget>? classWidgets = await _presenter.getClassesWidgetList(
-        context, _classTitleHeight, _weekTitleWidth, _nowShowWeekNum);
+    return true;
+  }
 
-    return classWidgets!;
+  Future<List<Widget>> _buildClassesWidgetListByWeek(
+      BuildContext context, int weekNum) async {
+    final CourseTablePresenter presenter = CourseTablePresenter();
+    await presenter.refreshClasses(_tableIndex, weekNum);
+    return (await presenter.getClassesWidgetList(context, _classTitleHeight,
+            _weekTitleWidth, weekNum, _isShowNonCurrentWeekCourses)) ??
+        [];
+  }
+
+  void _syncWeekPageController() {
+    final int targetPage = _nowShowWeekNum - 1;
+    if (_weekPageController == null) {
+      _weekPageController = PageController(initialPage: targetPage);
+      return;
+    }
+    if (!_weekPageController!.hasClients) {
+      return;
+    }
+    final double currentPage = _weekPageController!.page ??
+        _weekPageController!.initialPage.toDouble();
+    final bool isScrolling =
+        _weekPageController!.position.isScrollingNotifier.value;
+    if (!isScrolling && (currentPage - targetPage).abs() > 0.001) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted || _weekPageController == null) {
+          return;
+        }
+        if (_weekPageController!.hasClients &&
+            !_weekPageController!.position.isScrollingNotifier.value) {
+          _weekPageController!.jumpToPage(targetPage);
+        }
+      });
+    }
   }
 
   basicCheck() async {
@@ -166,10 +195,44 @@ class CourseTableViewState extends State<CourseTableView> {
     });
   }
 
+  void _onScroll() {
+    if (_scrollController == null) return;
+    final currentOffset = _scrollController!.offset;
+    final direction = currentOffset - _lastScrollOffset;
+    
+    // 下滑（内容向上滚动）隐藏，上滑（内容向下滚动）显示
+    if (direction > 2) {
+      // 下滑超过阈值，隐藏
+      if (_isFreeClassVisible) {
+        setState(() {
+          _isFreeClassVisible = false;
+        });
+      }
+    } else if (direction < -2) {
+      // 上滑超过阈值，显示
+      if (!_isFreeClassVisible) {
+        setState(() {
+          _isFreeClassVisible = true;
+        });
+      }
+    }
+    _lastScrollOffset = currentOffset;
+  }
+
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
+    _scrollController!.addListener(_onScroll);
     basicCheck();
+  }
+
+  @override
+  void dispose() {
+    _scrollController?.removeListener(_onScroll);
+    _scrollController?.dispose();
+    _weekPageController?.dispose();
+    super.dispose();
   }
 
   @override
@@ -181,22 +244,13 @@ class CourseTableViewState extends State<CourseTableView> {
           UmengCommonSdk.onEvent("course_refresh", {"action": "refresh"});
           debugPrint('CourseTableView refreshed.');
 
-          return FutureBuilder<List<Widget>>(
+          return FutureBuilder<bool>(
               future: _getData(context),
-              builder:
-                  (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
+              builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
                 if (!snapshot.hasData) {
                   return Container(color: Colors.white);
                 } else {
-                  // TODO: fix bug in stack
-                  List<Widget> _divider = List.generate(
-                      _maxShowClasses,
-                      (int i) => Container(
-                            margin: EdgeInsets.only(
-                                top: (i + 1) * _classTitleHeight),
-                            width: _weekTitleWidth * _maxShowDays,
-                            child: const Separator(color: Colors.grey),
-                          ));
+                  _syncWeekPageController();
 
                   String nowWeek =
                       S.of(context).week(_nowShowWeekNum.toString());
@@ -218,9 +272,10 @@ class CourseTableViewState extends State<CourseTableView> {
 
                   SystemUiOverlayStyle overlayStyle;
                   if (_isWhiteMode == null) {
-                    overlayStyle = Theme.of(context).brightness == Brightness.dark
-                        ? SystemUiOverlayStyle.light
-                        : SystemUiOverlayStyle.dark;
+                    overlayStyle =
+                        Theme.of(context).brightness == Brightness.dark
+                            ? SystemUiOverlayStyle.light
+                            : SystemUiOverlayStyle.dark;
                   } else {
                     overlayStyle = _isWhiteMode!
                         ? SystemUiOverlayStyle.light
@@ -245,17 +300,8 @@ class CourseTableViewState extends State<CourseTableView> {
 //                          TextView(),
                           Text(S.of(context).app_name,
                               style: TextStyle(fontSize: 18, color: mainColor)),
-                          GestureDetector(
-                              child: Text((nowWeek),
-                                  style: TextStyle(fontSize: 14, color: mainColor)),
-                              onTap: () {
-                                setState(() {
-                                  weekSelectorVisibility =
-                                      !weekSelectorVisibility;
-                                });
-                                UmengCommonSdk.onEvent(
-                                    "week_choose", {"action": "tap"});
-                              })
+                          Text((nowWeek),
+                              style: TextStyle(fontSize: 14, color: mainColor))
                         ]),
                         actions: <Widget>[
                           IconButton(
@@ -292,91 +338,174 @@ class CourseTableViewState extends State<CourseTableView> {
                       //         ),
                       //       ),
                       Padding(
-                      padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).padding.top + kToolbarHeight
-                      ),
-                      child: Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
-                        WeekSelector(model, weekSelectorVisibility),
-                        WeekTitle(
-                            _maxShowDays,
-                            _weekTitleHeight,
-                            _classTitleWidth,
-                            _isShowMonth,
-                            _isShowDate,
-                            _isWhiteMode,
-                            _nowShowWeekNum - _nowWeekNum),
-                        Flexible(
-                            child: SingleChildScrollView(
-                                child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                              ClassTitle(
-                                  _maxShowClasses,
-                                  _classTitleHeight,
-                                  _classTitleWidth,
-                                  _isShowClassTime,
-                                  _isWhiteMode,
-                                  classTimeList: _classTimeList),
-                              SizedBox(
-                                  height: _classTitleHeight * _maxShowClasses,
-                                  width: _screenWidth - _classTitleWidth,
-                                  // TODO: fix bug in stack
-                                  child: Stack(
-                                      clipBehavior: Clip.none,
-                                      children: _divider + snapshot.data!))
-                            ]))),
-                        ((!_isShowFreeClass) || (_freeCourseNum == 0))
-                            ? Container()
-                            : SizedBox(
-                                height: _snackbarHeight,
-                                child: MaterialBanner(
-                                  content: FittedBox(
-                                      fit: BoxFit.scaleDown,
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                          S.of(context).free_class_banner(
-                                              _freeCourseNum.toString()),
-                                          style: TextStyle(
-                                              color:  Theme.of(context).colorScheme.onSurface))),
-                                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                                  actions: [
-                                    Row(
-                                      children: [
-                                        TextButton(
-                                          child: Text(
-                                            S.of(context).free_class_button,
-                                          ),
-                                          onPressed: () {
-                                            _presenter.showFreeClassDialog(
-                                                context, _nowShowWeekNum);
+                        padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).padding.top +
+                                kToolbarHeight),
+                        child: Stack(
+                          children: [
+                            Column(
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  WeekTitle(
+                                      _maxShowDays,
+                                      _weekTitleHeight,
+                                      _classTitleWidth,
+                                      _isShowMonth,
+                                      _isShowDate,
+                                      _isWhiteMode,
+                                      _nowShowWeekNum - _nowWeekNum),
+                                  Flexible(
+                                      child: PageView.builder(
+                                          controller: _weekPageController,
+                                          itemCount: Config.MAX_WEEKS,
+                                          onPageChanged: (int index) {
+                                            final int targetWeek = index + 1;
+                                            if (targetWeek != _nowShowWeekNum) {
+                                              model.changeTmpWeek(targetWeek);
+                                              UmengCommonSdk.onEvent("week_choose",
+                                                  {"action": "swipe"});
+                                              // 切换周次时重置 FreeClass 显示状态
+                                              if (!_isFreeClassVisible) {
+                                                setState(() {
+                                                  _isFreeClassVisible = true;
+                                                  _lastScrollOffset = 0;
+                                                });
+                                              }
+                                            }
                                           },
-                                          style: TextButton.styleFrom(
-                                              minimumSize: Size.zero,
-                                              padding: EdgeInsets.zero,
-                                              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                                              foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer),
+                                          itemBuilder: (BuildContext context,
+                                              int pageIndex) {
+                                            final int weekNum = pageIndex + 1;
+                                            return FutureBuilder<List<Widget>>(
+                                                future:
+                                                    _buildClassesWidgetListByWeek(
+                                                        context, weekNum),
+                                                builder: (BuildContext context,
+                                                    AsyncSnapshot<List<Widget>>
+                                                        classesSnapshot) {
+                                                  if (!classesSnapshot.hasData) {
+                                                    return const SizedBox.expand();
+                                                  }
+                                                  List<Widget> divider =
+                                                      List.generate(
+                                                          _maxShowClasses,
+                                                          (int i) => Container(
+                                                                margin: EdgeInsets.only(
+                                                                    top: (i + 1) *
+                                                                        _classTitleHeight),
+                                                                width:
+                                                                    _weekTitleWidth *
+                                                                        _maxShowDays,
+                                                                child:
+                                                                    const Separator(
+                                                                        color: Colors
+                                                                            .grey),
+                                                              ));
+                                                  return SingleChildScrollView(
+                                                      controller: _scrollController,
+                                                      child: Row(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                        ClassTitle(
+                                                            _maxShowClasses,
+                                                            _classTitleHeight,
+                                                            _classTitleWidth,
+                                                            _isShowClassTime,
+                                                            _isWhiteMode,
+                                                            classTimeList:
+                                                                _classTimeList),
+                                                        SizedBox(
+                                                            height:
+                                                                _classTitleHeight *
+                                                                    _maxShowClasses,
+                                                            width: _screenWidth -
+                                                                _classTitleWidth,
+                                                            child: Stack(
+                                                                clipBehavior:
+                                                                    Clip.none,
+                                                                children: divider +
+                                                                    classesSnapshot
+                                                                        .data!))
+                                                      ]));
+                                                });
+                                          })),
+                                ]),
+                            // FreeClass 浮动在底部，不遮挡课程内容
+                            if ((_isShowFreeClass) && (_freeCourseNum > 0))
+                              AnimatedPositioned(
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeInOut,
+                                left: 0,
+                                right: 0,
+                                bottom: _isFreeClassVisible ? 40.0 : -100.0,
+                                child: Padding(
+                                  // 1. 侧边 Padding，让组件不贴屏幕边缘，产生悬浮感
+                                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                  child: Material(
+                                    // 2. 悬浮阴影高度
+                                    elevation: 6.0,
+                                    // 3. 胶囊型圆角
+                                    shape: const StadiumBorder(),
+                                    color: Theme.of(context).colorScheme.primaryContainer,
+                                    // 限制高度
+                                    child: SizedBox(
+                                      height: _snackbarHeight,
+                                      // 内部 Padding，避免文字和按钮贴紧胶囊边缘
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                        child: Row(
+                                          children: [
+                                            // 左侧文本区域 (Expanded 保证撑开空间，FittedBox 保证文字不越界)
+                                            Expanded(
+                                              child: FittedBox(
+                                                fit: BoxFit.scaleDown,
+                                                alignment: Alignment.centerLeft,
+                                                child: Text(
+                                                  S.of(context).free_class_banner(_freeCourseNum.toString()),
+                                                  style: TextStyle(
+                                                    color: Theme.of(context).colorScheme.onSurface,
+                                                    fontWeight: FontWeight.w500, // 稍微加粗一点会让现代感更强（可选）
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+
+                                            // 右侧文字区域
+                                            const SizedBox(width: 12), // 文本和文字之间的间距
+                                            InkWell(
+                                              onTap: () {
+                                                _presenter.showFreeClassDialog(context, _nowShowWeekNum);
+                                              },
+                                              child: Text(
+                                                S.of(context).free_class_button,
+                                                style: TextStyle(
+                                                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 16), // 两个文字之间的间距
+                                            InkWell(
+                                              onTap: () => _presenter.showHideFreeCourseDialog(context),
+                                              child: Text(
+                                                S.of(context).hide_free_class_button,
+                                                style: TextStyle(
+                                                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        TextButton(
-                                          child: Text(
-                                            S
-                                                .of(context)
-                                                .hide_free_class_button,
-                                          ),
-                                          onPressed: () => _presenter
-                                              .showHideFreeCourseDialog(
-                                                  context),
-                                          style: TextButton.styleFrom(
-                                              minimumSize: Size.zero,
-                                              padding: EdgeInsets.zero,
-                                              backgroundColor:Theme.of(context).colorScheme.primaryContainer,
-                                              foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                )),
-                      ]),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
                       ),
                     ]),
                     floatingActionButton: _isShowAddButton
@@ -384,7 +513,9 @@ class CourseTableViewState extends State<CourseTableView> {
                             padding:
                                 const EdgeInsets.only(bottom: 50.0, left: 10.0),
                             child: FloatingActionButton(
-                              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                              backgroundColor: Theme.of(context)
+                                  .colorScheme
+                                  .primaryContainer,
                               onPressed: () async {
                                 Navigator.of(context)
                                     .push(MaterialPageRoute(
@@ -396,7 +527,9 @@ class CourseTableViewState extends State<CourseTableView> {
                               },
                               child: Icon(
                                 Icons.add,
-                                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onPrimaryContainer,
                               ),
                             ))
                         : Container(),

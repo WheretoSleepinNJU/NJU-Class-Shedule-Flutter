@@ -9,6 +9,7 @@ import '../Resources/Config.dart';
 import '../Resources/Url.dart';
 import '../Utils/ColorUtil.dart';
 import '../Utils/WeekUtil.dart';
+import '../core/widget_data/services/unified_data_service.dart';
 
 class InitUtil {
   static Future<List> initialize() async {
@@ -18,8 +19,33 @@ class InitUtil {
     await checkDataBase();
     await WeekUtil.checkWeek();
     await ColorPool.checkColorPool();
+    
+    // 初始化 Widget 数据
+    await initializeWidgetData();
+    
     showReview();
     return [themeIndex, themeModeIndex, themeCustom];
+  }
+  
+  /// 初始化 Widget 数据
+  static Future<void> initializeWidgetData() async {
+    try {
+      // 仅在 iOS 平台执行
+      if (!Platform.isIOS) return;
+      
+      final preferences = await SharedPreferences.getInstance();
+      final widgetService = UnifiedDataService(preferences: preferences);
+      
+      // 更新 Widget 数据
+      final success = await widgetService.updateWidgetData();
+      if (success) {
+        print('Widget data initialized successfully');
+      } else {
+        print('Failed to initialize widget data');
+      }
+    } catch (e) {
+      print('Error initializing widget data: $e');
+    }
   }
 
   static Future<int> getTheme() async {

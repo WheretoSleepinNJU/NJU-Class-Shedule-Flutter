@@ -348,6 +348,30 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                   }),
             ),
             ListTile(
+              title: Text(S.of(context).if_show_non_current_week_courses_title),
+              subtitle: Text(S.of(context).if_show_non_current_week_courses_subtitle),
+              trailing: FutureBuilder<bool>(
+                  future: _getShowNonCurrentWeekCourses(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                    if (!snapshot.hasData) {
+                      return Container(width: 0);
+                    } else {
+                      return Switch(
+                          activeColor:
+                              Theme.of(context).appBarTheme.backgroundColor,
+                          value: snapshot.data!,
+                          onChanged: (bool value) {
+                            UmengCommonSdk.onEvent("more_setting",
+                                {"type": 22, "result": value.toString()});
+                            ScopedModel.of<MainStateModel>(context)
+                                .setShowNonCurrentWeekCourses(value);
+                            setState(() {});
+                          });
+                    }
+                  }),
+            ),
+            ListTile(
               title: Text(S.of(context).show_month_title),
               subtitle: Text(S.of(context).show_month_subtitle),
               trailing: FutureBuilder<bool>(
@@ -495,6 +519,10 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
 
   Future<bool> _getShowFreeClass() async {
     return await ScopedModel.of<MainStateModel>(context).getShowFreeClass();
+  }
+
+  Future<bool> _getShowNonCurrentWeekCourses() async {
+    return await ScopedModel.of<MainStateModel>(context).getShowNonCurrentWeekCourses();
   }
 
   Future<bool> _getShowMonth() async {
