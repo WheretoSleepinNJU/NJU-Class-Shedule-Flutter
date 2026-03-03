@@ -37,6 +37,21 @@
 
 南哪课表解析课程的主要原理是通过打开页面，并通过 JS 脚本获取页面中的课程信息，然后解析出课程的时间、地点、教师等信息。
 
+从 2026-03 起，项目支持新的三段式适配器协议（向后兼容旧脚本）：
+
+1. `provider`：在 WebView 中获取原始数据
+2. `parser`：把原始数据转换为统一课程格式
+3. `timer`：可选，提供学期开始时间和节次时间
+
+适配器模板见：`api/adapters/template/`，协议说明见：`api/adapters/README.md`。
+本地 Parser 调试工具：`api/adapters/tools/test_parser.js`，示例配置：`api/schoolList.v2.example.json`。
+
+示例（本地跑 parser）：
+
+```bash
+node api/adapters/tools/test_parser.js api/adapters/nju/parser.js your_provider_result.txt
+```
+
 涉及到的主要文件：
 
 > [api/schoolList.json](api/schoolList.json): 学校列表，包含学校名称、登录 URL、课程表 URL 等信息，在其中添加需要适配学校的相关信息

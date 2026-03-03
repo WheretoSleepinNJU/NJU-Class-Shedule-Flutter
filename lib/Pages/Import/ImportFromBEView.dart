@@ -17,6 +17,7 @@ import '../../Models/CourseModel.dart';
 import '../../Models/CourseTableModel.dart';
 import '../../Resources/Url.dart';
 import '../../Utils/CourseImportCodec.dart';
+import '../../Utils/ImportAdapterEngine.dart';
 
 class ImportFromBEView extends StatefulWidget {
   final String? title;
@@ -34,6 +35,7 @@ class ImportFromBEView extends StatefulWidget {
 class ImportFromBEViewState extends State<ImportFromBEView> {
   late final WebViewController _webViewController;
   final WebViewCookieManager cookieManager = WebViewCookieManager();
+  final ImportAdapterEngine _adapterEngine = ImportAdapterEngine();
 
   @override
   void initState() {
@@ -121,55 +123,41 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
   import(WebViewController controller, BuildContext context, {String? rsp}) async {
     try {
       String response = "";
+      Map<String, dynamic> adapterTiming = <String, dynamic>{};
       CourseTableProvider courseTableProvider = CourseTableProvider();
       Toast.showToast(S.of(context).class_parse_toast_importing, context);
-      
-      if(rsp == null) {
-        await controller.runJavaScript(widget.config['preExtractJS'] ?? '');
-        await Future.delayed(
-            Duration(seconds: widget.config['delayTime'] ?? 0));
-        Dio dio = Dio();
-        
-        String url = '';
-        if (Platform.isIOS) {
-          url = widget.config['extractJSfileiOS'] ?? "";;
-        } else if (Platform.isAndroid){
-          url = widget.config['extractJSfileAndroid'] ?? "";
-        } else if (Platform.operatingSystem == 'ohos') {
-          url = widget.config['extractJSfileOHOS'] ?? "";
-        }
 
-        Response serverRsp = await dio.get(url);
-        String js = serverRsp.data;
-        var result = await controller.runJavaScriptReturningResult(js);
-        response = result.toString();
-        
-        if (response.startsWith('"') && response.endsWith('"')) {
-           response = response.substring(1, response.length - 1);
-        }
-      } else {
+      if (rsp != null) {
         response = rsp;
+      } else {
+        await controller.runJavaScript(widget.config['preExtractJS'] ?? '');
+        await Future.delayed(Duration(seconds: widget.config['delayTime'] ?? 0));
+
+        if (_adapterEngine.shouldUseAdapter(widget.config)) {
+          final adapterResult = await _adapterEngine.run(controller, widget.config);
+          adapterTiming =
+              Map<String, dynamic>.from(adapterResult['timing'] ?? <String, dynamic>{});
+          response = Uri.encodeComponent(jsonEncode(<String, dynamic>{
+            'name': adapterResult['name'],
+            'courses': adapterResult['courses'],
+          }));
+        } else {
+          response = await _runLegacyExtract(controller);
+        }
       }
-      
+
       response = Uri.decodeComponent(response.replaceAll('"', ''));
       Map courseTableMap = json.decode(response);
-      
+
+      final tableData = _buildCourseTableData(widget.config, adapterTiming);
+
       CourseTable courseTable;
-      if (widget.config['class_time_list'] == null &&
-          widget.config['semester_start_monday'] == null) {
+      if (tableData.isEmpty) {
         courseTable = await courseTableProvider
             .insert(CourseTable(courseTableMap['name']));
       } else {
         try {
-          Map data = {};
-          if (widget.config['class_time_list'] != null) {
-            data["class_time_list"] = widget.config['class_time_list'];
-          }
-          if (widget.config['semester_start_monday'] != null) {
-            data["semester_start_monday"] =
-                widget.config['semester_start_monday'];
-          }
-          String dataString = json.encode(data);
+          String dataString = json.encode(tableData);
           courseTable = await courseTableProvider
               .insert(CourseTable(courseTableMap['name'], data: dataString));
         } catch (e) {
@@ -268,5 +256,57 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
           });
       return;
     }
+  }
+
+  Future<String> _runLegacyExtract(WebViewController controller) async {
+    Dio dio = Dio();
+    String url = '';
+    if (Platform.isIOS) {
+      url = widget.config['extractJSfileiOS'] ?? '';
+    } else if (Platform.isAndroid) {
+      url = widget.config['extractJSfileAndroid'] ?? '';
+    } else if (Platform.operatingSystem == 'ohos') {
+      url = widget.config['extractJSfileOHOS'] ?? '';
+    }
+    Response serverRsp = await dio.get(url);
+    String js = serverRsp.data;
+    var result = await controller.runJavaScriptReturningResult(js);
+    String response = result.toString();
+    if (response.startsWith('"') && response.endsWith('"')) {
+      response = response.substring(1, response.length - 1);
+    }
+    return response;
+  }
+
+  Map<String, dynamic> _buildCourseTableData(Map config, Map<String, dynamic> timing) {
+    final data = <String, dynamic>{};
+    dynamic classTimeList = timing['class_time_list'] ?? config['class_time_list'];
+    if (classTimeList == null && timing['sectionTimes'] is List) {
+      classTimeList = _convertSectionTimes(timing['sectionTimes'] as List);
+    }
+    final semesterStart = timing['semester_start_monday'] ??
+        timing['semesterStart'] ??
+        config['semester_start_monday'];
+    if (classTimeList != null) {
+      data['class_time_list'] = classTimeList;
+    }
+    if (semesterStart != null) {
+      data['semester_start_monday'] = semesterStart;
+    }
+    return data;
+  }
+
+  List<Map<String, dynamic>> _convertSectionTimes(List sectionTimes) {
+    final List<Map<String, dynamic>> rst = [];
+    for (final row in sectionTimes) {
+      if (row is! Map) continue;
+      final start = row['startTime']?.toString() ?? row['start']?.toString();
+      final end = row['endTime']?.toString() ?? row['end']?.toString();
+      if (start == null || end == null || start.isEmpty || end.isEmpty) {
+        continue;
+      }
+      rst.add(<String, dynamic>{'start': start, 'end': end});
+    }
+    return rst;
   }
 }

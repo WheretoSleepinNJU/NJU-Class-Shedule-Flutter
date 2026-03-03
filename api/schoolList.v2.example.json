@@ -1,0 +1,47 @@
+{
+  "version": 2,
+  "lastUpdated": "2026-03-02",
+  "schools": [
+    {
+      "id": "nju-xk",
+      "name": "南京大学本科生选课系统",
+      "title": "南京大学本科生选课系统",
+      "pinyin": "1nanjingdaxuebenkexuanke",
+      "description": "通过选课系统进行课表导入（Adapter v2 示例）",
+      "page_title": "选课系统登录",
+      "initialUrl": "https://xk.nju.edu.cn",
+      "redirectUrl": "",
+      "targetUrl": "https://xk.nju.edu.cn/xsxkapp/sys/xsxkapp/*default/grablessons.do",
+      "preExtractJS": "",
+      "delayTime": 1,
+      "provider": {
+        "type": "remote",
+        "url": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/adapters/nju/provider.js"
+      },
+      "parser": {
+        "type": "remote",
+        "url": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/adapters/nju/parser.js"
+      },
+      "timer": {
+        "type": "remote",
+        "url": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/adapters/nju/timer.js"
+      },
+      "class_time_list": [
+        { "start": "08:00", "end": "08:50" },
+        { "start": "08:55", "end": "09:45" },
+        { "start": "10:10", "end": "11:00" },
+        { "start": "11:05", "end": "11:55" },
+        { "start": "14:00", "end": "14:50" },
+        { "start": "14:55", "end": "15:45" },
+        { "start": "16:10", "end": "17:00" },
+        { "start": "17:05", "end": "17:55" },
+        { "start": "18:30", "end": "19:20" },
+        { "start": "19:25", "end": "20:15" },
+        { "start": "20:20", "end": "21:10" }
+      ],
+      "semester_start_monday": "2026-02-23",
+      "isGrey": false,
+      "isGrey3.1.0": false
+    }
+  ]
+}
