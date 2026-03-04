@@ -365,6 +365,13 @@ struct Provider: TimelineProvider {
         }
         
         let now = Date()
+
+        // Cross-day arrived state is invalid and must be cleared immediately.
+        if !Calendar.current.isDate(arrivedTime, inSameDayAs: now) {
+            defaults?.removeObject(forKey: WidgetConstants.UserDefaultsKeys.arrivedCourseId)
+            defaults?.removeObject(forKey: WidgetConstants.UserDefaultsKeys.arrivedCourseTime)
+            return nil
+        }
         
         // 检查已到达的课程是否已经结束
         if hasCourseEnded(course: arrivedCourse, template: data.timeTemplate, at: now) {
@@ -392,7 +399,7 @@ struct Provider: TimelineProvider {
                   startPeriod: course.startPeriod,
                   periodCount: course.periodCount
               ),
-              let endTime = parseTime(periodRange.endTime) else {
+              let endTime = parseTimeOnDate(periodRange.endTime, date: date) else {
             return false
         }
         
