@@ -42,6 +42,7 @@ void main() {
 
     final decoded = QrPayloadCodec.decodeEncodedPayload(parsed.payload);
     expect(decoded['t'], kNcsQrType);
+    expect(decoded['v'], 2);
     expect(decoded['alg'], kNcsQrAlgGzip);
   });
 
@@ -83,5 +84,13 @@ void main() {
   test('invalid encoded payload is rejected', () {
     expect(() => QrPayloadCodec.decodeEncodedPayload(base64UrlEncode(utf8.encode('{"a":1}'))),
         throwsA(isA<FormatException>()));
+  });
+
+  test('v1 frame remains parseable', () {
+    const raw = 'ncs://qr/v1/s/abc123';
+    final parsed = QrPayloadCodec.parseFrame(raw);
+    expect(parsed, isNotNull);
+    expect(parsed!.kind, QrFrameKind.single);
+    expect(parsed.payload, 'abc123');
   });
 }
