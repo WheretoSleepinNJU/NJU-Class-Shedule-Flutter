@@ -33,7 +33,7 @@ struct LockScreenRectangularWidgetView: View {
                             destination: URL(string: "ncs://course/\(course.id)")
                         )
                     } else {
-                        endedView
+                        fallbackView
                     }
                 case .approachingClass, .beforeFirstClass, .betweenClasses:
                     if let course = entry.nextCourse {
@@ -46,7 +46,7 @@ struct LockScreenRectangularWidgetView: View {
                             destination: URL(string: "ncs://course/\(course.id)")
                         )
                     } else {
-                        endedView
+                        fallbackView
                     }
                 case .tomorrowPreview:
                     if let course = entry.widgetData?.tomorrowCourses.first {
@@ -59,10 +59,10 @@ struct LockScreenRectangularWidgetView: View {
                             destination: URL(string: "ncs://course/\(course.id)")
                         )
                     } else {
-                        endedView
+                        fallbackView
                     }
                 case .classesEnded:
-                    endedView
+                    fallbackView
                 case .error:
                     LockScreenRectangularContentView(
                         title: "打开应用更新数据",
@@ -97,6 +97,29 @@ struct LockScreenRectangularWidgetView: View {
             iconColor: .green,
             destination: URL(string: "ncs://refresh")
         )
+    }
+
+    private var noCoursesView: some View {
+        LockScreenRectangularContentView(
+            title: "今日无课",
+            subtitle: nil,
+            footnote: nil,
+            icon: "calendar.badge.checkmark",
+            iconColor: .blue,
+            destination: URL(string: "ncs://refresh")
+        )
+    }
+
+    private var fallbackView: some View {
+        if isNoCoursesState {
+            return AnyView(noCoursesView)
+        }
+        return AnyView(endedView)
+    }
+
+    private var isNoCoursesState: Bool {
+        guard let data = entry.widgetData else { return false }
+        return data.todayCourses.isEmpty && data.tomorrowCourses.isEmpty
     }
 
     private func combineCourseInfo(_ classroom: String?, _ teacher: String?) -> String? {

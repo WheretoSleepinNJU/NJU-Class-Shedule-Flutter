@@ -98,6 +98,49 @@ import WidgetKit
     WidgetPreviewData.noData()
 }
 
+@available(iOS 16.0, *)
+#Preview("14. Lock Screen - No Courses", as: .accessoryRectangular) {
+    ScheduleWidget()
+} timeline: {
+    WidgetPreviewData.noCourses()
+}
+
+// MARK: - Lock Screen Inline Previews
+@available(iOS 16.0, *)
+#Preview("15. Inline - Approaching Class", as: .accessoryInline) {
+    ScheduleWidget()
+} timeline: {
+    WidgetPreviewData.approachingClass()
+}
+
+@available(iOS 16.0, *)
+#Preview("16. Inline - In Class", as: .accessoryInline) {
+    ScheduleWidget()
+} timeline: {
+    WidgetPreviewData.inClass()
+}
+
+@available(iOS 16.0, *)
+#Preview("17. Inline - Tomorrow Preview", as: .accessoryInline) {
+    ScheduleWidget()
+} timeline: {
+    WidgetPreviewData.tomorrowPreview()
+}
+
+@available(iOS 16.0, *)
+#Preview("18. Inline - No Data", as: .accessoryInline) {
+    ScheduleWidget()
+} timeline: {
+    WidgetPreviewData.noData()
+}
+
+@available(iOS 16.0, *)
+#Preview("19. Inline - No Courses", as: .accessoryInline) {
+    ScheduleWidget()
+} timeline: {
+    WidgetPreviewData.noCourses()
+}
+
 // MARK: - Live Activity Previews
 // 使用方法：在 Xcode 中打开此文件，右侧会显示预览画布（Canvas）
 // 可以看到所有 Live Activity 的不同状态和布局

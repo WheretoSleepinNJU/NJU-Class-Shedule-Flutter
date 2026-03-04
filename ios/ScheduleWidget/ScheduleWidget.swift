@@ -652,7 +652,7 @@ struct ScheduleWidget: Widget {
 
     private var supportedFamilies: [WidgetFamily] {
         if #available(iOSApplicationExtension 16.0, *) {
-            return [.systemSmall, .systemMedium, .systemLarge, .accessoryRectangular]
+            return [.systemSmall, .systemMedium, .systemLarge, .accessoryRectangular, .accessoryInline]
         }
         return [.systemSmall, .systemMedium, .systemLarge]
     }
@@ -674,6 +674,12 @@ struct ScheduleWidgetEntryView: View {
         case .accessoryRectangular:
             if #available(iOSApplicationExtension 16.0, *) {
                 LockScreenRectangularWidgetView(entry: entry)
+            } else {
+                SmallWidgetView(entry: entry)
+            }
+        case .accessoryInline:
+            if #available(iOSApplicationExtension 16.0, *) {
+                LockScreenInlineWidgetView(entry: entry)
             } else {
                 SmallWidgetView(entry: entry)
             }
