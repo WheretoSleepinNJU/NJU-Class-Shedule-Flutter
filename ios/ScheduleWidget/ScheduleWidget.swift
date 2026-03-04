@@ -647,7 +647,14 @@ struct ScheduleWidget: Widget {
         }
         .configurationDisplayName("课程表")
         .description("查看今日课程和下节课信息")
-        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+        .supportedFamilies(supportedFamilies)
+    }
+
+    private var supportedFamilies: [WidgetFamily] {
+        if #available(iOSApplicationExtension 16.0, *) {
+            return [.systemSmall, .systemMedium, .systemLarge, .accessoryRectangular]
+        }
+        return [.systemSmall, .systemMedium, .systemLarge]
     }
 }
 
@@ -664,6 +671,12 @@ struct ScheduleWidgetEntryView: View {
             MediumWidgetView(entry: entry)
         case .systemLarge:
             LargeWidgetView(entry: entry)
+        case .accessoryRectangular:
+            if #available(iOSApplicationExtension 16.0, *) {
+                LockScreenRectangularWidgetView(entry: entry)
+            } else {
+                SmallWidgetView(entry: entry)
+            }
         default:
             SmallWidgetView(entry: entry)
         }

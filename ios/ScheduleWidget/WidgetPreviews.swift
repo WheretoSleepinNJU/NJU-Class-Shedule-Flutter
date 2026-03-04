@@ -62,6 +62,42 @@ import WidgetKit
     WidgetPreviewData.noCourses()
 }
 
+// MARK: - Lock Screen Rectangular Previews
+@available(iOS 16.0, *)
+#Preview("9. Lock Screen - Before First Class", as: .accessoryRectangular) {
+    ScheduleWidget()
+} timeline: {
+    WidgetPreviewData.beforeFirstClass()
+}
+
+@available(iOS 16.0, *)
+#Preview("10. Lock Screen - Approaching Class", as: .accessoryRectangular) {
+    ScheduleWidget()
+} timeline: {
+    WidgetPreviewData.approachingClass()
+}
+
+@available(iOS 16.0, *)
+#Preview("11. Lock Screen - In Class", as: .accessoryRectangular) {
+    ScheduleWidget()
+} timeline: {
+    WidgetPreviewData.inClass()
+}
+
+@available(iOS 16.0, *)
+#Preview("12. Lock Screen - Tomorrow Preview", as: .accessoryRectangular) {
+    ScheduleWidget()
+} timeline: {
+    WidgetPreviewData.tomorrowPreview()
+}
+
+@available(iOS 16.0, *)
+#Preview("13. Lock Screen - No Data", as: .accessoryRectangular) {
+    ScheduleWidget()
+} timeline: {
+    WidgetPreviewData.noData()
+}
+
 // MARK: - Live Activity Previews
 // 使用方法：在 Xcode 中打开此文件，右侧会显示预览画布（Canvas）
 // 可以看到所有 Live Activity 的不同状态和布局
