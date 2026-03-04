@@ -60,7 +60,7 @@ class CourseTableProvider {
   Future<CourseTable?> getCourseTable(int id) async {
     await open();
     List<Map<String, dynamic>> maps = await db!.query(tableName,
-        columns: [columnId, columnName],
+        columns: [columnId, columnName, columnData],
         where: '$columnId = ?',
         whereArgs: [id]);
     if (maps.isNotEmpty) {
