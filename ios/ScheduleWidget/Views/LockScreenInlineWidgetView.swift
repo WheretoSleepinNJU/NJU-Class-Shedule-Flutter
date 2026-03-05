@@ -38,9 +38,6 @@ struct LockScreenInlineWidgetView: View {
             return "打开应用更新数据"
         }
 
-        guard selectedCourse != nil else {
-            return "今日无课"
-        }
         return "今日无课"
     }
 
@@ -67,7 +64,15 @@ struct LockScreenInlineWidgetView: View {
               ) else {
             return "第\(course.startPeriod)节"
         }
-        return "\(formatTime(period.startTime))"
+
+        switch entry.displayState {
+        case .inClass:
+            return formatTime(period.endTime)
+        case .approachingClass, .beforeFirstClass, .betweenClasses, .tomorrowPreview:
+            return formatTime(period.startTime)
+        case .classesEnded, .error:
+            return "第\(course.startPeriod)节"
+        }
     }
 
     private var inlineContent: (classroom: String, timeText: String)? {
