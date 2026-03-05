@@ -67,9 +67,9 @@ struct LockScreenInlineWidgetView: View {
 
         switch entry.displayState {
         case .inClass:
-            return formatTime(period.endTime)
+            return formatTime(period.endTime) + "下课"
         case .approachingClass, .beforeFirstClass, .betweenClasses, .tomorrowPreview:
-            return formatTime(period.startTime)
+            return formatTime(period.startTime) + "上课"
         case .classesEnded, .error:
             return "第\(course.startPeriod)节"
         }
