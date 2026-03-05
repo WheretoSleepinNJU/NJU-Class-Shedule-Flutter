@@ -1,5 +1,5 @@
-# Define global platform for iOS 13.0 to match deployment target
-platform :ios, '13.0'
+# Define global platform for iOS 17.0 to match widget extension requirements
+platform :ios, '17.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -38,8 +38,8 @@ post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
     target.build_configurations.each do |config|
-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
-      # Disable explicit module builds to fix Xcode 26.0 compatibility issues
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '17.0'
+      # Disable explicit module builds for compatibility
       config.build_settings['SWIFT_ENABLE_EXPLICIT_MODULES'] = 'NO'
       config.build_settings['SWIFT_ENABLE_INCREMENTAL_COMPILATION'] = 'NO'
       config.build_settings['SWIFT_COMPILATION_MODE'] = 'wholemodule'
