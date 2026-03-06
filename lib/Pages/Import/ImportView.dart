@@ -1,7 +1,6 @@
 import '../../generated/l10n.dart';
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:azlistview/azlistview.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:flutter/material.dart';
@@ -64,164 +63,62 @@ class _ImportViewState extends State<ImportView> {
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme color = Theme.of(context).colorScheme;
     return Scaffold(
-        appBar: AppBar(
-          title: Text(S.of(context).import_settings_title),
-        ),
-        body:
-            // SingleChildScrollView(
-            //     child:
-            Column(
-                children: ListTile.divideTiles(context: context, tiles: [
-          (importVisibility[0] || importVisibility[1] || importVisibility[2])
-              ? Container(
-                  child: Text(S.of(context).import_inline,
-                      style: const TextStyle()),
-                  padding:
-                      const EdgeInsets.only(left: 15.0, top: 10.0, bottom: 5.0),
-                  alignment: Alignment.centerLeft,
-                  color: Theme.of(context).hoverColor)
-              : Container(),
-          importVisibility[0]
-              ? ListTile(
-                  title: Text(S.of(context).import_from_NJU_cer_title),
-                  subtitle: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerLeft,
-                      child: Text(S.of(context).import_from_NJU_cer_subtitle)),
-                  onTap: () async {
-                    UmengCommonSdk.onEvent(
-                        "class_import", {"type": "cer", "action": "show"});
-                    bool? status = await Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                const ImportFromCerView(
-                                    config: Config.jw_config)));
-                    if (status == true) Navigator.of(context).pop(status);
-                  },
-                )
-              : Container(),
-          importVisibility[1]
-              ? ListTile(
-                  title: Text(S.of(context).import_from_NJU_title),
-                  subtitle: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerLeft,
-                      child: Text(S.of(context).import_from_NJU_subtitle)),
-                  onTap: () async {
-                    UmengCommonSdk.onEvent(
-                        "class_import", {"type": "jw", "action": "show"});
-                    bool? status = await Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                const ImportFromJWView()));
-                    if (status == true) Navigator.of(context).pop(status);
-                  },
-                )
-              : Container(),
-          importVisibility[2]
-              ? ListTile(
-                  title: Text(S.of(context).import_from_NJU_xk_title),
-                  subtitle: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerLeft,
-                      child: Text(S.of(context).import_from_NJU_xk_subtitle)),
-                  onTap: () async {
-                    UmengCommonSdk.onEvent(
-                        "class_import", {"type": "xk", "action": "show"});
-                    bool? status = await Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                const ImportFromXKView(
-                                    config: Config.xk_config)));
-                    if (status == true) Navigator.of(context).pop(status);
-                  },
-                )
-              : Container(),
-          Container(
-              child:
-                  Text(S.of(context).import_online, style: const TextStyle()),
-              padding: const EdgeInsets.only(left: 15.0, top: 5.0, bottom: 5.0),
-              alignment: Alignment.centerLeft,
-              color: Theme.of(context).hoverColor),
-          Expanded(
-              child: FutureBuilder<List>(
-                  future: getOnlineConfig(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<List> snapshot) {
-                    if (snapshot.hasData) {
-                      if (snapshot.data!.isEmpty) {
-                        return Column(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 0),
-                              child: const Text("加载中..."),
-                            ),
-                            moreSchools()
-                          ],
-                        );
-                      }
-                      // List configList = snapshot.data!;
-                      List<School> schoolList = snapshot.data!
-                          .map((data) => School(
-                              name: data['title'],
-                              namePinyin: data['pinyin'],
-                              tagIndex: data['pinyin'][0].toUpperCase(),
-                              config: data,
-                              isGrey: data['isGrey3.1.0']))
-                          .toList();
-                      schoolList.add(School(
-                          name: S.of(context).import_more_schools,
-                          namePinyin: '#',
-                          tagIndex: '#',
-                          config: {}));
-
-                      // A-Z sort.
-                      SuspensionUtil.sortListBySuspensionTag(schoolList);
-
-                      // show sus tag.
-                      SuspensionUtil.setShowSuspensionStatus(schoolList);
-                      return AzListView(
-                        data: schoolList,
-                        itemCount: schoolList.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          if (index == schoolList.length - 1) {
-                            return moreSchools();
-                          }
-                          return ListTile(
-                            title: Text(schoolList[index].name),
-                            subtitle: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                    schoolList[index].config!['description'])),
-                            enabled: !(schoolList[index].isGrey ?? false),
-                            onTap: () async {
-                              UmengCommonSdk.onEvent("class_import",
-                                  {"type": "be", "action": "show"});
-                              bool? status = await Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          ImportFromBEView(
-                                              config:
-                                                  schoolList[index].config!)));
-                              if (status == true) {
-                                Navigator.of(context).pop(status);
-                              }
-                            },
-                          );
-                        },
-                        indexBarData:
-                            SuspensionUtil.getTagIndexList(schoolList),
-                      );
-                    } else {
-                      return moreSchools();
-                    }
-                  }))
-        ]).toList())
-        // )
-        );
+      backgroundColor: color.surface,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: color.surface,
+        title: Text(S.of(context).import_settings_title),
+      ),
+      body: FutureBuilder<List>(
+          future: getOnlineConfig(),
+          builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+            final schools = snapshot.data ?? <dynamic>[];
+            return LayoutBuilder(builder: (context, constraints) {
+              final width = constraints.maxWidth;
+              final maxContentWidth = width > 1100 ? 1000.0 : 860.0;
+              final horizontalPadding = width < 480
+                  ? 16.0
+                  : width < 900
+                      ? 24.0
+                      : 32.0;
+              return Align(
+                alignment: Alignment.topCenter,
+                child: SizedBox(
+                  width: maxContentWidth,
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.fromLTRB(
+                        horizontalPadding, 8, horizontalPadding, 28),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildHero(context),
+                        if (importVisibility[0] ||
+                            importVisibility[1] ||
+                            importVisibility[2]) ...[
+                          const SizedBox(height: 24),
+                          _buildSectionTitle(context, S.of(context).import_inline),
+                          const SizedBox(height: 12),
+                          _buildQuickImportCards(context, width),
+                        ],
+                        const SizedBox(height: 28),
+                        _buildSectionTitle(context, S.of(context).import_online),
+                        const SizedBox(height: 12),
+                        if (!snapshot.hasData)
+                          _buildLoadingCard(context)
+                        else
+                          _buildSchoolGrid(context, schools, width),
+                        const SizedBox(height: 16),
+                        _buildMoreSchoolsCard(context),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            });
+          }),
+    );
   }
 
   getImportVisibility() async {
@@ -306,20 +203,270 @@ class _ImportViewState extends State<ImportView> {
     }
   }
 
-  Widget moreSchools() {
+  Widget _buildHero(BuildContext context) {
+    final color = Theme.of(context).colorScheme;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(22),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        color: color.surfaceContainerHighest.withOpacity(0.45),
+        border: Border.all(color: color.outlineVariant.withOpacity(0.35)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            S.of(context).import_settings_title,
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: -0.3,
+                ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            "Sign in once, import cleanly, and keep your schedule in sync.",
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: color.onSurfaceVariant,
+                  height: 1.4,
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(BuildContext context, String title) {
+    return Text(
+      title,
+      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.1,
+          ),
+    );
+  }
+
+  Widget _buildQuickImportCards(BuildContext context, double width) {
+    final cards = <Widget>[];
+    if (importVisibility[0]) {
+      cards.add(_importCard(
+        context,
+        title: S.of(context).import_from_NJU_cer_title,
+        subtitle: S.of(context).import_from_NJU_cer_subtitle,
+        onTap: () async {
+          UmengCommonSdk.onEvent("class_import", {"type": "cer", "action": "show"});
+          bool? status = await Navigator.of(context).push(MaterialPageRoute(
+              builder: (BuildContext context) =>
+                  const ImportFromCerView(config: Config.jw_config)));
+          if (status == true) Navigator.of(context).pop(status);
+        },
+      ));
+    }
+    if (importVisibility[1]) {
+      cards.add(_importCard(
+        context,
+        title: S.of(context).import_from_NJU_title,
+        subtitle: S.of(context).import_from_NJU_subtitle,
+        onTap: () async {
+          UmengCommonSdk.onEvent("class_import", {"type": "jw", "action": "show"});
+          bool? status = await Navigator.of(context).push(MaterialPageRoute(
+              builder: (BuildContext context) => const ImportFromJWView()));
+          if (status == true) Navigator.of(context).pop(status);
+        },
+      ));
+    }
+    if (importVisibility[2]) {
+      cards.add(_importCard(
+        context,
+        title: S.of(context).import_from_NJU_xk_title,
+        subtitle: S.of(context).import_from_NJU_xk_subtitle,
+        onTap: () async {
+          UmengCommonSdk.onEvent("class_import", {"type": "xk", "action": "show"});
+          bool? status = await Navigator.of(context).push(MaterialPageRoute(
+              builder: (BuildContext context) =>
+                  const ImportFromXKView(config: Config.xk_config)));
+          if (status == true) Navigator.of(context).pop(status);
+        },
+      ));
+    }
+    final cardWidth = width > 900 ? 280.0 : width > 640 ? 260.0 : double.infinity;
+    return Wrap(
+      spacing: 12,
+      runSpacing: 12,
+      children: cards
+          .map((w) => SizedBox(width: cardWidth, child: w))
+          .toList(growable: false),
+    );
+  }
+
+  Widget _buildSchoolGrid(BuildContext context, List schools, double width) {
+    final schoolList = schools
+        .map((data) => School(
+            name: data['title'],
+            namePinyin: data['pinyin'],
+            tagIndex: data['pinyin'][0].toUpperCase(),
+            config: data,
+            isGrey: data['isGrey3.1.0']))
+        .toList();
+    schoolList.sort((a, b) => (a.namePinyin ?? '').compareTo(b.namePinyin ?? ''));
+
+    final crossAxisCount = width > 900
+        ? 2
+        : width > 620
+            ? 2
+            : 1;
+    final ratio = crossAxisCount == 1 ? 3.6 : 3.2;
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: schoolList.length,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: crossAxisCount,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+        childAspectRatio: ratio,
+      ),
+      itemBuilder: (context, index) {
+        final item = schoolList[index];
+        return _importCard(
+          context,
+          title: item.name,
+          subtitle: item.config!['description'] ?? '',
+          enabled: !(item.isGrey ?? false),
+          onTap: () async {
+            UmengCommonSdk.onEvent("class_import", {"type": "be", "action": "show"});
+            bool? status = await Navigator.of(context).push(MaterialPageRoute(
+                builder: (BuildContext context) =>
+                    ImportFromBEView(config: item.config!)));
+            if (status == true) {
+              Navigator.of(context).pop(status);
+            }
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildLoadingCard(BuildContext context) {
+    return _importCard(
+      context,
+      title: "Loading",
+      subtitle: "Fetching school adapters...",
+      enabled: false,
+      onTap: () {},
+      trailing: const SizedBox(
+        width: 18,
+        height: 18,
+        child: CircularProgressIndicator(strokeWidth: 2),
+      ),
+    );
+  }
+
+  Widget _buildMoreSchoolsCard(BuildContext context) {
+    final color = Theme.of(context).colorScheme;
     return InkWell(
-        child: Container(
-            child: Text(S.of(context).import_more_schools,
-                style: TextStyle(
-                    color: Theme.of(context).brightness == Brightness.light
-                        ? Theme.of(context).primaryColor
-                        : Colors.white)),
-            alignment: Alignment.topCenter,
-            padding: const EdgeInsets.only(top: 5.0, bottom: 25.0)),
-        onTap: () {
-          UmengCommonSdk.onEvent(
-              "class_import", {"type": "be", "action": "more"});
-          launch(Url.OPEN_SOURCE_URL);
-        });
+      borderRadius: BorderRadius.circular(16),
+      onTap: () {
+        UmengCommonSdk.onEvent("class_import", {"type": "be", "action": "more"});
+        launch(Url.OPEN_SOURCE_URL);
+      },
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: color.outlineVariant.withOpacity(0.35)),
+        ),
+        child: Row(
+          children: [
+            Text(
+              S.of(context).import_more_schools,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: color.primary,
+                    fontWeight: FontWeight.w500,
+                  ),
+            ),
+            const Spacer(),
+            Icon(Icons.arrow_forward_ios_rounded, size: 14, color: color.primary),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _importCard(
+    BuildContext context, {
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+    bool enabled = true,
+    Widget? trailing,
+  }) {
+    final color = Theme.of(context).colorScheme;
+    return Opacity(
+      opacity: enabled ? 1 : 0.45,
+      child: Material(
+        color: color.surface,
+        borderRadius: BorderRadius.circular(18),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(18),
+          onTap: enabled ? onTap : null,
+          child: Ink(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: color.outlineVariant.withOpacity(0.4)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(
+                      Theme.of(context).brightness == Brightness.dark ? 0.12 : 0.04),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(14),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          subtitle,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: color.onSurfaceVariant,
+                                height: 1.25,
+                              ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  trailing ??
+                      Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 14,
+                        color: color.onSurfaceVariant,
+                      ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
