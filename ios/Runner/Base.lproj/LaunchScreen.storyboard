@@ -22,9 +22,12 @@
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" image="LaunchBackground" translatesAutoresizingMaskIntoConstraints="NO" id="tWc-Dq-wcI">
                                 <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                             </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" fixedFrame="YES" image="BrandingImage" translatesAutoresizingMaskIntoConstraints="NO" id="ZNn-TW-qas">
-                                <rect key="frame" x="68" y="298" width="256" height="256"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="BrandingImage" translatesAutoresizingMaskIntoConstraints="NO" id="ZNn-TW-qas">
+                                <rect key="frame" x="68.666666666666686" y="298" width="256" height="256"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="256" id="RF2-lb-LER"/>
+                                    <constraint firstAttribute="height" constant="256" id="kK5-HJ-UIG"/>
+                                </constraints>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -32,6 +35,8 @@
                             <constraint firstItem="tWc-Dq-wcI" firstAttribute="bottom" secondItem="Ze5-6b-2t3" secondAttribute="bottom" id="RPx-PI-7Xg"/>
                             <constraint firstItem="tWc-Dq-wcI" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="SdS-ul-q2q"/>
                             <constraint firstAttribute="trailing" secondItem="tWc-Dq-wcI" secondAttribute="trailing" id="Swv-Gf-Rwn"/>
+                            <constraint firstItem="ZNn-TW-qas" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="dA2-N1-pWf"/>
+                            <constraint firstItem="ZNn-TW-qas" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="iTF-aj-gvk"/>
                             <constraint firstItem="tWc-Dq-wcI" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="kV7-tw-vXt"/>
                         </constraints>
                     </view>

@@ -4,7 +4,8 @@ import '../../Utils/CourseImportCodec.dart';
 
 const String kNcsQrScheme = 'ncs';
 const String kNcsQrHost = 'qr';
-const String kNcsQrVersion = 'v1';
+const String kNcsQrVersion = 'v2';
+const Set<String> kNcsQrSupportedVersions = <String>{'v1', 'v2'};
 const String kNcsQrAlgGzip = 'gz';
 const String kNcsQrType = 'ncs_qr_schedule';
 const int kNcsQrPayloadMaxChars = 20000;
@@ -63,7 +64,7 @@ class QrPayloadCodec {
     final checksum = crc32HexOfString(jsonEncode(dataForChecksum));
     return <String, dynamic>{
       't': kNcsQrType,
-      'v': 1,
+      'v': 2,
       'alg': kNcsQrAlgGzip,
       'meta': <String, dynamic>{
         'app': 'wheretosleepinnju',
@@ -122,7 +123,17 @@ class QrPayloadCodec {
   }
 
   static bool isNcsQrPayload(String raw) {
-    return raw.startsWith('$kNcsQrScheme://$kNcsQrHost/$kNcsQrVersion/');
+    Uri uri;
+    try {
+      uri = Uri.parse(raw);
+    } catch (_) {
+      return false;
+    }
+    if (uri.scheme != kNcsQrScheme || uri.host != kNcsQrHost) {
+      return false;
+    }
+    final segments = uri.pathSegments;
+    return segments.isNotEmpty && kNcsQrSupportedVersions.contains(segments[0]);
   }
 
   static ParsedQrFrame? parseFrame(String raw) {
@@ -138,7 +149,7 @@ class QrPayloadCodec {
     }
 
     final segments = uri.pathSegments;
-    if (segments.length < 3 || segments[0] != kNcsQrVersion) {
+    if (segments.length < 3 || !kNcsQrSupportedVersions.contains(segments[0])) {
       return null;
     }
 
@@ -232,7 +243,7 @@ class QrPayloadCodec {
     if (payload['t'] != kNcsQrType) {
       throw const FormatException('unsupported_payload_type');
     }
-    if (payload['v'] != 1) {
+    if (payload['v'] != 1 && payload['v'] != 2) {
       throw const FormatException('unsupported_payload_version');
     }
     if (payload['alg'] != kNcsQrAlgGzip) {

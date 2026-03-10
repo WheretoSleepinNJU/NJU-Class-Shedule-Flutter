@@ -49,4 +49,32 @@ post_install do |installer|
   installer.pods_project.build_configurations.each do |config|
     config.build_settings['SWIFT_ENABLE_EXPLICIT_MODULES'] = 'NO'
   end
+
+  # Workaround for Apple ITMS-91061 on old transitive SDK versions:
+  # inject a PrivacyInfo.xcprivacy into the affected pod frameworks.
+  privacy_manifests = {
+    'GTMSessionFetcher' => 'GTMSessionFetcher',
+    'GoogleToolboxForMac' => 'GoogleToolboxForMac'
+  }
+
+  privacy_manifests.each do |target_name, manifest_dir_name|
+    target = installer.pods_project.targets.find { |t| t.name == target_name }
+    next if target.nil?
+
+    source_manifest_path = File.expand_path("PrivacyManifests/#{manifest_dir_name}/PrivacyInfo.xcprivacy", __dir__)
+    next unless File.exist?(source_manifest_path)
+
+    pods_manifest_dir = File.join(__dir__, 'Pods', 'PrivacyManifests', manifest_dir_name)
+    FileUtils.mkdir_p(pods_manifest_dir)
+    pods_manifest_path = File.join(pods_manifest_dir, 'PrivacyInfo.xcprivacy')
+    FileUtils.cp(source_manifest_path, pods_manifest_path)
+
+    group_path = "PrivacyManifests/#{manifest_dir_name}/PrivacyInfo.xcprivacy"
+    file_ref = installer.pods_project.main_group.find_file_by_path(group_path)
+    file_ref = installer.pods_project.main_group.new_file(group_path) if file_ref.nil?
+
+    resources_phase = target.resources_build_phase
+    exists = resources_phase.files_references.any? { |ref| ref.path == file_ref.path }
+    resources_phase.add_file_reference(file_ref, true) unless exists
+  end
 end

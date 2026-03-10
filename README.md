@@ -77,7 +77,7 @@
 因为增加了鸿蒙支持，需要使用鸿蒙 Flutter 版本。
 
 1. 根据 [flutter_flutter oh-3.27.0](https://gitcode.com/openharmony-tpc/flutter_flutter/tree/oh-3.27.0-release) 配置鸿蒙依赖
-2. 加载项目环境变量：`source tool/setup_ohos_env.sh`
+2. 加载项目环境变量：`source tool/setup_ohos_env.sh` （配好环境之后就只需要每次开发打开终端执行一次）
 3. 安装并使用指定版本：`fvm install oh-3.27.0-release && fvm use 3.27.5-ohos-1.0.3` （这里很奇怪，下载的版本号和cache版本号不一样）
 4. 运行 `fvm flutter doctor -v` 检查环境变量配置，Flutter 与 OpenHarmony 都应为 `ok`
 5. 在 `external` 文件夹中 clone 依赖（若尚未 clone）

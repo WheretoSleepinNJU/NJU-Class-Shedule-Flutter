@@ -42,6 +42,7 @@ void main() {
 
     final decoded = QrPayloadCodec.decodeEncodedPayload(parsed.payload);
     expect(decoded['t'], kNcsQrType);
+    expect(decoded['v'], 2);
     expect(decoded['alg'], kNcsQrAlgGzip);
   });
 
@@ -83,5 +84,69 @@ void main() {
   test('invalid encoded payload is rejected', () {
     expect(() => QrPayloadCodec.decodeEncodedPayload(base64UrlEncode(utf8.encode('{"a":1}'))),
         throwsA(isA<FormatException>()));
+  });
+
+  test('v1 frame remains parseable', () {
+    const raw = 'ncs://qr/v1/s/abc123';
+    final parsed = QrPayloadCodec.parseFrame(raw);
+    expect(parsed, isNotNull);
+    expect(parsed!.kind, QrFrameKind.single);
+    expect(parsed.payload, 'abc123');
+  });
+
+  test('v1 payload remains decodable', () {
+    final payload = samplePayload();
+    payload['v'] = 1;
+    final encoded = QrPayloadCodec.encodePayload(payload);
+    final raw = 'ncs://qr/v1/s/$encoded';
+
+    final parsed = QrPayloadCodec.parseFrame(raw);
+    expect(parsed, isNotNull);
+    expect(parsed!.kind, QrFrameKind.single);
+
+    final decoded = QrPayloadCodec.decodeEncodedPayload(parsed.payload);
+    expect(decoded['v'], 1);
+    expect(decoded['t'], kNcsQrType);
+  });
+
+  test('v1 multi-frame payload can be merged and decoded', () {
+    final payload = samplePayload();
+    payload['v'] = 1;
+    final encoded = QrPayloadCodec.encodePayload(payload);
+    final parts = <String>[];
+    const maxPartLength = 20;
+    for (int i = 0; i < encoded.length; i += maxPartLength) {
+      final end = i + maxPartLength < encoded.length ? i + maxPartLength : encoded.length;
+      parts.add(encoded.substring(i, end));
+    }
+
+    final total = parts.length;
+    final parsedParts = <int, String>{};
+    for (int i = 0; i < total; i++) {
+      final frame = 'ncs://qr/v1/m/${i + 1}/$total/group1/${parts[i]}';
+      final parsed = QrPayloadCodec.parseFrame(frame);
+      expect(parsed, isNotNull);
+      expect(parsed!.kind, QrFrameKind.multi);
+      parsedParts[parsed.index!] = parsed.payload;
+    }
+
+    final merged = QrPayloadCodec.mergeEncodedPayloadParts(parsedParts, total);
+    expect(merged, isNotNull);
+
+    final decoded = QrPayloadCodec.decodeEncodedPayload(merged!);
+    expect(decoded['v'], 1);
+    expect((decoded['courses'] as List).isNotEmpty, true);
+  });
+
+  test('unsupported frame version is rejected by parser', () {
+    expect(QrPayloadCodec.parseFrame('ncs://qr/v3/s/abc123'), isNull);
+    expect(QrPayloadCodec.isNcsQrPayload('ncs://qr/v3/s/abc123'), isFalse);
+  });
+
+  test('unsupported payload version is rejected by decoder', () {
+    final payload = samplePayload();
+    payload['v'] = 3;
+    final encoded = QrPayloadCodec.encodePayload(payload);
+    expect(() => QrPayloadCodec.decodeEncodedPayload(encoded), throwsFormatException);
   });
 }
