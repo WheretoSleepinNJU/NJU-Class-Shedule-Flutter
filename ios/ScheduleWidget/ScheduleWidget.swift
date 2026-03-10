@@ -365,6 +365,13 @@ struct Provider: TimelineProvider {
         }
         
         let now = Date()
+
+        // Cross-day arrived state is invalid and must be cleared immediately.
+        if !Calendar.current.isDate(arrivedTime, inSameDayAs: now) {
+            defaults?.removeObject(forKey: WidgetConstants.UserDefaultsKeys.arrivedCourseId)
+            defaults?.removeObject(forKey: WidgetConstants.UserDefaultsKeys.arrivedCourseTime)
+            return nil
+        }
         
         // 检查已到达的课程是否已经结束
         if hasCourseEnded(course: arrivedCourse, template: data.timeTemplate, at: now) {
@@ -392,7 +399,7 @@ struct Provider: TimelineProvider {
                   startPeriod: course.startPeriod,
                   periodCount: course.periodCount
               ),
-              let endTime = parseTime(periodRange.endTime) else {
+              let endTime = parseTimeOnDate(periodRange.endTime, date: date) else {
             return false
         }
         
@@ -640,7 +647,14 @@ struct ScheduleWidget: Widget {
         }
         .configurationDisplayName("课程表")
         .description("查看今日课程和下节课信息")
-        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+        .supportedFamilies(supportedFamilies)
+    }
+
+    private var supportedFamilies: [WidgetFamily] {
+        if #available(iOSApplicationExtension 16.0, *) {
+            return [.systemSmall, .systemMedium, .systemLarge, .accessoryRectangular, .accessoryInline]
+        }
+        return [.systemSmall, .systemMedium, .systemLarge]
     }
 }
 
@@ -657,6 +671,18 @@ struct ScheduleWidgetEntryView: View {
             MediumWidgetView(entry: entry)
         case .systemLarge:
             LargeWidgetView(entry: entry)
+        case .accessoryRectangular:
+            if #available(iOSApplicationExtension 16.0, *) {
+                LockScreenRectangularWidgetView(entry: entry)
+            } else {
+                SmallWidgetView(entry: entry)
+            }
+        case .accessoryInline:
+            if #available(iOSApplicationExtension 16.0, *) {
+                LockScreenInlineWidgetView(entry: entry)
+            } else {
+                SmallWidgetView(entry: entry)
+            }
         default:
             SmallWidgetView(entry: entry)
         }
