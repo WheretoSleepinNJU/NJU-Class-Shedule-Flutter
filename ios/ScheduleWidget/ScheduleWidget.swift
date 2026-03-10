@@ -210,6 +210,96 @@ private func determineDisplayState(
     return .classesEnded
 }
 
+private func normalizedWidgetDataForCurrentDay(_ data: WidgetScheduleData, now: Date = Date()) -> WidgetScheduleData {
+    let calendar = Calendar.current
+    let currentWeekDay = ((calendar.component(.weekday, from: now) + 5) % 7) + 1 // Monday=1...Sunday=7
+    let dataDay = calendar.startOfDay(for: parseWidgetISODate(data.lastUpdateTime) ?? now)
+    let nowDay = calendar.startOfDay(for: now)
+    let elapsedDays = max(0, calendar.dateComponents([.day], from: dataDay, to: nowDay).day ?? 0)
+
+    // If both weekday and date are still fresh, use source data directly.
+    guard data.currentWeekDay != currentWeekDay || elapsedDays >= 7 else {
+        return data
+    }
+    let dayShift = elapsedDays > 0 ? elapsedDays : ((currentWeekDay - data.currentWeekDay + 7) % 7)
+
+    let effectiveWeek = data.currentWeek + ((data.currentWeekDay - 1 + dayShift) / 7)
+    let tomorrowWeekDay = currentWeekDay == 7 ? 1 : currentWeekDay + 1
+    let tomorrowWeek = currentWeekDay == 7 ? effectiveWeek + 1 : effectiveWeek
+
+    let todayCourses = resolveCourses(
+        data: data,
+        targetWeekDay: currentWeekDay,
+        targetWeek: effectiveWeek,
+        dayShiftFromSource: dayShift
+    )
+    let tomorrowCourses = resolveCourses(
+        data: data,
+        targetWeekDay: tomorrowWeekDay,
+        targetWeek: tomorrowWeek,
+        dayShiftFromSource: dayShift + 1
+    )
+
+    return WidgetScheduleData(
+        version: data.version,
+        timestamp: data.timestamp,
+        schoolId: data.schoolId,
+        schoolName: data.schoolName,
+        timeTemplate: data.timeTemplate,
+        currentWeek: effectiveWeek,
+        currentWeekDay: currentWeekDay,
+        semesterName: data.semesterName,
+        todayCourses: todayCourses,
+        tomorrowCourses: tomorrowCourses,
+        weekSchedule: data.weekSchedule,
+        weekCourseCount: data.weekCourseCount,
+        hasCoursesToday: !todayCourses.isEmpty,
+        hasCoursesTomorrow: !tomorrowCourses.isEmpty,
+        dataSource: data.dataSource,
+        totalCourses: data.totalCourses,
+        lastUpdateTime: data.lastUpdateTime,
+        approachingMinutes: data.approachingMinutes,
+        tomorrowPreviewHour: data.tomorrowPreviewHour
+    )
+}
+
+private func parseWidgetISODate(_ value: String) -> Date? {
+    let isoFormatter = ISO8601DateFormatter()
+    if let parsed = isoFormatter.date(from: value) {
+        return parsed
+    }
+
+    let fallback = DateFormatter()
+    fallback.locale = Locale(identifier: "en_US_POSIX")
+    fallback.timeZone = TimeZone.current
+    fallback.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
+    if let parsed = fallback.date(from: value) {
+        return parsed
+    }
+
+    fallback.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+    return fallback.date(from: value)
+}
+
+private func resolveCourses(
+    data: WidgetScheduleData,
+    targetWeekDay: Int,
+    targetWeek: Int,
+    dayShiftFromSource: Int
+) -> [WidgetCourse] {
+    // Exactly one-day stale: source tomorrowCourses usually already contains the most accurate next-day snapshot.
+    if dayShiftFromSource == 1 {
+        return data.tomorrowCourses
+            .filter { $0.weeks.isEmpty || $0.weeks.contains(targetWeek) }
+            .sorted { $0.startPeriod < $1.startPeriod }
+    }
+
+    let candidates = data.weekSchedule[String(targetWeekDay)] ?? []
+    return candidates
+        .filter { $0.weeks.isEmpty || $0.weeks.contains(targetWeek) }
+        .sorted { $0.startPeriod < $1.startPeriod }
+}
+
 // MARK: - Timeline Provider
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> ScheduleEntry {
@@ -302,20 +392,26 @@ struct Provider: TimelineProvider {
             )
         }
 
+        let normalizedData = normalizedWidgetDataForCurrentDay(data)
+
+        if normalizedData.currentWeekDay != data.currentWeekDay || normalizedData.currentWeek != data.currentWeek {
+            print("⚠️ [Widget] Detected stale day data, normalized week/day \(data.currentWeek)-\(data.currentWeekDay) -> \(normalizedData.currentWeek)-\(normalizedData.currentWeekDay)")
+        }
+
         print("✅ [Widget] Widget data loaded successfully")
-        print("📊 [Widget] School: \(data.schoolName)")
-        print("📊 [Widget] Current week: \(data.currentWeek)")
-        print("📊 [Widget] Today's courses: \(data.todayCourses.count)")
-        print("📊 [Widget] Tomorrow's courses: \(data.tomorrowCourses.count)")
+        print("📊 [Widget] School: \(normalizedData.schoolName)")
+        print("📊 [Widget] Current week: \(normalizedData.currentWeek)")
+        print("📊 [Widget] Today's courses: \(normalizedData.todayCourses.count)")
+        print("📊 [Widget] Tomorrow's courses: \(normalizedData.tomorrowCourses.count)")
 
         print("✅ [Widget] ========== Entry Loaded Successfully ==========")
 
         // 检查是否有"已到达"的课程
-        let arrivedCourse = checkArrivedCourse(data: data)
+        let arrivedCourse = checkArrivedCourse(data: normalizedData)
         
         let tempEntry = ScheduleEntry(
             date: Date(),
-            widgetData: data,
+            widgetData: normalizedData,
             errorMessage: nil,
             relevance: nil,
             arrivedCourse: arrivedCourse

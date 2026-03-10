@@ -15,12 +15,28 @@ import ActivityKit
 
     // Set up widget data method channel
     setupWidgetDataChannel()
+    setupSystemTimeChangeObserver()
 
 //     MobClick.handle(url)
 //     UMCommonLogSwift.setUpUMCommonLogManager()
 //     UMCommonSwift.setLogEnabled(bFlag: true)
 //     UMConfigure.initWithAppkey("5f9e1afa1c520d30739d2737", channel: "umeng")
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+
+  private func setupSystemTimeChangeObserver() {
+    NotificationCenter.default.addObserver(
+      self,
+      selector: #selector(handleSignificantTimeChange),
+      name: UIApplication.significantTimeChangeNotification,
+      object: nil
+    )
+  }
+
+  @objc private func handleSignificantTimeChange() {
+    guard #available(iOS 14.0, *) else { return }
+    WidgetCenter.shared.reloadAllTimelines()
+    print("🔄 [AppDelegate] Significant time change detected, widget timelines reloaded")
   }
 
   private func setupWidgetDataChannel() {
