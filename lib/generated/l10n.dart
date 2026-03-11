@@ -470,10 +470,10 @@ class S {
     );
   }
 
-  /// `通过二维码/分享串导入导出`
+  /// `通过二维码/分享串导入导出，或导出到系统日历`
   String get import_or_export_subtitle {
     return Intl.message(
-      '通过二维码/分享串导入导出',
+      '通过二维码/分享串导入导出，或导出到系统日历',
       name: 'import_or_export_subtitle',
       desc: '',
       args: [],

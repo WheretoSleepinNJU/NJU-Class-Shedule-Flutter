@@ -226,7 +226,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_online":
             MessageLookupByLibrary.simpleMessage("在线导入：从服务器获取的最新配置"),
         "import_or_export_subtitle":
-            MessageLookupByLibrary.simpleMessage("通过二维码/分享串导入导出"),
+            MessageLookupByLibrary.simpleMessage("通过二维码/分享串导入导出，或导出到系统日历"),
         "import_or_export_title":
             MessageLookupByLibrary.simpleMessage("导入/导出课表"),
         "import_qr_title": MessageLookupByLibrary.simpleMessage("二维码导入"),

@@ -42,7 +42,7 @@
   "view_lecture_title": "查看/添加讲座",
   "view_lecture_subtitle": "查看南哪最新讲座信息，可一键导入至课表",
   "import_or_export_title": "导入/导出课表",
-  "import_or_export_subtitle": "通过二维码/分享串导入导出",
+  "import_or_export_subtitle": "通过二维码/分享串导入导出，或导出到系统日历",
   "manage_table_title": "课表管理",
   "manage_table_subtitle": "添加或删除课表数据",
   "change_theme_title": "修改主题",
