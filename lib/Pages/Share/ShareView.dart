@@ -166,6 +166,31 @@ class _ShareViewState extends State<ShareView> {
         await courseTableProvider.getClassTimeList(tableId);
 
     Map<int, DateTime> dayMap = await _getDayMap();
+
+    String? targetCalendarId;
+    try {
+      UnmodifiableListView calendars = (await dc.retrieveCalendars()).data!;
+      for (Calendar c in calendars) {
+        if (c.name == calendarName) {
+          targetCalendarId = c.id!;
+          break;
+        }
+      }
+      if (targetCalendarId == null) {
+        targetCalendarId = (await dc.createCalendar(calendarName)).data;
+      }
+    } catch (e) {
+      Toast.showToast(
+          S.of(context).export_to_system_calendar_fail_toast, context);
+      return false;
+    }
+
+    if (targetCalendarId == null) {
+      Toast.showToast(
+          S.of(context).export_to_system_calendar_fail_toast, context);
+      return false;
+    }
+
     try {
       for (Map<String, dynamic> courseMap in courses) {
         Course course = Course.fromMap(courseMap);
@@ -204,28 +229,14 @@ class _ShareViewState extends State<ShareView> {
           TZDateTime end =
               TZDateTime(loc, day.year, day.month, day.day, endHour, endMinute);
 
-          UnmodifiableListView calendars = (await dc.retrieveCalendars()).data!;
-          String? targetCalendarId;
-          bool found = false;
-          for (Calendar c in calendars) {
-            if (c.name == calendarName) {
-              targetCalendarId = c.id!;
-              found = true;
-              break;
-            }
-          }
-          if (found == false) {
-            targetCalendarId = (await dc.createCalendar(calendarName)).data!;
-          }
-          String? result = (await dc.createOrUpdateEvent(Event(
-            targetCalendarId!,
+          await dc.createOrUpdateEvent(Event(
+            targetCalendarId,
             title: course.name,
             start: start,
             end: end,
             location: course.testLocation,
             description: course.info,
-          )))
-              ?.data;
+          ));
         }
       }
       Toast.showToast(
