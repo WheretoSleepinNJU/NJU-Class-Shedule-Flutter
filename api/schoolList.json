@@ -387,6 +387,85 @@
       "semester_start_monday": "2025-09-08",
       "isGrey": true,
       "isGrey3.1.0": false
+    },
+    {
+      "title": "清华大学研究生信息门户",
+      "pinyin": "qinghuadaxueyanjiusheng",
+      "description": "北伐！北伐！",
+      "page_title": "信息门户登录",
+      "initialUrl": "https://webvpn.tsinghua.edu.cn/https/77726476706e69737468656265737421fcf2408e297e7c4377068ea48d546d30ca8cc97bcc/f/wlxt/index/course/student/index",
+      "redirectUrl": "https://learn.tsinghua.edu.cn/f/wlxt/index/course/student/",
+      "targetUrl": "https://webvpn.tsinghua.edu.cn/http/77726476706e69737468656265737421eaff4b8b69336153301c9aa596522b20bc86e6e559a9b290/jxmh_out.do?m=yjs_jxrl_all",
+      "preExtractJS": "",
+      "delayTime": 3,
+      "extractJS": "",
+      "extractJSfileAndroid": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/thuyjsjw.js",
+      "extractJSfileiOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/thuyjsjw.js",
+      "extractJSfileOHOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/thuyjsjw.js",
+      "banner_content": "导入方式：登录后自动获取本学期课表\n由于我校VPN设置，需要先登录VPN再登录网络学堂\n另外友情推荐 THU Info APP",
+      "banner_action": "前往 THU Info APP",
+      "banner_url": "https://app.cs.tsinghua.edu.cn",
+      "class_time_list": [
+        {
+          "start": "08:00",
+          "end": "08:45"
+        },
+        {
+          "start": "08:50",
+          "end": "09:35"
+        },
+        {
+          "start": "09:50",
+          "end": "10:35"
+        },
+        {
+          "start": "10:40",
+          "end": "11:25"
+        },
+        {
+          "start": "11:30",
+          "end": "12:15"
+        },
+        {
+          "start": "13:30",
+          "end": "14:15"
+        },
+        {
+          "start": "14:20",
+          "end": "15:05"
+        },
+        {
+          "start": "15:20",
+          "end": "16:05"
+        },
+        {
+          "start": "16:10",
+          "end": "16:55"
+        },
+        {
+          "start": "17:05",
+          "end": "17:50"
+        },
+        {
+          "start": "17:55",
+          "end": "18:40"
+        },
+        {
+          "start": "19:20",
+          "end": "20:05"
+        },
+        {
+          "start": "20:10",
+          "end": "20:55"
+        },
+        {
+          "start": "21:00",
+          "end": "21:45"
+        }
+      ],
+      "semester_start_monday": "2026-02-23",
+      "isGrey": true,
+      "isGrey3.1.0": false
     }
   ]
 }
