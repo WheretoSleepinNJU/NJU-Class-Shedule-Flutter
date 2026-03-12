@@ -6,7 +6,7 @@ class Url {
 
   static const String URL_NJU_VPN = "https://vpn.nju.edu.cn";
 
-  static const String URL_APPLE = "https://pay.idealclover.cn/apple_new/1";
+  static const String URL_APPLE = "https://pay.idealclover.cn/apple_new/2";
   static const String URL_ANDROID = "https://pay.idealclover.cn/android_new/1";
   static const String URL_OHOS = "https://pay.idealclover.cn/ohos_new/1";
 

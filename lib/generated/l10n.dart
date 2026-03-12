@@ -470,10 +470,10 @@ class S {
     );
   }
 
-  /// `通过二维码/分享串导入导出`
+  /// `导入导出当前课表，或导出到系统日历`
   String get import_or_export_subtitle {
     return Intl.message(
-      '通过二维码/分享串导入导出',
+      '导入导出当前课表，或导出到系统日历',
       name: 'import_or_export_subtitle',
       desc: '',
       args: [],
@@ -940,10 +940,10 @@ class S {
     );
   }
 
-  /// `请确保当前周数正确，如需修改请在系统日历中操作`
+  /// `导入日程至日历，请确认当前周数正确`
   String get export_to_system_calendar_subtitle {
     return Intl.message(
-      '请确保当前周数正确，如需修改请在系统日历中操作',
+      '导入日程至日历，请确认当前周数正确',
       name: 'export_to_system_calendar_subtitle',
       desc: '',
       args: [],

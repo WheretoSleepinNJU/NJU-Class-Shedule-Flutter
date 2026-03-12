@@ -5,7 +5,7 @@ description: wheretosleepinnju
 # pub.dev using `pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 3.4.0+56
+version: 4.0.1+62
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -69,8 +69,10 @@ dependencies:
   in_app_review: ^2.0.3
   # Android iOS       macOS
   # 但是只用在 iOS
-  package_info_plus:
-    path: ./external/flutter_plus_plugins/packages/package_info_plus/package_info_plus
+  # 安卓和iOS用正式版，鸿蒙单独用版本
+  package_info_plus: ^9.0.0
+#  package_info_plus:
+#   path: ./external/flutter_plus_plugins/packages/package_info_plus/package_info_plus
   # Android iOS       macOS
   flutter_html: ^3.0.0-beta.2
   # Android iOS

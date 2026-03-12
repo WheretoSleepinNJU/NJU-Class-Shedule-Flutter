@@ -147,7 +147,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "export_to_system_calendar_fail_toast":
             MessageLookupByLibrary.simpleMessage("导出日历失败，请检查是否授予权限"),
         "export_to_system_calendar_subtitle":
-            MessageLookupByLibrary.simpleMessage("请确保当前周数正确，如需修改请在系统日历中操作"),
+            MessageLookupByLibrary.simpleMessage("导入日程至日历，请确认当前周数正确"),
         "export_to_system_calendar_success_toast":
             MessageLookupByLibrary.simpleMessage("导出成功"),
         "export_to_system_calendar_title":
@@ -226,7 +226,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_online":
             MessageLookupByLibrary.simpleMessage("在线导入：从服务器获取的最新配置"),
         "import_or_export_subtitle":
-            MessageLookupByLibrary.simpleMessage("通过二维码/分享串导入导出"),
+            MessageLookupByLibrary.simpleMessage("导入导出当前课表，或导出到系统日历"),
         "import_or_export_title":
             MessageLookupByLibrary.simpleMessage("导入/导出课表"),
         "import_qr_title": MessageLookupByLibrary.simpleMessage("二维码导入"),
