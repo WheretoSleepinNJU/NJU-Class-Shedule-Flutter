@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../../Components/Dialog.dart';
@@ -38,10 +39,12 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
   @override
   void initState() {
     super.initState();
-    
+
     _webViewController = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(const Color(0x00000000))
+      ..setUserAgent(
+          'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36')
       ..addJavaScriptChannel(
         'SnackbarJSChannel',
         onMessageReceived: (JavaScriptMessage message) {
@@ -63,6 +66,19 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
         ),
       );
 
+    // 启用第三方 Cookie 支持
+    _enableThirdPartyCookies();
+  }
+
+  Future<void> _enableThirdPartyCookies() async {
+    if (Platform.isAndroid) {
+      final AndroidWebViewController androidController =
+          _webViewController.platform as AndroidWebViewController;
+      final AndroidWebViewCookieManager androidCookieManager =
+          cookieManager.platform as AndroidWebViewCookieManager;
+      await androidCookieManager.setAcceptThirdPartyCookies(androidController, true);
+    }
+    // 等待第三方 cookie 设置完成后再加载页面
     _webViewController.loadRequest(Uri.parse(widget.config['initialUrl']));
   }
 
