@@ -68,10 +68,8 @@ class _ImportViewState extends State<ImportView> {
         appBar: AppBar(
           title: Text(S.of(context).import_settings_title),
         ),
-        body:
-            // SingleChildScrollView(
-            //     child:
-            Column(
+        body: SafeArea(
+            child: Column(
                 children: ListTile.divideTiles(context: context, tiles: [
           (importVisibility[0] || importVisibility[1] || importVisibility[2])
               ? Container(
@@ -219,9 +217,7 @@ class _ImportViewState extends State<ImportView> {
                       return moreSchools();
                     }
                   }))
-        ]).toList())
-        // )
-        );
+        ]).toList())));
   }
 
   getImportVisibility() async {

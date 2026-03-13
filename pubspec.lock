@@ -140,10 +140,18 @@ packages:
   device_calendar:
     dependency: "direct main"
     description:
-      path: "external/fluttertpc_device_calendar"
+      name: device_calendar
+      sha256: "683fb93ec302b6a65c0ce57df40ff9dcc2404f59c67a2f8b93e59318c8a0a225"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "4.3.3"
+  device_calendar_ohos:
+    dependency: "direct main"
+    description:
+      path: "external/fluttertpc_device_calendar/ohos"
       relative: true
     source: path
-    version: "4.3.3"
+    version: "1.0.0"
   dio:
     dependency: "direct main"
     description:
@@ -551,11 +559,10 @@ packages:
   package_info_plus:
     dependency: "direct main"
     description:
-      name: package_info_plus
-      sha256: f69da0d3189a4b4ceaeb1a3defb0f329b3b352517f52bed4290f83d4f06bc08d
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "9.0.0"
+      path: "external/flutter_plus_plugins_package_info_plus/packages/package_info_plus/package_info_plus"
+      relative: true
+    source: path
+    version: "8.3.0"
   package_info_plus_platform_interface:
     dependency: transitive
     description:
@@ -683,6 +690,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "4.1.0"
+  rrule:
+    dependency: transitive
+    description:
+      name: rrule
+      sha256: f6f6ad5bf7b19d218d4c985d6055d3c9717f1d6efd5d1c0127b1146f1eb3640c
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.2.18"
   scoped_model:
     dependency: "direct main"
     description:
@@ -855,6 +870,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.7.3"
+  time:
+    dependency: transitive
+    description:
+      name: time
+      sha256: "46187cf30bffdab28c56be9a63861b36e4ab7347bf403297595d6a97e10c789f"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.1.6"
   timezone:
     dependency: transitive
     description:

@@ -5,7 +5,8 @@ import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:device_calendar/device_calendar.dart';
+// import 'package:device_calendar/device_calendar.dart';
+import 'package:device_calendar_ohos/device_calendar_ohos.dart';
 import '../../Utils/States/MainState.dart';
 import '../../Components/Toast.dart';
 import '../../Models/CourseModel.dart';
@@ -144,13 +145,11 @@ class _ShareViewState extends State<ShareView> {
   }
 
   Future<bool> _exportToSystemCalendar(BuildContext ctx) async {
-    DeviceCalendarPlugin dc = DeviceCalendarPlugin();
+    // DeviceCalendarPlugin dc = DeviceCalendarPlugin();
+    DeviceCalendarOhosPlugin dc = DeviceCalendarOhosPlugin();
+
 
     var permissionsGranted = await dc.hasPermissions();
-    if (!permissionsGranted.isSuccess) {
-      Toast.showToast(S.of(ctx).export_to_system_calendar_fail_toast, ctx);
-      return false;
-    }
 
     if (permissionsGranted.data == null || permissionsGranted.data == false) {
       permissionsGranted = await dc.requestPermissions();

@@ -50,8 +50,9 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
         appBar: AppBar(
           title: Text(S.of(context).more_settings_title),
         ),
-        body: SingleChildScrollView(
-            child: Column(children: <Widget>[
+        body: SafeArea(
+            child: SingleChildScrollView(
+                child: Column(children: <Widget>[
           SingleChildScrollView(
               child: Column(
                   children: ListTile.divideTiles(context: context, tiles: [
@@ -484,7 +485,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                   )
                 : Container(width: 0),
           ]).toList()))
-        ])));
+        ]))));
   }
 
   Future<int> _getThemeIndex() async {

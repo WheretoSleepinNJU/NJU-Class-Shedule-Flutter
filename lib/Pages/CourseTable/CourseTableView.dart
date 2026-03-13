@@ -299,9 +299,15 @@ class CourseTableViewState extends State<CourseTableView> {
                         title: Column(children: [
 //                          TextView(),
                           Text(S.of(context).app_name,
-                              style: TextStyle(fontSize: 18, color: mainColor)),
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color: mainColor)),
                           Text((nowWeek),
-                              style: TextStyle(fontSize: 14, color: mainColor))
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: mainColor))
                         ]),
                         actions: <Widget>[
                           IconButton(
@@ -323,216 +329,235 @@ class CourseTableViewState extends State<CourseTableView> {
                             },
                           )
                         ]),
-                    body: Stack(children: [
-                      // _bgImgPath == null
-                      //     ? Container()
-                      //     :
-                      BackgroundImage(_bgImgPath),
-                      //   Container(
-                      // decoration: _bgImgPath == ""
-                      //     ? BoxDecoration()
-                      //     : BoxDecoration(
-                      //         image: DecorationImage(
-                      //           image: AssetImage(_bgImgPath),
-                      //           fit: BoxFit.cover,
-                      //         ),
-                      //       ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: MediaQuery.of(context).padding.top +
-                                kToolbarHeight),
-                        child: Stack(
-                          children: [
-                            Column(
-                                mainAxisSize: MainAxisSize.max,
-                                children: <Widget>[
-                                  WeekTitle(
-                                      _maxShowDays,
-                                      _weekTitleHeight,
-                                      _classTitleWidth,
-                                      _isShowMonth,
-                                      _isShowDate,
-                                      _isWhiteMode,
-                                      _nowShowWeekNum - _nowWeekNum),
-                                  Flexible(
-                                      child: PageView.builder(
-                                          controller: _weekPageController,
-                                          itemCount: Config.MAX_WEEKS,
-                                          onPageChanged: (int index) {
-                                            final int targetWeek = index + 1;
-                                            if (targetWeek != _nowShowWeekNum) {
-                                              model.changeTmpWeek(targetWeek);
-                                              UmengCommonSdk.onEvent(
-                                                  "week_choose",
-                                                  {"action": "swipe"});
-                                              // 切换周次时重置 FreeClass 显示状态
-                                              if (!_isFreeClassVisible) {
-                                                setState(() {
-                                                  _isFreeClassVisible = true;
-                                                  _lastScrollOffset = 0;
-                                                });
-                                              }
-                                            }
-                                          },
-                                          itemBuilder: (BuildContext context,
-                                              int pageIndex) {
-                                            final int weekNum = pageIndex + 1;
-                                            return FutureBuilder<List<Widget>>(
-                                                future:
-                                                    _buildClassesWidgetListByWeek(
-                                                        context, weekNum),
-                                                builder: (BuildContext context,
-                                                    AsyncSnapshot<List<Widget>>
-                                                        classesSnapshot) {
-                                                  if (!classesSnapshot
-                                                      .hasData) {
-                                                    return const SizedBox
-                                                        .expand();
+                    body: SafeArea(
+                        top: false,
+                        child: Stack(children: [
+                          // _bgImgPath == null
+                          //     ? Container()
+                          //     :
+                          BackgroundImage(_bgImgPath),
+                          //   Container(
+                          // decoration: _bgImgPath == ""
+                          //     ? BoxDecoration()
+                          //     : BoxDecoration(
+                          //         image: DecorationImage(
+                          //           image: AssetImage(_bgImgPath),
+                          //           fit: BoxFit.cover,
+                          //         ),
+                          //       ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: MediaQuery.of(context).padding.top +
+                                    kToolbarHeight),
+                            child: Stack(
+                              children: [
+                                Column(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: <Widget>[
+                                      WeekTitle(
+                                          _maxShowDays,
+                                          _weekTitleHeight,
+                                          _classTitleWidth,
+                                          _isShowMonth,
+                                          _isShowDate,
+                                          _isWhiteMode,
+                                          _nowShowWeekNum - _nowWeekNum),
+                                      Flexible(
+                                          child: PageView.builder(
+                                              controller: _weekPageController,
+                                              itemCount: Config.MAX_WEEKS,
+                                              onPageChanged: (int index) {
+                                                final int targetWeek =
+                                                    index + 1;
+                                                if (targetWeek !=
+                                                    _nowShowWeekNum) {
+                                                  model.changeTmpWeek(
+                                                      targetWeek);
+                                                  UmengCommonSdk.onEvent(
+                                                      "week_choose",
+                                                      {"action": "swipe"});
+                                                  // 切换周次时重置 FreeClass 显示状态
+                                                  if (!_isFreeClassVisible) {
+                                                    setState(() {
+                                                      _isFreeClassVisible =
+                                                          true;
+                                                      _lastScrollOffset = 0;
+                                                    });
                                                   }
-                                                  List<Widget> divider =
-                                                      List.generate(
-                                                          _maxShowClasses,
-                                                          (int i) => Container(
-                                                                margin: EdgeInsets.only(
-                                                                    top: (i +
-                                                                            1) *
-                                                                        _classTitleHeight),
-                                                                width: _weekTitleWidth *
-                                                                    _maxShowDays,
-                                                                child: const Separator(
-                                                                    color: Colors
-                                                                        .grey),
-                                                              ));
-                                                  return SingleChildScrollView(
-                                                      controller:
-                                                          _scrollController,
-                                                      child: Row(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            ClassTitle(
-                                                                _maxShowClasses,
-                                                                _classTitleHeight,
-                                                                _classTitleWidth,
-                                                                _isShowClassTime,
-                                                                _isWhiteMode,
-                                                                classTimeList:
-                                                                    _classTimeList),
-                                                            SizedBox(
-                                                                height: _classTitleHeight *
+                                                }
+                                              },
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int pageIndex) {
+                                                final int weekNum =
+                                                    pageIndex + 1;
+                                                return FutureBuilder<
+                                                        List<Widget>>(
+                                                    future:
+                                                        _buildClassesWidgetListByWeek(
+                                                            context, weekNum),
+                                                    builder: (BuildContext
+                                                            context,
+                                                        AsyncSnapshot<
+                                                                List<Widget>>
+                                                            classesSnapshot) {
+                                                      if (!classesSnapshot
+                                                          .hasData) {
+                                                        return const SizedBox
+                                                            .expand();
+                                                      }
+                                                      List<Widget> divider =
+                                                          List.generate(
+                                                              _maxShowClasses,
+                                                              (int i) =>
+                                                                  Container(
+                                                                    margin: EdgeInsets.only(
+                                                                        top: (i +
+                                                                                1) *
+                                                                            _classTitleHeight),
+                                                                    width: _weekTitleWidth *
+                                                                        _maxShowDays,
+                                                                    child: const Separator(
+                                                                        color: Colors
+                                                                            .grey),
+                                                                  ));
+                                                      return SingleChildScrollView(
+                                                          controller:
+                                                              _scrollController,
+                                                          child: Row(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                ClassTitle(
                                                                     _maxShowClasses,
-                                                                width: _screenWidth -
+                                                                    _classTitleHeight,
                                                                     _classTitleWidth,
-                                                                child: Stack(
-                                                                    clipBehavior:
-                                                                        Clip
-                                                                            .none,
-                                                                    children: divider +
-                                                                        classesSnapshot
-                                                                            .data!))
-                                                          ]));
-                                                });
-                                          })),
-                                ]),
-                            // FreeClass 浮动在底部，不遮挡课程内容
-                            if ((_isShowFreeClass) && (_freeCourseNum > 0))
-                              AnimatedPositioned(
-                                duration: const Duration(milliseconds: 300),
-                                curve: Curves.easeInOut,
-                                left: 0,
-                                right: 0,
-                                bottom: _isFreeClassVisible ? 40.0 : -100.0,
-                                child: Padding(
-                                  // 1. 侧边 Padding，让组件不贴屏幕边缘，产生悬浮感
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 16.0),
-                                  child: Material(
-                                    // 2. 悬浮阴影高度
-                                    elevation: 6.0,
-                                    // 3. 胶囊型圆角
-                                    shape: const StadiumBorder(),
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primaryContainer,
-                                    // 限制高度
-                                    child: SizedBox(
-                                      height: _snackbarHeight,
-                                      // 内部 Padding，避免文字和按钮贴紧胶囊边缘
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20.0),
-                                        child: Row(
-                                          children: [
-                                            // 左侧文本区域 (Expanded 保证撑开空间，FittedBox 保证文字不越界)
-                                            Expanded(
-                                              child: FittedBox(
-                                                fit: BoxFit.scaleDown,
-                                                alignment: Alignment.centerLeft,
-                                                child: Text(
-                                                  S
-                                                      .of(context)
-                                                      .free_class_banner(
-                                                          _freeCourseNum
-                                                              .toString()),
-                                                  style: TextStyle(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .onSurface,
-                                                    fontWeight: FontWeight
-                                                        .w500, // 稍微加粗一点会让现代感更强（可选）
+                                                                    _isShowClassTime,
+                                                                    _isWhiteMode,
+                                                                    classTimeList:
+                                                                        _classTimeList),
+                                                                SizedBox(
+                                                                    height: _classTitleHeight *
+                                                                        _maxShowClasses,
+                                                                    width: _screenWidth -
+                                                                        _classTitleWidth,
+                                                                    child: Stack(
+                                                                        clipBehavior:
+                                                                            Clip
+                                                                                .none,
+                                                                        children:
+                                                                            divider +
+                                                                                classesSnapshot.data!))
+                                                              ]));
+                                                    });
+                                              })),
+                                    ]),
+                                // FreeClass 浮动在底部，不遮挡课程内容
+                                if ((_isShowFreeClass) && (_freeCourseNum > 0))
+                                  AnimatedPositioned(
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.easeInOut,
+                                    left: 0,
+                                    right: 0,
+                                    bottom: _isFreeClassVisible ? 30.0 : -100.0,
+                                    child: Padding(
+                                      // 1. 侧边 Padding，让组件不贴屏幕边缘，产生悬浮感
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16.0),
+                                      child: Material(
+                                        // 2. 悬浮阴影高度
+                                        elevation: 6.0,
+                                        // 3. 胶囊型圆角
+                                        shape: const StadiumBorder(),
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primaryContainer,
+                                        // 限制高度
+                                        child: SizedBox(
+                                          height: _snackbarHeight,
+                                          // 内部 Padding，避免文字和按钮贴紧胶囊边缘
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 20.0),
+                                            child: Row(
+                                              children: [
+                                                // 左侧文本区域 (Expanded 保证撑开空间，FittedBox 保证文字不越界)
+                                                Expanded(
+                                                  child: FittedBox(
+                                                    fit: BoxFit.scaleDown,
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    child: Text(
+                                                      S
+                                                          .of(context)
+                                                          .free_class_banner(
+                                                              _freeCourseNum
+                                                                  .toString()),
+                                                      style: TextStyle(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .onSurface,
+                                                        fontWeight: FontWeight
+                                                            .w500, // 稍微加粗一点会让现代感更强（可选）
+                                                      ),
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            ),
 
-                                            // 右侧文字区域
-                                            const SizedBox(width: 12),
-                                            // 文本和文字之间的间距
-                                            InkWell(
-                                              onTap: () {
-                                                _presenter.showFreeClassDialog(
-                                                    context, _nowShowWeekNum);
-                                              },
-                                              child: Text(
-                                                S.of(context).free_class_button,
-                                                style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .onPrimaryContainer,
-                                                  fontWeight: FontWeight.w500,
+                                                // 右侧文字区域
+                                                const SizedBox(width: 12),
+                                                // 文本和文字之间的间距
+                                                InkWell(
+                                                  onTap: () {
+                                                    _presenter
+                                                        .showFreeClassDialog(
+                                                            context,
+                                                            _nowShowWeekNum);
+                                                  },
+                                                  child: Text(
+                                                    S
+                                                        .of(context)
+                                                        .free_class_button,
+                                                    style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .onPrimaryContainer,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
-                                            const SizedBox(width: 16),
-                                            // 两个文字之间的间距
-                                            InkWell(
-                                              onTap: () => _presenter
-                                                  .showHideFreeCourseDialog(
-                                                      context),
-                                              child: Text(
-                                                S
-                                                    .of(context)
-                                                    .hide_free_class_button,
-                                                style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .onPrimaryContainer,
-                                                  fontWeight: FontWeight.w500,
+                                                const SizedBox(width: 16),
+                                                // 两个文字之间的间距
+                                                InkWell(
+                                                  onTap: () => _presenter
+                                                      .showHideFreeCourseDialog(
+                                                          context),
+                                                  child: Text(
+                                                    S
+                                                        .of(context)
+                                                        .hide_free_class_button,
+                                                    style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .onPrimaryContainer,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
+                                              ],
                                             ),
-                                          ],
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    ]),
+                              ],
+                            ),
+                          ),
+                        ])),
                     floatingActionButton: _isShowAddButton
                         ? Padding(
                             padding:

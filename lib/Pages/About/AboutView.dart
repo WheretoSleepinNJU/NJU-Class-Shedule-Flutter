@@ -29,7 +29,8 @@ class _AboutViewState extends State<AboutView> {
         appBar: AppBar(
           title: Text(S.of(context).about_title),
         ),
-        body: Stack(children: [
+        body: SafeArea(
+            child: Stack(children: [
           RainDropWidget(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height),
@@ -116,7 +117,7 @@ class _AboutViewState extends State<AboutView> {
                   }
                 }),
           ]))
-        ]));
+        ])));
   }
 
   Future<String> _getVersion() async {

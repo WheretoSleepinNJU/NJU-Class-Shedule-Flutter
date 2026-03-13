@@ -84,7 +84,7 @@
   * `cd external`
   * `git clone https://gitcode.com/openharmony-tpc/flutter_packages.git` 
   * `git clone https://gitcode.com/openharmony-sig/flutter_sqflite.git`
-  * `git clone https://gitcode.com/openharmony-sig/flutter_plus_plugins.git`
+  * `git clone https://gitcode.com/nutpi/flutter_plus_plugins_package_info_plus.git`
   * `git clone https://gitcode.com/openharmony-sig/fluttertpc_mobile_scanner.git`
   * `git clone https://gitcode.com/openharmony-sig/fluttertpc_device_calendar`
 6. 如果在中国大陆网络下载失败，执行：
