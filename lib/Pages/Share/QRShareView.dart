@@ -63,6 +63,7 @@ class _QRShareViewState extends State<QRShareView> {
               data: current,
               version: QrVersions.auto,
               size: 260.0,
+              backgroundColor: Colors.white,
             ),
             const Padding(padding: EdgeInsets.all(8)),
             Text(
