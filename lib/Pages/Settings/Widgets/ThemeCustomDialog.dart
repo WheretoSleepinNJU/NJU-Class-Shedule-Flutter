@@ -12,7 +12,8 @@ const String defaultColor = '#0095F9';
 
 class UpperCaseTextFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
     return TextEditingValue(
       text: newValue.text.toUpperCase(),
       selection: newValue.selection,
@@ -67,7 +68,8 @@ class _ThemeCustomDialogState extends State<ThemeCustomDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final model = ScopedModel.of<MainStateModel>(context, rebuildOnChange: true);
+    final model =
+        ScopedModel.of<MainStateModel>(context, rebuildOnChange: true);
 
     // 这两个值请按你实际字段名替换；你之前 ThemeStateModel 里是 _material3ColorForLight/_material3ColorForDark
     final bool useM3Light = (model.material3ColorForLight == true);
@@ -77,10 +79,12 @@ class _ThemeCustomDialogState extends State<ThemeCustomDialog> {
 
     // 预览：如果 M3 开关开 -> 用 fromSeed primary；关 -> 直接用 seed（更鲜艳）
     final lightPrimary = useM3Light
-        ? ColorScheme.fromSeed(seedColor: seed, brightness: Brightness.light).primary
+        ? ColorScheme.fromSeed(seedColor: seed, brightness: Brightness.light)
+            .primary
         : seed;
     final darkPrimary = useM3Dark
-        ? ColorScheme.fromSeed(seedColor: seed, brightness: Brightness.dark).primary
+        ? ColorScheme.fromSeed(seedColor: seed, brightness: Brightness.dark)
+            .primary
         : seed;
 
     return MDialog(
@@ -91,7 +95,8 @@ class _ThemeCustomDialogState extends State<ThemeCustomDialog> {
           Text(
             '输入颜色代码，即可预览浅色与深色的强调色效果',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.75),
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.75),
                 ),
             textAlign: TextAlign.center,
           ),
@@ -120,18 +125,22 @@ class _ThemeCustomDialogState extends State<ThemeCustomDialog> {
         ],
       ),
       widgetCancelAction: () {
-        UmengCommonSdk.onEvent("theme_change", {"type": "theme_change", "action": "cancel"});
+        UmengCommonSdk.onEvent(
+            "theme_change", {"type": "theme_change", "action": "cancel"});
         Navigator.of(context).pop('');
       },
       widgetOKAction: () {
         // 只要用户不填，默认；填了但不满6位，也按 default（避免保存坏值）
         String finalHex = '#${_controller.text.trim()}';
         if (_controller.text.trim().isEmpty) finalHex = defaultColor;
-        if (!_isValid6 && _controller.text.trim().isNotEmpty) finalHex = defaultColor;
+        if (!_isValid6 && _controller.text.trim().isNotEmpty)
+          finalHex = defaultColor;
 
-        UmengCommonSdk.onEvent("theme_change", {"type": "theme_change", "color": finalHex});
+        UmengCommonSdk.onEvent(
+            "theme_change", {"type": "theme_change", "color": finalHex});
         ScopedModel.of<MainStateModel>(context).changeCustomTheme(finalHex);
-        ScopedModel.of<MainStateModel>(context).changeTheme(themeDataList.length);
+        ScopedModel.of<MainStateModel>(context)
+            .changeTheme(themeDataList.length);
         Navigator.of(context).pop(_controller.text);
       },
     );
@@ -172,10 +181,12 @@ class _HexInputRow extends StatelessWidget {
               hintText: 'RRGGBB',
               // 关键：让 TextField 自己撑高，不要外面再画一圈边框
               isDense: false,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
 
               // 右侧预览点 + 清空按钮（不再用外层 Row 的布局来硬撑）
-              suffixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+              suffixIconConstraints:
+                  const BoxConstraints(minWidth: 0, minHeight: 0),
               suffixIcon: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -183,7 +194,8 @@ class _HexInputRow extends StatelessWidget {
                   IconButton(
                     visualDensity: VisualDensity.compact,
                     padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                    constraints:
+                        const BoxConstraints(minWidth: 36, minHeight: 36),
                     onPressed: onClear,
                     icon: Icon(
                       Icons.close_rounded,
@@ -299,7 +311,9 @@ class _SwatchBlock extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final outline = scheme.outlineVariant;
 
-    final on = ThemeData.estimateBrightnessForColor(color) == Brightness.dark ? Colors.white : Colors.black;
+    final on = ThemeData.estimateBrightnessForColor(color) == Brightness.dark
+        ? Colors.white
+        : Colors.black;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),

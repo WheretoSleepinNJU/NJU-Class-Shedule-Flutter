@@ -30,10 +30,10 @@ class AddCoursePresenter {
       course = await courseProvider.insert(course);
       if (course.id == null) return false;
     }
-    
+
     // 刷新 Widget
     await WidgetRefreshHelper.refreshAfterCourseAdded();
-    
+
     return true;
   }
 

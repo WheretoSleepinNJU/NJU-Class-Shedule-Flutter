@@ -19,23 +19,23 @@ class InitUtil {
     await checkDataBase();
     await WeekUtil.checkWeek();
     await ColorPool.checkColorPool();
-    
+
     // 初始化 Widget 数据
     await initializeWidgetData();
-    
+
     showReview();
     return [themeIndex, themeModeIndex, themeCustom];
   }
-  
+
   /// 初始化 Widget 数据
   static Future<void> initializeWidgetData() async {
     try {
       // 仅在 iOS 平台执行
       if (!Platform.isIOS) return;
-      
+
       final preferences = await SharedPreferences.getInstance();
       final widgetService = UnifiedDataService(preferences: preferences);
-      
+
       // 更新 Widget 数据
       final success = await widgetService.updateWidgetData();
       if (success) {

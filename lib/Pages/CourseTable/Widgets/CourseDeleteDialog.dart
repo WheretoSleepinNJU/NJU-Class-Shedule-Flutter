@@ -25,7 +25,7 @@ class CourseDeleteDialog extends StatelessWidget {
         UmengCommonSdk.onEvent("class_delete", {"action": "accept"});
         CourseProvider courseProvider = CourseProvider();
         await courseProvider.delete(course.id!);
-        
+
         // 刷新 Widget
         await WidgetRefreshHelper.refreshAfterCourseDeleted();
         ScopedModel.of<MainStateModel>(context).refresh();

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:typed_data';
 
 import '../../generated/l10n.dart';
@@ -203,10 +202,14 @@ class _QRScanViewState extends State<QRScanView> {
     buffer.parts[parsed.index!] = parsed.payload;
     _cleanupExpiredGroups();
 
-    final merged = QrPayloadCodec.mergeEncodedPayloadParts(buffer.parts, buffer.total);
+    final merged =
+        QrPayloadCodec.mergeEncodedPayloadParts(buffer.parts, buffer.total);
     if (merged == null) {
       Toast.showToast(
-          S.of(context).qr_scan_parts_received_toast(buffer.parts.length, buffer.total), context);
+          S
+              .of(context)
+              .qr_scan_parts_received_toast(buffer.parts.length, buffer.total),
+          context);
       return;
     }
 

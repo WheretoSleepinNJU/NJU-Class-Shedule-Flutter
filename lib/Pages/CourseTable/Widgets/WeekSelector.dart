@@ -36,7 +36,10 @@ class WeekSelector extends StatelessWidget {
                             child: Text(
                               S.of(context).week((i + 1).toString()),
                               style: TextStyle(
-                                  color: Theme.of(context).colorScheme.onPrimaryContainer, fontSize: 15),
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onPrimaryContainer,
+                                  fontSize: 15),
                             ))))))
         : Container();
   }

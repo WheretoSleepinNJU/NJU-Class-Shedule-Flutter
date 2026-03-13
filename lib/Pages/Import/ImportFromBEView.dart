@@ -58,7 +58,8 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
           onPageFinished: (String url) {
             if (widget.config['redirectUrl'] != '' &&
                 url.startsWith(widget.config['redirectUrl'])) {
-              _webViewController.loadRequest(Uri.parse(widget.config['targetUrl']));
+              _webViewController
+                  .loadRequest(Uri.parse(widget.config['targetUrl']));
             } else if (url.startsWith(widget.config['targetUrl'])) {
               import(_webViewController, context);
             }
@@ -76,7 +77,8 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
           _webViewController.platform as AndroidWebViewController;
       final AndroidWebViewCookieManager androidCookieManager =
           cookieManager.platform as AndroidWebViewCookieManager;
-      await androidCookieManager.setAcceptThirdPartyCookies(androidController, true);
+      await androidCookieManager.setAcceptThirdPartyCookies(
+          androidController, true);
     }
     // 等待第三方 cookie 设置完成后再加载页面
     _webViewController.loadRequest(Uri.parse(widget.config['initialUrl']));
@@ -92,7 +94,8 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
             icon: const Icon(Icons.refresh),
             onPressed: () async {
               await cookieManager.clearCookies();
-              _webViewController.loadRequest(Uri.parse(widget.config['initialUrl']));
+              _webViewController
+                  .loadRequest(Uri.parse(widget.config['initialUrl']));
             },
           ),
           // IconButton(
@@ -126,30 +129,31 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
                           onPressed: () => launch(widget.config['banner_url'])),
                     ],
                   ),
-            Expanded(
-                child: WebViewWidget(controller: _webViewController))
+            Expanded(child: WebViewWidget(controller: _webViewController))
           ]);
         },
       ),
     );
   }
 
-  import(WebViewController controller, BuildContext context, {String? rsp}) async {
+  import(WebViewController controller, BuildContext context,
+      {String? rsp}) async {
     try {
       String response = "";
       CourseTableProvider courseTableProvider = CourseTableProvider();
       Toast.showToast(S.of(context).class_parse_toast_importing, context);
-      
-      if(rsp == null) {
+
+      if (rsp == null) {
         await controller.runJavaScript(widget.config['preExtractJS'] ?? '');
         await Future.delayed(
             Duration(seconds: widget.config['delayTime'] ?? 0));
         Dio dio = Dio();
-        
+
         String url = '';
         if (Platform.isIOS) {
-          url = widget.config['extractJSfileiOS'] ?? "";;
-        } else if (Platform.isAndroid){
+          url = widget.config['extractJSfileiOS'] ?? "";
+          ;
+        } else if (Platform.isAndroid) {
           url = widget.config['extractJSfileAndroid'] ?? "";
         } else if (Platform.operatingSystem == 'ohos') {
           url = widget.config['extractJSfileOHOS'] ?? "";
@@ -159,17 +163,17 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
         String js = serverRsp.data;
         var result = await controller.runJavaScriptReturningResult(js);
         response = result.toString();
-        
+
         if (response.startsWith('"') && response.endsWith('"')) {
-           response = response.substring(1, response.length - 1);
+          response = response.substring(1, response.length - 1);
         }
       } else {
         response = rsp;
       }
-      
+
       response = Uri.decodeComponent(response.replaceAll('"', ''));
       Map courseTableMap = json.decode(response);
-      
+
       CourseTable courseTable;
       if (widget.config['class_time_list'] == null &&
           widget.config['semester_start_monday'] == null) {
@@ -207,7 +211,8 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
       List<Map<String, dynamic>> coursesMap =
           List<Map<String, dynamic>>.from(courses);
       for (var courseMap in coursesMap) {
-        final dbMap = CourseImportCodec.onlineCourseToDbMap(courseMap, tableId: index);
+        final dbMap =
+            CourseImportCodec.onlineCourseToDbMap(courseMap, tableId: index);
         Course course = Course.fromMap(dbMap);
         await courseProvider.insert(course);
       }
@@ -234,14 +239,14 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
         "url": url,
         "way": "be"
       };
-      
+
       try {
         await Dio()
-          .post(Url.URL_BACKEND + "/log/log", data: FormData.fromMap(info));
+            .post(Url.URL_BACKEND + "/log/log", data: FormData.fromMap(info));
       } catch (_) {}
 
       UmengCommonSdk.onEvent("class_import", {"type": "be", "action": "fail"});
-      
+
       showDialog<String>(
           barrierDismissible: false,
           context: context,

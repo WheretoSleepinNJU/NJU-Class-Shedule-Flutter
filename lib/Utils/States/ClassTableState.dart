@@ -12,10 +12,10 @@ mixin ClassTableStateModel on Model {
     notifyListeners();
     SharedPreferences sp = await SharedPreferences.getInstance();
     sp.setInt("tableId", classTableIndex);
-    
+
     // 刷新 Widget
     await WidgetRefreshHelper.refreshAfterTableChanged();
-    
+
     return true;
   }
 

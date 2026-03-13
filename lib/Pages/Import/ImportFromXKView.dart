@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
@@ -35,7 +34,8 @@ class _WebViewState extends State<ImportFromXKView> {
           onPageFinished: (String url) {
             if (widget.config['redirectUrl'] != '' &&
                 url.startsWith(widget.config['redirectUrl'])) {
-              _webViewController.loadRequest(Uri.parse(widget.config['targetUrl']));
+              _webViewController
+                  .loadRequest(Uri.parse(widget.config['targetUrl']));
             } else if (url.startsWith(widget.config['targetUrl'])) {
               import(_webViewController, context);
             }
@@ -64,7 +64,8 @@ class _WebViewState extends State<ImportFromXKView> {
             icon: const Icon(Icons.refresh),
             onPressed: () async {
               await cookieManager.clearCookies();
-              _webViewController.loadRequest(Uri.parse(widget.config['initialUrl']));
+              _webViewController
+                  .loadRequest(Uri.parse(widget.config['initialUrl']));
             },
           )
         ],
@@ -91,8 +92,7 @@ class _WebViewState extends State<ImportFromXKView> {
                           onPressed: () => launch(widget.config['banner_url'])),
                     ],
                   ),
-            Expanded(
-                child: WebViewWidget(controller: _webViewController))
+            Expanded(child: WebViewWidget(controller: _webViewController))
           ]);
         },
       ),
@@ -103,15 +103,15 @@ class _WebViewState extends State<ImportFromXKView> {
     Toast.showToast(S.of(context).class_parse_toast_importing, context);
     await controller.runJavaScript(widget.config['preExtractJS'] ?? '');
     await Future.delayed(Duration(seconds: widget.config['delayTime'] ?? 0));
-    
+
     var result = await controller
         .runJavaScriptReturningResult(widget.config['extractJS']);
     String response = result.toString();
-    
+
     if (response.startsWith('"') && response.endsWith('"')) {
-       response = response.substring(1, response.length - 1);
+      response = response.substring(1, response.length - 1);
     }
-    
+
     response = response.replaceAll('\\u003C', '<').replaceAll('\\"', '"');
 
     CourseParser cp = CourseParser(response);

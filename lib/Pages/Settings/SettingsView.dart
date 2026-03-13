@@ -160,10 +160,13 @@ class _SettingsViewState extends State<SettingsView> {
               // Widget settings - iOS only
               if (Platform.isIOS)
                 ListTile(
-                  title: Text(S.of(context).widget_and_live_activity_settings_title),
-                  subtitle: Text(S.of(context).widget_and_live_activity_settings_subtitle),
+                  title: Text(
+                      S.of(context).widget_and_live_activity_settings_title),
+                  subtitle: Text(
+                      S.of(context).widget_and_live_activity_settings_subtitle),
                   onTap: () {
-                    UmengCommonSdk.onEvent("widget_setting", {"action": "show"});
+                    UmengCommonSdk.onEvent(
+                        "widget_setting", {"action": "show"});
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (BuildContext context) =>
                             const WidgetSettingsView()));

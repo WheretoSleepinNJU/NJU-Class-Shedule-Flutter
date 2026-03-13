@@ -14,9 +14,6 @@ class ThemeChanger extends StatelessWidget {
     final model = MainStateModel.of(context);
     final selectedIndex = model.themeIndex ?? 0;
 
-    final bool useM3Light = ThemeRuntimeConfig.material3Light;
-    final bool useM3Dark = ThemeRuntimeConfig.material3Dark;
-
     return Padding(
       padding: const EdgeInsets.only(top: 4, bottom: 4),
       child: Column(
@@ -63,7 +60,8 @@ class ThemeChanger extends StatelessWidget {
                   onTap: () {
                     showDialog<String>(
                       context: context,
-                      builder: (BuildContext context) => const ThemeCustomDialog(),
+                      builder: (BuildContext context) =>
+                          const ThemeCustomDialog(),
                     );
                   },
                 ),
@@ -99,7 +97,7 @@ class _ThemeDot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double big = 32;   // 更紧凑
+    const double big = 32; // 更紧凑
     const double small = 14; // 更紧凑
 
     final scheme = Theme.of(context).colorScheme;

@@ -301,7 +301,9 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
                                               } else if (Platform.isAndroid) {
                                                 launch(
                                                     Url.QQ_GROUP_ANDROID_URL);
-                                              } else if (Platform.operatingSystem == 'ohos') {
+                                              } else if (Platform
+                                                      .operatingSystem ==
+                                                  'ohos') {
                                                 launch(Url.QQ_GROUP_OHOS_URL);
                                               }
                                               Navigator.of(context).pop();

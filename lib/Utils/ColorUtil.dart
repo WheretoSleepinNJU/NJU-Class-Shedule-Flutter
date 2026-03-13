@@ -62,7 +62,8 @@ class ColorUtil {
       final ImageProvider imageProvider = FileImage(file);
 
       // 生成调色板
-      final PaletteGenerator generator = await PaletteGenerator.fromImageProvider(
+      final PaletteGenerator generator =
+          await PaletteGenerator.fromImageProvider(
         imageProvider,
         region: Offset.zero & const Size(1000, 150),
         maximumColorCount: 10,
@@ -76,7 +77,7 @@ class ColorUtil {
       return dominantColor.computeLuminance() < 0.7;
     } catch (e) {
       debugPrint("颜色分析失败: $e");
-      return false; 
+      return false;
     }
   }
 }

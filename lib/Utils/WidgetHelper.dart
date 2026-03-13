@@ -8,16 +8,18 @@ import '../Models/CourseTableModel.dart';
 import '../Models/ScheduleModel.dart';
 
 class WidgetHelper {
-  static const MethodChannel _channel = MethodChannel('wheretosleepinnju/widget');
+  static const MethodChannel _channel =
+      MethodChannel('wheretosleepinnju/widget');
 
   static Future<void> refreshWidget(int tableId) async {
     try {
       CourseTableProvider tableProvider = CourseTableProvider();
       List<Map> classTimeList = await tableProvider.getClassTimeList(tableId);
 
-      String startMondayStr = await tableProvider.getSemesterStartMonday(tableId);
+      String startMondayStr =
+          await tableProvider.getSemesterStartMonday(tableId);
       int currentWeek = _calculateCurrentWeek(startMondayStr);
-      
+
       CourseProvider courseProvider = CourseProvider();
       List rawList = await courseProvider.getAllCourses(tableId);
       List<Course> allCourses = rawList.map((e) => Course.fromMap(e)).toList();
@@ -26,37 +28,40 @@ class WidgetHelper {
       model.init(); // 执行 classify 和 deduplicate
 
       int todayWeekday = DateTime.now().weekday; // 1-7
-      
+
       List<Course> todayCourses = [];
-      
-      todayCourses.addAll(model.activeCourses.where((c) => c.weekTime == todayWeekday));
-      
+
+      todayCourses
+          .addAll(model.activeCourses.where((c) => c.weekTime == todayWeekday));
+
       for (var list in model.multiCourses) {
         todayCourses.addAll(list.where((c) => c.weekTime == todayWeekday));
       }
 
-      todayCourses.sort((a, b) => (a.startTime ?? 0).compareTo(b.startTime ?? 0));
+      todayCourses
+          .sort((a, b) => (a.startTime ?? 0).compareTo(b.startTime ?? 0));
 
       String dateStr = _getWeekdayStr(todayWeekday);
 
       List colorPool = await ColorPool.getColorPool();
-      
+
       if (Platform.isAndroid) {
         await _updateAndroidWidget(todayCourses, dateStr, classTimeList);
       } else if (Platform.isIOS) {
         await _updateIOSWidget(todayCourses, dateStr, classTimeList);
       } else if (Platform.operatingSystem == 'ohos') {
-        await _updateHarmonyWidget(todayCourses, dateStr, classTimeList, colorPool);
+        await _updateHarmonyWidget(
+            todayCourses, dateStr, classTimeList, colorPool);
       } else {
         print("This platform didn't support Widget");
       }
-
     } catch (e) {
       print("Flutter: Error refreshing widget: $e");
     }
   }
 
-  static Future<void> _updateAndroidWidget(List<Course> courses, String dateStr, List<Map> classTimeList) async {
+  static Future<void> _updateAndroidWidget(
+      List<Course> courses, String dateStr, List<Map> classTimeList) async {
     try {
       print("Flutter[Android]: Updating widget...");
       // TODO: 实现 Android 逻辑
@@ -68,17 +73,18 @@ class WidgetHelper {
     }
   }
 
-  static Future<void> _updateIOSWidget(List<Course> courses, String dateStr, List<Map> classTimeList) async {
+  static Future<void> _updateIOSWidget(
+      List<Course> courses, String dateStr, List<Map> classTimeList) async {
     try {
       print("Flutter[iOS]: Updating widget via UnifiedDataService...");
       // 使用新版 WidgetRefreshHelper 进行刷新
       // 需要导入 'package:wheretosleepinnju/core/widget_data/utils/widget_refresh_helper.dart';
       // 注意：这里我们使用 manualRefresh，它会清除缓存并强制重新计算
-      // 实际上 WidgetHelper 的调用者已经提供了很多数据，但 UnifiedDataService 
+      // 实际上 WidgetHelper 的调用者已经提供了很多数据，但 UnifiedDataService
       // 有自己的一套完整获取和处理数据的逻辑，为了保证数据一致性（特别是 App Group 数据），
       // 我们选择触发 Service 的完整刷新流程，而不是手动传递这里的 courses 参数。
       bool success = await WidgetRefreshHelper.manualRefresh();
-      
+
       if (success) {
         print("Flutter[iOS]: Widget update triggered successfully");
       } else {
@@ -89,25 +95,30 @@ class WidgetHelper {
     }
   }
 
-  static Future<void> _updateHarmonyWidget(List<Course> courses, String dateStr, List<Map> classTimeList, List colorPool) async {
+  static Future<void> _updateHarmonyWidget(List<Course> courses, String dateStr,
+      List<Map> classTimeList, List colorPool) async {
     try {
-      print("Flutter[Harmony]: Preparing data for ${courses.length} courses...");
+      print(
+          "Flutter[Harmony]: Preparing data for ${courses.length} courses...");
 
       final List<Map<String, dynamic>> courseListJson = courses.map((course) {
         String startStr = _convertNodeToTime(course.startTime!, classTimeList);
-        String endStr = _convertNodeToTime(course.startTime! + course.timeCount! - 1, classTimeList, isEnd: true);
-        
+        String endStr = _convertNodeToTime(
+            course.startTime! + course.timeCount! - 1, classTimeList,
+            isEnd: true);
+
         String? calculatedColor = course.getColor(colorPool);
-        
+
         // 再进行格式化 (处理 Hex 格式)
         String fixedColor = _fixColorHex(calculatedColor);
-        
-        print("ColorFix: ${course.name} -> DB:${course.color} -> Calc:$calculatedColor -> Final:$fixedColor");
+
+        print(
+            "ColorFix: ${course.name} -> DB:${course.color} -> Calc:$calculatedColor -> Final:$fixedColor");
 
         return {
           "name": course.name ?? "未知课程",
           "classroom": course.classroom ?? "",
-          "color": fixedColor, 
+          "color": fixedColor,
           "startTimeStr": startStr,
           "endTimeStr": endStr,
           "startNode": course.startTime,
@@ -122,18 +133,18 @@ class WidgetHelper {
 
       await _channel.invokeMethod('updateWidget', jsonEncode(widgetData));
       print("Flutter[Harmony]: Widget update sent! Weekday: $dateStr");
-      
     } catch (e) {
       print("Flutter[Harmony]: Failed to send widget data: $e");
     }
   }
 
-  static String _convertNodeToTime(int node, List<Map> classTimeList, {bool isEnd = false}) {
+  static String _convertNodeToTime(int node, List<Map> classTimeList,
+      {bool isEnd = false}) {
     int index = node - 1;
     if (index < 0 || index >= classTimeList.length) {
       return "00:00";
     }
-    
+
     Map timeItem = classTimeList[index];
     if (isEnd) {
       return timeItem["end"] ?? timeItem["endTime"] ?? "00:00";
@@ -143,15 +154,15 @@ class WidgetHelper {
   }
 
   static String _fixColorHex(dynamic colorRaw) {
-    if (colorRaw == null) return "#FF9800"; 
+    if (colorRaw == null) return "#FF9800";
     if (colorRaw is String) {
       return colorRaw.startsWith("#") ? colorRaw : "#$colorRaw";
     }
     // 如果 color 是 int (例如 0xFF0000FF)，转为 Hex String
     if (colorRaw is int) {
-       return '#${colorRaw.toRadixString(16).padLeft(8, '0').substring(2)}';
+      return '#${colorRaw.toRadixString(16).padLeft(8, '0').substring(2)}';
     }
-    return "#2196F3"; 
+    return "#2196F3";
   }
 
   static int _calculateCurrentWeek(String startMondayStr) {
@@ -162,10 +173,10 @@ class WidgetHelper {
       start = DateTime(start.year, start.month, start.day);
       DateTime now = DateTime.now();
       now = DateTime(now.year, now.month, now.day);
-      
+
       int daysDiff = now.difference(start).inDays;
       if (daysDiff < 0) return 1; // 还没开学
-      
+
       return (daysDiff / 7).floor() + 1;
     } catch (e) {
       print("Flutter: Calc week error: $e");
@@ -181,7 +192,7 @@ class WidgetHelper {
 
   static Future<void> runMockTest() async {
     print("Flutter: Starting Mock Test...");
-    
+
     List<Map<String, String>> mockTimeList = [
       {"start": "08:00", "end": "08:50"}, // Node 1
       {"start": "09:00", "end": "09:50"}, // Node 2
@@ -197,18 +208,25 @@ class WidgetHelper {
       {"start": "21:30", "end": "22:20"}, // Node 12
     ];
 
-    int todayWeekday = DateTime.now().weekday; 
+    int todayWeekday = DateTime.now().weekday;
 
     List<Course> mockCourses = [
       // 课程 A: 早上的课 (8:00 - 9:50)
       Course(
-        0, // tableId
-        "高等数学 (Mock)", // name
-        "[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]", // weeks
-        todayWeekday, // weekTime (强制今天)
-        1, // startTime (第1节)
-        2, // timeCount (2节课)
-        0, // importType
+        0,
+        // tableId
+        "高等数学 (Mock)",
+        // name
+        "[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]",
+        // weeks
+        todayWeekday,
+        // weekTime (强制今天)
+        1,
+        // startTime (第1节)
+        2,
+        // timeCount (2节课)
+        0,
+        // importType
         classroom: "仙I-101",
         color: "#FF5722", // 橙色
       ),
@@ -219,8 +237,10 @@ class WidgetHelper {
         "Flutter 跨端开发",
         "[1,2,3]",
         todayWeekday,
-        5, // startTime (第5节)
-        2, // timeCount
+        5,
+        // startTime (第5节)
+        2,
+        // timeCount
         0,
         classroom: "费曼咖啡厅",
         color: "#2196F3", // 蓝色
@@ -232,8 +252,10 @@ class WidgetHelper {
         "鸿蒙原生应用",
         "[1,2,3]",
         todayWeekday,
-        9, // startTime (第9节)
-        3, // timeCount
+        9,
+        // startTime (第9节)
+        3,
+        // timeCount
         0,
         classroom: "计算机楼 202",
         color: "#9C27B0", // 紫色
@@ -243,7 +265,7 @@ class WidgetHelper {
     // 3. 直接调用发送逻辑
     print("Flutter: Sending ${mockCourses.length} mock courses to Native...");
     String dateStr = _getWeekdayStr(todayWeekday) + " (测试)";
-    
+
     if (Platform.isAndroid) {
       await _updateAndroidWidget(mockCourses, dateStr, mockTimeList);
     } else if (Platform.isIOS) {

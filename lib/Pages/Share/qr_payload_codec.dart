@@ -80,7 +80,8 @@ class QrPayloadCodec {
     return encodePayloadWithStats(payload).encodedPayload;
   }
 
-  static EncodedPayloadBundle encodePayloadWithStats(Map<String, dynamic> payload) {
+  static EncodedPayloadBundle encodePayloadWithStats(
+      Map<String, dynamic> payload) {
     final rawBytes = utf8.encode(jsonEncode(payload));
     final compressed = GZipEncoder().encode(rawBytes);
     if (compressed == null) {
@@ -162,7 +163,10 @@ class QrPayloadCodec {
       final total = int.tryParse(segments[3]);
       final groupId = segments[4];
       final payloadPart = segments[5];
-      if (idx == null || total == null || groupId.isEmpty || payloadPart.isEmpty) {
+      if (idx == null ||
+          total == null ||
+          groupId.isEmpty ||
+          payloadPart.isEmpty) {
         return null;
       }
       return ParsedQrFrame.multi(
@@ -182,7 +186,9 @@ class QrPayloadCodec {
     String? groupId,
   }) {
     if (encodedPayload.length <= maxPartLength) {
-      return <String>['$kNcsQrScheme://$kNcsQrHost/$kNcsQrVersion/s/$encodedPayload'];
+      return <String>[
+        '$kNcsQrScheme://$kNcsQrHost/$kNcsQrVersion/s/$encodedPayload'
+      ];
     }
 
     final gid = groupId ?? DateTime.now().millisecondsSinceEpoch.toString();

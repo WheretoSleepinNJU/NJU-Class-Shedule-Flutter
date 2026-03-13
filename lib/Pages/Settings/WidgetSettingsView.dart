@@ -89,7 +89,6 @@ class _WidgetSettingsViewState extends State<WidgetSettingsView> {
               },
             ),
           ),
-
         ],
       ),
     );
@@ -101,7 +100,8 @@ class _WidgetSettingsViewState extends State<WidgetSettingsView> {
   }
 
   void _setApproachingMinutes(int minutes) async {
-    ScopedModel.of<MainStateModel>(context).setWidgetApproachingMinutes(minutes);
+    ScopedModel.of<MainStateModel>(context)
+        .setWidgetApproachingMinutes(minutes);
     setState(() {});
 
     // 刷新小组件

@@ -32,7 +32,8 @@ class _WidgetDebugPageState extends State<WidgetDebugPage> {
 
   void _addLog(String message) {
     setState(() {
-      _logs.insert(0, '[${DateTime.now().toString().substring(11, 19)}] $message');
+      _logs.insert(
+          0, '[${DateTime.now().toString().substring(11, 19)}] $message');
       if (_logs.length > 50) {
         _logs.removeLast();
       }

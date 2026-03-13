@@ -21,9 +21,9 @@ mixin ConfigStateModel on Model {
   int _widgetTomorrowPreviewHour = 21;
 
   // Live Activity configuration
-  bool _liveActivityEnabled = true;  // 是否启用 Live Activity（使用与小组件相同的"即将上课提醒时间"）
-  String _liveActivityTextLeft = "好好学习";  // 左侧励志文本
-  String _liveActivityTextRight = "天天向上";  // 右侧励志文本
+  bool _liveActivityEnabled = true; // 是否启用 Live Activity（使用与小组件相同的"即将上课提醒时间"）
+  String _liveActivityTextLeft = "好好学习"; // 左侧励志文本
+  String _liveActivityTextRight = "天天向上"; // 右侧励志文本
 
   void setShowWeekend(bool showWeekend) async {
     _showWeekend = showWeekend;

@@ -48,7 +48,9 @@ class _QRShareViewState extends State<QRShareView> {
   @override
   Widget build(BuildContext context) {
     final current = widget.frames[_index];
-    final progress = widget.frames.length > 1 ? '${_index + 1}/${widget.frames.length}' : '1/1';
+    final progress = widget.frames.length > 1
+        ? '${_index + 1}/${widget.frames.length}'
+        : '1/1';
 
     return Scaffold(
       appBar: AppBar(
@@ -80,11 +82,13 @@ class _QRShareViewState extends State<QRShareView> {
             const Padding(padding: EdgeInsets.all(6)),
             ElevatedButton(
               onPressed: () async {
-                await Clipboard.setData(ClipboardData(text: widget.singleShareText));
+                await Clipboard.setData(
+                    ClipboardData(text: widget.singleShareText));
                 if (!mounted) {
                   return;
                 }
-                Toast.showToast(S.of(context).qr_share_copy_success_toast, context);
+                Toast.showToast(
+                    S.of(context).qr_share_copy_success_toast, context);
               },
               child: Text(S.of(context).qr_share_copy_button),
             ),

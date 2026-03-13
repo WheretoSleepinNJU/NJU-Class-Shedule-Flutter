@@ -1,7 +1,5 @@
 import 'dart:io';
 import 'dart:math';
-import 'dart:convert';
-import 'dart:collection';
 import 'package:wheretosleepinnju/Pages/Settings/Widgets/ThemeChanger.dart';
 
 import '../../generated/l10n.dart';
@@ -14,7 +12,6 @@ import '../../Utils/States/MainState.dart';
 import '../../Utils/ColorUtil.dart';
 import '../../Components/Toast.dart';
 import './Widgets/NumChanger.dart';
-import '../../Models/CourseModel.dart';
 
 class MoreSettingsView extends StatefulWidget {
   const MoreSettingsView({Key? key}) : super(key: key);
@@ -41,8 +38,8 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
       showWhiteTitleMode = hasPic;
     });
 
-
-    final model = ScopedModel.of<MainStateModel>(context, rebuildOnChange: false);
+    final model =
+        ScopedModel.of<MainStateModel>(context, rebuildOnChange: false);
     model.getMaterial3ColorForLight().then((_) => model.notifyListeners());
     model.getMaterial3ColorForDark().then((_) => model.notifyListeners());
   }
@@ -119,10 +116,13 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
               subtitle: Text(S.of(context).use_material3_scheme_light_subtitle),
               trailing: Switch(
                 activeColor: Theme.of(context).appBarTheme.backgroundColor,
-                value: ScopedModel.of<MainStateModel>(context).material3ColorForLight,
+                value: ScopedModel.of<MainStateModel>(context)
+                    .material3ColorForLight,
                 onChanged: (v) {
-                  UmengCommonSdk.onEvent("more_setting", {"type": 20, "result": v.toString()});
-                  ScopedModel.of<MainStateModel>(context).changeMaterial3Color(light: v);
+                  UmengCommonSdk.onEvent(
+                      "more_setting", {"type": 20, "result": v.toString()});
+                  ScopedModel.of<MainStateModel>(context)
+                      .changeMaterial3Color(light: v);
                   setState(() {});
                 },
               ),
@@ -132,10 +132,13 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
               subtitle: Text(S.of(context).use_material3_scheme_dark_subtitle),
               trailing: Switch(
                 activeColor: Theme.of(context).appBarTheme.backgroundColor,
-                value: ScopedModel.of<MainStateModel>(context).material3ColorForDark,
+                value: ScopedModel.of<MainStateModel>(context)
+                    .material3ColorForDark,
                 onChanged: (v) {
-                  UmengCommonSdk.onEvent("more_setting", {"type": 21, "result": v.toString()});
-                  ScopedModel.of<MainStateModel>(context).changeMaterial3Color(dark: v);
+                  UmengCommonSdk.onEvent(
+                      "more_setting", {"type": 21, "result": v.toString()});
+                  ScopedModel.of<MainStateModel>(context)
+                      .changeMaterial3Color(dark: v);
                   setState(() {});
                 },
               ),
@@ -167,7 +170,8 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                 String fileName = '$path/background_$num.jpg';
                 await image.saveTo(fileName);
 
-                bool isWhiteMode = await ColorUtil.shouldApplyWhiteMode(fileName);
+                bool isWhiteMode =
+                    await ColorUtil.shouldApplyWhiteMode(fileName);
 
                 await ScopedModel.of<MainStateModel>(context)
                     .setBgImgPath(fileName);
@@ -326,7 +330,8 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
             ),
             ListTile(
               title: Text(S.of(context).if_show_non_current_week_courses_title),
-              subtitle: Text(S.of(context).if_show_non_current_week_courses_subtitle),
+              subtitle:
+                  Text(S.of(context).if_show_non_current_week_courses_subtitle),
               trailing: FutureBuilder<bool>(
                   future: _getShowNonCurrentWeekCourses(),
                   builder:
@@ -499,7 +504,8 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
   }
 
   Future<bool> _getShowNonCurrentWeekCourses() async {
-    return await ScopedModel.of<MainStateModel>(context).getShowNonCurrentWeekCourses();
+    return await ScopedModel.of<MainStateModel>(context)
+        .getShowNonCurrentWeekCourses();
   }
 
   Future<bool> _getShowMonth() async {
@@ -526,11 +532,6 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
     return await ScopedModel.of<MainStateModel>(context).getAddButton();
   }
 
-  Future<bool> _getFontMode() async {
-    // return await ScopedModel.of<MainStateModel>(context).getFontMode();
-    return true;
-  }
-
   Future<bool> _getHasImgPath() async {
     String imgPath =
         await ScopedModel.of<MainStateModel>(context).getBgImgPath();
@@ -542,5 +543,4 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
         await ScopedModel.of<MainStateModel>(context).getWhiteMode();
     return whiteMode;
   }
-
 }

@@ -199,7 +199,7 @@ class CourseTableViewState extends State<CourseTableView> {
     if (_scrollController == null) return;
     final currentOffset = _scrollController!.offset;
     final direction = currentOffset - _lastScrollOffset;
-    
+
     // 下滑（内容向上滚动）隐藏，上滑（内容向下滚动）显示
     if (direction > 2) {
       // 下滑超过阈值，隐藏
@@ -362,7 +362,8 @@ class CourseTableViewState extends State<CourseTableView> {
                                             final int targetWeek = index + 1;
                                             if (targetWeek != _nowShowWeekNum) {
                                               model.changeTmpWeek(targetWeek);
-                                              UmengCommonSdk.onEvent("week_choose",
+                                              UmengCommonSdk.onEvent(
+                                                  "week_choose",
                                                   {"action": "swipe"});
                                               // 切换周次时重置 FreeClass 显示状态
                                               if (!_isFreeClassVisible) {
@@ -383,52 +384,54 @@ class CourseTableViewState extends State<CourseTableView> {
                                                 builder: (BuildContext context,
                                                     AsyncSnapshot<List<Widget>>
                                                         classesSnapshot) {
-                                                  if (!classesSnapshot.hasData) {
-                                                    return const SizedBox.expand();
+                                                  if (!classesSnapshot
+                                                      .hasData) {
+                                                    return const SizedBox
+                                                        .expand();
                                                   }
                                                   List<Widget> divider =
                                                       List.generate(
                                                           _maxShowClasses,
                                                           (int i) => Container(
                                                                 margin: EdgeInsets.only(
-                                                                    top: (i + 1) *
+                                                                    top: (i +
+                                                                            1) *
                                                                         _classTitleHeight),
-                                                                width:
-                                                                    _weekTitleWidth *
-                                                                        _maxShowDays,
-                                                                child:
-                                                                    const Separator(
-                                                                        color: Colors
-                                                                            .grey),
+                                                                width: _weekTitleWidth *
+                                                                    _maxShowDays,
+                                                                child: const Separator(
+                                                                    color: Colors
+                                                                        .grey),
                                                               ));
                                                   return SingleChildScrollView(
-                                                      controller: _scrollController,
+                                                      controller:
+                                                          _scrollController,
                                                       child: Row(
                                                           crossAxisAlignment:
                                                               CrossAxisAlignment
                                                                   .start,
                                                           children: [
-                                                        ClassTitle(
-                                                            _maxShowClasses,
-                                                            _classTitleHeight,
-                                                            _classTitleWidth,
-                                                            _isShowClassTime,
-                                                            _isWhiteMode,
-                                                            classTimeList:
-                                                                _classTimeList),
-                                                        SizedBox(
-                                                            height:
-                                                                _classTitleHeight *
-                                                                    _maxShowClasses,
-                                                            width: _screenWidth -
+                                                            ClassTitle(
+                                                                _maxShowClasses,
+                                                                _classTitleHeight,
                                                                 _classTitleWidth,
-                                                            child: Stack(
-                                                                clipBehavior:
-                                                                    Clip.none,
-                                                                children: divider +
-                                                                    classesSnapshot
-                                                                        .data!))
-                                                      ]));
+                                                                _isShowClassTime,
+                                                                _isWhiteMode,
+                                                                classTimeList:
+                                                                    _classTimeList),
+                                                            SizedBox(
+                                                                height: _classTitleHeight *
+                                                                    _maxShowClasses,
+                                                                width: _screenWidth -
+                                                                    _classTitleWidth,
+                                                                child: Stack(
+                                                                    clipBehavior:
+                                                                        Clip
+                                                                            .none,
+                                                                    children: divider +
+                                                                        classesSnapshot
+                                                                            .data!))
+                                                          ]));
                                                 });
                                           })),
                                 ]),
@@ -442,19 +445,23 @@ class CourseTableViewState extends State<CourseTableView> {
                                 bottom: _isFreeClassVisible ? 40.0 : -100.0,
                                 child: Padding(
                                   // 1. 侧边 Padding，让组件不贴屏幕边缘，产生悬浮感
-                                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16.0),
                                   child: Material(
                                     // 2. 悬浮阴影高度
                                     elevation: 6.0,
                                     // 3. 胶囊型圆角
                                     shape: const StadiumBorder(),
-                                    color: Theme.of(context).colorScheme.primaryContainer,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primaryContainer,
                                     // 限制高度
                                     child: SizedBox(
                                       height: _snackbarHeight,
                                       // 内部 Padding，避免文字和按钮贴紧胶囊边缘
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20.0),
                                         child: Row(
                                           children: [
                                             // 左侧文本区域 (Expanded 保证撑开空间，FittedBox 保证文字不越界)
@@ -463,36 +470,54 @@ class CourseTableViewState extends State<CourseTableView> {
                                                 fit: BoxFit.scaleDown,
                                                 alignment: Alignment.centerLeft,
                                                 child: Text(
-                                                  S.of(context).free_class_banner(_freeCourseNum.toString()),
+                                                  S
+                                                      .of(context)
+                                                      .free_class_banner(
+                                                          _freeCourseNum
+                                                              .toString()),
                                                   style: TextStyle(
-                                                    color: Theme.of(context).colorScheme.onSurface,
-                                                    fontWeight: FontWeight.w500, // 稍微加粗一点会让现代感更强（可选）
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .onSurface,
+                                                    fontWeight: FontWeight
+                                                        .w500, // 稍微加粗一点会让现代感更强（可选）
                                                   ),
                                                 ),
                                               ),
                                             ),
 
                                             // 右侧文字区域
-                                            const SizedBox(width: 12), // 文本和文字之间的间距
+                                            const SizedBox(width: 12),
+                                            // 文本和文字之间的间距
                                             InkWell(
                                               onTap: () {
-                                                _presenter.showFreeClassDialog(context, _nowShowWeekNum);
+                                                _presenter.showFreeClassDialog(
+                                                    context, _nowShowWeekNum);
                                               },
                                               child: Text(
                                                 S.of(context).free_class_button,
                                                 style: TextStyle(
-                                                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .onPrimaryContainer,
                                                   fontWeight: FontWeight.w500,
                                                 ),
                                               ),
                                             ),
-                                            const SizedBox(width: 16), // 两个文字之间的间距
+                                            const SizedBox(width: 16),
+                                            // 两个文字之间的间距
                                             InkWell(
-                                              onTap: () => _presenter.showHideFreeCourseDialog(context),
+                                              onTap: () => _presenter
+                                                  .showHideFreeCourseDialog(
+                                                      context),
                                               child: Text(
-                                                S.of(context).hide_free_class_button,
+                                                S
+                                                    .of(context)
+                                                    .hide_free_class_button,
                                                 style: TextStyle(
-                                                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .onPrimaryContainer,
                                                   fontWeight: FontWeight.w500,
                                                 ),
                                               ),

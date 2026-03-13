@@ -40,7 +40,8 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
           onPageFinished: (String url) {
             if (widget.config['redirectUrl'] != '' &&
                 url.startsWith(widget.config['redirectUrl'])) {
-              _webViewController.loadRequest(Uri.parse(widget.config['targetUrl']));
+              _webViewController
+                  .loadRequest(Uri.parse(widget.config['targetUrl']));
             } else if (url.startsWith(widget.config['targetUrl'])) {
               import(_webViewController, context);
             }
@@ -69,7 +70,8 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
             icon: const Icon(Icons.refresh),
             onPressed: () async {
               await cookieManager.clearCookies();
-              _webViewController.loadRequest(Uri.parse(widget.config['initialUrl']));
+              _webViewController
+                  .loadRequest(Uri.parse(widget.config['initialUrl']));
             },
           ),
         ],
@@ -96,8 +98,7 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
                           onPressed: () => launch(widget.config['banner_url'])),
                     ],
                   ),
-            Expanded(
-                child: WebViewWidget(controller: _webViewController))
+            Expanded(child: WebViewWidget(controller: _webViewController))
           ]);
         },
       ),
@@ -113,13 +114,13 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
       Toast.showToast(S.of(context).class_parse_toast_importing, context);
       await controller.runJavaScript(widget.config['preExtractJS'] ?? '');
       await Future.delayed(Duration(seconds: widget.config['delayTime'] ?? 0));
-      
+
       var result = await controller
           .runJavaScriptReturningResult(widget.config['extractJS']);
       response = result.toString();
-      
+
       if (response.startsWith('"') && response.endsWith('"')) {
-         response = response.substring(1, response.length - 1);
+        response = response.substring(1, response.length - 1);
       }
     }
     response = response.replaceAll('\\u003C', '<').replaceAll('\\"', '"');
@@ -154,7 +155,7 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
       }
 
       UmengCommonSdk.onEvent("class_import", {"type": "cer", "action": "fail"});
-      
+
       showDialog<String>(
           barrierDismissible: false,
           context: context,

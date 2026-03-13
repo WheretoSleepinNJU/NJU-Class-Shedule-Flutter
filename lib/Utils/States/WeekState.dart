@@ -17,7 +17,7 @@ mixin WeekStateModel on Model {
     sp.setInt("weekIndex", weekIndex);
     // 同时更新 tmpWeekIndex
     sp.setInt("tmpWeekIndex", weekIndex);
-    
+
     // 刷新 Widget
     await WidgetRefreshHelper.refreshAfterWeekChanged();
   }
