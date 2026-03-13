@@ -86,6 +86,7 @@
   * `git clone https://gitcode.com/openharmony-sig/flutter_sqflite.git`
   * `git clone https://gitcode.com/openharmony-sig/flutter_plus_plugins.git`
   * `git clone https://gitcode.com/openharmony-sig/fluttertpc_mobile_scanner.git`
+  * `git clone https://gitcode.com/openharmony-sig/fluttertpc_device_calendar`
 6. 如果在中国大陆网络下载失败，执行：
   * `export USE_CN_FLUTTER_MIRROR=1`
   * `source tool/setup_ohos_env.sh`

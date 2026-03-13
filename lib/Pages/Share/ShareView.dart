@@ -146,11 +146,20 @@ class _ShareViewState extends State<ShareView> {
   Future<bool> _exportToSystemCalendar(BuildContext ctx) async {
     DeviceCalendarPlugin dc = DeviceCalendarPlugin();
 
-    var permissions = await dc.requestPermissions();
-    if (!permissions.data!) {
-      Toast.showToast(
-          S.of(context).export_to_system_calendar_fail_toast, context);
+    var permissionsGranted = await dc.hasPermissions();
+    if (!permissionsGranted.isSuccess) {
+      Toast.showToast(S.of(ctx).export_to_system_calendar_fail_toast, ctx);
       return false;
+    }
+
+    if (permissionsGranted.data == null || permissionsGranted.data == false) {
+      permissionsGranted = await dc.requestPermissions();
+      if (!permissionsGranted.isSuccess ||
+          permissionsGranted.data == null ||
+          permissionsGranted.data == false) {
+        Toast.showToast(S.of(ctx).export_to_system_calendar_fail_toast, ctx);
+        return false;
+      }
     }
 
     int tableId = await MainStateModel.of(context).getClassTable();
@@ -176,9 +185,7 @@ class _ShareViewState extends State<ShareView> {
           break;
         }
       }
-      if (targetCalendarId == null) {
-        targetCalendarId = (await dc.createCalendar(calendarName)).data;
-      }
+      targetCalendarId ??= (await dc.createCalendar(calendarName)).data;
     } catch (e) {
       Toast.showToast(
           S.of(context).export_to_system_calendar_fail_toast, context);
@@ -252,8 +259,8 @@ class _ShareViewState extends State<ShareView> {
     Map<int, DateTime> dayMap = {};
     DateTime now = DateTime.now();
     int weekNum = await ScopedModel.of<MainStateModel>(context).getWeek();
-    Duration backaweek = Duration(days: -7);
-    Duration backaday = Duration(days: -1);
+    Duration backaweek = const Duration(days: -7);
+    Duration backaday = const Duration(days: -1);
     DateTime firstDay = now.add(backaweek * weekNum + backaday * now.weekday);
     for (int i = 0; i < 7; i++) {
       Duration delta = Duration(days: i);

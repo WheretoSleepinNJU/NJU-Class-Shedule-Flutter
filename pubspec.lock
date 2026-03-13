@@ -90,7 +90,7 @@ packages:
     source: hosted
     version: "1.1.1"
   collection:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: collection
       sha256: a1ace0a119f20aabc852d165077c036cd864315bd99b7eaa10a60100341941bf
@@ -140,19 +140,10 @@ packages:
   device_calendar:
     dependency: "direct main"
     description:
-      name: device_calendar
-      sha256: "683fb93ec302b6a65c0ce57df40ff9dcc2404f59c67a2f8b93e59318c8a0a225"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
+      path: "external/fluttertpc_device_calendar"
+      relative: true
+    source: path
     version: "4.3.3"
-  device_calendar_ohos:
-    dependency: "direct main"
-    description:
-      name: device_calendar_ohos
-      sha256: "3b5a28106ec72ec8b848db40a089ba7e99c1b7a6d73d08032973e3833c8c8815"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.0.0"
   dio:
     dependency: "direct main"
     description:
@@ -692,14 +683,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "4.1.0"
-  rrule:
-    dependency: transitive
-    description:
-      name: rrule
-      sha256: f6f6ad5bf7b19d218d4c985d6055d3c9717f1d6efd5d1c0127b1146f1eb3640c
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.2.18"
   scoped_model:
     dependency: "direct main"
     description:
@@ -872,14 +855,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.7.3"
-  time:
-    dependency: transitive
-    description:
-      name: time
-      sha256: "46187cf30bffdab28c56be9a63861b36e4ab7347bf403297595d6a97e10c789f"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "2.1.6"
   timezone:
     dependency: transitive
     description:
@@ -1036,7 +1011,7 @@ packages:
     description:
       path: "packages/webview_flutter/webview_flutter_android"
       ref: HEAD
-      resolved-ref: "9c8d592e7d68bc5f1fbe169969111f54347130e7"
+      resolved-ref: "77228ef90aa39dbb01981e608056598be4aea03c"
       url: "https://gitcode.com/openharmony-tpc/flutter_packages.git"
     source: git
     version: "3.15.0"
@@ -1045,7 +1020,7 @@ packages:
     description:
       path: "packages/webview_flutter/webview_flutter_ohos"
       ref: HEAD
-      resolved-ref: "9c8d592e7d68bc5f1fbe169969111f54347130e7"
+      resolved-ref: "77228ef90aa39dbb01981e608056598be4aea03c"
       url: "https://gitcode.com/openharmony-tpc/flutter_packages.git"
     source: git
     version: "3.15.0"
@@ -1054,7 +1029,7 @@ packages:
     description:
       path: "packages/webview_flutter/webview_flutter_platform_interface"
       ref: HEAD
-      resolved-ref: "9c8d592e7d68bc5f1fbe169969111f54347130e7"
+      resolved-ref: "77228ef90aa39dbb01981e608056598be4aea03c"
       url: "https://gitcode.com/openharmony-tpc/flutter_packages.git"
     source: git
     version: "2.10.0"
@@ -1063,7 +1038,7 @@ packages:
     description:
       path: "packages/webview_flutter/webview_flutter_wkwebview"
       ref: HEAD
-      resolved-ref: "9c8d592e7d68bc5f1fbe169969111f54347130e7"
+      resolved-ref: "77228ef90aa39dbb01981e608056598be4aea03c"
       url: "https://gitcode.com/openharmony-tpc/flutter_packages.git"
     source: git
     version: "3.12.0"

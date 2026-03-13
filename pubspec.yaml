@@ -5,7 +5,7 @@ description: wheretosleepinnju
 # pub.dev using `pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 4.0.1+62
+version: 4.0.1+64
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -93,24 +93,25 @@ dependencies:
   # Android iOS Linux macOS web Windows
   dio: ^5.9.0
   # Android iOS Linux macOS web Windows
-  device_calendar: ^4.2.0
-  device_calendar_ohos: 1.0.0
+  device_calendar:
+    path: ./external/fluttertpc_device_calendar
 #  flutter_timezone: ^3.0.0
 
 dependency_overrides:
+  collection: ^1.19.0
   scrollable_positioned_list: 0.3.2
   url_launcher:
     path: ./external/flutter_packages/packages/url_launcher/url_launcher
-    
+
   shared_preferences:
     path: ./external/flutter_packages/packages/shared_preferences/shared_preferences
-    
+
   webview_flutter:
     path: ./external/flutter_packages/packages/webview_flutter/webview_flutter
-    
+
   path_provider:
     path: ./external/flutter_packages/packages/path_provider/path_provider
-    
+
   image_picker:
     path: ./external/flutter_packages/packages/image_picker/image_picker
 
