@@ -122,6 +122,8 @@ app.*.symbols
 external/flutter_packages
 external/flutter_plus_plugins
 external/flutter_sqflite
+external/fluttertpc_device_calendar
+external/fluttertpc_mobile_scanner
 
 # FVM Version Cache
 .fvm/
