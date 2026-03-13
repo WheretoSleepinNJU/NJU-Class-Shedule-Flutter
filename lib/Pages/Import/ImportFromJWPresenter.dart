@@ -73,7 +73,7 @@ class ImportFromJWPresenter {
     CourseTable courseTable = await courseTableProvider.insert(CourseTable(
         'Demo课表',
         data:
-            '{"class_time_list": [{"start": "08:00", "end": "08:50"},{"start": "08:00", "end": "08:50"},{"start": "08:00", "end": "08:50"},{"start": "08:00", "end": "08:50"},{"start": "08:00", "end": "08:50"},{"start": "08:00", "end": "08:50"},{"start": "08:00", "end": "08:50"},{"start": "08:00", "end": "08:50"},{"start": "08:00", "end": "08:50"},{"start": "08:00", "end": "08:50"},{"start": "08:00", "end": "08:50"},{"start": "08:00", "end": "08:50"},{"start": "08:00", "end": "08:50"},{"start": "08:00", "end": "08:50"},{"start": "08:00", "end": "08:50"}]}'));
+            '{"class_time_list": [{"start": "08:00", "end": "08:50"},{"start": "09:00", "end": "09:50"},{"start": "10:00", "end": "10:50"},{"start": "11:00", "end": "11:50"},{"start": "14:00", "end": "14:50"},{"start": "15:00", "end": "15:50"},{"start": "16:00", "end": "16:50"},{"start": "17:00", "end": "17:50"},{"start": "18:00", "end": "18:50"},{"start": "19:00", "end": "19:50"},{"start": "20:00", "end": "20:50"},{"start": "21:00", "end": "21:50"},{"start": "22:00", "end": "22:50"},{"start": "23:00", "end": "23:50"},{"start": "00:00", "end": "00:50"}]}'));
     // 减1的原因：SQL中id从1开始计
     MainStateModel.of(context).changeclassTable(courseTable.id!);
     CourseProvider courseProvider = CourseProvider();
