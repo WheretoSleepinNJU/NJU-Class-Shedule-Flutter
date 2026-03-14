@@ -174,7 +174,8 @@ class _LectureViewState extends State<LectureView> {
               //   onPressed: () async {},
               // ),
             ]),
-        body: RefreshIndicator(
+        body: SafeArea(
+          child: RefreshIndicator(
           color: Theme.of(context).brightness == Brightness.light
               ? Theme.of(context).primaryColor
               : Colors.white,
@@ -267,6 +268,6 @@ class _LectureViewState extends State<LectureView> {
           //   itemCount: _lectureCards.length + 1,
           //   controller: _scrollController,
           // )
-        ));
+        )));
   }
 }

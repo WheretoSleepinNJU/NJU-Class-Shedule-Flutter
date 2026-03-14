@@ -30,7 +30,8 @@ class _WidgetSettingsViewState extends State<WidgetSettingsView> {
         title: const Text('小组件设置'),
         elevation: 0,
       ),
-      body: ListView(
+      body: SafeArea(
+        child: ListView(
         children: [
           // 即将上课提醒时间
           ListTile(
@@ -90,6 +91,7 @@ class _WidgetSettingsViewState extends State<WidgetSettingsView> {
             ),
           ),
         ],
+      ),
       ),
     );
   }

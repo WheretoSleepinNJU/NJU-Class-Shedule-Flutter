@@ -43,20 +43,21 @@ class _ManageTableViewState extends State<ManageTableView> {
                 },
               )
             ]),
-        body: SingleChildScrollView(
-            child: FutureBuilder<List<Widget>>(
-                future: _getData(context),
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<Widget>> snapshot) {
-                  if (!snapshot.hasData) {
-                    return Container();
-                  } else {
-                    return Column(
-                        children: ListTile.divideTiles(
-                                context: context, tiles: snapshot.data!)
-                            .toList());
-                  }
-                })));
+        body: SafeArea(
+            child: SingleChildScrollView(
+                child: FutureBuilder<List<Widget>>(
+                    future: _getData(context),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<List<Widget>> snapshot) {
+                      if (!snapshot.hasData) {
+                        return Container();
+                      } else {
+                        return Column(
+                            children: ListTile.divideTiles(
+                                    context: context, tiles: snapshot.data!)
+                                .toList());
+                      }
+                    }))));
   }
 
   Future<String> _addTableDialog(BuildContext context) async {

@@ -30,7 +30,7 @@ class _ShareViewState extends State<ShareView> {
         appBar: AppBar(
           title: Text(S.of(context).import_or_export_title),
         ),
-        body: SingleChildScrollView(
+        body: SafeArea(child: SingleChildScrollView(
             child: Column(children: <Widget>[
           SingleChildScrollView(
               child: Column(
@@ -53,7 +53,7 @@ class _ShareViewState extends State<ShareView> {
               },
             ),
           ]).toList()))
-        ])));
+        ]))));
   }
 
   Future<void> _exportClassTable() async {

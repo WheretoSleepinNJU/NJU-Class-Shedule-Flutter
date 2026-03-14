@@ -56,7 +56,7 @@ class _AddViewState extends State<AddView> {
         appBar: AppBar(
           title: Text(S.of(context).add_manually_title),
         ),
-        body: Builder(builder: (BuildContext context) {
+        body: SafeArea(child: Builder(builder: (BuildContext context) {
           return Container(
               width: double.infinity,
               margin: const EdgeInsets.all(10),
@@ -119,7 +119,7 @@ class _AddViewState extends State<AddView> {
                   padding: EdgeInsets.all(10),
                 ),
                 Row(children: <Widget>[
-                  const Icon(Icons.calendar_month, color: Colors.grey),
+                  const Icon(Icons.calendar_month),
                   const Padding(
                     padding: EdgeInsets.all(8),
                   ),
@@ -147,7 +147,7 @@ class _AddViewState extends State<AddView> {
                   padding: EdgeInsets.all(10),
                 ),
                 Row(children: <Widget>[
-                  const Icon(Icons.access_time, color: Colors.grey),
+                  const Icon(Icons.access_time),
                   const Padding(
                     padding: EdgeInsets.all(8),
                   ),
@@ -259,6 +259,6 @@ class _AddViewState extends State<AddView> {
                           Navigator.of(context).pop(true);
                         }))
               ]));
-        }));
+        })));
   }
 }

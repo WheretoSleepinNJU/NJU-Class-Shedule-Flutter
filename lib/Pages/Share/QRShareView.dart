@@ -56,7 +56,8 @@ class _QRShareViewState extends State<QRShareView> {
       appBar: AppBar(
         title: Text(S.of(context).export_title),
       ),
-      body: Center(
+      body: SafeArea(
+        child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -93,6 +94,7 @@ class _QRShareViewState extends State<QRShareView> {
               child: Text(S.of(context).qr_share_copy_button),
             ),
           ],
+        ),
         ),
       ),
     );
