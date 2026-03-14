@@ -121,9 +121,7 @@ class CourseParser {
       }
     }
     CourseProvider courseProvider = CourseProvider();
-    for (Course course in rst) {
-      await courseProvider.insert(course);
-    }
+    await courseProvider.insertAll(rst);
     return rst;
   }
 

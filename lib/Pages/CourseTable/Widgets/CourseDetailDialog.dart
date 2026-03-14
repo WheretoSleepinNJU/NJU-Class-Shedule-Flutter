@@ -5,6 +5,7 @@ import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../Models/CourseModel.dart';
 import '../../../Resources/Constant.dart';
+import '../../../Resources/PrototypePalette.dart';
 import '../../../Components/Dialog.dart';
 import '../../../Components/Toast.dart';
 
@@ -51,9 +52,10 @@ class CourseDetailDialog extends StatelessWidget {
   Widget linkifyText(context, String text) {
     return SelectableLinkify(
       onOpen: (link) async {
-        String url = link.url.replaceAll(RegExp('[^\x00-\xff]'), '');
-        if (await canLaunch(url)) {
-          await launch(url);
+        final String url = link.url.replaceAll(RegExp('[^\x00-\xff]'), '');
+        final Uri? uri = Uri.tryParse(url);
+        if (uri != null && await canLaunchUrl(uri)) {
+          await launchUrl(uri);
         } else {
           Toast.showToast(S.of(context).network_error_toast, context);
         }
@@ -61,10 +63,29 @@ class CourseDetailDialog extends StatelessWidget {
       text: text,
       style: const TextStyle(fontSize: 16),
       linkStyle: TextStyle(
-          color: Theme.of(context).brightness == Brightness.light
-              ? Theme.of(context).primaryColor
-              : Colors.white),
+          color: Theme.of(context).colorScheme.primary,
+          fontWeight: FontWeight.w700),
       options: const LinkifyOptions(humanize: false),
+    );
+  }
+
+  Widget _detailRow(BuildContext context, IconData icon, Widget child,
+      {CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center}) {
+    return Row(
+      crossAxisAlignment: crossAxisAlignment,
+      children: <Widget>[
+        Container(
+          width: 34,
+          height: 34,
+          decoration: BoxDecoration(
+            color: DuckPalette.duckYellowSoft,
+            borderRadius: BorderRadius.circular(17),
+          ),
+          child: Icon(icon, size: 18, color: DuckPalette.textMain),
+        ),
+        const SizedBox(width: 12),
+        Expanded(child: child),
+      ],
     );
   }
 
@@ -100,51 +121,51 @@ class CourseDetailDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Row(children: [
-            const Icon(Icons.location_on),
-            const Padding(padding: EdgeInsets.only(left: 5)),
-            Flexible(
-                child: linkifyText(
-                    context,
-                    course.classroom == ""
-                        ? S.of(context).unknown_place
-                        : course.classroom ?? S.of(context).unknown_place)),
-          ]),
-          const Padding(padding: EdgeInsets.only(bottom: 10)),
-          Row(children: [
-            const Icon(Icons.account_circle),
-            const Padding(padding: EdgeInsets.only(left: 5)),
-            Flexible(child: linkifyText(context, course.teacher ?? '')),
-          ]),
-          const Padding(padding: EdgeInsets.only(bottom: 10)),
-          Row(children: [
-            const Icon(Icons.access_time),
-            const Padding(padding: EdgeInsets.only(left: 5)),
-            Flexible(child: linkifyText(context, weekString)),
-          ]),
-          const Padding(padding: EdgeInsets.only(bottom: 10)),
-          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Icon(Icons.event),
-            const Padding(padding: EdgeInsets.only(left: 5)),
-            Flexible(child: linkifyText(context, weekListString)),
-          ]),
-          const Padding(padding: EdgeInsets.only(bottom: 10)),
-          Row(children: [
-            const Icon(Icons.settings_suggest),
-            const Padding(padding: EdgeInsets.only(left: 5)),
-            Flexible(child: linkifyText(context, importTypeStr)),
-          ]),
-          const Padding(padding: EdgeInsets.only(bottom: 10)),
-          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Icon(Icons.description),
-            const Padding(padding: EdgeInsets.only(left: 5)),
-            Flexible(
-                child: linkifyText(
-                    context,
-                    course.info == ""
-                        ? S.of(context).unknown_info
-                        : course.info ?? S.of(context).unknown_info)),
-          ]),
+          _detailRow(
+            context,
+            Icons.location_on_rounded,
+            linkifyText(
+                context,
+                course.classroom == ""
+                    ? S.of(context).unknown_place
+                    : course.classroom ?? S.of(context).unknown_place),
+          ),
+          const SizedBox(height: 12),
+          _detailRow(
+            context,
+            Icons.person_rounded,
+            linkifyText(context, course.teacher ?? ''),
+          ),
+          const SizedBox(height: 12),
+          _detailRow(
+            context,
+            Icons.schedule_rounded,
+            linkifyText(context, weekString),
+          ),
+          const SizedBox(height: 12),
+          _detailRow(
+            context,
+            Icons.calendar_month_rounded,
+            linkifyText(context, weekListString),
+            crossAxisAlignment: CrossAxisAlignment.start,
+          ),
+          const SizedBox(height: 12),
+          _detailRow(
+            context,
+            Icons.settings_suggest_rounded,
+            linkifyText(context, importTypeStr),
+          ),
+          const SizedBox(height: 12),
+          _detailRow(
+            context,
+            Icons.description_rounded,
+            linkifyText(
+                context,
+                course.info == ""
+                    ? S.of(context).unknown_info
+                    : course.info ?? S.of(context).unknown_info),
+            crossAxisAlignment: CrossAxisAlignment.start,
+          ),
         ],
       )),
       widgetOKAction: onPressed,

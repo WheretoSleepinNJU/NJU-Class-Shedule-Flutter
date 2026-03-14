@@ -103,8 +103,10 @@ class Course {
   String? getColor(List colorPool) {
     final rawColor = color?.trim();
     if (rawColor != null && rawColor.isNotEmpty) {
-      final normalized = rawColor.startsWith('#') ? rawColor.substring(1) : rawColor;
-      final isValidHex = RegExp(r'^[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$').hasMatch(normalized);
+      final normalized =
+          rawColor.startsWith('#') ? rawColor.substring(1) : rawColor;
+      final isValidHex =
+          RegExp(r'^[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$').hasMatch(normalized);
       if (isValidHex) {
         return rawColor.startsWith('#') ? rawColor : '#$rawColor';
       }
@@ -133,6 +135,63 @@ class CourseProvider {
     course.id = await db!.insert(tableName, course.toMap());
 //    await close();
     return course;
+  }
+
+  Future<List<Course>> insertAll(List<Course> courses) async {
+    if (courses.isEmpty) {
+      return <Course>[];
+    }
+    await open();
+
+    final tableIds =
+        courses.map((Course course) => course.tableId).whereType<int>().toSet();
+    final Map<int, Map<String, int>> courseIdCache = <int, Map<String, int>>{};
+    for (final int tableId in tableIds) {
+      final rows = await db!.query(
+        tableName,
+        columns: <String>[columnName, columnCourseId],
+        where: '$columnTableId = ? AND $columnCourseId IS NOT NULL',
+        whereArgs: <Object>[tableId],
+      );
+      courseIdCache[tableId] = <String, int>{
+        for (final Map<String, Object?> row in rows)
+          (row[columnName] ?? '').toString(): row[columnCourseId] as int,
+      };
+    }
+
+    int nextCourseId = await _getNextCourseIdValue();
+    final Batch batch = db!.batch();
+    for (final Course course in courses) {
+      final int? tableId = course.tableId;
+      if (tableId == null) {
+        continue;
+      }
+      final tableCourseIds =
+          courseIdCache.putIfAbsent(tableId, () => <String, int>{});
+      final courseName = (course.name ?? '').trim();
+      if (course.courseId == null) {
+        course.courseId = tableCourseIds.putIfAbsent(courseName, () {
+          final int assignedId = nextCourseId;
+          nextCourseId += 1;
+          return assignedId;
+        });
+      }
+      batch.insert(tableName, course.toMap());
+    }
+
+    final results = await batch.commit(noResult: false);
+    int resultIndex = 0;
+    for (final Course course in courses) {
+      if (course.tableId == null) {
+        continue;
+      }
+      final dynamic insertedId = results[resultIndex];
+      if (insertedId is int) {
+        course.id = insertedId;
+      }
+      resultIndex += 1;
+    }
+    return courses;
   }
 
   Future<Course?> getCourse(int id) async {
@@ -202,14 +261,16 @@ class CourseProvider {
         where: '$columnName = ? and $columnTableId = ?',
         whereArgs: [course.name, course.tableId]);
     if (rst.isNotEmpty) return rst[0][columnCourseId];
-    var maxId =
+    return _getNextCourseIdValue();
+  }
+
+  Future<int> _getNextCourseIdValue() async {
+    final maxId =
         await db!.rawQuery('SELECT MAX($columnCourseId) FROM $tableName');
-    List maxIdList = maxId.toList();
-//    print(maxIdList);
+    final List maxIdList = maxId.toList();
     if (maxIdList.isEmpty || maxIdList[0]['MAX($columnCourseId)'] == null) {
       return 0;
-    } else {
-      return maxIdList[0]['MAX($columnCourseId)'] + 1;
     }
+    return maxIdList[0]['MAX($columnCourseId)'] + 1;
   }
 }

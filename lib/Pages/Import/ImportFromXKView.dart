@@ -22,6 +22,8 @@ class ImportFromXKView extends StatefulWidget {
 class _WebViewState extends State<ImportFromXKView> {
   late final WebViewController _webViewController;
   final WebViewCookieManager cookieManager = WebViewCookieManager();
+  bool _isImporting = false;
+  String? _lastImportedUrl;
 
   @override
   void initState() {
@@ -33,12 +35,7 @@ class _WebViewState extends State<ImportFromXKView> {
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageFinished: (String url) {
-            if (widget.config['redirectUrl'] != '' &&
-                url.startsWith(widget.config['redirectUrl'])) {
-              _webViewController.loadRequest(Uri.parse(widget.config['targetUrl']));
-            } else if (url.startsWith(widget.config['targetUrl'])) {
-              import(_webViewController, context);
-            }
+            _handlePageFinished(url);
           },
         ),
       )
@@ -66,8 +63,7 @@ class _WebViewState extends State<ImportFromXKView> {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () async {
-              await cookieManager.clearCookies();
-              _webViewController.loadRequest(Uri.parse(widget.config['initialUrl']));
+              await _restartImportSession();
             },
           )
         ],
@@ -82,7 +78,8 @@ class _WebViewState extends State<ImportFromXKView> {
           child: SizedBox(
             width: maxWidth,
             child: Padding(
-              padding: EdgeInsets.fromLTRB(horizontalPadding, 10, horizontalPadding, 12),
+              padding: EdgeInsets.fromLTRB(
+                  horizontalPadding, 10, horizontalPadding, 12),
               child: Column(
                 children: [
                   _buildInfoBanner(context),
@@ -92,7 +89,8 @@ class _WebViewState extends State<ImportFromXKView> {
                       borderRadius: BorderRadius.circular(20),
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          border: Border.all(color: color.outlineVariant.withOpacity(0.35)),
+                          border: Border.all(
+                              color: color.outlineVariant.withOpacity(0.35)),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: WebViewWidget(controller: _webViewController),
@@ -137,7 +135,8 @@ class _WebViewState extends State<ImportFromXKView> {
           ),
           if ((widget.config['banner_url'] ?? '').toString().isNotEmpty)
             TextButton(
-              onPressed: () => launch(widget.config['banner_url']),
+              onPressed: () =>
+                  launchUrl(Uri.parse(widget.config['banner_url'])),
               child: Text(widget.config['banner_action']),
             ),
         ],
@@ -145,33 +144,74 @@ class _WebViewState extends State<ImportFromXKView> {
     );
   }
 
-  import(WebViewController controller, BuildContext context) async {
-    Toast.showToast(S.of(context).class_parse_toast_importing, context);
-    await controller.runJavaScript(widget.config['preExtractJS'] ?? '');
-    await Future.delayed(Duration(seconds: widget.config['delayTime'] ?? 0));
-    
-    var result = await controller
-        .runJavaScriptReturningResult(widget.config['extractJS']);
-    String response = result.toString();
-    
-    if (response.startsWith('"') && response.endsWith('"')) {
-       response = response.substring(1, response.length - 1);
-    }
-    
-    response = response.replaceAll('\\u003C', '<').replaceAll('\\"', '"');
+  Future<void> _restartImportSession() async {
+    _isImporting = false;
+    _lastImportedUrl = null;
+    await cookieManager.clearCookies();
+    await _webViewController
+        .loadRequest(Uri.parse(widget.config['initialUrl']));
+  }
 
-    CourseParser cp = CourseParser(response);
-    String courseTableName = cp.parseCourseName();
-    int rst = await cp.addCourseTable(courseTableName, context);
+  Future<void> _handlePageFinished(String url) async {
+    if (widget.config['redirectUrl'] != '' &&
+        url.startsWith(widget.config['redirectUrl'])) {
+      await _webViewController
+          .loadRequest(Uri.parse(widget.config['targetUrl']));
+      return;
+    }
+    if (!url.startsWith(widget.config['targetUrl'])) {
+      return;
+    }
+    if (_isImporting || _lastImportedUrl == url) {
+      return;
+    }
+    _lastImportedUrl = url;
+    await import(_webViewController, context);
+  }
+
+  Future<void> import(
+      WebViewController controller, BuildContext context) async {
+    if (_isImporting) {
+      return;
+    }
+    _isImporting = true;
     try {
-      await cp.parseCourse(rst);
-      UmengCommonSdk.onEvent(
-          "class_import", {"type": "xk", "action": "success"});
-      Toast.showToast(S.of(context).class_parse_toast_success, context);
-      Navigator.of(context).pop(true);
-    } catch (e) {
-      UmengCommonSdk.onEvent("class_import", {"type": "xk", "action": "fail"});
-      Toast.showToast(S.of(context).class_parse_error_toast, context);
+      Toast.showToast(S.of(context).class_parse_toast_importing, context);
+      await controller.runJavaScript(widget.config['preExtractJS'] ?? '');
+      await Future.delayed(Duration(seconds: widget.config['delayTime'] ?? 0));
+
+      var result = await controller
+          .runJavaScriptReturningResult(widget.config['extractJS']);
+      String response = result.toString();
+
+      if (response.startsWith('"') && response.endsWith('"')) {
+        response = response.substring(1, response.length - 1);
+      }
+
+      response = response.replaceAll('\\u003C', '<').replaceAll('\\"', '"');
+
+      CourseParser cp = CourseParser(response);
+      String courseTableName = cp.parseCourseName();
+      int rst = await cp.addCourseTable(courseTableName, context);
+      try {
+        await cp.parseCourse(rst);
+        UmengCommonSdk.onEvent(
+            "class_import", {"type": "xk", "action": "success"});
+        if (!mounted) {
+          return;
+        }
+        Toast.showToast(S.of(context).class_parse_toast_success, context);
+        Navigator.of(context).pop(true);
+      } catch (e) {
+        UmengCommonSdk.onEvent(
+            "class_import", {"type": "xk", "action": "fail"});
+        if (!mounted) {
+          return;
+        }
+        Toast.showToast(S.of(context).class_parse_error_toast, context);
+      }
+    } finally {
+      _isImporting = false;
     }
   }
 }

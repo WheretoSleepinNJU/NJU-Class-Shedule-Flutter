@@ -1,9 +1,10 @@
 import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+
+import 'ImportRemoteDataSource.dart';
 
 class ScriptSourceConfig {
   final String type;
@@ -38,7 +39,10 @@ class ScriptSourceConfig {
 }
 
 class ScriptLoader {
-  final Dio _dio = Dio();
+  final ImportRemoteDataSource _remoteDataSource;
+
+  ScriptLoader({ImportRemoteDataSource? remoteDataSource})
+      : _remoteDataSource = remoteDataSource ?? ImportRemoteDataSource.instance;
 
   Future<String> load(ScriptSourceConfig source) async {
     String script;
@@ -55,8 +59,7 @@ class ScriptLoader {
       if (url.isEmpty) {
         throw Exception('Remote script url is empty.');
       }
-      final rsp = await _dio.get(url);
-      script = rsp.data.toString();
+      script = await _remoteDataSource.fetchText(url);
     }
     _validateHashIfNeeded(script, source.sha256Hash);
     return script;
@@ -89,20 +92,22 @@ class ImportAdapterEngine {
     if (!shouldUseAdapter(config)) {
       throw Exception('Adapter config is incomplete.');
     }
-    final providerScript =
-        await scriptLoader.load(ScriptSourceConfig.fromDynamic(config['provider']));
-    final parserScript =
-        await scriptLoader.load(ScriptSourceConfig.fromDynamic(config['parser']));
+    final providerScript = await scriptLoader
+        .load(ScriptSourceConfig.fromDynamic(config['provider']));
+    final parserScript = await scriptLoader
+        .load(ScriptSourceConfig.fromDynamic(config['parser']));
     final timerRaw = config['timer'];
     final timerScript = timerRaw == null
         ? null
         : await scriptLoader.load(ScriptSourceConfig.fromDynamic(timerRaw));
 
     final providerResult = await _executeProvider(controller, providerScript);
-    final parserResult = await _executeParser(controller, parserScript, providerResult);
+    final parserResult =
+        await _executeParser(controller, parserScript, providerResult);
     final timingResult = timerScript == null
         ? <String, dynamic>{}
-        : await _executeTimer(controller, timerScript, providerResult, parserResult);
+        : await _executeTimer(
+            controller, timerScript, providerResult, parserResult);
 
     return <String, dynamic>{
       'name': (parserResult['name'] ?? '').toString(),
@@ -118,6 +123,9 @@ class ImportAdapterEngine {
     final js = '''
       (async function() {
         $providerScript
+        if (typeof scheduleHtmlProvider !== 'function') {
+          throw new Error('scheduleHtmlProvider is not defined.');
+        }
         var __res = await Promise.resolve(scheduleHtmlProvider());
         if (typeof __res !== 'string') {
           __res = JSON.stringify(__res);
@@ -138,6 +146,9 @@ class ImportAdapterEngine {
     final js = '''
       (async function() {
         $parserScript
+        if (typeof scheduleHtmlParser !== 'function') {
+          throw new Error('scheduleHtmlParser is not defined.');
+        }
         var __res = await Promise.resolve(
           scheduleHtmlParser(${jsonEncode(providerResult)})
         );
@@ -194,15 +205,27 @@ class ImportAdapterEngine {
   }
 
   dynamic _decodeMaybeJson(dynamic value) {
-    if (value is! String) return value;
-    final text = value.trim();
-    if (text.isEmpty) return value;
-    if (!(text.startsWith('[') || text.startsWith('{'))) return value;
-    try {
-      return jsonDecode(text);
-    } catch (_) {
-      return value;
+    dynamic current = value;
+    for (int i = 0; i < 3; i++) {
+      if (current is! String) {
+        return current;
+      }
+      final text = current.trim();
+      if (text.isEmpty) {
+        return current;
+      }
+      if (!(text.startsWith('[') ||
+          text.startsWith('{') ||
+          text.startsWith('"'))) {
+        return current;
+      }
+      try {
+        current = jsonDecode(text);
+      } catch (_) {
+        return current;
+      }
     }
+    return current;
   }
 
   List<Map<String, dynamic>> _normalizeCourses(dynamic raw) {
@@ -211,34 +234,97 @@ class ImportAdapterEngine {
     for (final item in raw) {
       if (item is! Map) continue;
       final map = Map<String, dynamic>.from(item);
+      final weeks = _toIntList(map['weeks'] ?? map['week']);
+      final explicitStart = _toInt(
+          map['start_time'] ?? map['startTime'] ?? map['sectionStart'], -1);
+      final explicitTimeCount = _toInt(
+          map['time_count'] ?? map['timeCount'] ?? map['sectionCount'], -1);
+      final day = _toInt(
+          map['day'] ?? map['week_time'] ?? map['weekTime'] ?? map['weekday'],
+          0);
+      final sections = _toIntList(map['sections']);
 
       if (map.containsKey('day') || map.containsKey('sections')) {
-        final day = _toInt(map['day'], 0);
-        final sections = _toIntList(map['sections']);
-        if (sections.isEmpty) continue;
-        final start = sections.reduce((a, b) => a < b ? a : b);
-        final end = sections.reduce((a, b) => a > b ? a : b);
+        final start = explicitStart > 0
+            ? explicitStart
+            : _reduceOrDefault(sections, true);
+        if (start <= 0) continue;
+        final end = _reduceOrDefault(sections, false, fallback: start);
+        final timeCount = explicitTimeCount >= 0
+            ? explicitTimeCount
+            : _safeSectionSpan(start, end);
         out.add(<String, dynamic>{
           'name': (map['name'] ?? '').toString(),
           'classroom': (map['position'] ?? map['classroom'] ?? '').toString(),
-          'class_number': (map['class_number'] ?? '').toString(),
+          'class_number':
+              (map['class_number'] ?? map['classNumber'] ?? '').toString(),
           'teacher': (map['teacher'] ?? '').toString(),
-          'test_time': (map['test_time'] ?? '').toString(),
-          'test_location': (map['test_location'] ?? '').toString(),
+          'test_time': (map['test_time'] ?? map['testTime'] ?? '').toString(),
+          'test_location':
+              (map['test_location'] ?? map['testLocation'] ?? '').toString(),
           'link': map['link'],
-          'weeks': _toIntList(map['weeks']),
+          'weeks': weeks,
           'week_time': day,
           'start_time': start,
-          'time_count': end - start,
+          'time_count': timeCount,
           'import_type': _toInt(map['import_type'], 1),
           'info': (map['info'] ?? '').toString(),
           'data': map['data'],
         });
       } else {
-        out.add(map);
+        out.add(<String, dynamic>{
+          'name': (map['name'] ?? '').toString(),
+          'classroom': (map['position'] ?? map['classroom'] ?? '').toString(),
+          'class_number':
+              (map['class_number'] ?? map['classNumber'] ?? '').toString(),
+          'teacher': (map['teacher'] ?? '').toString(),
+          'test_time': (map['test_time'] ?? map['testTime'] ?? '').toString(),
+          'test_location':
+              (map['test_location'] ?? map['testLocation'] ?? '').toString(),
+          'link': map['link'],
+          'weeks': weeks,
+          'week_time': day,
+          'start_time': explicitStart > 0
+              ? explicitStart
+              : _reduceOrDefault(sections, true),
+          'time_count': explicitTimeCount >= 0
+              ? explicitTimeCount
+              : _safeSectionSpan(
+                  explicitStart > 0
+                      ? explicitStart
+                      : _reduceOrDefault(sections, true),
+                  _reduceOrDefault(
+                    sections,
+                    false,
+                    fallback: explicitStart > 0 ? explicitStart : 0,
+                  ),
+                ),
+          'import_type': _toInt(map['import_type'] ?? map['importType'], 1),
+          'info': (map['info'] ?? '').toString(),
+          'data': map['data'],
+        });
       }
     }
     return out;
+  }
+
+  int _reduceOrDefault(
+    List<int> values,
+    bool takeMin, {
+    int fallback = 0,
+  }) {
+    if (values.isEmpty) {
+      return fallback;
+    }
+    return values
+        .reduce((int a, int b) => takeMin ? (a < b ? a : b) : (a > b ? a : b));
+  }
+
+  int _safeSectionSpan(int start, int end) {
+    if (start <= 0 || end <= 0) {
+      return 0;
+    }
+    return end >= start ? end - start : 0;
   }
 
   List<int> _toIntList(dynamic value) {

@@ -79,10 +79,6 @@ dependencies:
     git:
       url: https://gitcode.com/fuchuanyang/fluttertpc_share_extend.git
   # Android iOS
-  fluttertoast:
-    git:
-      url: https://gitcode.com/openharmony-sig/flutter_fluttertoast.git
-  # Android iOS             web
   qr_flutter: ^4.0.0
   # Android iOS Linux macOS web Windows
   zxing2: ^0.2.3

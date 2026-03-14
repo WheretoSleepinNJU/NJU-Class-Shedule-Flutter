@@ -21,6 +21,7 @@ import '../../Components/Dialog.dart';
 import '../../Components/Toast.dart';
 import '../../Components/TransBgTextButton.dart';
 
+import 'Widgets/CourseActivatedDialog.dart';
 import 'Widgets/CourseDetailDialog.dart';
 import 'Widgets/HideFreeCourseDialog.dart';
 import 'Widgets/CourseDeleteDialog.dart';
@@ -49,17 +50,24 @@ class CourseTablePresenter {
   }
 
   Future<List<Widget>?> getClassesWidgetList(
-      BuildContext context, double height, double width, int nowWeek, bool showNonCurrentWeekCourses) async {
+      BuildContext context,
+      double height,
+      double width,
+      int nowWeek,
+      bool showNonCurrentWeekCourses) async {
     List colorPool = await ColorPool.getColorPool();
-    
+
     // Filter hideCourses based on setting
-    List<Course> filteredHideCourses = showNonCurrentWeekCourses ? hideCourses : [];
-    
+    List<Course> filteredHideCourses =
+        showNonCurrentWeekCourses ? hideCourses : [];
+
     // Filter multiCourses - only show if the first course is for current week or setting is enabled
-    List<List<Course>> filteredMultiCourses = showNonCurrentWeekCourses 
-        ? multiCourses 
-        : multiCourses.where((courses) => isThisWeek(courses[0], nowWeek)).toList();
-    
+    List<List<Course>> filteredMultiCourses = showNonCurrentWeekCourses
+        ? multiCourses
+        : multiCourses
+            .where((courses) => isThisWeek(courses[0], nowWeek))
+            .toList();
+
     List<Widget> result = List.generate(
             filteredHideCourses.length,
             (int i) => CourseWidget(
@@ -96,7 +104,8 @@ class CourseTablePresenter {
                 width,
                 isThisWeek(filteredMultiCourses[i][0], nowWeek),
                 true,
-                () => showMultiClassDialog(context, multiCourses.indexOf(filteredMultiCourses[i]), nowWeek),
+                () => showMultiClassDialog(context,
+                    multiCourses.indexOf(filteredMultiCourses[i]), nowWeek),
                 () => showDeleteDialog(context, filteredMultiCourses[i][0])));
     return result;
   }
@@ -204,8 +213,9 @@ class CourseTablePresenter {
   }
 
   Future<bool> _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
+    final Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
       return true;
     } else {
       return false;
@@ -231,14 +241,8 @@ class CourseTablePresenter {
   }
 
   showClassDialog(BuildContext context, Course course, bool isActive) {
-    return showDialog<String>(
-        context: context,
-        builder: (BuildContext context) {
-          UmengCommonSdk.onEvent("class_click", {"type": "single"});
-          return CourseDetailDialog(course, isActive, () {
-            Navigator.of(context).pop();
-          });
-        });
+    UmengCommonSdk.onEvent("class_click", {"type": "single"});
+    return CourseActivatedDialog.show(context, course, isActive);
   }
 
   showMultiClassDialog(BuildContext context, int i, int nowWeek) {

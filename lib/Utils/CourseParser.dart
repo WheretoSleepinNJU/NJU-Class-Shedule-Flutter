@@ -109,9 +109,7 @@ class CourseParser {
       // new Course(tableId, e.children[2].innerHtml, "[1,2,3,4,5,6,7]", 3, 5, 2, 0, '#8AD297', classroom: e.children[3].innerHtml)
     }
     CourseProvider courseProvider = CourseProvider();
-    for (Course course in rst) {
-      await courseProvider.insert(course);
-    }
+    await courseProvider.insertAll(rst);
     return rst;
   }
 

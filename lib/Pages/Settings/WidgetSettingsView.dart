@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
+import '../../Components/Toast.dart';
 import '../../Utils/States/MainState.dart';
 import '../../core/widget_data/utils/widget_refresh_helper.dart';
 
-/// 小组件设置页面
-/// 仅在 iOS 平台显示
 class WidgetSettingsView extends StatefulWidget {
   const WidgetSettingsView({Key? key}) : super(key: key);
 
@@ -14,14 +13,8 @@ class WidgetSettingsView extends StatefulWidget {
 }
 
 class _WidgetSettingsViewState extends State<WidgetSettingsView> {
-  // 可选值
-  final List<int> _approachingMinutesOptions = [5, 10, 15, 20, 30];
-  final List<int> _tomorrowPreviewHourOptions = [19, 20, 21, 22, 23];
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  final List<int> _approachingMinutesOptions = <int>[5, 10, 15, 20, 30];
+  final List<int> _tomorrowPreviewHourOptions = <int>[19, 20, 21, 22, 23];
 
   @override
   Widget build(BuildContext context) {
@@ -31,26 +24,25 @@ class _WidgetSettingsViewState extends State<WidgetSettingsView> {
         elevation: 0,
       ),
       body: ListView(
-        children: [
-          // 即将上课提醒时间
+        children: <Widget>[
           ListTile(
             title: const Text('即将上课提醒时间'),
-            subtitle: const Text('在课程开始前多久显示"即将上课"状态'),
+            subtitle: const Text('在课程开始前多久显示“即将上课”状态'),
             trailing: FutureBuilder<int>(
               future: _getApproachingMinutes(),
-              builder: (context, snapshot) {
+              builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
                 if (!snapshot.hasData) {
-                  return Container(width: 0);
+                  return const SizedBox.shrink();
                 }
                 return DropdownButton<int>(
                   value: snapshot.data,
-                  items: _approachingMinutesOptions.map((minutes) {
+                  items: _approachingMinutesOptions.map((int minutes) {
                     return DropdownMenuItem<int>(
                       value: minutes,
                       child: Text('$minutes 分钟'),
                     );
                   }).toList(),
-                  onChanged: (value) {
+                  onChanged: (int? value) {
                     if (value != null) {
                       _setApproachingMinutes(value);
                     }
@@ -59,28 +51,25 @@ class _WidgetSettingsViewState extends State<WidgetSettingsView> {
               },
             ),
           ),
-
           const Divider(),
-
-          // 明日预览开始时间
           ListTile(
             title: const Text('明日预览开始时间'),
             subtitle: const Text('晚上几点后显示明天的课程'),
             trailing: FutureBuilder<int>(
               future: _getTomorrowPreviewHour(),
-              builder: (context, snapshot) {
+              builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
                 if (!snapshot.hasData) {
-                  return Container(width: 0);
+                  return const SizedBox.shrink();
                 }
                 return DropdownButton<int>(
                   value: snapshot.data,
-                  items: _tomorrowPreviewHourOptions.map((hour) {
+                  items: _tomorrowPreviewHourOptions.map((int hour) {
                     return DropdownMenuItem<int>(
                       value: hour,
                       child: Text('$hour:00'),
                     );
                   }).toList(),
-                  onChanged: (value) {
+                  onChanged: (int? value) {
                     if (value != null) {
                       _setTomorrowPreviewHour(value);
                     }
@@ -89,47 +78,37 @@ class _WidgetSettingsViewState extends State<WidgetSettingsView> {
               },
             ),
           ),
-
         ],
       ),
     );
   }
 
   Future<int> _getApproachingMinutes() async {
-    return await ScopedModel.of<MainStateModel>(context)
+    return ScopedModel.of<MainStateModel>(context)
         .getWidgetApproachingMinutes();
   }
 
-  void _setApproachingMinutes(int minutes) async {
-    ScopedModel.of<MainStateModel>(context).setWidgetApproachingMinutes(minutes);
-    setState(() {});
-
-    // 刷新小组件
-    await WidgetRefreshHelper.manualRefresh();
-
-    // 显示提示
-    Fluttertoast.showToast(
-      msg: '小组件设置已保存',
-      toastLength: Toast.LENGTH_SHORT,
-    );
-  }
-
   Future<int> _getTomorrowPreviewHour() async {
-    return await ScopedModel.of<MainStateModel>(context)
+    return ScopedModel.of<MainStateModel>(context)
         .getWidgetTomorrowPreviewHour();
   }
 
-  void _setTomorrowPreviewHour(int hour) async {
+  Future<void> _setApproachingMinutes(int minutes) async {
+    ScopedModel.of<MainStateModel>(context)
+        .setWidgetApproachingMinutes(minutes);
+    setState(() {});
+    await WidgetRefreshHelper.manualRefresh();
+    if (mounted) {
+      Toast.showToast('小组件设置已保存', context);
+    }
+  }
+
+  Future<void> _setTomorrowPreviewHour(int hour) async {
     ScopedModel.of<MainStateModel>(context).setWidgetTomorrowPreviewHour(hour);
     setState(() {});
-
-    // 刷新小组件
     await WidgetRefreshHelper.manualRefresh();
-
-    // 显示提示
-    Fluttertoast.showToast(
-      msg: '小组件设置已保存',
-      toastLength: Toast.LENGTH_SHORT,
-    );
+    if (mounted) {
+      Toast.showToast('小组件设置已保存', context);
+    }
   }
 }

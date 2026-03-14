@@ -1,12 +1,15 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:wheretosleepinnju/Utils/ThemeUtil.dart';
-import 'dart:collection';
+
 import '../Utils/ColorUtil.dart';
+import 'PrototypePalette.dart';
 
 class AppThemes {
   static const List<String> presetHexColors = [
-    '#0095F9',
+    '#FFC93C',
     '#4CAF50',
     '#002B82',
     '#872574',
@@ -17,51 +20,55 @@ class AppThemes {
     '#638190',
   ];
 
-  static ThemeData build(String hex, Brightness brightness, {
+  static ThemeData build(
+    String hex,
+    Brightness brightness, {
     required bool useSeedScheme,
   }) {
     final rawSeed = HexColor(hex);
     final isDark = brightness == Brightness.dark;
-
     final baseScheme = ColorScheme.fromSeed(
       seedColor: rawSeed,
       brightness: brightness,
     );
 
-    // 旧版逻辑回顾：
-    // - Light: 直接用 Hex 原色
-    // - Dark:  使用 "Light模式下计算出的 Primary" (这样能保持鲜艳，而不是 M3 默认的粉彩色)
-
     final Color targetPrimary = useSeedScheme
-      ? (isDark
-        ? ColorScheme.fromSeed(seedColor: rawSeed, brightness: Brightness.dark).primary
-        : ColorScheme.fromSeed(seedColor: rawSeed, brightness: Brightness.light).primary)
-      : rawSeed;
+        ? ColorScheme.fromSeed(
+            seedColor: rawSeed,
+            brightness: brightness,
+          ).primary
+        : rawSeed;
 
-    // 背景色层级设定
-    final background = isDark ? const Color(0xFF0F0F11) : const Color(0xFFF8F8FA);
-    final appBarSurface = isDark ? const Color(0xFF17171A) : const Color(0xFFEEEEF1);
-    final surfaceHigh = isDark ? const Color(0xFF1F1F23) : const Color(0xFFE9E9ED);
+    final Color background =
+        isDark ? const Color(0xFF15120F) : DuckPalette.page;
+    final Color appBarSurface =
+        isDark ? const Color(0xFF1E1A16) : DuckPalette.page;
+    final Color surfaceHigh =
+        isDark ? const Color(0xFF26211B) : DuckPalette.surface;
+    final Color outlineColor =
+        isDark ? const Color(0xFF4E453B) : DuckPalette.border;
+    final Color onSurface =
+        isDark ? const Color(0xFFF7EFE5) : DuckPalette.textMain;
+    final Color onSurfaceVariant =
+        isDark ? const Color(0xFFD1C2B2) : DuckPalette.textMuted;
 
-    // 组合最终 Scheme
-    // 强制覆盖 primary 为我们计算出的 targetPrimary
-    final scheme = baseScheme.copyWith(
-      primary: targetPrimary,
-      // onPrimary: Colors.white, 
-      
-      background: background,
-      surface: background,
+    final ColorScheme scheme = baseScheme.copyWith(
+      primary: isDark ? targetPrimary : DuckPalette.duckYellow,
+      onPrimary: isDark ? DuckPalette.textMain : Colors.white,
+      secondary: DuckPalette.duckYellowSoft,
+      surface: surfaceHigh,
       surfaceContainerHighest: surfaceHigh,
-      surfaceTint: Colors.transparent, // 禁用 M3 染色
+      outlineVariant: outlineColor,
+      outline: outlineColor,
+      onSurface: onSurface,
+      onSurfaceVariant: onSurfaceVariant,
+      surfaceTint: Colors.transparent,
     );
 
-    // AppBar 配置
-    final appBarBg = appBarSurface;
-    final appBarFg = scheme.onSurface; // 标题颜色跟随内容色
-    final overlayStyle = isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark;
-
-    const radius = 14.0;
-    final shape = RoundedRectangleBorder(
+    final SystemUiOverlayStyle overlayStyle =
+        isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark;
+    const double radius = 24.0;
+    final RoundedRectangleBorder shape = RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(radius),
     );
 
@@ -71,87 +78,82 @@ class AppThemes {
       colorScheme: scheme,
       visualDensity: VisualDensity.standard,
       scaffoldBackgroundColor: background,
-
-      // AppBar
+      splashFactory: InkSparkle.splashFactory,
       appBarTheme: AppBarTheme(
-        backgroundColor: appBarBg,
-        foregroundColor: appBarFg,
+        backgroundColor: appBarSurface,
+        foregroundColor: scheme.onSurface,
         elevation: 0,
         scrolledUnderElevation: 0,
         surfaceTintColor: Colors.transparent,
         systemOverlayStyle: overlayStyle,
         centerTitle: false,
         titleTextStyle: TextStyle(
-          color: appBarFg,
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
+          color: scheme.onSurface,
+          fontSize: 22,
+          fontWeight: FontWeight.w700,
+          letterSpacing: -0.3,
         ),
       ),
-
-      // Card
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         color: scheme.surfaceContainerHighest,
         shape: shape,
       ),
-
-      // Dialog
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         shape: shape,
-        backgroundColor: isDark ? const Color(0xFF25252A) : Colors.white,
+        backgroundColor: isDark ? const Color(0xFF211C17) : DuckPalette.page,
       ),
-      
-      // BottomSheet
       bottomSheetTheme: const BottomSheetThemeData(
         elevation: 0,
         modalElevation: 0,
         surfaceTintColor: Colors.transparent,
       ),
-
-      // TextButton
+      textTheme: ThemeData(
+        brightness: brightness,
+      ).textTheme.apply(
+            bodyColor: scheme.onSurface,
+            displayColor: scheme.onSurface,
+          ),
       textButtonTheme: TextButtonThemeData(
         style: ButtonStyle(
-          // 保持旧版逻辑：文字按钮直接用 Primary 做背景，白字 (新版 M3 默认是无背景)
-          // 如果你想要新版那种 "只有字变色" 的风格，可以删掉 backgroundColor 设置
-          // 下面保留你新版代码里写的 "有背景" 的 TextButton 样式：
-          backgroundColor: MaterialStateProperty.resolveWith((states) {
-             if (states.contains(MaterialState.disabled)) return scheme.primary.withOpacity(0.3);
-             return scheme.primary; // 用回鲜艳色
+          backgroundColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.disabled)) {
+              return scheme.primary.withValues(alpha: 0.3);
+            }
+            return scheme.primary;
           }),
-          foregroundColor: MaterialStateProperty.all(Colors.white), // 强制白字
-          shape: MaterialStateProperty.all(shape),
-          padding: MaterialStateProperty.all(
-            const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          foregroundColor: WidgetStateProperty.all(scheme.onPrimary),
+          shape: WidgetStateProperty.all(shape),
+          padding: WidgetStateProperty.all(
+            const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
           ),
         ),
       ),
-
-      // FilledButton
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           backgroundColor: scheme.primary,
-          foregroundColor: Colors.white,
+          foregroundColor: scheme.onPrimary,
           shape: shape,
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
         ),
       ),
-
-      // OutlineButton
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: scheme.primary,
           side: BorderSide(color: scheme.outlineVariant),
           shape: shape,
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
         ),
       ),
-
-      // Input
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: isDark ? const Color(0xFF1A1A1D) : Colors.white,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(radius)),
+        fillColor: isDark ? const Color(0xFF1A1612) : DuckPalette.surface,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radius),
+        ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radius),
           borderSide: BorderSide(color: scheme.outlineVariant),
@@ -161,53 +163,68 @@ class AppThemes {
           borderSide: BorderSide(color: scheme.primary, width: 1.6),
         ),
       ),
-
-      // Switch
       switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) return Colors.white;
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return Colors.white;
+          }
           return scheme.outline;
         }),
-        trackColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) return scheme.primary;
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return scheme.primary;
+          }
           return scheme.surfaceContainerHighest;
         }),
-        trackOutlineColor: MaterialStateProperty.resolveWith((states) => Colors.transparent),
+        trackOutlineColor: WidgetStateProperty.resolveWith(
+          (states) => Colors.transparent,
+        ),
       ),
-
-      // FAB
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: scheme.primary,
-        foregroundColor: Colors.white,
+        foregroundColor: scheme.onPrimary,
         shape: const StadiumBorder(),
       ),
+      dividerColor: outlineColor,
     );
   }
 }
 
 class _PresetThemeList extends ListBase<ThemeData> {
-  final Brightness brightness;
   _PresetThemeList(this.brightness);
 
-  // 两份缓存：useSeedScheme=true/false
+  final Brightness brightness;
   List<ThemeData>? _cacheSeedOn;
   List<ThemeData>? _cacheSeedOff;
 
   bool get _useSeedScheme {
-    if (brightness == Brightness.dark) return ThemeRuntimeConfig.material3Dark;
+    if (brightness == Brightness.dark) {
+      return ThemeRuntimeConfig.material3Dark;
+    }
     return ThemeRuntimeConfig.material3Light;
   }
 
   List<ThemeData> _resolve() {
     if (_useSeedScheme) {
       return _cacheSeedOn ??= AppThemes.presetHexColors
-          .map((c) => getThemeData(c, brightness, useSeedScheme: true))
-          .toList(growable: false);
-    } else {
-      return _cacheSeedOff ??= AppThemes.presetHexColors
-          .map((c) => getThemeData(c, brightness, useSeedScheme: false))
+          .map(
+            (String color) => getThemeData(
+              color,
+              brightness,
+              useSeedScheme: true,
+            ),
+          )
           .toList(growable: false);
     }
+    return _cacheSeedOff ??= AppThemes.presetHexColors
+        .map(
+          (String color) => getThemeData(
+            color,
+            brightness,
+            useSeedScheme: false,
+          ),
+        )
+        .toList(growable: false);
   }
 
   @override
@@ -220,12 +237,21 @@ class _PresetThemeList extends ListBase<ThemeData> {
   ThemeData operator [](int index) => _resolve()[index];
 
   @override
-  void operator []=(int index, ThemeData value) =>
-      throw UnsupportedError('read-only');
+  void operator []=(int index, ThemeData value) {
+    throw UnsupportedError('read-only');
+  }
 }
 
-ThemeData getThemeData(String hex, Brightness brightness, { required bool useSeedScheme }) =>
-    AppThemes.build(hex, brightness, useSeedScheme: useSeedScheme);
+ThemeData getThemeData(
+  String hex,
+  Brightness brightness, {
+  required bool useSeedScheme,
+}) =>
+    AppThemes.build(
+      hex,
+      brightness,
+      useSeedScheme: useSeedScheme,
+    );
 
 final themeDataList = _PresetThemeList(Brightness.light);
 final darkThemeDataList = _PresetThemeList(Brightness.dark);
