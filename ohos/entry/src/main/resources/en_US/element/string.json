@@ -23,6 +23,10 @@
     {
       "name": "reason_camera",
       "value": "需要相机权限以扫描二维码导入课表"
+    },
+    {
+      "name": "reason_read_pasteboard",
+      "value": "需要剪贴板权限以进行课表分享与导入"
     }
   ]
 }

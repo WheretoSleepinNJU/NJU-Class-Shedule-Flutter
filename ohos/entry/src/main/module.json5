@@ -78,6 +78,16 @@
           ],
           "when": "inuse"
         }
+      },
+      {
+        "name": "ohos.permission.READ_PASTEBOARD",
+        "reason": "$string:reason_read_pasteboard",
+        "usedScene": {
+          "abilities": [
+            "EntryAbility"
+          ],
+          "when": "inuse"
+        }
       }
     ],
     "extensionAbilities": [
