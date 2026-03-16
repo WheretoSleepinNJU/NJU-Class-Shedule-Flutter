@@ -255,9 +255,9 @@ class _SettingsViewState extends State<SettingsView> {
       String currentVersion = await _getVersion();
       final dio = Dio();
       final response = await dio.get('${Url.UPDATE_ROOT}/showDonate.json');
-      return response.data[currentVersion] ?? true;
+      return response.data[currentVersion] ?? false;
     } catch (e) {
-      return true;
+      return false;
     }
   }
 
