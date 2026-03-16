@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import '../../generated/l10n.dart';
 import 'package:flutter/services.dart';
@@ -6,6 +7,7 @@ import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:dio/dio.dart';
 import '../ManageTable/ManageTableView.dart';
 import '../Import/ImportView.dart';
 
@@ -30,10 +32,7 @@ class SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<SettingsView> {
-  @override
-  void initState() {
-    super.initState();
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -203,22 +202,29 @@ class _SettingsViewState extends State<SettingsView> {
             Toast.showToast(S.of(context).QQ_copy_success_toast, context);
           },
         ),
-        ListTile(
-            title: Text(S.of(context).donate_title),
-            subtitle: Text(S.of(context).donate_subtitle),
-            onTap: () async {
-              UmengCommonSdk.onEvent("donate_click", {"action": "show"});
-              bool status = false;
-              if (Platform.isIOS) {
-                status = await _launchURL(Url.URL_APPLE);
-              } else if (Platform.isAndroid) {
-                status = await _launchURL(Url.URL_ANDROID);
-              } else if (Platform.operatingSystem == 'ohos') {
-                status = await _launchURL(Url.URL_OHOS);
+        FutureBuilder<bool>(
+            future: _shouldShowDonate(),
+            builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+              if (snapshot.hasData && snapshot.data == false) {
+                return Container(width: 0, height: 0);
               }
-              if (!status) {
-                Toast.showToast(S.of(context).pay_open_fail_toast, context);
-              }
+              return ListTile(
+                  title: Text(S.of(context).donate_title),
+                  subtitle: Text(S.of(context).donate_subtitle),
+                  onTap: () async {
+                    UmengCommonSdk.onEvent("donate_click", {"action": "show"});
+                    bool status = false;
+                    if (Platform.isIOS) {
+                      status = await _launchURL(Url.URL_APPLE);
+                    } else if (Platform.isAndroid) {
+                      status = await _launchURL(Url.URL_ANDROID);
+                    } else if (Platform.operatingSystem == 'ohos') {
+                      status = await _launchURL(Url.URL_OHOS);
+                    }
+                    if (!status) {
+                      Toast.showToast(S.of(context).pay_open_fail_toast, context);
+                    }
+                  });
             }),
         ListTile(
           title: Text(S.of(context).about_title),
@@ -228,7 +234,7 @@ class _SettingsViewState extends State<SettingsView> {
                 if (!snapshot.hasData) {
                   return Container();
                 } else {
-                  return Text(snapshot.data!);
+                  return Text(snapshot.data! + S.of(context).flutter_lts);
                 }
               }),
           onTap: () {
@@ -241,9 +247,23 @@ class _SettingsViewState extends State<SettingsView> {
     );
   }
 
+  Future<bool> _shouldShowDonate() async {
+    if (!Platform.isIOS) {
+      return true;
+    }
+    try {
+      String currentVersion = await _getVersion();
+      final dio = Dio();
+      final response = await dio.get('${Url.UPDATE_ROOT}/showDonate.json');
+      return response.data[currentVersion] ?? true;
+    } catch (e) {
+      return true;
+    }
+  }
+
   Future<String> _getVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    return packageInfo.version + S.of(context).flutter_lts;
+    return packageInfo.version;
   }
 
   Future<bool> _launchURL(String url) async {

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../../Models/CourseTableModel.dart';
 import '../../generated/l10n.dart';
 import '../../Models/CourseModel.dart';
@@ -110,6 +111,9 @@ class CourseTablePresenter {
   }
 
   Future<bool> showAfterImport(BuildContext context) async {
+    if (!await _shouldShowDonate()) {
+      return true;
+    }
     Dio dio = Dio();
     String url = Url.UPDATE_ROOT + '/complete.json';
     Response response = await dio.get(url);
@@ -140,6 +144,22 @@ class CourseTablePresenter {
       showDonateDialog(context, welcomeTitle, welcomeContent);
     });
     return true;
+  }
+
+  Future<bool> _shouldShowDonate() async {
+    if (!Platform.isIOS) {
+      return true;
+    }
+    try {
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      String currentVersion = packageInfo.version;
+
+      final dio = Dio();
+      final response = await dio.get('${Url.UPDATE_ROOT}/showDonate.json');
+      return response.data[currentVersion] ?? true;
+    } catch (e) {
+      return true;
+    }
   }
 
   void showDonateDialog(
