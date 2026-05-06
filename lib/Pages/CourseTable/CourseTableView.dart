@@ -329,13 +329,11 @@ class CourseTableViewState extends State<CourseTableView> {
                             },
                           )
                         ]),
-                    body: SafeArea(
+                    body: Stack(children: [
+                      Positioned.fill(child: BackgroundImage(_bgImgPath)),
+                      SafeArea(
                         top: false,
                         child: Stack(children: [
-                          // _bgImgPath == null
-                          //     ? Container()
-                          //     :
-                          BackgroundImage(_bgImgPath),
                           //   Container(
                           // decoration: _bgImgPath == ""
                           //     ? BoxDecoration()
@@ -557,7 +555,9 @@ class CourseTableViewState extends State<CourseTableView> {
                               ],
                             ),
                           ),
-                        ])),
+                        ]),
+                      ),
+                    ]),
                     floatingActionButton: _isShowAddButton
                         ? Padding(
                             padding:
