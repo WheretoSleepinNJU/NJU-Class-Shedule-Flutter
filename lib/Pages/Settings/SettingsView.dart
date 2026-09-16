@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import '../../generated/l10n.dart';
 import 'package:flutter/services.dart';
@@ -32,8 +31,6 @@ class SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<SettingsView> {
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -124,10 +121,11 @@ class _SettingsViewState extends State<SettingsView> {
         ListTile(
           title: Text(S.of(context).import_or_export_title),
           subtitle: Text(S.of(context).import_or_export_subtitle),
-          onTap: () {
+          onTap: () async {
             UmengCommonSdk.onEvent("qr_import", {"action": "show"});
-            Navigator.of(context).push(MaterialPageRoute(
+            bool? status = await Navigator.of(context).push(MaterialPageRoute(
                 builder: (BuildContext context) => const ShareView()));
+            if (status == true) Navigator.of(context).pop(status);
           },
         ),
         ListTile(
@@ -206,7 +204,7 @@ class _SettingsViewState extends State<SettingsView> {
             future: _shouldShowDonate(),
             builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
               if (snapshot.hasData && snapshot.data == false) {
-                return Container(width: 0, height: 0);
+                return const SizedBox.shrink();
               }
               return ListTile(
                   title: Text(S.of(context).donate_title),
@@ -222,7 +220,8 @@ class _SettingsViewState extends State<SettingsView> {
                       status = await _launchURL(Url.URL_OHOS);
                     }
                     if (!status) {
-                      Toast.showToast(S.of(context).pay_open_fail_toast, context);
+                      Toast.showToast(
+                          S.of(context).pay_open_fail_toast, context);
                     }
                   });
             }),
@@ -267,8 +266,9 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   Future<bool> _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
       return true;
     } else {
       return false;

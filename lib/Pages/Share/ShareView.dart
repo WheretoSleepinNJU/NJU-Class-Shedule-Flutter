@@ -30,8 +30,9 @@ class _ShareViewState extends State<ShareView> {
         appBar: AppBar(
           title: Text(S.of(context).import_or_export_title),
         ),
-        body: SafeArea(child: SingleChildScrollView(
-            child: Column(children: <Widget>[
+        body: SafeArea(
+            child: SingleChildScrollView(
+                child: Column(children: <Widget>[
           SingleChildScrollView(
               child: Column(
                   children: ListTile.divideTiles(context: context, tiles: [
@@ -140,14 +141,12 @@ class _ShareViewState extends State<ShareView> {
 
     Toast.showToast(S.of(context).import_success_toast, context);
     UmengCommonSdk.onEvent("qr_import", {"action": "success"});
-    Navigator.of(context).pop();
-    Navigator.of(context).pop();
+    Navigator.of(context).pop(true);
   }
 
   Future<bool> _exportToSystemCalendar(BuildContext ctx) async {
     // DeviceCalendarPlugin dc = DeviceCalendarPlugin();
     DeviceCalendarOhosPlugin dc = DeviceCalendarOhosPlugin();
-
 
     var permissionsGranted = await dc.hasPermissions();
 
@@ -203,9 +202,9 @@ class _ShareViewState extends State<ShareView> {
         if (course.weekTime == 0) {
           continue;
         }
-        for (int week_num in json.decode(course.weeks!)) {
+        for (int weekNum in json.decode(course.weeks!)) {
           DateTime day =
-              dayMap[course.weekTime]!.add(Duration(days: 7) * week_num);
+              dayMap[course.weekTime]!.add(const Duration(days: 7) * weekNum);
 
           int startIndex = course.startTime! - 1;
           int endIndex = startIndex + course.timeCount!;

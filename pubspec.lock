@@ -898,10 +898,10 @@ packages:
     dependency: "direct main"
     description:
       name: umeng_common_sdk
-      sha256: "8374ced1ab1d89f596ff71c0eff044d5395337145c9a69a6be02f5d8a678e42c"
+      sha256: ba4ac629987f88cb42cb89a0a885be1a93cce8080bb6134014fe2ce4df7bac88
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.3.0"
+    version: "1.2.8"
   umeng_common_sdk_ohos:
     dependency: "direct main"
     description:

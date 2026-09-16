@@ -22,6 +22,8 @@
   "free_class_banner": "另有 {num} 节「自由时间」课程 >>",
   "free_class_button": "查看",
   "hide_free_class_button": "隐藏",
+  "swipe_week_hint_title": "滑动切换周数",
+  "swipe_week_hint_subtitle": "灰色课程表示非当前周",
   "hide_free_class_dialog_title": "隐藏自由时间课程",
   "hide_free_class_dialog_content": "确认隐藏自由时间课程？\n您可在[设置]-[自定义选项]-[显示自由时间课程]选项中再次启用显示该模块～",
   "delete_class_dialog_title": "删除课程",

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/services.dart';
 
 import '../../Resources/Constant.dart';
@@ -36,8 +38,13 @@ class CourseTableViewState extends State<CourseTableView> {
   final CourseTablePresenter _presenter = CourseTablePresenter();
   PageController? _weekPageController;
   ScrollController? _scrollController;
+  Timer? _swipeHintTimer;
   bool _isFreeClassVisible = true;
+  bool _shouldPlayImportSwipeHint = false;
+  bool _isSwipeHintVisible = false;
+  bool _isPlayingSwipeHint = false;
   double _lastScrollOffset = 0;
+  int _swipeHintToken = 0;
   late bool _isShowWeekend;
   late bool _isShowClassTime;
   late bool _isShowFreeClass;
@@ -174,6 +181,167 @@ class CourseTableViewState extends State<CourseTableView> {
     }
   }
 
+  void _queueImportSwipeHint() {
+    _shouldPlayImportSwipeHint = true;
+  }
+
+  void _scheduleImportSwipeHint() {
+    if (!_shouldPlayImportSwipeHint || _isPlayingSwipeHint) {
+      return;
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_shouldPlayImportSwipeHint || _isPlayingSwipeHint) {
+        return;
+      }
+      _swipeHintTimer?.cancel();
+      _swipeHintTimer = Timer(
+        const Duration(milliseconds: 600),
+        _playImportSwipeHint,
+      );
+    });
+  }
+
+  void _cancelImportSwipeHint() {
+    if (!_shouldPlayImportSwipeHint &&
+        !_isSwipeHintVisible &&
+        !_isPlayingSwipeHint) {
+      return;
+    }
+    _swipeHintToken++;
+    _shouldPlayImportSwipeHint = false;
+    _swipeHintTimer?.cancel();
+    if (_isSwipeHintVisible && mounted) {
+      setState(() {
+        _isSwipeHintVisible = false;
+      });
+    }
+  }
+
+  void _releaseImportSwipeHintToUserGesture() {
+    _cancelImportSwipeHint();
+    _isPlayingSwipeHint = false;
+  }
+
+  Future<void> _playImportSwipeHint() async {
+    if (!mounted || !_shouldPlayImportSwipeHint) {
+      return;
+    }
+    final PageController? controller = _weekPageController;
+    if (controller == null || !controller.hasClients) {
+      _scheduleImportSwipeHint();
+      return;
+    }
+
+    final position = controller.position;
+    if (position.viewportDimension <= 0 || position.isScrollingNotifier.value) {
+      _scheduleImportSwipeHint();
+      return;
+    }
+
+    final int startPage =
+        (_nowShowWeekNum - 1).clamp(0, Config.MAX_WEEKS - 1).toInt();
+    final bool canTurnNext = startPage < Config.MAX_WEEKS - 1;
+    final bool canTurnPrevious = startPage > 0;
+    if (!canTurnNext && !canTurnPrevious) {
+      _shouldPlayImportSwipeHint = false;
+      return;
+    }
+
+    final int token = ++_swipeHintToken;
+    final int targetPage = canTurnNext ? startPage + 1 : startPage - 1;
+
+    setState(() {
+      _isSwipeHintVisible = true;
+    });
+    _isPlayingSwipeHint = true;
+
+    try {
+      if (mounted && token == _swipeHintToken && _shouldPlayImportSwipeHint) {
+        await controller.animateToPage(
+          targetPage,
+          duration: const Duration(milliseconds: 520),
+          curve: Curves.easeInOutCubic,
+        );
+      }
+      if (mounted && token == _swipeHintToken && _shouldPlayImportSwipeHint) {
+        await Future.delayed(const Duration(milliseconds: 280));
+      }
+      if (mounted && token == _swipeHintToken && _shouldPlayImportSwipeHint) {
+        await controller.animateToPage(
+          startPage,
+          duration: const Duration(milliseconds: 620),
+          curve: Curves.easeOutCubic,
+        );
+      }
+    } finally {
+      if (token == _swipeHintToken) {
+        _shouldPlayImportSwipeHint = false;
+      }
+      _isPlayingSwipeHint = false;
+      if (mounted && token == _swipeHintToken) {
+        setState(() {
+          _isSwipeHintVisible = false;
+        });
+      }
+    }
+  }
+
+  Widget _buildSwipeHint(BuildContext context) {
+    final int backgroundAlpha =
+        Theme.of(context).brightness == Brightness.light ? 235 : 219;
+    final Color backgroundColor =
+        Theme.of(context).colorScheme.surface.withAlpha(backgroundAlpha);
+    final Color foregroundColor = Theme.of(context).colorScheme.onSurface;
+
+    return IgnorePointer(
+      child: Center(
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            borderRadius: BorderRadius.circular(999),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withAlpha(46),
+                blurRadius: 16,
+                offset: const Offset(0, 6),
+              )
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.chevron_left, size: 18, color: foregroundColor),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      S.of(context).swipe_week_hint_title,
+                      style: TextStyle(
+                        color: foregroundColor,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      S.of(context).swipe_week_hint_subtitle,
+                      style: TextStyle(
+                        color: foregroundColor.withAlpha(173),
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
+                ),
+                Icon(Icons.chevron_right, size: 18, color: foregroundColor),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   basicCheck() async {
     UpdateUtil updateUtil = UpdateUtil();
     await updateUtil.checkUpdate(context, false);
@@ -190,6 +358,7 @@ class CourseTableViewState extends State<CourseTableView> {
         false;
     if (!rst) return;
     await _presenter.showAfterImport(context);
+    _queueImportSwipeHint();
     setState(() {
       ScopedModel.of<MainStateModel>(context).refresh();
     });
@@ -229,6 +398,7 @@ class CourseTableViewState extends State<CourseTableView> {
 
   @override
   void dispose() {
+    _swipeHintTimer?.cancel();
     _scrollController?.removeListener(_onScroll);
     _scrollController?.dispose();
     _weekPageController?.dispose();
@@ -251,6 +421,7 @@ class CourseTableViewState extends State<CourseTableView> {
                   return Container(color: Colors.white);
                 } else {
                   _syncWeekPageController();
+                  _scheduleImportSwipeHint();
 
                   String nowWeek =
                       S.of(context).week(_nowShowWeekNum.toString());
@@ -316,6 +487,7 @@ class CourseTableViewState extends State<CourseTableView> {
                               // color: Colors.white,
                             ),
                             onPressed: () async {
+                              _cancelImportSwipeHint();
                               UmengCommonSdk.onEvent(
                                   "setting_click", {"action": "success"});
                               bool? status = await Navigator.of(context).push(
@@ -324,6 +496,7 @@ class CourseTableViewState extends State<CourseTableView> {
                                           const SettingsView()));
                               if (status == true) {
                                 await _presenter.showAfterImport(context);
+                                _queueImportSwipeHint();
                               }
                               ScopedModel.of<MainStateModel>(context).refresh();
                             },
@@ -361,95 +534,120 @@ class CourseTableViewState extends State<CourseTableView> {
                                           _isWhiteMode,
                                           _nowShowWeekNum - _nowWeekNum),
                                       Flexible(
-                                          child: PageView.builder(
-                                              controller: _weekPageController,
-                                              itemCount: Config.MAX_WEEKS,
-                                              onPageChanged: (int index) {
-                                                final int targetWeek =
-                                                    index + 1;
-                                                if (targetWeek !=
-                                                    _nowShowWeekNum) {
-                                                  model.changeTmpWeek(
-                                                      targetWeek);
-                                                  UmengCommonSdk.onEvent(
-                                                      "week_choose",
-                                                      {"action": "swipe"});
-                                                  // 切换周次时重置 FreeClass 显示状态
-                                                  if (!_isFreeClassVisible) {
-                                                    setState(() {
-                                                      _isFreeClassVisible =
-                                                          true;
-                                                      _lastScrollOffset = 0;
-                                                    });
-                                                  }
-                                                }
-                                              },
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int pageIndex) {
-                                                final int weekNum =
-                                                    pageIndex + 1;
-                                                return FutureBuilder<
-                                                        List<Widget>>(
-                                                    future:
-                                                        _buildClassesWidgetListByWeek(
-                                                            context, weekNum),
-                                                    builder: (BuildContext
-                                                            context,
-                                                        AsyncSnapshot<
-                                                                List<Widget>>
-                                                            classesSnapshot) {
-                                                      if (!classesSnapshot
-                                                          .hasData) {
-                                                        return const SizedBox
-                                                            .expand();
-                                                      }
-                                                      List<Widget> divider =
-                                                          List.generate(
-                                                              _maxShowClasses,
-                                                              (int i) =>
-                                                                  Container(
-                                                                    margin: EdgeInsets.only(
-                                                                        top: (i +
-                                                                                1) *
-                                                                            _classTitleHeight),
-                                                                    width: _weekTitleWidth *
-                                                                        _maxShowDays,
-                                                                    child: const Separator(
-                                                                        color: Colors
-                                                                            .grey),
-                                                                  ));
-                                                      return SingleChildScrollView(
-                                                          controller:
-                                                              _scrollController,
-                                                          child: Row(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                ClassTitle(
-                                                                    _maxShowClasses,
-                                                                    _classTitleHeight,
-                                                                    _classTitleWidth,
-                                                                    _isShowClassTime,
-                                                                    _isWhiteMode,
-                                                                    classTimeList:
-                                                                        _classTimeList),
-                                                                SizedBox(
-                                                                    height: _classTitleHeight *
-                                                                        _maxShowClasses,
-                                                                    width: _screenWidth -
-                                                                        _classTitleWidth,
-                                                                    child: Stack(
-                                                                        clipBehavior:
-                                                                            Clip
-                                                                                .none,
-                                                                        children:
-                                                                            divider +
-                                                                                classesSnapshot.data!))
-                                                              ]));
-                                                    });
-                                              })),
+                                          child: Listener(
+                                              onPointerDown: (_) =>
+                                                  _cancelImportSwipeHint(),
+                                              child: NotificationListener<
+                                                      ScrollStartNotification>(
+                                                  onNotification:
+                                                      (notification) {
+                                                    if (notification
+                                                            .dragDetails !=
+                                                        null) {
+                                                      _releaseImportSwipeHintToUserGesture();
+                                                    }
+                                                    return false;
+                                                  },
+                                                  child: PageView.builder(
+                                                      controller:
+                                                          _weekPageController,
+                                                      itemCount:
+                                                          Config.MAX_WEEKS,
+                                                      onPageChanged:
+                                                          (int index) {
+                                                        final int targetWeek =
+                                                            index + 1;
+                                                        if (targetWeek !=
+                                                            _nowShowWeekNum) {
+                                                          _nowShowWeekNum =
+                                                              targetWeek;
+                                                          if (_isPlayingSwipeHint) {
+                                                            model.changeTmpWeek(
+                                                                targetWeek);
+                                                            return;
+                                                          }
+                                                          _cancelImportSwipeHint();
+                                                          model.changeTmpWeek(
+                                                              targetWeek);
+                                                          UmengCommonSdk
+                                                              .onEvent(
+                                                                  "week_choose",
+                                                                  {
+                                                                "action":
+                                                                    "swipe"
+                                                              });
+                                                          // 切换周次时重置 FreeClass 显示状态
+                                                          if (!_isFreeClassVisible) {
+                                                            setState(() {
+                                                              _isFreeClassVisible =
+                                                                  true;
+                                                              _lastScrollOffset =
+                                                                  0;
+                                                            });
+                                                          }
+                                                        }
+                                                      },
+                                                      itemBuilder:
+                                                          (BuildContext context,
+                                                              int pageIndex) {
+                                                        final int weekNum =
+                                                            pageIndex + 1;
+                                                        return FutureBuilder<
+                                                                List<Widget>>(
+                                                            future:
+                                                                _buildClassesWidgetListByWeek(
+                                                                    context,
+                                                                    weekNum),
+                                                            builder: (BuildContext
+                                                                    context,
+                                                                AsyncSnapshot<
+                                                                        List<
+                                                                            Widget>>
+                                                                    classesSnapshot) {
+                                                              if (!classesSnapshot
+                                                                  .hasData) {
+                                                                return const SizedBox
+                                                                    .expand();
+                                                              }
+                                                              List<Widget>
+                                                                  divider =
+                                                                  List.generate(
+                                                                      _maxShowClasses,
+                                                                      (int i) =>
+                                                                          Container(
+                                                                            margin:
+                                                                                EdgeInsets.only(top: (i + 1) * _classTitleHeight),
+                                                                            width:
+                                                                                _weekTitleWidth * _maxShowDays,
+                                                                            child:
+                                                                                const Separator(color: Colors.grey),
+                                                                          ));
+                                                              return SingleChildScrollView(
+                                                                  controller:
+                                                                      _scrollController,
+                                                                  child: Row(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        ClassTitle(
+                                                                            _maxShowClasses,
+                                                                            _classTitleHeight,
+                                                                            _classTitleWidth,
+                                                                            _isShowClassTime,
+                                                                            _isWhiteMode,
+                                                                            classTimeList:
+                                                                                _classTimeList),
+                                                                        SizedBox(
+                                                                            height: _classTitleHeight *
+                                                                                _maxShowClasses,
+                                                                            width: _screenWidth -
+                                                                                _classTitleWidth,
+                                                                            child:
+                                                                                Stack(clipBehavior: Clip.none, children: divider + classesSnapshot.data!))
+                                                                      ]));
+                                                            });
+                                                      })))),
                                     ]),
                                 // FreeClass 浮动在底部，不遮挡课程内容
                                 if ((_isShowFreeClass) && (_freeCourseNum > 0))
@@ -508,6 +706,7 @@ class CourseTableViewState extends State<CourseTableView> {
                                                 // 文本和文字之间的间距
                                                 InkWell(
                                                   onTap: () {
+                                                    _cancelImportSwipeHint();
                                                     _presenter
                                                         .showFreeClassDialog(
                                                             context,
@@ -529,9 +728,12 @@ class CourseTableViewState extends State<CourseTableView> {
                                                 const SizedBox(width: 16),
                                                 // 两个文字之间的间距
                                                 InkWell(
-                                                  onTap: () => _presenter
-                                                      .showHideFreeCourseDialog(
-                                                          context),
+                                                  onTap: () {
+                                                    _cancelImportSwipeHint();
+                                                    _presenter
+                                                        .showHideFreeCourseDialog(
+                                                            context);
+                                                  },
                                                   child: Text(
                                                     S
                                                         .of(context)
@@ -552,6 +754,22 @@ class CourseTableViewState extends State<CourseTableView> {
                                       ),
                                     ),
                                   ),
+                                AnimatedPositioned(
+                                  duration: const Duration(milliseconds: 220),
+                                  curve: Curves.easeOutCubic,
+                                  left: 0,
+                                  right: 0,
+                                  bottom: (_isShowFreeClass &&
+                                          _freeCourseNum > 0 &&
+                                          _isFreeClassVisible)
+                                      ? _snackbarHeight + 46.0
+                                      : 30.0,
+                                  child: AnimatedOpacity(
+                                    duration: const Duration(milliseconds: 180),
+                                    opacity: _isSwipeHintVisible ? 1 : 0,
+                                    child: _buildSwipeHint(context),
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -567,6 +785,7 @@ class CourseTableViewState extends State<CourseTableView> {
                                   .colorScheme
                                   .primaryContainer,
                               onPressed: () async {
+                                _cancelImportSwipeHint();
                                 Navigator.of(context)
                                     .push(MaterialPageRoute(
                                         builder: (BuildContext context) =>

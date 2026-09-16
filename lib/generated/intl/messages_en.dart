@@ -175,6 +175,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "确认隐藏自由时间课程？\n您可在[设置]-[自定义选项]-[显示自由时间课程]选项中再次启用显示该模块～"),
         "hide_free_class_dialog_title":
             MessageLookupByLibrary.simpleMessage("隐藏自由时间课程"),
+        "swipe_week_hint_subtitle": MessageLookupByLibrary.simpleMessage(
+            "Gray courses are not in this week"),
+        "swipe_week_hint_title":
+            MessageLookupByLibrary.simpleMessage("Swipe to switch weeks"),
         "if_show_classtime_subtitle":
             MessageLookupByLibrary.simpleMessage("设置是否显示课程时间"),
         "if_show_classtime_title":

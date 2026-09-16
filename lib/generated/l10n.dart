@@ -270,6 +270,26 @@ class S {
     );
   }
 
+  /// `滑动切换周数`
+  String get swipe_week_hint_title {
+    return Intl.message(
+      '滑动切换周数',
+      name: 'swipe_week_hint_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `灰色课程表示非当前周`
+  String get swipe_week_hint_subtitle {
+    return Intl.message(
+      '灰色课程表示非当前周',
+      name: 'swipe_week_hint_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `隐藏自由时间课程`
   String get hide_free_class_dialog_title {
     return Intl.message(
