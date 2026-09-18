@@ -541,6 +541,26 @@
       "semester_start_monday": "2026-08-31",
       "isGrey": true,
       "isGrey3.1.0": false
+    }，
+    {
+      "title": "南京师范大学本科生教务系统",
+      "pinyin": "nanjingshifandaxuebenkejiaowu",
+      "description": "南师大怎么不是南大呢",
+      "page_title": "南京师范大学课表",
+      "initialUrl": "https://ehallapp.nnu.edu.cn/jwapp/sys/syxkjg/*default/index.do#/wdkb",
+      "redirectUrl": "",
+      "targetUrl": "https://ehallapp.nnu.edu.cn/jwapp/sys/syxkjg/*default/index.do#/wdkb",
+      "preExtractJS": "",
+      "delayTime": 3,
+      "extractJS": "",
+      "extractJSfileAndroid": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/nnubksjw.js",
+      "extractJSfileiOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/nnubksjw.js",
+      "extractJSfileOHOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/nnubksjw.js",
+      "banner_content": "导入方式：登录后进入我的课表查看页面。若页面无法打开，请关闭代理或将 nnu.edu.cn 设置为直连。",
+      "banner_action": "使用南京师范大学vpn",
+      "banner_url": "",
+      "isGrey": true,
+      "isGrey3.1.0": false
     }
   ]
 }
