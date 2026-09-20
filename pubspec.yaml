@@ -8,7 +8,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 4.0.2+67
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=3.6.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -43,6 +43,12 @@ dependencies:
   archive: ^3.4.10
   html: ^0.15.0
   dio: ^5.9.0
+  # 只用在 Android，请求忽略电池优化，降低厂商定制系统清后台导致登录
+  # 会话丢失的概率；iOS/鸿蒙没有这个概念，调用处会用 Platform.isAndroid 判断跳过。
+  permission_handler: ^11.3.1
+  # 课程自定义配色用的取色器（HSV 色轮 + 预设色块）。纯 Dart 实现，不含
+  # 任何平台原生代码/platform channel，鸿蒙 OHOS 构建不需要额外适配。
+  flutter_colorpicker: ^1.1.0
 
   # https://gitcode.com/openharmony-sig/flutter_plus_plugins/pull/52
   package_info_plus:
@@ -93,6 +99,11 @@ flutter:
   uses-material-design: true
   assets:
     - res/icon.png
+    # 南大统一身份认证的自动登录脚本（原 Chrome 扩展 content script），
+    # 由 NjuAutoLoginScript 读出来注入登录页的 WebView。
+    - assets/scripts/auto_auth_login.js
+    # 脚本过滑块验证时回放的真人拖动轨迹。
+    - assets/recordings/3.json
 
 flutter_intl:
   enabled: true

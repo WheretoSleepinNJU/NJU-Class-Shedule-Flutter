@@ -43,7 +43,7 @@ class WidgetHelper {
 
       String dateStr = _getWeekdayStr(todayWeekday);
 
-      List colorPool = await ColorPool.getColorPool();
+      ActiveColorPool colorPool = await ColorPool.getActivePool();
 
       if (Platform.isAndroid) {
         await _updateAndroidWidget(todayCourses, dateStr, classTimeList);
@@ -96,7 +96,7 @@ class WidgetHelper {
   }
 
   static Future<void> _updateHarmonyWidget(List<Course> courses, String dateStr,
-      List<Map> classTimeList, List colorPool) async {
+      List<Map> classTimeList, ActiveColorPool colorPool) async {
     try {
       print(
           "Flutter[Harmony]: Preparing data for ${courses.length} courses...");
@@ -271,7 +271,7 @@ class WidgetHelper {
     } else if (Platform.isIOS) {
       await _updateIOSWidget(mockCourses, dateStr, mockTimeList);
     } else if (Platform.operatingSystem == 'ohos') {
-      List colorPool = await ColorPool.getColorPool();
+      ActiveColorPool colorPool = await ColorPool.getActivePool();
       await _updateHarmonyWidget(mockCourses, dateStr, mockTimeList, colorPool);
     } else {
       print("This platform didn't support widget");

@@ -5,6 +5,7 @@ import 'package:scoped_model/scoped_model.dart';
 import '../../Models/CourseTableModel.dart';
 import '../../Utils/States/MainState.dart';
 import '../../Components/Toast.dart';
+import '../CheckUpdate/CheckUpdateView.dart';
 import 'Widgets/AddDialog.dart';
 import 'Widgets/DelDialog.dart';
 
@@ -100,22 +101,33 @@ class _ManageTableViewState extends State<ManageTableView> {
                       color: _selectedIndex == courseTables[i]['id']
                           ? Colors.white
                           : null)),
-              trailing: _selectedIndex == courseTables[i]['id']
-                  ? null
-                  : IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () async {
-                        bool rst = await _delTableDialog(context);
-                        if (rst) {
-                          await courseTableProvider
-                              .delete(courseTables[i]['id']);
-                          Toast.showToast(
-                              S.of(context).del_class_table_success_toast,
-                              context);
-                          Navigator.of(context).pop();
-                        }
-                      },
-                    ),
+              trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+                IconButton(
+                  icon: const Icon(Icons.sync),
+                  tooltip: '检查更新',
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            CheckUpdateView(tableId: courseTables[i]['id'])));
+                  },
+                ),
+                _selectedIndex == courseTables[i]['id']
+                    ? const SizedBox(width: 48)
+                    : IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () async {
+                          bool rst = await _delTableDialog(context);
+                          if (rst) {
+                            await courseTableProvider
+                                .delete(courseTables[i]['id']);
+                            Toast.showToast(
+                                S.of(context).del_class_table_success_toast,
+                                context);
+                            Navigator.of(context).pop();
+                          }
+                        },
+                      ),
+              ]),
               onTap: () {
                 setState(() => _selectedIndex = courseTables[i]['id']);
                 ScopedModel.of<MainStateModel>(context)

@@ -55,7 +55,7 @@ class CourseTablePresenter {
       double width,
       int nowWeek,
       bool showNonCurrentWeekCourses) async {
-    List colorPool = await ColorPool.getColorPool();
+    ActiveColorPool colorPool = await ColorPool.getActivePool();
 
     // Filter hideCourses based on setting
     List<Course> filteredHideCourses =

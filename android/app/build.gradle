@@ -28,7 +28,7 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     namespace "com.lilystudio.wheretosleepinnju"
-    compileSdkVersion 35
+    compileSdkVersion 36
 
     lintOptions {
         disable 'InvalidPackage'
@@ -39,7 +39,7 @@ android {
 
     defaultConfig {
         applicationId "com.lilystudio.wheretosleepinnju"
-        minSdkVersion 23
+        minSdkVersion flutter.minSdkVersion
         targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:wheretosleepinnju/Utils/ThemeUtil.dart';
 import 'dart:collection';
 import '../Utils/ColorUtil.dart';
+
+/// 自定义强调色槽位还没被设置过任何颜色时的兜底默认值。
+const String defaultCustomAccentColor = '#0095F9';
 
 class AppThemes {
   static const List<String> presetHexColors = [
@@ -17,9 +19,7 @@ class AppThemes {
     '#638190',
   ];
 
-  static ThemeData build(String hex, Brightness brightness, {
-    required bool useSeedScheme,
-  }) {
+  static ThemeData build(String hex, Brightness brightness) {
     final rawSeed = HexColor(hex);
     final isDark = brightness == Brightness.dark;
 
@@ -28,19 +28,13 @@ class AppThemes {
       brightness: brightness,
     );
 
-    // 旧版逻辑回顾：
-    // - Light: 直接用 Hex 原色
-    // - Dark:  使用 "Light模式下计算出的 Primary" (这样能保持鲜艳，而不是 M3 默认的粉彩色)
-
-    final Color targetPrimary = useSeedScheme
-      ? (isDark
-        ? ColorScheme.fromSeed(seedColor: rawSeed, brightness: Brightness.dark).primary
-        : ColorScheme.fromSeed(seedColor: rawSeed, brightness: Brightness.light).primary)
-      : rawSeed;
+    // 强调色始终直接用你选的原色做 primary，不经过 M3 fromSeed 算法
+    // 二次调色——这样"色轮里看到的颜色"和"App 里用到的颜色"完全一致，
+    // 不会有算法自动调整导致的落差。
+    final Color targetPrimary = rawSeed;
 
     // 背景色层级设定
     final background = isDark ? const Color(0xFF0F0F11) : const Color(0xFFF8F8FA);
-    final appBarSurface = isDark ? const Color(0xFF17171A) : const Color(0xFFEEEEF1);
     final surfaceHigh = isDark ? const Color(0xFF1F1F23) : const Color(0xFFE9E9ED);
 
     // 组合最终 Scheme
@@ -55,10 +49,19 @@ class AppThemes {
       surfaceTint: Colors.transparent, // 禁用 M3 染色
     );
 
-    // AppBar 配置
-    final appBarBg = appBarSurface;
-    final appBarFg = scheme.onSurface; // 标题颜色跟随内容色
-    final overlayStyle = isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark;
+    // AppBar 配置：背景跟着强调色走（早期 Material 2 版本一直是这样，
+    // 中间迁移到这套 M3 风格时改成了固定中性色，这里按要求改回来）。
+    // 前景色按跟强调色的亮度对比自动选黑/白字，不管选了多浅或多深的
+    // 强调色，标题文字都还能看清楚。
+    final appBarBg = targetPrimary;
+    final appBarFg = ThemeData.estimateBrightnessForColor(appBarBg) ==
+            Brightness.dark
+        ? Colors.white
+        : Colors.black;
+    final overlayStyle =
+        ThemeData.estimateBrightnessForColor(appBarBg) == Brightness.dark
+            ? SystemUiOverlayStyle.light
+            : SystemUiOverlayStyle.dark;
 
     const radius = 14.0;
     final shape = RoundedRectangleBorder(
@@ -89,7 +92,7 @@ class AppThemes {
       ),
 
       // Card
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         color: scheme.surfaceContainerHighest,
@@ -97,7 +100,7 @@ class AppThemes {
       ),
 
       // Dialog
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         shape: shape,
@@ -189,25 +192,12 @@ class _PresetThemeList extends ListBase<ThemeData> {
   final Brightness brightness;
   _PresetThemeList(this.brightness);
 
-  // 两份缓存：useSeedScheme=true/false
-  List<ThemeData>? _cacheSeedOn;
-  List<ThemeData>? _cacheSeedOff;
-
-  bool get _useSeedScheme {
-    if (brightness == Brightness.dark) return ThemeRuntimeConfig.material3Dark;
-    return ThemeRuntimeConfig.material3Light;
-  }
+  List<ThemeData>? _cache;
 
   List<ThemeData> _resolve() {
-    if (_useSeedScheme) {
-      return _cacheSeedOn ??= AppThemes.presetHexColors
-          .map((c) => getThemeData(c, brightness, useSeedScheme: true))
-          .toList(growable: false);
-    } else {
-      return _cacheSeedOff ??= AppThemes.presetHexColors
-          .map((c) => getThemeData(c, brightness, useSeedScheme: false))
-          .toList(growable: false);
-    }
+    return _cache ??= AppThemes.presetHexColors
+        .map((c) => getThemeData(c, brightness))
+        .toList(growable: false);
   }
 
   @override
@@ -224,8 +214,8 @@ class _PresetThemeList extends ListBase<ThemeData> {
       throw UnsupportedError('read-only');
 }
 
-ThemeData getThemeData(String hex, Brightness brightness, { required bool useSeedScheme }) =>
-    AppThemes.build(hex, brightness, useSeedScheme: useSeedScheme);
+ThemeData getThemeData(String hex, Brightness brightness) =>
+    AppThemes.build(hex, brightness);
 
 final themeDataList = _PresetThemeList(Brightness.light);
 final darkThemeDataList = _PresetThemeList(Brightness.dark);

@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:math';
-import 'package:wheretosleepinnju/Pages/Settings/Widgets/ThemeChanger.dart';
 
 import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +11,8 @@ import '../../Utils/States/MainState.dart';
 import '../../Utils/ColorUtil.dart';
 import '../../Components/Toast.dart';
 import './Widgets/NumChanger.dart';
+import './ColorSettingsView.dart';
+import './AccentColorSettingsView.dart';
 
 class MoreSettingsView extends StatefulWidget {
   const MoreSettingsView({Key? key}) : super(key: key);
@@ -37,11 +38,6 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
       showCustomClassHeight = !forceZoom;
       showWhiteTitleMode = hasPic;
     });
-
-    final model =
-        ScopedModel.of<MainStateModel>(context, rebuildOnChange: false);
-    model.getMaterial3ColorForLight().then((_) => model.notifyListeners());
-    model.getMaterial3ColorForDark().then((_) => model.notifyListeners());
   }
 
   @override
@@ -99,50 +95,21 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       }
                     })),
             ListTile(
-              title: Text(S.of(context).shuffle_color_pool_title),
-              subtitle: Text(S.of(context).shuffle_color_pool_subtitle),
+              title: const Text('课程颜色设置'),
+              subtitle: const Text('选取配色方案，或者给每门课单独指定颜色'),
               onTap: () {
-                ColorPool.shuffleColorPool();
                 UmengCommonSdk.onEvent("more_setting", {"type": 1});
-                Toast.showToast(
-                    S.of(context).shuffle_color_pool_success_toast, context);
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const ColorSettingsView()));
               },
             ),
-            // TODO: Refresh multi times when changing themes.
-            const ThemeChanger(),
             ListTile(
-              title: Text(S.of(context).use_material3_scheme_light_title),
-              subtitle: Text(S.of(context).use_material3_scheme_light_subtitle),
-              trailing: Switch(
-                activeColor: Theme.of(context).appBarTheme.backgroundColor,
-                value: ScopedModel.of<MainStateModel>(context)
-                    .material3ColorForLight,
-                onChanged: (v) {
-                  UmengCommonSdk.onEvent(
-                      "more_setting", {"type": 20, "result": v.toString()});
-                  ScopedModel.of<MainStateModel>(context)
-                      .changeMaterial3Color(light: v);
-                  setState(() {});
-                },
-              ),
-            ),
-            ListTile(
-              title: Text(S.of(context).use_material3_scheme_dark_title),
-              subtitle: Text(S.of(context).use_material3_scheme_dark_subtitle),
-              trailing: Switch(
-                activeColor: Theme.of(context).appBarTheme.backgroundColor,
-                value: ScopedModel.of<MainStateModel>(context)
-                    .material3ColorForDark,
-                onChanged: (v) {
-                  UmengCommonSdk.onEvent(
-                      "more_setting", {"type": 21, "result": v.toString()});
-                  ScopedModel.of<MainStateModel>(context)
-                      .changeMaterial3Color(dark: v);
-                  setState(() {});
-                },
-              ),
+              title: const Text('强调色设置'),
+              subtitle: const Text('选择 App 强调色，或调整浅色/深色模式的柔和效果'),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const AccentColorSettingsView()));
+              },
             ),
             ListTile(
               title: Text(S.of(context).add_backgound_picture_title),
@@ -220,9 +187,6 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                             return Container(width: 0);
                           } else {
                             return Switch(
-                                activeColor: Theme.of(context)
-                                    .appBarTheme
-                                    .backgroundColor,
                                 value: snapshot.data!,
                                 onChanged: (bool value) {
                                   UmengCommonSdk.onEvent("more_setting",
@@ -245,8 +209,6 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                         return Container(width: 0);
                       } else {
                         return Switch(
-                            activeColor:
-                                Theme.of(context).appBarTheme.backgroundColor,
                             value: !snapshot.data!,
                             onChanged: (bool value) {
                               UmengCommonSdk.onEvent("more_setting",
@@ -268,8 +230,6 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                          activeColor:
-                              Theme.of(context).appBarTheme.backgroundColor,
                           value: snapshot.data!,
                           onChanged: (bool value) {
                             UmengCommonSdk.onEvent("more_setting",
@@ -292,8 +252,6 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                          activeColor:
-                              Theme.of(context).appBarTheme.backgroundColor,
                           value: snapshot.data!,
                           onChanged: (bool value) {
                             UmengCommonSdk.onEvent("more_setting",
@@ -316,8 +274,6 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                          activeColor:
-                              Theme.of(context).appBarTheme.backgroundColor,
                           value: snapshot.data!,
                           onChanged: (bool value) {
                             UmengCommonSdk.onEvent("more_setting",
@@ -341,8 +297,6 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                          activeColor:
-                              Theme.of(context).appBarTheme.backgroundColor,
                           value: snapshot.data!,
                           onChanged: (bool value) {
                             UmengCommonSdk.onEvent("more_setting",
@@ -365,8 +319,6 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                          activeColor:
-                              Theme.of(context).appBarTheme.backgroundColor,
                           value: snapshot.data!,
                           onChanged: (bool value) {
                             UmengCommonSdk.onEvent("more_setting",
@@ -389,8 +341,6 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                          activeColor:
-                              Theme.of(context).appBarTheme.backgroundColor,
                           value: snapshot.data!,
                           onChanged: (bool value) {
                             UmengCommonSdk.onEvent("more_setting",
@@ -438,8 +388,6 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       return Container(width: 0);
                     } else {
                       return Switch(
-                          activeColor:
-                              Theme.of(context).appBarTheme.backgroundColor,
                           value: snapshot.data!,
                           onChanged: (bool value) {
                             ScopedModel.of<MainStateModel>(context)

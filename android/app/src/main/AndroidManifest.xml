@@ -13,6 +13,8 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+    <!-- 请求忽略电池优化，降低厂商定制系统清后台导致登录会话丢失的概率 -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <queries>
         <!-- If your app opens https URLs -->
         <intent>

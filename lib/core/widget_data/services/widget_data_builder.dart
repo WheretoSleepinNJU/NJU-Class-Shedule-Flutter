@@ -162,15 +162,15 @@ class WidgetDataBuilder {
     }
 
     // 使用与前端相同的颜色逻辑
-    List colorPool = await ColorPool.getColorPool();
+    ActiveColorPool colorPool = await ColorPool.getActivePool();
     String? courseColor = course.getColor(colorPool);
-    
+
     // Debug logging
     print('[WidgetDataBuilder] Course: ${course.name}');
     print('[WidgetDataBuilder]   courseId: ${course.courseId}');
     print('[WidgetDataBuilder]   original color: ${course.color}');
     print('[WidgetDataBuilder]   assigned color: $courseColor');
-    print('[WidgetDataBuilder]   colorPool length: ${colorPool.length}');
+    print('[WidgetDataBuilder]   colorPool length: ${colorPool.indices.length}');
 
     return WidgetCourse(
       id: course.id?.toString() ?? course.courseId?.toString() ?? '0',

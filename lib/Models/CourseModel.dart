@@ -1,5 +1,5 @@
 import 'package:sqflite/sqflite.dart';
-import '../Resources/Colors.dart';
+import '../Utils/ColorUtil.dart';
 import './Db/DbHelper.dart';
 
 const String tableName = DbHelper.COURSE_TABLE_NAME;
@@ -100,7 +100,7 @@ class Course {
     courseId = map[columnCourseId];
   }
 
-  String? getColor(List colorPool) {
+  String? getColor(ActiveColorPool pool) {
     final rawColor = color?.trim();
     if (rawColor != null && rawColor.isNotEmpty) {
       final normalized = rawColor.startsWith('#') ? rawColor.substring(1) : rawColor;
@@ -109,10 +109,10 @@ class Course {
         return rawColor.startsWith('#') ? rawColor : '#$rawColor';
       }
     }
-    if (courseId == null || colorPool.isEmpty) {
-      return colorList.first;
+    if (courseId == null || pool.indices.isEmpty || pool.palette.isEmpty) {
+      return pool.palette.isNotEmpty ? pool.palette.first : '#8AD297';
     }
-    return colorList[colorPool[courseId! % colorPool.length] as int];
+    return pool.palette[pool.indices[courseId! % pool.indices.length]];
   }
 }
 

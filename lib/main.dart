@@ -73,14 +73,18 @@ class _MyAppState extends State<MyApp> {
             ThemeData darkTheme;
             int themeIndex = model.themeIndex ?? widget.themeIndex;
             String customTheme = model.themeCustomColor ?? widget.themeCustom;
-            if (themeIndex < themeDataList.length || customTheme == '') {
+            if (themeIndex >= 0 && themeIndex < themeDataList.length) {
               lightTheme = themeDataList[themeIndex];
               darkTheme = darkThemeDataList[themeIndex];
+            } else if (customTheme.isNotEmpty) {
+              lightTheme = getThemeData(customTheme, Brightness.light);
+              darkTheme = getThemeData(customTheme, Brightness.dark);
             } else {
-              lightTheme = getThemeData(customTheme, Brightness.light,
-                  useSeedScheme: model.material3ColorForLight);
-              darkTheme = getThemeData(customTheme, Brightness.dark,
-                  useSeedScheme: model.material3ColorForDark);
+              // 兜底：themeIndex 指向"自定义"槽位，但自定义颜色还没真正
+              // 设置过（比如只是点了一下预览、没点"应用"）——回退到
+              // 第一个预设主题，避免 themeDataList[themeIndex] 越界崩溃。
+              lightTheme = themeDataList[0];
+              darkTheme = darkThemeDataList[0];
             }
             return MaterialApp(
               debugShowCheckedModeBanner: false,

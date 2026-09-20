@@ -30,6 +30,79 @@ class ImportFromBEView extends StatefulWidget {
   State<StatefulWidget> createState() {
     return ImportFromBEViewState();
   }
+
+  /// 只负责"跑 WebView 抓取 -> 拉取远程 extractJS -> 执行 -> JSON decode"，
+  /// 不做任何数据库写入，供导入流程和"检查更新"流程共用。
+  static Future<Map> fetchCourseTableMap(
+      WebViewController controller, Map config,
+      {String? rsp}) async {
+    String response = "";
+    if (rsp == null) {
+      await controller.runJavaScript(config['preExtractJS'] ?? '');
+      await Future.delayed(Duration(seconds: config['delayTime'] ?? 0));
+      Dio dio = Dio();
+
+      String url = '';
+      if (Platform.isIOS) {
+        url = config['extractJSfileiOS'] ?? "";
+      } else if (Platform.isAndroid) {
+        url = config['extractJSfileAndroid'] ?? "";
+      } else if (Platform.operatingSystem == 'ohos') {
+        url = config['extractJSfileOHOS'] ?? "";
+      }
+
+      Response serverRsp = await dio.get(url);
+      String js = serverRsp.data;
+      var result = await controller.runJavaScriptReturningResult(js);
+      response = result.toString();
+
+      if (response.startsWith('"') && response.endsWith('"')) {
+        response = response.substring(1, response.length - 1);
+      }
+    } else {
+      response = rsp;
+    }
+
+    final rawResponse = response;
+    response = Uri.decodeComponent(response.replaceAll('"', ''));
+    final decoded = json.decode(response);
+    if (decoded is! Map) {
+      final currentUrl = await controller.currentUrl();
+      // njubksjw2.js 内部大概率抛了异常（Android WebView 的已知坑：JS 抛错时
+      // runJavaScriptReturningResult 不会把异常带给 Dart，只会静默返回 "null"），
+      // 单独查一下页面上关键元素在不在，帮助判断脚本具体是在哪一步失败的。
+      String domDiagnostic = '（诊断脚本执行失败）';
+      try {
+        final diagJs = '''
+          (function(){
+            var nameEl = document.querySelector("#dqxnxqkclb");
+            var tableBody = document.querySelector("table tbody");
+            var anyTable = document.querySelector("table");
+            return JSON.stringify({
+              hasNameEl: !!nameEl,
+              nameElText: nameEl ? nameEl.textContent : null,
+              hasTableTbody: !!tableBody,
+              hasAnyTable: !!anyTable,
+              rowCount: tableBody ? tableBody.querySelectorAll("tr").length : 0,
+              bodyTextSnippet: document.body ? document.body.innerText.substring(0, 300) : null
+            });
+          })();
+        ''';
+        final diagResult = await controller.runJavaScriptReturningResult(diagJs);
+        domDiagnostic = diagResult.toString();
+      } catch (e) {
+        domDiagnostic = '诊断脚本本身出错：$e';
+      }
+      throw Exception(
+        '课表抓取脚本没有返回预期的数据（很可能是脚本内部报错，被 WebView 吞掉了）。\n\n'
+        '[调试] 抓取脚本执行时所在的网址：$currentUrl\n'
+        '[调试] 页面关键元素诊断：\n$domDiagnostic\n\n'
+        '[调试] 抓取脚本原始返回内容（JSON 解析前，前 1000 字）：\n'
+        '${rawResponse.substring(0, rawResponse.length > 1000 ? 1000 : rawResponse.length)}',
+      );
+    }
+    return decoded;
+  }
 }
 
 class ImportFromBEViewState extends State<ImportFromBEView> {
@@ -139,40 +212,12 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
   import(WebViewController controller, BuildContext context,
       {String? rsp}) async {
     try {
-      String response = "";
       CourseTableProvider courseTableProvider = CourseTableProvider();
       Toast.showToast(S.of(context).class_parse_toast_importing, context);
 
-      if (rsp == null) {
-        await controller.runJavaScript(widget.config['preExtractJS'] ?? '');
-        await Future.delayed(
-            Duration(seconds: widget.config['delayTime'] ?? 0));
-        Dio dio = Dio();
-
-        String url = '';
-        if (Platform.isIOS) {
-          url = widget.config['extractJSfileiOS'] ?? "";
-          ;
-        } else if (Platform.isAndroid) {
-          url = widget.config['extractJSfileAndroid'] ?? "";
-        } else if (Platform.operatingSystem == 'ohos') {
-          url = widget.config['extractJSfileOHOS'] ?? "";
-        }
-
-        Response serverRsp = await dio.get(url);
-        String js = serverRsp.data;
-        var result = await controller.runJavaScriptReturningResult(js);
-        response = result.toString();
-
-        if (response.startsWith('"') && response.endsWith('"')) {
-          response = response.substring(1, response.length - 1);
-        }
-      } else {
-        response = rsp;
-      }
-
-      response = Uri.decodeComponent(response.replaceAll('"', ''));
-      Map courseTableMap = json.decode(response);
+      Map courseTableMap = await ImportFromBEView.fetchCourseTableMap(
+          controller, widget.config,
+          rsp: rsp);
 
       CourseTable courseTable;
       if (widget.config['class_time_list'] == null &&
@@ -215,6 +260,17 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
             CourseImportCodec.onlineCourseToDbMap(courseMap, tableId: index);
         Course course = Course.fromMap(dbMap);
         await courseProvider.insert(course);
+      }
+      // 记录这张表来自哪个学校配置、以及本次抓取的原始课程数据，
+      // 供后续"检查更新"功能做 diff 用。
+      final pinyin = widget.config['pinyin'];
+      if (pinyin != null) {
+        await courseTableProvider.updateCheckUpdateInfo(
+          index,
+          sourceSchoolPinyin: pinyin.toString(),
+          lastSnapshot: json.encode(coursesMap),
+          lastCheckedAt: DateTime.now().toIso8601String(),
+        );
       }
       UmengCommonSdk.onEvent(
           "class_import", {"type": "be", "action": "success"});

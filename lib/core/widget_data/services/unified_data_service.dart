@@ -312,7 +312,7 @@ class UnifiedDataService {
     }
 
     // 使用与前端相同的颜色逻辑
-    List colorPool = await ColorPool.getColorPool();
+    ActiveColorPool colorPool = await ColorPool.getActivePool();
     String? courseColor = course.getColor(colorPool);
 
     // 计算实际节数：timeCount = endTime - startTime，实际节数需要 +1
