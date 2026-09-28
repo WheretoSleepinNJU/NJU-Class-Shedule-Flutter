@@ -1,13 +1,17 @@
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:io';
 
 import '../../generated/l10n.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:share_extend/share_extend.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:scoped_model/scoped_model.dart';
 // import 'package:device_calendar/device_calendar.dart';
 import 'package:device_calendar_ohos/device_calendar_ohos.dart';
 import '../../Utils/States/MainState.dart';
+import '../../Utils/IcsUtil.dart';
 import '../../Components/Toast.dart';
 import '../../Models/CourseModel.dart';
 import '../../Models/CourseTableModel.dart';
@@ -50,6 +54,13 @@ class _ShareViewState extends State<ShareView> {
               subtitle: Text(S.of(context).export_to_system_calendar_subtitle),
               onTap: () async {
                 _exportToSystemCalendar(context);
+              },
+            ),
+            ListTile(
+              title: const Text('导出为 ICS 文件'),
+              subtitle: const Text('生成 .ics 文件并通过系统分享导出'),
+              onTap: () async {
+                _exportToIcsFile(context);
               },
             ),
           ]).toList()))
@@ -252,6 +263,39 @@ class _ShareViewState extends State<ShareView> {
           S.of(context).export_to_system_calendar_fail_toast, context);
     }
     return true;
+  }
+
+  Future<void> _exportToIcsFile(BuildContext ctx) async {
+    try {
+      final int tableId = await MainStateModel.of(context).getClassTable();
+      final CourseProvider cp = CourseProvider();
+      final List coursesRaw = await cp.getAllCourses(tableId);
+      final List<Map<String, dynamic>> courses = coursesRaw
+          .map((e) => Map<String, dynamic>.from(e as Map))
+          .toList();
+      final CourseTableProvider courseTableProvider = CourseTableProvider();
+      final CourseTable? courseTable =
+          await courseTableProvider.getCourseTable(tableId);
+      final String calendarName = courseTable?.name ?? '南哪课表';
+      final List<Map> classTimeList =
+          await courseTableProvider.getClassTimeList(tableId);
+      final Map<int, DateTime> dayMap = await _getDayMap();
+      final String icsContent = IcsUtil.buildCourseScheduleIcs(
+        calendarName: calendarName,
+        courses: courses,
+        classTimeList: classTimeList,
+        dayMap: dayMap,
+      );
+
+      final Directory tempDir = await getTemporaryDirectory();
+      final String safeName = calendarName.replaceAll(RegExp(r'[\\/:*?"<>|]'), '_');
+      final File file = File('${tempDir.path}/$safeName.ics');
+      await file.writeAsString(icsContent);
+      ShareExtend.share(file.path, 'file');
+      Toast.showToast(S.of(ctx).export_to_system_calendar_success_toast, ctx);
+    } catch (_) {
+      Toast.showToast(S.of(ctx).export_to_system_calendar_fail_toast, ctx);
+    }
   }
 
   Future<Map<int, DateTime>> _getDayMap() async {
