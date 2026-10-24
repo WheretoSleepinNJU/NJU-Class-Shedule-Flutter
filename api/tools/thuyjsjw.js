@@ -1,250 +1,162 @@
 function scheduleHtmlParser() {
-  // 清华研究生课表解析器
-  // 参考 thu-info-lib 实现
+  // The existing app runs preExtractJS on the logged-in portal. Its navigation
+  // to the academic SSO entry carries semester metadata in a URL fragment;
+  // HTTP redirects preserve it without sending it to either server.
+  const fragment = /^#nju-schedule=(\d{4}-\d{2}-\d{2}),(\d+)$/.exec(window.location.hash || "");
+  const config = window.__NJU_SCHEDULE_IMPORT_CONFIG__ || (fragment ? {
+    semester_start_monday: fragment[1], week_count: Number(fragment[2]),
+  } : {});
+  // Capture the actual VPN route before replaceState sanitizes the URL. VPN
+  // academic pages may use either /http/ or /https/; do not switch protocols.
+  const pageLocation = {
+    hostname: window.location.hostname, origin: window.location.origin,
+    pathname: window.location.pathname || "",
+  };
+  // Keep authenticated HTML and URLs out of the unchanged app's error report.
+  document.documentElement.innerHTML = '<head><meta name="viewport" content="width=device-width,initial-scale=1"><title>清华课表导入</title></head><body style="font:18px sans-serif;padding:24px">正在读取清华研究生课表，请稍候…</body>';
+  history.replaceState(null, "", "/nju-schedule-import");
+  const DAY_MS = 86400000;
+  const parseDate = (value) => {
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value));
+    if (!match) throw new Error("清华课表日期格式异常");
+    const date = new Date(Date.UTC(+match[1], +match[2] - 1, +match[3]));
+    if (date.toISOString().slice(0, 10) !== value) {
+      throw new Error("清华课表日期无效");
+    }
+    return date;
+  };
+  const firstDay = parseDate(config.semester_start_monday);
+  const weekCount = Number(config.week_count || 16);
+  if (firstDay.getUTCDay() !== 1 || !Number.isInteger(weekCount) ||
+      weekCount < 1 || weekCount > 30) {
+    throw new Error("清华课表学期配置异常");
+  }
 
-  const CONFIG = {
-    // 研究生课表 API 前缀
-    YJS_API_PREFIX:
-      "https://webvpn.tsinghua.edu.cn/http/77726476706e69737468656265737421eaff4b8b69336153301c9aa596522b20bc86e6e559a9b290/jxmh_out.do?m=yjs_jxrl_all&p_start_date=",
-    // 学期开始日期
-    DEFAULT_FIRST_DAY: "2026-02-23",
-    // 学期周数
-    WEEK_COUNT: 16,
-    // 分组大小（每次3周）
-    GROUP_SIZE: 3,
+  // Both the official site and the WebVPN page must query their own origin so
+  // that the academic-system session is carried, without cross-origin cookies.
+  const location = pageLocation;
+  const vpnAcademicPage = /^\/https?\/77726476706e69737468656265737421eaff4b8b69336153301c9aa596522b20bc86e6e559a9b290\/jxmh\.do$/.test(location.pathname);
+  const vpnPath = vpnAcademicPage
+    ? location.pathname.slice(0, location.pathname.lastIndexOf("/") + 1)
+    : null;
+  const base = location.hostname === "zhjw.cic.tsinghua.edu.cn"
+    ? location.origin + "/"
+    : location.hostname === "webvpn.tsinghua.edu.cn" && vpnPath
+      ? location.origin + vpnPath
+      : null;
+  if (!base) throw new Error("请先登录清华研究生教学日历");
+
+  const slots = [
+    ["08:00", "08:45"], ["08:50", "09:35"],
+    ["09:50", "10:35"], ["10:40", "11:25"],
+    ["11:30", "12:15"], ["13:30", "14:15"],
+    ["14:20", "15:05"], ["15:20", "16:05"],
+    ["16:10", "16:55"], ["17:05", "17:50"],
+    ["17:55", "18:40"], ["19:20", "20:05"],
+    ["20:10", "20:55"], ["21:00", "21:45"],
+  ];
+  const normalizeTime = (value) => {
+    const match = /^(\d{1,2})[:：](\d{2})(?::\d{2})?$/.exec(String(value).trim());
+    return match ? match[1].padStart(2, "0") + ":" + match[2] : "";
+  };
+  const period = (value, boundary) => {
+    const time = normalizeTime(value);
+    // Start/end use separate exact maps: 08:50 belongs to period 2, not 1.
+    return slots.findIndex((slot) => slot[boundary] === time) + 1;
+  };
+  const formatDate = (offset) => new Date(firstDay.getTime() + offset * DAY_MS)
+    .toISOString().slice(0, 10).replace(/-/g, "");
+  const parseResponse = (text) => {
+    const body = text.trim();
+    if (body.startsWith("<")) {
+      throw new Error("清华教务登录已失效，请重新登录信息门户");
+    }
+    const match = /^m\s*\(([\s\S]*)\)\s*;?\s*$/.exec(body);
+    let data;
+    try { data = JSON.parse(match ? match[1] : body); }
+    catch (_) { throw new Error("清华课表接口返回格式异常"); }
+    if (!Array.isArray(data)) throw new Error("清华课表接口未返回课程列表");
+    return data;
   };
 
-  // 时间段映射（清华的节次时间）
-  const TIME_SLOTS = [
-    { begin: "08:00", end: "08:45" }, // 1
-    { begin: "08:50", end: "09:35" }, // 2
-    { begin: "09:50", end: "10:35" }, // 3
-    { begin: "10:40", end: "11:25" }, // 4
-    { begin: "11:30", end: "12:15" }, // 5
-    { begin: "13:30", end: "14:15" }, // 6
-    { begin: "14:20", end: "15:05" }, // 7
-    { begin: "15:20", end: "16:05" }, // 8
-    { begin: "16:10", end: "16:55" }, // 9
-    { begin: "17:05", end: "17:50" }, // 10
-    { begin: "17:55", end: "18:40" }, // 11
-    { begin: "19:20", end: "20:05" }, // 12
-    { begin: "20:10", end: "20:55" }, // 13
-    { begin: "21:00", end: "21:45" }, // 14
-  ];
-
-  // 同步 HTTP GET 请求（自动携带当前页面 cookies）
-  const httpGet = (url) => {
+  const records = [];
+  for (let startWeek = 0; startWeek < weekCount; startWeek += 3) {
+    const url = base + "jxmh_out.do?m=yjs_jxrl_all&p_start_date=" +
+      formatDate(startWeek * 7) + "&p_end_date=" +
+      formatDate(Math.min(startWeek + 3, weekCount) * 7 - 1) + "&jsoncallback=m";
     const xhr = new XMLHttpRequest();
     xhr.open("GET", url, false);
     xhr.setRequestHeader("Accept", "application/json, text/javascript, */*");
     xhr.send();
-    if (xhr.status !== 200) {
-      throw new Error(`HTTP ${xhr.status}`);
-    }
-    return xhr.responseText;
-  };
-
-  // 格式化日期为 YYYYMMDD
-  const formatDate = (date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}${month}${day}`;
-  };
-
-  // 从时间字符串获取节次（1-14）
-  const getPeriodFromTime = (timeStr) => {
-    if (!timeStr) return 0;
-    const [hours, minutes] = timeStr.replace("：", ":").split(":").map(Number);
-    const timeValue = hours * 60 + minutes;
-
-    for (let i = 0; i < TIME_SLOTS.length; i++) {
-      const [beginH, beginM] = TIME_SLOTS[i].begin.split(":").map(Number);
-      const [endH, endM] = TIME_SLOTS[i].end.split(":").map(Number);
-      const beginValue = beginH * 60 + beginM;
-      const endValue = endH * 60 + endM + 5; // 5分钟缓冲
-
-      if (timeValue >= beginValue && timeValue <= endValue) {
-        return i + 1; // 节次从1开始
-      }
-    }
-    return 0;
-  };
-
-  // 计算周次
-  const getWeekFromDate = (dateStr, firstDayStr) => {
-    const date = new Date(dateStr);
-    const firstDay = new Date(firstDayStr);
-    const diffTime = date.getTime() - firstDay.getTime();
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    return Math.floor(diffDays / 7) + 1;
-  };
-
-  // 获取星期几（1-7，周一=1）
-  const getDayOfWeek = (dateStr) => {
-    const date = new Date(dateStr);
-    const day = date.getDay();
-    return day === 0 ? 7 : day;
-  };
-
-  // 解析 JSONP 响应
-  const parseJSONP = (response) => {
-    // 清华格式: m([...])
-    const match = response.match(/m\s*\(\s*(\[.*?\])\s*\)/s);
-    if (match && match[1]) {
-      return JSON.parse(match[1]);
-    }
-    // 尝试直接解析 JSON
-    if (response.trim().startsWith("[")) {
-      return JSON.parse(response);
-    }
-    throw new Error("无法解析响应格式");
-  };
-
-  // 解析课程数据
-  const parseSchedule = (jsonData, firstDay) => {
-    const courseMap = new Map();
-
-    jsonData.forEach((item) => {
-      try {
-        const name = item.nr; // 课程名称
-        const location = item.dd || ""; // 地点
-        const dateStr = item.nq; // 日期 YYYY-MM-DD
-        const beginTime = item.kssj?.replace("：", ":"); // 开始时间
-        const endTime = item.jssj?.replace("：", ":"); // 结束时间
-        const category = item.fl || ""; // 分类
-
-        if (!name || !dateStr || !beginTime || !endTime) {
-          return;
-        }
-
-        const week = getWeekFromDate(dateStr, firstDay);
-        const dayOfWeek = getDayOfWeek(dateStr);
-        const startPeriod = getPeriodFromTime(beginTime);
-        const endPeriod = getPeriodFromTime(endTime);
-
-        if (startPeriod === 0 || endPeriod === 0) {
-          return;
-        }
-
-        // 键包含课程名称、地点、星期和节次信息，确保同名同地点但不同时间的课程被分别录入
-        const key = `${name}@${location}@周${dayOfWeek}@第${startPeriod}-${endPeriod}节`;
-
-        if (!courseMap.has(key)) {
-          courseMap.set(key, {
-            name: name,
-            classroom: location,
-            class_number: "",
-            teacher: "",
-            test_time: null,
-            test_location: null,
-            link: null,
-            weeks: [],
-            week_time: dayOfWeek,
-            start_time: startPeriod,
-            time_count: endPeriod - startPeriod,
-            import_type: 1,
-            info: category,
-            data: null,
-          });
-        }
-
-        const course = courseMap.get(key);
-        if (!course.weeks.includes(week)) {
-          course.weeks.push(week);
-        }
-      } catch (e) {
-        // 跳过解析失败的条目
-      }
-    });
-
-    // 转换为数组并排序周次
-    const courses = [];
-    courseMap.forEach((course) => {
-      course.weeks.sort((a, b) => a - b);
-      courses.push(course);
-    });
-
-    return courses;
-  };
-
-  // 获取课表数据
-  const fetchSchedule = () => {
-    const firstDay = new Date(CONFIG.DEFAULT_FIRST_DAY);
-    const allData = [];
-
-    // 分批次获取（每次3周）
-    const groupCount = Math.ceil(CONFIG.WEEK_COUNT / CONFIG.GROUP_SIZE);
-
-    for (let i = 0; i < groupCount; i++) {
-      try {
-        const startWeek = i * CONFIG.GROUP_SIZE + 1;
-        const endWeek = Math.min(
-          (i + 1) * CONFIG.GROUP_SIZE,
-          CONFIG.WEEK_COUNT,
-        );
-
-        const startDate = new Date(firstDay);
-        startDate.setDate(startDate.getDate() + (startWeek - 1) * 7);
-
-        const endDate = new Date(firstDay);
-        endDate.setDate(endDate.getDate() + (endWeek - 1) * 7 + 6);
-
-        const url = `${CONFIG.YJS_API_PREFIX}${formatDate(startDate)}&p_end_date=${formatDate(endDate)}&jsoncallback=m`;
-
-        const response = httpGet(url);
-
-        // 检查是否是HTML（未登录）
-        if (response.trim().startsWith("<")) {
-          throw new Error("返回HTML页面，可能未登录");
-        }
-
-        const data = parseJSONP(response);
-        if (Array.isArray(data) && data.length > 0) {
-          allData.push(...data);
-        }
-      } catch (e) {
-        // 继续下一批
-      }
-    }
-
-    return parseSchedule(allData, CONFIG.DEFAULT_FIRST_DAY);
-  };
-
-  // 获取当前学期名称（基于开学日期）
-  const getSemesterName = (firstDayStr) => {
-    const date = new Date(firstDayStr);
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1; // 1-12
-    // 2-7月为春季学期（属上一学年的第二学期），8-1月为秋季学期（属上一学年的第一学期）
-    if (month >= 2 && month <= 7) {
-      return `${year - 1}-${year}学年 春季学期`;
-    } else {
-      return `${year}-${year + 1}学年 秋季学期`;
-    }
-  };
-
-  // 主流程
-  try {
-    const courses = fetchSchedule();
-    const semesterName = getSemesterName(CONFIG.DEFAULT_FIRST_DAY);
-
-    const result = {
-      name: `清华大学研究生课表 ${semesterName}`,
-      courses: courses,
-    };
-
-    // return result;
-    return encodeURIComponent(JSON.stringify(result));
-  } catch (error) {
-    return encodeURIComponent(
-      JSON.stringify({
-        name: "清华大学研究生课表",
-        courses: [],
-        error: error.message,
-      }),
-    );
+    if (xhr.status !== 200) throw new Error("清华课表请求失败，请稍后重试");
+    // Any failed batch aborts the import instead of producing a partial table.
+    records.push(...parseResponse(xhr.responseText));
   }
+
+  const dailyCourses = new Map();
+  for (const item of records) {
+    // The calendar also includes personal events and announcements.
+    if (item.fl && item.fl !== "上课") continue;
+    if (!item.nr || !item.nq || !item.kssj || !item.jssj) {
+      throw new Error("清华课程缺少日期或上课时间");
+    }
+    const date = parseDate(item.nq);
+    const week = Math.floor((date.getTime() - firstDay.getTime()) / DAY_MS / 7) + 1;
+    if (week < 1 || week > weekCount) continue;
+    const weekday = date.getUTCDay() || 7;
+    const start = period(item.kssj, 0);
+    const end = period(item.jssj, 1);
+    if (!start || !end || end < start) {
+      throw new Error("清华课程时间与节次不匹配，未导入不完整课表");
+    }
+    // Combine only occurrences on the same day and week. Merging week lists
+    // first would incorrectly extend shorter courses in weeks with fewer periods.
+    const dayKey = JSON.stringify([item.nr, item.dd || "", weekday, week]);
+    if (!dailyCourses.has(dayKey)) {
+      dailyCourses.set(dayKey, {
+        name: item.nr, classroom: item.dd || "", weekday, week, info: item.fl || "", spans: [],
+      });
+    }
+    dailyCourses.get(dayKey).spans.push([start, end]);
+  }
+  const courseMap = new Map();
+  for (const day of dailyCourses.values()) {
+    const spans = day.spans.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+    const merged = [];
+    for (const span of spans) {
+      const previous = merged[merged.length - 1];
+      if (previous && span[0] <= previous[1] + 1) {
+        previous[1] = Math.max(previous[1], span[1]);
+      } else {
+        merged.push(span.slice());
+      }
+    }
+    for (const [start, end] of merged) {
+      const key = JSON.stringify([day.name, day.classroom, day.weekday, start, end]);
+      if (!courseMap.has(key)) {
+        courseMap.set(key, {
+          name: day.name, classroom: day.classroom, class_number: "", teacher: "",
+          test_time: null, test_location: null, link: null, weeks: [],
+          week_time: day.weekday, start_time: start, time_count: end - start,
+          import_type: 1, info: day.info, data: null,
+        });
+      }
+      courseMap.get(key).weeks.push(day.week);
+    }
+  }
+  const courses = [...courseMap.values()];
+  if (courses.length === 0) {
+    throw new Error("本学期未读取到已安排时间的课程，请核对学期后重试");
+  }
+  courses.forEach((course) => course.weeks.sort((a, b) => a - b));
+  const year = firstDay.getUTCFullYear();
+  const month = firstDay.getUTCMonth() + 1;
+  const spring = month >= 2 && month <= 7;
+  const academicYear = spring || month === 1 ? year - 1 : year;
+  return encodeURIComponent(JSON.stringify({
+    name: `清华大学研究生课表 ${academicYear}-${academicYear + 1}学年 ${spring ? "春" : "秋"}季学期`,
+    courses,
+  }));
 }
 
 scheduleHtmlParser();

@@ -76,7 +76,7 @@ class CourseTablePresenter {
                   height,
                   width,
                   false,
-                  false,
+                  1,
                   () => showClassDialog(context, filteredHideCourses[i], false),
                   () => showDeleteDialog(
                     context,
@@ -91,7 +91,7 @@ class CourseTablePresenter {
                   height,
                   width,
                   true,
-                  false,
+                  1,
                   () => showClassDialog(context, activeCourses[i], true),
                   () => showDeleteDialog(context, activeCourses[i]),
                 )) +
@@ -103,7 +103,7 @@ class CourseTablePresenter {
                 height,
                 width,
                 isThisWeek(filteredMultiCourses[i][0], nowWeek),
-                true,
+                filteredMultiCourses[i].length,
                 () => showMultiClassDialog(context,
                     multiCourses.indexOf(filteredMultiCourses[i]), nowWeek),
                 () => showDeleteDialog(context, filteredMultiCourses[i][0])));

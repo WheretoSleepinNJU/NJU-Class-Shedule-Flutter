@@ -393,11 +393,11 @@
       "pinyin": "qinghuadaxueyanjiusheng",
       "description": "北伐！北伐！",
       "page_title": "信息门户登录",
-      "initialUrl": "https://webvpn.tsinghua.edu.cn/https/77726476706e69737468656265737421fcf2408e297e7c4377068ea48d546d30ca8cc97bcc/f/login",
-      "redirectUrl": "https://learn.tsinghua.edu.cn/",
-      "targetUrl": "https://webvpn.tsinghua.edu.cn/http/77726476706e69737468656265737421eaff4b8b69336153301c9aa596522b20bc86e6e559a9b290/jxmh_out.do?m=yjs_jxrl_all",
-      "preExtractJS": "",
-      "delayTime": 3,
+      "initialUrl": "https://webvpn.tsinghua.edu.cn/https/77726476706e69737468656265737421f9f9479369247b59700f81b9991b2631506205de/f/info/gxfw_fg/common/index",
+      "redirectUrl": "",
+      "targetUrl": "https://webvpn.tsinghua.edu.cn/https/77726476706e69737468656265737421f9f9479369247b59700f81b9991b2631506205de/f/info_mobile/",
+      "preExtractJS": "window.__NJU_SCHEDULE_IMPORT_CONFIG__={\"semester_start_monday\":\"2026-09-14\",\"week_count\":16};document.documentElement.innerHTML=\"<head><meta name=\\\"viewport\\\" content=\\\"width=device-width,initial-scale=1\\\"><title>清华课表导入</title></head><body style=\\\"font:18px sans-serif;padding:24px\\\">正在读取清华研究生课表，请稍候…</body>\";history.replaceState(null,\"\",\"/nju-schedule-import\");window.location.replace(\"https://webvpn.tsinghua.edu.cn/https/77726476706e69737468656265737421f9f9479369247b59700f81b9991b2631506205de/f/info/gxfw_fg/common/cardRoaming/JXRL_YJS#nju-schedule=2026-09-14,16\");",
+      "delayTime": 8,
       "extractJS": "",
       "extractJSfileAndroid": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/thuyjsjw.js",
       "extractJSfileiOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/thuyjsjw.js",
@@ -465,7 +465,8 @@
       ],
       "semester_start_monday": "2026-09-14",
       "isGrey": true,
-      "isGrey3.1.0": false
+      "isGrey3.1.0": false,
+      "week_count": 16
     },
     {
       "title": "中国科学院大学研究生课表",

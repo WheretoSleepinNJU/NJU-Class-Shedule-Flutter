@@ -71,7 +71,14 @@ class AppThemes {
     final appBarBg = appBarSurface;
     final appBarFg = scheme.onSurface; // 标题颜色跟随内容色
     final overlayStyle =
-        isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark;
+        (isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark)
+            .copyWith(
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarDividerColor: Colors.transparent,
+      systemNavigationBarContrastEnforced: false,
+      systemNavigationBarIconBrightness:
+          isDark ? Brightness.light : Brightness.dark,
+    );
 
     const radius = 14.0;
     final shape = RoundedRectangleBorder(

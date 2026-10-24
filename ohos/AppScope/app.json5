@@ -2,8 +2,8 @@
   "app": {
     "bundleName": "top.idealclover.wheretosleepinnju",
     "vendor": "example",
-    "versionCode": 1000000,
-    "versionName": "1.0.0",
+    "versionCode": 70,
+    "versionName": "4.1.0",
     "icon": "$media:layered_image",
     "label": "$string:app_name"
   }

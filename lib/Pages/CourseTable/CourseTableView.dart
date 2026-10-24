@@ -66,7 +66,8 @@ class CourseTableViewState extends State<CourseTableView> {
 
   List<Course> multiClassesDialog = [];
 
-  Future<bool>? _getData(BuildContext context) async {
+  Future<bool>? _getData(
+      BuildContext context, MediaQueryData mediaQuery) async {
 //    await courseTablePresenter.insertMockData();
 
     _isShowWeekend =
@@ -118,9 +119,8 @@ class CourseTableViewState extends State<CourseTableView> {
 
     // The timetable is inside SafeArea; landscape iPhones reserve horizontal
     // space for the sensor housing on both sides of the content.
-    final mediaQuery = MediaQuery.of(context);
     _screenWidth = mediaQuery.size.width - mediaQuery.padding.horizontal;
-    _screenHeight = MediaQuery.of(context).size.height;
+    _screenHeight = mediaQuery.size.height;
     // Seven day columns share a fixed width. Keep this compact overview
     // readable without letting period labels squeeze out the courses.
     // Settings and course details retain the full system text scale.
@@ -136,7 +136,7 @@ class CourseTableViewState extends State<CourseTableView> {
       // 强制缩放时，课程表填满整个屏幕，FreeClass 浮动覆盖在上方
       _classTitleHeight = (_screenHeight -
               kToolbarHeight -
-              MediaQuery.of(context).padding.top -
+              mediaQuery.padding.top -
               (_isShowDate ? _weekTitleHeight * 1.2 : _weekTitleHeight)) /
           _maxShowClasses;
     } else if (height.toDouble() != 0) {
@@ -252,6 +252,9 @@ class CourseTableViewState extends State<CourseTableView> {
 
   @override
   Widget build(BuildContext context) {
+    // Read here so system font/viewport changes rebuild the row geometry,
+    // rather than only rescaling labels inside the existing timetable.
+    final mediaQuery = MediaQuery.of(context);
     return ScopedModel<MainStateModel>(
         model: MainStateModel(),
         child: ScopedModelDescendant<MainStateModel>(
@@ -260,7 +263,7 @@ class CourseTableViewState extends State<CourseTableView> {
           debugPrint('CourseTableView refreshed.');
 
           return FutureBuilder<bool>(
-              future: _getData(context),
+              future: _getData(context, mediaQuery),
               builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
                 if (!snapshot.hasData) {
                   return Container(color: Colors.white);
@@ -296,6 +299,16 @@ class CourseTableViewState extends State<CourseTableView> {
                         ? SystemUiOverlayStyle.light
                         : SystemUiOverlayStyle.dark;
                   }
+                  overlayStyle = overlayStyle.copyWith(
+                    systemNavigationBarColor: Colors.transparent,
+                    systemNavigationBarDividerColor: Colors.transparent,
+                    systemNavigationBarContrastEnforced: false,
+                    systemNavigationBarIconBrightness: _isWhiteMode == null
+                        ? (Theme.of(context).brightness == Brightness.dark
+                            ? Brightness.light
+                            : Brightness.dark)
+                        : (_isWhiteMode! ? Brightness.light : Brightness.dark),
+                  );
 
                   Color? appBarColor;
                   if (_isWhiteMode == null) {
