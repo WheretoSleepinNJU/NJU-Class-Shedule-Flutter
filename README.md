@@ -91,9 +91,11 @@
   * `export USE_CN_FLUTTER_MIRROR=1`
   * `source tool/setup_ohos_env.sh`
 
-Android 构建需要 JDK 17、Android SDK 36、AGP 8.13 / Gradle 8.13。`targetSdkVersion` 沿用 33；新版 Flutter 的最低系统为 Android 7.0（API 24），因此不再支持 Android 6.0。更新后运行 `fvm flutter pub get`，不要手动改 `.pub-cache` 中的扫码插件。iOS 的 UMCommon / UMDevice 固定到带 ARM64 模拟器切片的官方 XCFramework 版本。Xcode 27 模拟器单独使用 iOS 15 部署下限；真机项目仍保留 iOS 13，低版本发布需使用支持该部署下限的 Xcode。
+Android 构建需要 JDK 17、Android SDK 36、AGP 8.13 / Gradle 8.13。`targetSdkVersion` 沿用 33；新版 Flutter 的最低系统为 Android 7.0（API 24），因此不再支持 Android 6.0。更新后运行 `fvm flutter pub get`，不要手动改 `.pub-cache` 中的扫码插件。iOS 的 UMCommon / UMDevice 固定到带 ARM64 模拟器切片的官方 XCFramework 版本。4.1.0 起主应用最低支持 iOS 15，小组件仍需 iOS 17；真机与模拟器部署下限一致，支持 Xcode 27 构建。
 
 ### 使用项目 SDK 构建
+
+GitHub Actions 已提供 Android / iOS / HarmonyOS 三端构建，支持无签名校验和手动签名打包；触发方式、产物与 Secrets 配置见 [三端 CI 说明](tool/ci/README.md)。
 
 三端均使用项目固定的 SDK，避免终端切回旧版全局 Flutter：
 

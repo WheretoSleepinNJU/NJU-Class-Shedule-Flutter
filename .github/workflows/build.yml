@@ -1,0 +1,252 @@
+name: Build Android, iOS and HarmonyOS
+
+on:
+  push:
+    branches: [master]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: Platform to build
+        type: choice
+        options: [all, android, ios, ohos]
+        default: all
+      signed:
+        description: Use repository signing secrets (App Store IPA / signed APK and HAP)
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}-${{ inputs.platform || 'all' }}-${{ inputs.signed || false }}
+  cancel-in-progress: true
+
+env:
+  BUILD_SIGNED: ${{ github.event_name == 'workflow_dispatch' && inputs.signed && 'true' || 'false' }}
+  FLUTTER_SUPPRESS_ANALYTICS: 'true'
+
+jobs:
+  plan:
+    runs-on: ubuntu-24.04
+    outputs:
+      matrix: ${{ steps.platforms.outputs.matrix }}
+    steps:
+      - id: platforms
+        env:
+          REQUESTED_PLATFORM: ${{ inputs.platform || 'all' }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          runners = {'android': 'ubuntu-24.04', 'ios': 'macos-15', 'ohos': 'ubuntu-24.04'}
+          selected = os.environ['REQUESTED_PLATFORM']
+          matrix = {'include': [{'platform': p, 'runner': r} for p, r in runners.items()
+                                if selected in ('all', p)]}
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write('matrix=' + json.dumps(matrix) + '\n')
+          PY
+
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          submodules: false
+      - uses: actions/cache@v4
+        with:
+          path: |
+            .fvm/flutter_sdk
+            .fvm/pub-cache
+            external/flutter_packages
+            external/flutter_plus_plugins_package_info_plus
+            external/fluttertpc_device_calendar
+          key: flutter-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.fvmrc', 'pubspec.lock', 'tool/ci/bootstrap.sh') }}
+      - name: Install pinned Flutter and dependencies
+        run: bash tool/ci/bootstrap.sh
+      - name: Flutter and import regression tests
+        run: |
+          flutter test
+          node --test test/api/thuyjsjw.test.cjs
+
+  build:
+    needs: [plan, test]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 90
+    name: ${{ matrix.platform }} (${{ github.event_name == 'workflow_dispatch' && inputs.signed && 'signed' || 'unsigned' }})
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          submodules: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/cache@v4
+        with:
+          path: |
+            .fvm/flutter_sdk
+            .fvm/pub-cache
+            external/flutter_packages
+            external/flutter_plus_plugins_package_info_plus
+            external/fluttertpc_device_calendar
+          key: flutter-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.fvmrc', 'pubspec.lock', 'tool/ci/bootstrap.sh') }}
+      - name: Install pinned Flutter and dependencies
+        run: bash tool/ci/bootstrap.sh
+
+      - uses: actions/setup-java@v4
+        if: matrix.platform != 'ios'
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Select Flutter JDK
+        if: matrix.platform == 'android'
+        run: flutter config --jdk-dir "$JAVA_HOME"
+
+      - uses: android-actions/setup-android@v3
+        if: matrix.platform == 'android'
+      - uses: gradle/actions/setup-gradle@v4
+        if: matrix.platform == 'android'
+        with:
+          gradle-version: '8.13'
+      - name: Prepare Android SDK and Gradle wrapper
+        if: matrix.platform == 'android'
+        run: |
+          sdkmanager 'platforms;android-36' 'build-tools;35.0.0'
+          mkdir -p "$RUNNER_TEMP/gradle-wrapper"
+          touch "$RUNNER_TEMP/gradle-wrapper/settings.gradle"
+          gradle -p "$RUNNER_TEMP/gradle-wrapper" wrapper --gradle-version 8.13 --distribution-type bin
+          cp "$RUNNER_TEMP/gradle-wrapper/gradlew" android/
+          cp "$RUNNER_TEMP/gradle-wrapper/gradle/wrapper/gradle-wrapper.jar" android/gradle/wrapper/
+          chmod +x android/gradlew
+      - name: Configure Android signing
+        if: matrix.platform == 'android' && env.BUILD_SIGNED == 'true'
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: python3 tool/ci/configure_signing.py android --signed
+      - name: Build Android APK
+        if: matrix.platform == 'android'
+        run: |
+          flutter build apk --release --target-platform android-arm64
+          mkdir -p artifacts
+          apk=$(find build/app/outputs -name '*release*.apk' -type f | head -n 1)
+          test -n "$apk"
+          if [[ "$BUILD_SIGNED" == true ]]; then
+            "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify "$apk"
+            cp "$apk" artifacts/android-signed.apk
+          else
+            cp "$apk" artifacts/android-unsigned.apk
+          fi
+
+      - name: Select Xcode
+        if: matrix.platform == 'ios'
+        run: |
+          sudo xcode-select -s /Applications/Xcode_26.3.app/Contents/Developer
+          xcodebuild -version
+      - uses: ruby/setup-ruby@v1
+        if: matrix.platform == 'ios'
+        with:
+          ruby-version: '3.3'
+      - name: Install CocoaPods
+        if: matrix.platform == 'ios'
+        run: |
+          gem install xcodeproj -v 1.27.0 --no-document
+          gem install cocoapods -v 1.17.0 --conservative --no-document
+          ruby -rxcodeproj -e 'abort "Unexpected xcodeproj version" unless Xcodeproj::VERSION == "1.27.0"'
+      - name: Configure iOS signing
+        if: matrix.platform == 'ios' && env.BUILD_SIGNED == 'true'
+        env:
+          IOS_P12_BASE64: ${{ secrets.IOS_P12_BASE64 }}
+          IOS_P12_PASSWORD: ${{ secrets.IOS_P12_PASSWORD }}
+          IOS_APP_PROFILE_BASE64: ${{ secrets.IOS_APP_PROFILE_BASE64 }}
+          IOS_WIDGET_PROFILE_BASE64: ${{ secrets.IOS_WIDGET_PROFILE_BASE64 }}
+          IOS_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
+        run: python3 tool/ci/configure_signing.py ios --signed
+      - name: Build iOS archive or IPA
+        if: matrix.platform == 'ios'
+        run: |
+          flutter precache --ios
+          mkdir -p artifacts
+          if [[ "$BUILD_SIGNED" == true ]]; then
+            flutter build ipa --release --export-options-plist "$RUNNER_TEMP/nju-signing/ExportOptions.plist"
+            cp build/ios/ipa/*.ipa artifacts/ios-app-store.ipa
+          else
+            flutter build ipa --release --no-codesign
+            ditto -c -k --sequesterRsrc --keepParent build/ios/archive/Runner.xcarchive artifacts/ios-unsigned.xcarchive.zip
+          fi
+          git diff --exit-code -- ios/Podfile.lock
+
+      - name: Install HarmonyOS SDK
+        if: matrix.platform == 'ohos'
+        run: bash tool/ci/install_ohos_sdk.sh
+      - name: Configure HarmonyOS build
+        if: matrix.platform == 'ohos'
+        run: |
+          python3 -m venv "$RUNNER_TEMP/ci-python"
+          "$RUNNER_TEMP/ci-python/bin/pip" install json5==0.9.25
+          "$RUNNER_TEMP/ci-python/bin/python" tool/ci/configure_signing.py ohos
+      - name: Build HarmonyOS HAP
+        if: matrix.platform == 'ohos'
+        run: |
+          flutter precache --ohos
+          flutter build hap --release --target-platform ohos-arm64 --no-codesign
+          mkdir -p artifacts
+          hap=build/ohos/hap/entry-default-unsigned.hap
+          if [[ ! -f "$hap" ]]; then
+            hap=ohos/entry/build/default/outputs/default/entry-default-unsigned.hap
+          fi
+          test -f "$hap"
+          cp "$hap" artifacts/ohos-unsigned.hap
+      - name: Sign and verify HarmonyOS HAP
+        if: matrix.platform == 'ohos' && env.BUILD_SIGNED == 'true'
+        env:
+          OHOS_CERT_BASE64: ${{ secrets.OHOS_CERT_BASE64 }}
+          OHOS_PROFILE_BASE64: ${{ secrets.OHOS_PROFILE_BASE64 }}
+          OHOS_KEYSTORE_BASE64: ${{ secrets.OHOS_KEYSTORE_BASE64 }}
+          OHOS_KEY_ALIAS: ${{ secrets.OHOS_KEY_ALIAS }}
+          OHOS_KEY_PASSWORD: ${{ secrets.OHOS_KEY_PASSWORD }}
+          OHOS_STORE_PASSWORD: ${{ secrets.OHOS_STORE_PASSWORD }}
+        run: python3 tool/ci/sign_ohos.py
+
+      - name: Record artifact checksums
+        run: |
+          git diff --exit-code -- pubspec.lock
+          python3 - <<'PY'
+          import hashlib, pathlib
+          artifacts = pathlib.Path('artifacts')
+          files = sorted(artifacts.iterdir())
+          assert files, 'No build artifacts found'
+          with (artifacts / 'SHA256SUMS').open('w') as output:
+              for file in files:
+                  output.write(hashlib.file_digest(file.open('rb'), 'sha256').hexdigest() + '  ' + file.name + '\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.platform }}-${{ env.BUILD_SIGNED == 'true' && 'signed' || 'unsigned' }}-${{ github.run_number }}
+          path: artifacts/
+          if-no-files-found: error
+          retention-days: 14
+      - name: Remove signing material
+        if: always()
+        run: |
+          if [[ "$RUNNER_OS" == macOS && -f "$RUNNER_TEMP/nju-signing/ci-signing.keychain-db" ]]; then
+            security delete-keychain "$RUNNER_TEMP/nju-signing/ci-signing.keychain-db" || true
+          fi
+          python3 - <<'PY'
+          import json, os, pathlib
+          metadata = pathlib.Path(os.environ['RUNNER_TEMP']) / 'nju-signing/ios-signing.json'
+          if metadata.is_file():
+              profiles = pathlib.Path.home() / 'Library/MobileDevice/Provisioning Profiles'
+              for uuid in json.loads(metadata.read_text())['profiles'].values():
+                  (profiles / (uuid + '.mobileprovision')).unlink(missing_ok=True)
+          PY
+          rm -rf "$RUNNER_TEMP/nju-signing" android/key.properties
