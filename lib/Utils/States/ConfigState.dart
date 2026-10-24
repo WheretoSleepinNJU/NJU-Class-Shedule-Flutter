@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -190,7 +193,18 @@ mixin ConfigStateModel on Model {
     SharedPreferences sp = await SharedPreferences.getInstance();
     String? bgImgPath = sp.getString("bgImgPath");
     if (bgImgPath != null) {
-      // _bgImgPath = bgImgPath;
+      // iOS can move the data container on an app update. The image is still
+      // in Documents, but the stored absolute path then points to the old UUID.
+      if (Platform.isIOS && bgImgPath.isNotEmpty &&
+          !await File(bgImgPath).exists()) {
+        final documents = await getApplicationDocumentsDirectory();
+        final relocated = path.join(documents.path, path.basename(bgImgPath));
+        if (await File(relocated).exists()) {
+          await sp.setString('bgImgPath', relocated);
+          _bgImgPath = relocated;
+          return relocated;
+        }
+      }
       return bgImgPath;
     }
     return _bgImgPath!;

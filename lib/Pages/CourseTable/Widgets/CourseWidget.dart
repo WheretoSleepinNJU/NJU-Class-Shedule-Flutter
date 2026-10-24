@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import '../../../generated/l10n.dart';
 import 'package:flutter/material.dart';
 import '../../../Models/CourseModel.dart';
@@ -29,6 +31,7 @@ class CourseWidget extends StatelessWidget {
       height: (course.timeCount! + 1) * height,
       width: width,
       child: Container(
+        clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
           color: HexColor(isActive ? color : Config.HIDE_CLASS_COLOR)
               .withOpacity(0.9),
@@ -46,23 +49,32 @@ class CourseWidget extends StatelessWidget {
             highlightColor: Colors.black,
             onLongPress: onLongPress,
             onTap: onTap,
-            child: RichText(
-              text: TextSpan(
-                style: const TextStyle(
-                  fontSize: 12.0,
-                  color: Colors.white,
+            child: LayoutBuilder(builder: (context, constraints) {
+              final textScaler = MediaQuery.textScalerOf(context);
+              final lineHeight = textScaler.scale(12) * 1.2;
+              return RichText(
+                textScaler: textScaler,
+                maxLines:
+                    math.max(1, (constraints.maxHeight / lineHeight).floor()),
+                overflow: TextOverflow.ellipsis,
+                text: TextSpan(
+                  style: const TextStyle(
+                    fontSize: 12.0,
+                    height: 1.2,
+                    color: Colors.white,
+                  ),
+                  children: <TextSpan>[
+                    TextSpan(
+                        text: (isActive ? '' : S.of(context).not_this_week) +
+                            course.name!,
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                    TextSpan(
+                        text: S.of(context).at +
+                            (course.classroom ?? S.of(context).unknown_place)),
+                  ],
                 ),
-                children: <TextSpan>[
-                  TextSpan(
-                      text: (isActive ? '' : S.of(context).not_this_week) +
-                          course.name!,
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
-                  TextSpan(
-                      text: S.of(context).at +
-                          (course.classroom ?? S.of(context).unknown_place)),
-                ],
-              ),
-            )
+              );
+            })
 //          Text(
 //              (isActive ? '' : S.of(context).not_this_week) +
 //                  course.name +

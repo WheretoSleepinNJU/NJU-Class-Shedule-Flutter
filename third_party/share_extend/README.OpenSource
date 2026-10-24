@@ -1,0 +1,11 @@
+[
+    {
+        "Name": "share_extend",
+        "License": "MIT License",
+        "License File": "LICENSE",
+        "Version Number": "9169405eaceb37159063d37c392bcd9270785b2b",
+        "Owner": "george.lihui@huawei.com",
+        "Upstream URL": "https://github.com/zhouteng0217/ShareExtend",
+        "Description": "A Flutter plugin for Android and iOS for sharing text, image, video and file with system ui."
+    }
+]

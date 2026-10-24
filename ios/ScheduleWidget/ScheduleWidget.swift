@@ -31,6 +31,7 @@ enum WidgetDisplayState {
     case betweenClasses      // 课间（已上过课，等待下一节课）
     case approachingClass    // 即将上课
     case inClass             // 上课中
+    case noCourses           // 已确认当天无课
     case classesEnded        // 课程结束
     case tomorrowPreview     // 明日预览
     case error               // 错误状态
@@ -163,6 +164,7 @@ private func determineDisplayState(
     arrivedCourse: WidgetCourse?,
     at date: Date
 ) -> WidgetDisplayState {
+    if data.requiresRefresh { return .error }
     let calendar = Calendar.current
     let currentHour = calendar.component(.hour, from: date)
 
@@ -206,98 +208,8 @@ private func determineDisplayState(
         }
     }
 
-    // 5. 今日课程已结束
-    return .classesEnded
-}
-
-private func normalizedWidgetDataForCurrentDay(_ data: WidgetScheduleData, now: Date = Date()) -> WidgetScheduleData {
-    let calendar = Calendar.current
-    let currentWeekDay = ((calendar.component(.weekday, from: now) + 5) % 7) + 1 // Monday=1...Sunday=7
-    let dataDay = calendar.startOfDay(for: parseWidgetISODate(data.lastUpdateTime) ?? now)
-    let nowDay = calendar.startOfDay(for: now)
-    let elapsedDays = max(0, calendar.dateComponents([.day], from: dataDay, to: nowDay).day ?? 0)
-
-    // If both weekday and date are still fresh, use source data directly.
-    guard data.currentWeekDay != currentWeekDay || elapsedDays >= 7 else {
-        return data
-    }
-    let dayShift = elapsedDays > 0 ? elapsedDays : ((currentWeekDay - data.currentWeekDay + 7) % 7)
-
-    let effectiveWeek = data.currentWeek + ((data.currentWeekDay - 1 + dayShift) / 7)
-    let tomorrowWeekDay = currentWeekDay == 7 ? 1 : currentWeekDay + 1
-    let tomorrowWeek = currentWeekDay == 7 ? effectiveWeek + 1 : effectiveWeek
-
-    let todayCourses = resolveCourses(
-        data: data,
-        targetWeekDay: currentWeekDay,
-        targetWeek: effectiveWeek,
-        dayShiftFromSource: dayShift
-    )
-    let tomorrowCourses = resolveCourses(
-        data: data,
-        targetWeekDay: tomorrowWeekDay,
-        targetWeek: tomorrowWeek,
-        dayShiftFromSource: dayShift + 1
-    )
-
-    return WidgetScheduleData(
-        version: data.version,
-        timestamp: data.timestamp,
-        schoolId: data.schoolId,
-        schoolName: data.schoolName,
-        timeTemplate: data.timeTemplate,
-        currentWeek: effectiveWeek,
-        currentWeekDay: currentWeekDay,
-        semesterName: data.semesterName,
-        todayCourses: todayCourses,
-        tomorrowCourses: tomorrowCourses,
-        weekSchedule: data.weekSchedule,
-        weekCourseCount: data.weekCourseCount,
-        hasCoursesToday: !todayCourses.isEmpty,
-        hasCoursesTomorrow: !tomorrowCourses.isEmpty,
-        dataSource: data.dataSource,
-        totalCourses: data.totalCourses,
-        lastUpdateTime: data.lastUpdateTime,
-        approachingMinutes: data.approachingMinutes,
-        tomorrowPreviewHour: data.tomorrowPreviewHour
-    )
-}
-
-private func parseWidgetISODate(_ value: String) -> Date? {
-    let isoFormatter = ISO8601DateFormatter()
-    if let parsed = isoFormatter.date(from: value) {
-        return parsed
-    }
-
-    let fallback = DateFormatter()
-    fallback.locale = Locale(identifier: "en_US_POSIX")
-    fallback.timeZone = TimeZone.current
-    fallback.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
-    if let parsed = fallback.date(from: value) {
-        return parsed
-    }
-
-    fallback.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-    return fallback.date(from: value)
-}
-
-private func resolveCourses(
-    data: WidgetScheduleData,
-    targetWeekDay: Int,
-    targetWeek: Int,
-    dayShiftFromSource: Int
-) -> [WidgetCourse] {
-    // Exactly one-day stale: source tomorrowCourses usually already contains the most accurate next-day snapshot.
-    if dayShiftFromSource == 1 {
-        return data.tomorrowCourses
-            .filter { $0.weeks.isEmpty || $0.weeks.contains(targetWeek) }
-            .sorted { $0.startPeriod < $1.startPeriod }
-    }
-
-    let candidates = data.weekSchedule[String(targetWeekDay)] ?? []
-    return candidates
-        .filter { $0.weeks.isEmpty || $0.weeks.contains(targetWeek) }
-        .sorted { $0.startPeriod < $1.startPeriod }
+    // An empty, valid schedule is different from a completed school day.
+    return data.todayCourses.isEmpty ? .noCourses : .classesEnded
 }
 
 // MARK: - Timeline Provider
@@ -326,10 +238,10 @@ struct Provider: TimelineProvider {
         if let data = currentEntry.widgetData {
             let transitionDates = calculateStateTransitions(data: data)
 
-            print("📊 [Widget] Generating \(min(transitionDates.count, 9)) additional timeline entries")
+            print("📊 [Widget] Generating \(transitionDates.count) additional timeline entries")
 
-            // Limit to 9 additional entries (10 total including current)
-            for (index, transitionDate) in transitionDates.prefix(9).enumerated() {
+            // Preserve all course boundaries in this precomputed timeline.
+            for (index, transitionDate) in transitionDates.enumerated() {
                 let futureEntry = createEntry(at: transitionDate, data: data)
                 entries.append(futureEntry)
 
@@ -392,7 +304,7 @@ struct Provider: TimelineProvider {
             )
         }
 
-        let normalizedData = normalizedWidgetDataForCurrentDay(data)
+        let normalizedData = data.normalized(at: Date())
 
         if normalizedData.currentWeekDay != data.currentWeekDay || normalizedData.currentWeek != data.currentWeek {
             print("⚠️ [Widget] Detected stale day data, normalized week/day \(data.currentWeek)-\(data.currentWeekDay) -> \(normalizedData.currentWeek)-\(normalizedData.currentWeekDay)")
@@ -613,7 +525,7 @@ struct Provider: TimelineProvider {
             // 明日预览：很低优先级
             return TimelineEntryRelevance(score: 5)
 
-        case .classesEnded, .error:
+        case .classesEnded, .noCourses, .error:
             // 课程已结束或错误状态：不显示
             return TimelineEntryRelevance(score: 0)
         }
@@ -623,90 +535,7 @@ struct Provider: TimelineProvider {
     /// 计算所有未来的状态转换时间点
     /// 包括：课程开始、课程结束、即将上课（15分钟前）、明日预览时间（21:00）、新的一天（0:00）
     private func calculateStateTransitions(data: WidgetScheduleData) -> [Date] {
-        var transitions: [Date] = []
-        let calendar = Calendar.current
-        let now = Date()
-
-        let template = data.timeTemplate
-        let approachingMinutes = data.approachingMinutes ?? 15
-        let tomorrowPreviewHour = data.tomorrowPreviewHour ?? 21
-
-        // 1. 遍历今日所有课程，添加关键时间点
-        for course in data.todayCourses {
-            guard let period = template.getPeriodRange(
-                startPeriod: course.startPeriod,
-                periodCount: course.periodCount
-            ) else { continue }
-
-            // 课程开始时间
-            if let startTime = parseTimeOnDate(period.startTime, date: now), startTime > now {
-                transitions.append(startTime)
-
-                // 课程开始前 N 分钟（即将上课状态）
-                if let approachingTime = calendar.date(
-                    byAdding: .minute,
-                    value: -approachingMinutes,
-                    to: startTime
-                ), approachingTime > now {
-                    transitions.append(approachingTime)
-                }
-            }
-
-            // 课程结束时间
-            if let endTime = parseTimeOnDate(period.endTime, date: now), endTime > now {
-                transitions.append(endTime)
-            }
-        }
-
-        // 2. 添加明日预览时间（今天的21:00或配置的时间）
-        if let tomorrowPreviewTime = calendar.date(
-            bySettingHour: tomorrowPreviewHour,
-            minute: 0,
-            second: 0,
-            of: now
-        ), tomorrowPreviewTime > now {
-            transitions.append(tomorrowPreviewTime)
-        }
-
-        // 3. 添加明天 0:00 作为新的一天的状态重置点
-        if let tomorrowMidnight = calendar.date(
-            byAdding: .day,
-            value: 1,
-            to: calendar.startOfDay(for: now)
-        ) {
-            transitions.append(tomorrowMidnight)
-        }
-
-        // 4. 去重、排序、过滤（只保留未来的时间）
-        let uniqueTransitions = Array(Set(transitions))
-            .filter { $0 > now }
-            .sorted()
-
-        // 5. 确保时间点之间至少间隔 5 分钟（Apple 推荐）
-        var filteredTransitions: [Date] = []
-        var lastTime: Date?
-
-        for time in uniqueTransitions {
-            if let last = lastTime {
-                // 检查是否距离上一个时间点至少5分钟
-                if time.timeIntervalSince(last) >= 300 { // 300秒 = 5分钟
-                    filteredTransitions.append(time)
-                    lastTime = time
-                }
-            } else {
-                filteredTransitions.append(time)
-                lastTime = time
-            }
-        }
-
-        print("📊 [Widget] Calculated \(filteredTransitions.count) state transitions:")
-        for (index, time) in filteredTransitions.prefix(10).enumerated() {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "HH:mm:ss"
-            print("   \(index + 1). \(formatter.string(from: time))")
-        }
-
-        return filteredTransitions
+        return data.transitionDates(after: Date())
     }
 
     // MARK: - Future Entry Creation
@@ -715,7 +544,7 @@ struct Provider: TimelineProvider {
     private func createEntry(at futureDate: Date, data: WidgetScheduleData) -> ScheduleEntry {
         let entry = ScheduleEntry(
             date: futureDate,
-            widgetData: data,
+            widgetData: data.normalized(at: futureDate),
             errorMessage: nil,
             relevance: nil,
             arrivedCourse: nil

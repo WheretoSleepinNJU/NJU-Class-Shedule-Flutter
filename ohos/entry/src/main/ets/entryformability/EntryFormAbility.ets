@@ -24,11 +24,13 @@ export default class EntryFormAbility extends FormExtensionAbility {
   }
 
   onCastToNormalForm(formId: string) {
+    this.initFormAsync(formId);
   }
 
   onUpdateForm(formId: string) {
     console.info(`[EntryFormAbility] onUpdateForm: ${formId}`);
-    this.updateForm(formId);
+    // A callback also repairs an ID registry lost by an older app process.
+    this.initFormAsync(formId);
   }
 
   // --- 异步逻辑 ---
@@ -40,6 +42,7 @@ export default class EntryFormAbility extends FormExtensionAbility {
 
   async addFormId(formId: string) {
     try {
+      await dataPreferences.removePreferencesFromCache(this.context, DATA_PREFERENCES_NAME);
       let preferences = await dataPreferences.getPreferences(this.context, DATA_PREFERENCES_NAME);
       let ids = await preferences.get(FORM_IDS_KEY, []) as Array<string>;
 
@@ -56,6 +59,7 @@ export default class EntryFormAbility extends FormExtensionAbility {
 
   async removeFormId(formId: string) {
     try {
+      await dataPreferences.removePreferencesFromCache(this.context, DATA_PREFERENCES_NAME);
       let preferences = await dataPreferences.getPreferences(this.context, DATA_PREFERENCES_NAME);
       let ids = await preferences.get(FORM_IDS_KEY, []) as Array<string>;
 
@@ -72,8 +76,9 @@ export default class EntryFormAbility extends FormExtensionAbility {
   }
 
   // 【核心修改】获取并解析数据
-  async getLatestFormData(): Promise<formBindingData.FormBindingData> {
+  async getLatestFormData(): Promise<WidgetFormData> {
     try {
+      await dataPreferences.removePreferencesFromCache(this.context, DATA_PREFERENCES_NAME);
       let preferences = await dataPreferences.getPreferences(this.context, DATA_PREFERENCES_NAME);
       let jsonStr = await preferences.get(WIDGET_DATA_KEY, '') as string;
       let currentTime = this.getCurrentTimeStr();
@@ -93,27 +98,23 @@ export default class EntryFormAbility extends FormExtensionAbility {
       // 【修复 6】使用类构建数据
       let dataObj = new WidgetFormData(parsedWidgetData, currentTime);
 
-      return formBindingData.createFormBindingData(dataObj);
+      return dataObj;
 
     } catch (err) {
       console.error(`[EntryFormAbility] Failed to get preferences: ${JSON.stringify(err)}`);
       // 出错时也返回符合结构的默认数据
       let errData = new WidgetFormData(DEFAULT_WIDGET_DATA, '00:00');
-      return formBindingData.createFormBindingData(errData);
+      return errData;
     }
   }
 
   async updateForm(formId: string) {
-    let bindingData = await this.getLatestFormData();
+    const formData = await this.getLatestFormData();
+    const bindingData = formBindingData.createFormBindingData(formData);
 
     formProvider.updateForm(formId, bindingData).then(() => {
-      // 这里的 bindingData.data 是 Object，需要转为我们的类型
-      // 由于我们上面是用 WidgetFormData 创建的，所以可以直接取 .widgetData
-      // 但 formBindingData 内部会被序列化，取出来时可能需要强转
-      let dataMap = bindingData.data as Record<string, Object>;
-      let widgetData = dataMap['widgetData'] as TodayWidgetData;
-
-      this.scheduleNextRefresh(formId, widgetData);
+      // Keep the typed source: FormBindingData may serialize its data payload.
+      this.scheduleNextRefresh(formId, formData.widgetData);
     }).catch((err: BusinessError) => {
       console.error(`[EntryFormAbility] updateForm failed: ${JSON.stringify(err)}`);
     });
@@ -167,9 +168,8 @@ export default class EntryFormAbility extends FormExtensionAbility {
   setNextRefreshDelay(formId: string, minutes: number) {
     if (minutes < 5) minutes = 5;
 
-    let time = new Date().getTime() + minutes * 60 * 1000;
-
-    formProvider.setFormNextRefreshTime(formId, time / 1000)
+    // FormKit expects a relative delay in minutes, not a Unix timestamp.
+    formProvider.setFormNextRefreshTime(formId, Math.ceil(minutes))
       .catch((err: BusinessError) => {
         console.error(`[EntryFormAbility] Failed to setNextRefreshTime: ${JSON.stringify(err)}`);
       });

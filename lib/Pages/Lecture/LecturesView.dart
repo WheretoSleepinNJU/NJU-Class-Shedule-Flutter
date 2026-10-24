@@ -32,6 +32,11 @@ class _LectureViewState extends State<LectureView> {
   final ScrollController _scrollController = ScrollController();
   List<String> _filterNames = [];
   final List<String> _filterStatus = [];
+  bool _loadError = false;
+  bool _loading = false;
+  final Dio _dio = Dio(BaseOptions(
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 15)));
 
   AppBar buildAppBar(BuildContext context) {
     return AppBar(
@@ -63,7 +68,7 @@ class _LectureViewState extends State<LectureView> {
       if (_scrollController.position.maxScrollExtent -
               _scrollController.position.pixels <=
           edge) {
-        if (pageNum < totalPages - 1) {
+        if (!_loading && !_loadError && pageNum < totalPages - 1) {
           pageNum++;
           _loadLectures();
         }
@@ -76,26 +81,26 @@ class _LectureViewState extends State<LectureView> {
   // }
 
   Future<bool> _loadFilters() async {
-    Dio dio = Dio();
-    var response = await dio.get(Url.URL_BACKEND + '/getTag');
-
-    for (String filter in response.data['data']) {
-      _filterNames.add(filter);
+    try {
+      final response = await _dio.get(Url.URL_BACKEND + '/getTag');
+      if (!mounted) return false;
+      setState(() => _filterNames = List<String>.from(response.data['data']));
+      return true;
+    } catch (_) {
+      if (mounted) setState(() => _loadError = true);
+      return false;
     }
-
-    setState(() {
-      _filterNames = _filterNames;
-    });
-    return true;
   }
 
   Future<bool> _loadLectures() async {
-    Dio dio = Dio();
-
+    if (_loading) return false;
+    _loading = true;
+    try {
     var params = {'limit': 5, 'page': pageNum + 1, 'tag': _filterStatus};
     if (_filterStatus.isEmpty) params.remove('tag');
     var response =
-        await dio.get(Url.URL_BACKEND + '/getAll', queryParameters: params);
+        await _dio.get(Url.URL_BACKEND + '/getAll', queryParameters: params);
+    if (!mounted) return false;
     totalPages = response.data['total_page'];
 
     for (Map lectureRow in response.data['data']) {
@@ -108,6 +113,12 @@ class _LectureViewState extends State<LectureView> {
       _lectureCards = _lectureCards;
     });
     return true;
+    } catch (_) {
+      if (mounted) setState(() => _loadError = true);
+      return false;
+    } finally {
+      _loading = false;
+    }
   }
 
   Future<Lecture> _parseLecture(data) async {
@@ -142,6 +153,8 @@ class _LectureViewState extends State<LectureView> {
   }
 
   Future<void> _refresh() async {
+    if (_loading) return;
+    setState(() => _loadError = false);
     totalPages = 1;
     pageNum = 0;
     _lectureCards = <LectureCard>[];
@@ -149,11 +162,19 @@ class _LectureViewState extends State<LectureView> {
     bool rst = true;
     if (_filterNames.isEmpty) rst = await _loadFilters();
     rst &= await _loadLectures();
+    if (!mounted) return;
     if (rst) {
       Toast.showToast(S.of(context).lecture_refresh_success_toast, context);
     } else {
       Toast.showToast(S.of(context).lecture_refresh_fail_toast, context);
     }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _dio.close(force: true);
+    super.dispose();
   }
 
   @override
@@ -182,8 +203,13 @@ class _LectureViewState extends State<LectureView> {
           key: _refreshKey,
           onRefresh: _refresh,
           child: ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
             children: List<Widget>.generate(
                 _lectureCards.length, (int i) => _lectureCards[i])
+              ..insertAll(0, _loadError ? [
+                TextButton(onPressed: _refresh,
+                    child: Text(S.of(context).network_error_toast))
+              ] : <Widget>[])
               ..insert(
                   0,
                   Padding(

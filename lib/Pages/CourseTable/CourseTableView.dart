@@ -60,6 +60,7 @@ class CourseTableViewState extends State<CourseTableView> {
   late double _weekTitleHeight;
   late double _weekTitleWidth;
   late double _snackbarHeight;
+  late TextScaler _tableTextScaler;
   late String _bgImgPath;
   int _freeCourseNum = 0;
 
@@ -115,10 +116,18 @@ class CourseTableViewState extends State<CourseTableView> {
       _maxShowClasses = Config.MAX_CLASSES;
     }
 
-    _screenWidth = MediaQuery.of(context).size.width;
+    // The timetable is inside SafeArea; landscape iPhones reserve horizontal
+    // space for the sensor housing on both sides of the content.
+    final mediaQuery = MediaQuery.of(context);
+    _screenWidth = mediaQuery.size.width - mediaQuery.padding.horizontal;
     _screenHeight = MediaQuery.of(context).size.height;
-    _weekTitleHeight = 30;
-    _classTitleWidth = 40;
+    // Seven day columns share a fixed width. Keep this compact overview
+    // readable without letting period labels squeeze out the courses.
+    // Settings and course details retain the full system text scale.
+    _tableTextScaler = mediaQuery.textScaler.clamp(maxScaleFactor: 1.4);
+    final textScale = _tableTextScaler.scale(12) / 12;
+    _weekTitleHeight = 30 * textScale;
+    _classTitleWidth = 40 * textScale;
     _snackbarHeight = 55;
     _weekTitleWidth = (_screenWidth - _classTitleWidth) / _maxShowDays;
     int height = await ScopedModel.of<MainStateModel>(context).getClassHeight();
@@ -134,6 +143,12 @@ class CourseTableViewState extends State<CourseTableView> {
       _classTitleHeight = height.toDouble();
     } else {
       _classTitleHeight = 52;
+    }
+    // Keep period labels readable at accessibility font sizes. The timetable
+    // already scrolls vertically, so fitting every row must not clip labels.
+    final minimumRowHeight = (_isShowClassTime ? 52.0 : 24.0) * textScale;
+    if (_classTitleHeight < minimumRowHeight) {
+      _classTitleHeight = minimumRowHeight;
     }
 
     return true;
@@ -333,7 +348,9 @@ class CourseTableViewState extends State<CourseTableView> {
                       Positioned.fill(child: BackgroundImage(_bgImgPath)),
                       SafeArea(
                         top: false,
-                        child: Stack(children: [
+                        child: MediaQuery.withClampedTextScaling(
+                          maxScaleFactor: 1.4,
+                          child: Stack(children: [
                           //   Container(
                           // decoration: _bgImgPath == ""
                           //     ? BoxDecoration()
@@ -556,6 +573,7 @@ class CourseTableViewState extends State<CourseTableView> {
                             ),
                           ),
                         ]),
+                        ),
                       ),
                     ]),
                     floatingActionButton: _isShowAddButton

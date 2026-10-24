@@ -69,6 +69,7 @@ struct WidgetScheduleData: Codable {
     // Configuration
     let approachingMinutes: Int?  // 即将上课提前时间（分钟），默认15
     let tomorrowPreviewHour: Int?  // 明日预览开始时间（小时），默认21
+    var semesterCourses: [WidgetCourse]? = nil
 }
 
 // MARK: - Live Activity Data
@@ -180,4 +181,91 @@ struct AnyCodable: Codable {
             try container.encodeNil()
         }
     }
+}
+
+// MARK: - Calendar projection shared by snapshots and future timeline entries
+extension WidgetScheduleData {
+    /// Keep every course boundary: dropping nearby transitions can freeze an
+    /// ended class until the next distant entry or the following day.
+    func transitionDates(after now: Date, calendar: Calendar = .current) -> [Date] {
+        var dates = Set<Date>()
+        func time(_ value: String) -> Date? {
+            let parts = value.split(separator: ":").compactMap { Int($0) }
+            guard parts.count == 2, (0...23).contains(parts[0]), (0...59).contains(parts[1]) else { return nil }
+            return calendar.date(bySettingHour: parts[0], minute: parts[1], second: 0, of: now)
+        }
+        for course in todayCourses {
+            guard let period = timeTemplate.getPeriodRange(startPeriod: course.startPeriod, periodCount: course.periodCount) else { continue }
+            if let start = time(period.startTime) {
+                dates.insert(start)
+                dates.insert(start.addingTimeInterval(-Double(approachingMinutes ?? 15) * 60))
+            }
+            if let end = time(period.endTime) { dates.insert(end) }
+        }
+        if let preview = calendar.date(bySettingHour: tomorrowPreviewHour ?? 21, minute: 0, second: 0, of: now) { dates.insert(preview) }
+        if let midnight = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: now)) { dates.insert(midnight) }
+        return dates.filter { $0 > now }.sorted()
+    }
+
+    var requiresRefresh: Bool {
+        dataSource == "empty" || dataSource == "stale"
+    }
+
+    func normalized(at date: Date, calendar: Calendar = .current) -> WidgetScheduleData {
+        let sourceDate = parseWidgetISODate(timestamp) ?? parseWidgetISODate(lastUpdateTime)
+        let dayShift = sourceDate.map {
+            calendar.dateComponents([.day], from: calendar.startOfDay(for: $0),
+                                    to: calendar.startOfDay(for: date)).day ?? 0
+        } ?? 0
+        let weekday = ((calendar.component(.weekday, from: date) + 5) % 7) + 1
+        // floor, rather than integer truncation, also handles a clock moved back.
+        let week = currentWeek + Int(floor(Double(currentWeekDay - 1 + dayShift) / 7))
+        let tomorrowDay = weekday == 7 ? 1 : weekday + 1
+        let tomorrowWeek = weekday == 7 ? week + 1 : week
+        // Older payloads may have an empty tomorrow snapshot. Merge available
+        // candidates before filtering; never let an empty snapshot hide a course.
+        let candidates = semesterCourses ??
+            (weekSchedule.values.flatMap { $0 } + todayCourses + tomorrowCourses)
+        func courses(day: Int, week: Int) -> [WidgetCourse] {
+            var ids = Set<String>()
+            return candidates.filter {
+                $0.weekDay == day && $0.weeks.contains(week) && ids.insert($0.id).inserted
+            }.sorted { $0.startPeriod == $1.startPeriod ? $0.id < $1.id : $0.startPeriod < $1.startPeriod }
+        }
+        let today = courses(day: weekday, week: week)
+        let tomorrow = courses(day: tomorrowDay, week: tomorrowWeek)
+        let schedule = Dictionary(uniqueKeysWithValues: (1...7).map {
+            (String($0), courses(day: $0, week: week))
+        })
+        // A legacy weekly snapshot cannot prove that a different week is empty.
+        let incomplete = sourceDate == nil ||
+            (semesterCourses == nil && week != currentWeek && totalCourses > 0)
+        let formatter = ISO8601DateFormatter()
+        return WidgetScheduleData(
+            version: version, timestamp: formatter.string(from: date),
+            schoolId: schoolId, schoolName: schoolName, timeTemplate: timeTemplate,
+            currentWeek: week, currentWeekDay: weekday, semesterName: semesterName,
+            todayCourses: today, tomorrowCourses: tomorrow, weekSchedule: schedule,
+            weekCourseCount: schedule.values.reduce(0) { $0 + $1.count },
+            hasCoursesToday: !today.isEmpty, hasCoursesTomorrow: !tomorrow.isEmpty,
+            dataSource: incomplete ? "stale" : dataSource, totalCourses: totalCourses,
+            lastUpdateTime: lastUpdateTime, approachingMinutes: approachingMinutes,
+            tomorrowPreviewHour: tomorrowPreviewHour, semesterCourses: semesterCourses)
+    }
+}
+
+func parseWidgetISODate(_ value: String) -> Date? {
+    let iso = ISO8601DateFormatter()
+    iso.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+    if let date = iso.date(from: value) { return date }
+    iso.formatOptions = [.withInternetDateTime]
+    if let date = iso.date(from: value) { return date }
+    let formatter = DateFormatter()
+    formatter.locale = Locale(identifier: "en_US_POSIX")
+    formatter.timeZone = .current
+    for format in ["yyyy-MM-dd'T'HH:mm:ss.SSSSSS", "yyyy-MM-dd'T'HH:mm:ss.SSS", "yyyy-MM-dd'T'HH:mm:ss"] {
+        formatter.dateFormat = format
+        if let date = formatter.date(from: value) { return date }
+    }
+    return nil
 }

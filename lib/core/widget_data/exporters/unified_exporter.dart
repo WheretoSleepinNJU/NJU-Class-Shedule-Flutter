@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import '../models/widget_schedule_data.dart';
 import '../models/live_activity_data.dart';
-import '../models/widget_course.dart';
 
 /// 统一数据导出器
 /// 为不同平台（iOS、Android、HarmonyOS）提供标准化的数据导出格式
@@ -14,16 +13,7 @@ class UnifiedDataExporter {
 
   /// 导出 Widget 专用数据包
   static Map<String, dynamic> exportWidgetData(WidgetScheduleData data) {
-    // 确保数据大小在限制范围内
-    final widgetJson = data.toJson();
-    final size = _calculateJsonSize(widgetJson);
-    
-    if (size > MAX_WIDGET_SIZE) {
-      // 数据过大，进行裁剪
-      final trimmedData = _trimWidgetData(data);
-      return _createWidgetPackage(trimmedData);
-    }
-    
+    // Do not truncate schedule rows: native timelines need every day/week.
     return _createWidgetPackage(data);
   }
 
@@ -274,41 +264,6 @@ class UnifiedDataExporter {
       'next_activity_time': nextActivity?.startTime.toIso8601String(),
       'next_activity_name': nextActivity?.courseName,
     };
-  }
-
-  /// 裁剪 Widget 数据（当数据过大时）
-  static WidgetScheduleData _trimWidgetData(WidgetScheduleData originalData) {
-    // 只保留今天和明天的课程，本周课表只保留前3天
-    final trimmedToday = originalData.todayCourses.take(10).toList();
-    final trimmedTomorrow = originalData.tomorrowCourses.take(10).toList();
-    
-    final trimmedWeekSchedule = <int, List<WidgetCourse>>{};
-    final weekDays = [1, 2, 3]; // 只保留周一到周三
-    for (final day in weekDays) {
-      if (originalData.weekSchedule.containsKey(day)) {
-        trimmedWeekSchedule[day] = originalData.weekSchedule[day]!.take(5).toList();
-      }
-    }
-
-    return WidgetScheduleData(
-      version: originalData.version,
-      timestamp: originalData.timestamp,
-      schoolId: originalData.schoolId,
-      schoolName: originalData.schoolName,
-      timeTemplate: originalData.timeTemplate,
-      currentWeek: originalData.currentWeek,
-      currentWeekDay: originalData.currentWeekDay,
-      semesterName: originalData.semesterName,
-      todayCourses: trimmedToday,
-      tomorrowCourses: trimmedTomorrow,
-      weekSchedule: trimmedWeekSchedule,
-      weekCourseCount: trimmedWeekSchedule.values.expand((c) => c).length,
-      hasCoursesToday: trimmedToday.isNotEmpty,
-      hasCoursesTomorrow: trimmedTomorrow.isNotEmpty,
-      dataSource: originalData.dataSource,
-      totalCourses: originalData.totalCourses,
-      lastUpdateTime: originalData.lastUpdateTime,
-    );
   }
 
   /// 计算 JSON 数据大小（字节）

@@ -28,8 +28,9 @@ struct Widget2x2 {
 
     this.validCourses = allCourses.filter(course => {
       const endMin = this.parseTime(course.endTimeStr);
-      // 结束时间 >= 当前时间，保留
-      return endMin >= currentMin;
+      // The end boundary is exclusive. Keeping a course at its exact end
+      // minute can leave it visible until the next (hourly) refresh.
+      return endMin > currentMin;
     });
 
     if (this.validCourses.length > 0) {

@@ -44,11 +44,18 @@ else
     echo "✅ 使用官方 Flutter 下载源"
 fi
 
-# 获取项目根目录
-PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# 获取被 source 的脚本路径，兼容 macOS 默认 zsh 和 bash。
+if [ -n "${ZSH_VERSION:-}" ]; then
+    NJU_SETUP_SCRIPT="${(%):-%x}"
+else
+    NJU_SETUP_SCRIPT="${BASH_SOURCE[0]}"
+fi
+PROJECT_ROOT="$(cd "$(dirname "$NJU_SETUP_SCRIPT")/.." && pwd)"
+unset NJU_SETUP_SCRIPT
 
 # 配置 FVM Flutter 路径
 if [ -d "$PROJECT_ROOT/.fvm/flutter_sdk" ]; then
+    export FLUTTER_SDK="$PROJECT_ROOT/.fvm/flutter_sdk"
     export PATH="$PROJECT_ROOT/.fvm/flutter_sdk/bin:$PATH"
     echo "✅ FVM Flutter 路径已配置"
 else

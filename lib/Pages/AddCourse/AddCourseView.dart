@@ -57,7 +57,10 @@ class _AddViewState extends State<AddView> {
           title: Text(S.of(context).add_manually_title),
         ),
         body: SafeArea(child: Builder(builder: (BuildContext context) {
-          return Container(
+          return SingleChildScrollView(
+            padding: EdgeInsets.only(
+                bottom: resizeEnabled ? 0 : MediaQuery.of(context).viewInsets.bottom),
+            child: Container(
               width: double.infinity,
               margin: const EdgeInsets.all(10),
               child: Column(children: <Widget>[
@@ -203,7 +206,7 @@ class _AddViewState extends State<AddView> {
                     child: TextButton(
                         child: Text(S.of(context).add_class),
                         onPressed: () async {
-                          if (_nameController.text == '') {
+                          if (_nameController.text.trim().isEmpty) {
                             setState(() {
                               _classNameIsValid = false;
                             });
@@ -245,7 +248,7 @@ class _AddViewState extends State<AddView> {
                           }
                           bool result = await _presenter.addCourse(
                               context,
-                              _nameController.text,
+                              _nameController.text.trim(),
                               _teacherController.text,
                               _noteController.text,
                               [_node]);
@@ -258,7 +261,7 @@ class _AddViewState extends State<AddView> {
                           }
                           Navigator.of(context).pop(true);
                         }))
-              ]));
+              ])));
         })));
   }
 }

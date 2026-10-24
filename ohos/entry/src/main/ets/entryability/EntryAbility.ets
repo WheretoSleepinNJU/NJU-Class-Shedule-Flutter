@@ -1,4 +1,4 @@
-import { FlutterAbility, FlutterEngine, MethodCall, MethodChannel, MethodResult } from '@ohos/flutter_ohos';
+import { FlutterAbility, FlutterEngine, FlutterShellArgs, MethodCall, MethodChannel, MethodResult } from '@ohos/flutter_ohos';
 import { GeneratedPluginRegistrant } from '../plugins/GeneratedPluginRegistrant';
 import { BusinessError } from '@kit.BasicServicesKit';
 import dataPreferences from '@ohos.data.preferences';
@@ -9,6 +9,16 @@ import { DEFAULT_WIDGET_DATA, WidgetFormData, DATA_PREFERENCES_NAME, WIDGET_DATA
 
 
 export default class EntryAbility extends FlutterAbility {
+  private widgetUpdateQueue: Promise<void> = Promise.resolve();
+
+  getFlutterShellArgs(): FlutterShellArgs {
+    const args = super.getFlutterShellArgs();
+    // Keep the UI isolate on its own engine thread to avoid the startup stack
+    // overflow observed with Flutter 3.35's merged platform/UI thread.
+    args.add('--no-enable-merged-platform-ui-thread');
+    return args;
+  }
+
   configureFlutterEngine(flutterEngine: FlutterEngine) {
     super.configureFlutterEngine(flutterEngine)
     GeneratedPluginRegistrant.registerWith(flutterEngine)
@@ -22,12 +32,12 @@ export default class EntryAbility extends FlutterAbility {
 
     channel.setMethodCallHandler({
       onMethodCall: (call: MethodCall, result: MethodResult): void => {
-        this.handleWidgetUpdate(call, result);
+        this.widgetUpdateQueue = this.widgetUpdateQueue.then((): Promise<void> => this.handleWidgetUpdate(call, result));
       }
     });
   }
 
-  private async handleWidgetUpdate(call: MethodCall, result: MethodResult) {
+  private async handleWidgetUpdate(call: MethodCall, result: MethodResult): Promise<void> {
     if (call.method === 'updateWidget') {
       const jsonStr = call.args as string;
       console.info(`[EntryAbility] Received widget data length: ${jsonStr.length}`);
@@ -47,6 +57,9 @@ export default class EntryAbility extends FlutterAbility {
 
   private async saveDataToPreferences(jsonStr: string) {
     try {
+      // The form extension writes active IDs in a separate process. Reload
+      // before writing so this process cannot flush an old cached ID list.
+      await dataPreferences.removePreferencesFromCache(this.context, DATA_PREFERENCES_NAME);
       let preferences = await dataPreferences.getPreferences(this.context, DATA_PREFERENCES_NAME);
       await preferences.put(WIDGET_DATA_KEY, jsonStr);
       await preferences.flush();
@@ -76,13 +89,17 @@ export default class EntryAbility extends FlutterAbility {
 
       let formData = formBindingData.createFormBindingData(formBindingObj);
 
+      await dataPreferences.removePreferencesFromCache(this.context, DATA_PREFERENCES_NAME);
       let preferences = await dataPreferences.getPreferences(this.context, DATA_PREFERENCES_NAME);
       let formIds = await preferences.get(FORM_IDS_KEY, []) as Array<string>;
 
       console.info(`[EntryAbility] Updating ${formIds.length} active widgets...`);
 
       for (const formId of formIds) {
-        formProvider.updateForm(formId, formData).catch((err: BusinessError) => {
+        formProvider.updateForm(formId, formData).then(() => {
+          // Re-arm existing cards when the selected timetable or its times change.
+          return formProvider.setFormNextRefreshTime(formId, 5);
+        }).catch((err: BusinessError) => {
           console.error(`[EntryAbility] Failed to update form ${formId}: ${err.code}`);
         });
       }

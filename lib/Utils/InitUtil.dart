@@ -10,6 +10,7 @@ import '../Resources/Url.dart';
 import '../Utils/ColorUtil.dart';
 import '../Utils/WeekUtil.dart';
 import '../core/widget_data/services/unified_data_service.dart';
+import '../core/widget_data/utils/widget_refresh_helper.dart';
 
 class InitUtil {
   static Future<List> initialize() async {
@@ -30,8 +31,8 @@ class InitUtil {
   /// 初始化 Widget 数据
   static Future<void> initializeWidgetData() async {
     try {
-      // 仅在 iOS 平台执行
-      if (!Platform.isIOS) return;
+      // 仅在具备原生小组件实现的平台执行（iOS / Android）
+      if (!WidgetRefreshHelper.isSupportedPlatform) return;
 
       final preferences = await SharedPreferences.getInstance();
       final widgetService = UnifiedDataService(preferences: preferences);
@@ -75,11 +76,21 @@ class InitUtil {
     return '';
   }
 
-  static checkDataBase() async {
-    CourseTableProvider courseTableProvider = CourseTableProvider();
-    List c = await courseTableProvider.getAllCourseTable();
-    if (c.isEmpty) {
-      courseTableProvider.insert(CourseTable(Config.default_class_table));
+  static Future<void> checkDataBase({CourseTableProvider? provider}) async {
+    final courseTableProvider = provider ?? CourseTableProvider();
+    final tables = await courseTableProvider.getAllCourseTable();
+    if (tables.isEmpty) {
+      final table = await courseTableProvider
+          .insert(CourseTable(Config.default_class_table));
+      tables.add(table.toMap());
+    }
+
+    // A fresh installation (or an older installation with tableId = 0) must
+    // select a real table before export and widget initialization read it.
+    final preferences = await SharedPreferences.getInstance();
+    final selectedId = preferences.getInt('tableId');
+    if (!tables.any((table) => table[columnId] == selectedId)) {
+      await preferences.setInt('tableId', tables.first[columnId] as int);
     }
   }
 

@@ -314,6 +314,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "qr_share_copy_button": MessageLookupByLibrary.simpleMessage("复制完整分享串"),
         "qr_share_copy_success_toast":
             MessageLookupByLibrary.simpleMessage("已复制完整分享串"),
+        "qrcode_empty_table_toast": MessageLookupByLibrary.simpleMessage(
+            "当前课表暂无课程，请先添加或导入课程后再导出"),
         "qrcode_name_error_toast":
             MessageLookupByLibrary.simpleMessage("读取课表名称失败，可能为链接错误"),
         "qrcode_read_error_toast":

@@ -74,28 +74,36 @@
 
 ## 部署相关
 
-因为增加了鸿蒙支持，需要使用鸿蒙 Flutter 版本。
+三端使用 `.fvmrc` 固定的 Flutter `3.35.8-ohos-1.0.4`（Dart 3.9.2）。扫码依赖固定到带鸿蒙适配的 mobile_scanner 7.1.4 提交；iOS 改用苹果 Vision，可在 Apple 芯片模拟器原生构建。
 
-1. 根据 [flutter_flutter oh-3.27.0](https://gitcode.com/openharmony-tpc/flutter_flutter/tree/oh-3.27.0-release) 配置鸿蒙依赖
+同时使用带鸿蒙适配的 WebView 4.13.0、sqflite 2.4.2 和 fluttertoast 9.0.0，清除旧 Android v1 注册接口的依赖。系统分享插件暂保留原实现，并将仅移除 v1 注册代码的兼容补丁放在 `third_party/share_extend`（来源与变更见该目录的 `NJU_PATCHES.md`），无需修改本机 Pub 缓存。
+
+1. 根据 [Flutter OH 3.35](https://gitcode.com/CPF-Flutter/flutter_flutter/tree/3.35.8-ohos-1.0.4) 配置环境；不要对旧的 OH SDK 运行官方 `flutter upgrade`。
 2. 加载项目环境变量：`source tool/setup_ohos_env.sh` （配好环境之后就只需要每次开发打开终端执行一次）
-3. 安装并使用指定版本：`fvm install oh-3.27.0-release && fvm use 3.27.5-ohos-1.0.3` （这里很奇怪，下载的版本号和cache版本号不一样）
+3. 安装并使用指定版本：`fvm install 3.35.8-ohos-1.0.4 && fvm use 3.35.8-ohos-1.0.4`（FVM 的 Flutter 仓库需配置为 `https://gitcode.com/CPF-Flutter/flutter_flutter.git`）。也可克隆该 tag，并将 `.fvm/flutter_sdk` 链接到 SDK 目录。
 4. 运行 `fvm flutter doctor -v` 检查环境变量配置，Flutter 与 OpenHarmony 都应为 `ok`
 5. 在 `external` 文件夹中 clone 依赖（若尚未 clone）
   * `cd external`
   * `git clone https://gitcode.com/openharmony-tpc/flutter_packages.git` 
-  * `git clone https://gitcode.com/openharmony-sig/flutter_sqflite.git`
   * `git clone https://gitcode.com/nutpi/flutter_plus_plugins_package_info_plus.git`
-  * `git clone https://gitcode.com/openharmony-sig/fluttertpc_mobile_scanner.git`
   * `git clone https://gitcode.com/openharmony-sig/fluttertpc_device_calendar`
 6. 如果在中国大陆网络下载失败，执行：
   * `export USE_CN_FLUTTER_MIRROR=1`
   * `source tool/setup_ohos_env.sh`
 
-### 快速切换构建环境
+Android 构建需要 JDK 17、Android SDK 36、AGP 8.13 / Gradle 8.13。`targetSdkVersion` 沿用 33；新版 Flutter 的最低系统为 Android 7.0（API 24），因此不再支持 Android 6.0。更新后运行 `fvm flutter pub get`，不要手动改 `.pub-cache` 中的扫码插件。iOS 的 UMCommon / UMDevice 固定到带 ARM64 模拟器切片的官方 XCFramework 版本。Xcode 27 模拟器单独使用 iOS 15 部署下限；真机项目仍保留 iOS 13，低版本发布需使用支持该部署下限的 Xcode。
 
-为了在 Android/iOS 与 OHOS 间减少手动操作，可在当前终端直接切换：
+### 使用项目 SDK 构建
 
-* 切到 OHOS 构建环境：`source tool/switch_flutter_env.sh ohos`
-* 切回官方 Flutter（Android/iOS 常用）：`source tool/switch_flutter_env.sh official`
+三端均使用项目固定的 SDK，避免终端切回旧版全局 Flutter：
 
-切换后建议运行 `flutter doctor -v` 或 `fvm flutter doctor -v` 做一次确认，并执行 `flutter clean` 以清除之前环境的构建缓存。
+```bash
+.fvm/flutter_sdk/bin/flutter pub get
+.fvm/flutter_sdk/bin/flutter build apk --release
+.fvm/flutter_sdk/bin/flutter run -d <iOS模拟器UUID>
+.fvm/flutter_sdk/bin/flutter build hap --debug
+```
+
+Apple 芯片 Mac 的 iOS 验证使用指定模拟器的 ARM64 构建。当前 OHOS SDK 的 macOS Release `gen_snapshot` 仍仅提供 x86_64，需通过 Rosetta 运行。若本机尚未安装，可按[苹果官方说明](https://support.apple.com/zh-cn/102527)执行 `softwareupdate --install-rosetta` 并接受许可，再运行 `.fvm/flutter_sdk/bin/flutter build hap --release`。Rosetta 用于 Mac 上的构建工具，输出的鸿蒙应用仍为 ARM64。
+
+鸿蒙入口通过引擎参数 `--no-enable-merged-platform-ui-thread` 保留独立 UI 线程，避免 Flutter 3.35 Release 在平台线程挂载页面时栈溢出、停留白屏。该设置放在项目的 `EntryAbility.getFlutterShellArgs()` 中。

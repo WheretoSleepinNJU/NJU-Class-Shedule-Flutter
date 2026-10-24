@@ -314,6 +314,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "qr_share_copy_button": MessageLookupByLibrary.simpleMessage("复制完整分享串"),
         "qr_share_copy_success_toast":
             MessageLookupByLibrary.simpleMessage("已复制完整分享串"),
+        "qrcode_empty_table_toast": MessageLookupByLibrary.simpleMessage(
+            "This timetable has no courses. Add or import courses before exporting."),
         "qrcode_name_error_toast":
             MessageLookupByLibrary.simpleMessage("读取课表名称失败，可能为链接错误"),
         "qrcode_read_error_toast":

@@ -123,6 +123,7 @@
   "importing_toast": "导入中 请稍后",
   "qrcode_url_error_toast": "分享串或二维码无效",
   "qrcode_name_error_toast": "读取课表名称失败，可能为链接错误",
+  "qrcode_empty_table_toast": "当前课表暂无课程，请先添加或导入课程后再导出",
   "qrcode_read_error_toast": "读取课程表，可能是 bug",
   "qr_scan_from_gallery_button": "相册导入二维码",
   "qr_scan_from_clipboard_button": "从剪贴板导入",

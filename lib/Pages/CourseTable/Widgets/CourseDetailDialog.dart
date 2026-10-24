@@ -13,16 +13,23 @@ class CourseDetailDialog extends StatelessWidget {
   final Course course;
   final bool isActive;
 
-  const CourseDetailDialog(this.course, this.isActive, this.onPressed,
-      {Key? key})
-      : super(key: key);
+  const CourseDetailDialog(
+    this.course,
+    this.isActive,
+    this.onPressed, {
+    Key? key,
+  }) : super(key: key);
 
   String _getWeekListString(BuildContext context) {
     bool flag = true;
     List weekList = json.decode(course.weeks!);
     if (weekList.length == 1) return S.of(context).week(weekList[0]);
-    String base = S.of(context).week_duration(
-        weekList[0].toString(), weekList[weekList.length - 1].toString());
+    String base = S
+        .of(context)
+        .week_duration(
+          weekList[0].toString(),
+          weekList[weekList.length - 1].toString(),
+        );
     for (int i = 1; i < weekList.length; i++) {
       if (weekList[i] - weekList[0] != i) {
         flag = false;
@@ -48,7 +55,7 @@ class CourseDetailDialog extends StatelessWidget {
     }
   }
 
-  Widget linkifyText(context, String text) {
+  Widget linkifyText(BuildContext context, String text) {
     return SelectableLinkify(
       onOpen: (link) async {
         String url = link.url.replaceAll(RegExp('[^\x00-\xff]'), '');
@@ -59,21 +66,30 @@ class CourseDetailDialog extends StatelessWidget {
         }
       },
       text: text,
-      style: const TextStyle(fontSize: 16),
+      // flutter_linkify defaults to 1.0 instead of inheriting MediaQuery.
+      textScaleFactor: MediaQuery.textScalerOf(context).scale(16) / 16,
+      style: const TextStyle(fontSize: 16, height: 1.4),
       linkStyle: TextStyle(
-          color: Theme.of(context).brightness == Brightness.light
-              ? Theme.of(context).primaryColor
-              : Colors.white),
+        color:
+            Theme.of(context).brightness == Brightness.light
+                ? Theme.of(context).primaryColor
+                : Colors.white,
+      ),
       options: const LinkifyOptions(humanize: false),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    String weekString = Constant.WEEK_WITH_BIAS[course.weekTime!] +
+    String weekString =
+        Constant.WEEK_WITH_BIAS[course.weekTime!] +
         ' ' +
-        S.of(context).class_duration(course.startTime.toString(),
-            (course.startTime! + course.timeCount!).toString());
+        S
+            .of(context)
+            .class_duration(
+              course.startTime.toString(),
+              (course.startTime! + course.timeCount!).toString(),
+            );
     if (course.startTime == 0 && course.timeCount == 0) {
       weekString = S.of(context).free_time;
     }
@@ -95,58 +111,47 @@ class CourseDetailDialog extends StatelessWidget {
 
     return MDialog(
       (isActive ? '' : S.of(context).not_this_week) + course.name!,
-      SingleChildScrollView(
-          child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Row(children: [
-            const Icon(Icons.location_on),
-            const Padding(padding: EdgeInsets.only(left: 5)),
-            Flexible(
-                child: linkifyText(
-                    context,
-                    course.classroom == ""
-                        ? S.of(context).unknown_place
-                        : course.classroom ?? S.of(context).unknown_place)),
-          ]),
-          const Padding(padding: EdgeInsets.only(bottom: 10)),
-          Row(children: [
-            const Icon(Icons.account_circle),
-            const Padding(padding: EdgeInsets.only(left: 5)),
-            Flexible(child: linkifyText(context, course.teacher ?? '')),
-          ]),
-          const Padding(padding: EdgeInsets.only(bottom: 10)),
-          Row(children: [
-            const Icon(Icons.access_time),
-            const Padding(padding: EdgeInsets.only(left: 5)),
-            Flexible(child: linkifyText(context, weekString)),
-          ]),
-          const Padding(padding: EdgeInsets.only(bottom: 10)),
-          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Icon(Icons.event),
-            const Padding(padding: EdgeInsets.only(left: 5)),
-            Flexible(child: linkifyText(context, weekListString)),
-          ]),
-          const Padding(padding: EdgeInsets.only(bottom: 10)),
-          Row(children: [
-            const Icon(Icons.settings_suggest),
-            const Padding(padding: EdgeInsets.only(left: 5)),
-            Flexible(child: linkifyText(context, importTypeStr)),
-          ]),
-          const Padding(padding: EdgeInsets.only(bottom: 10)),
-          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Icon(Icons.description),
-            const Padding(padding: EdgeInsets.only(left: 5)),
-            Flexible(
-                child: linkifyText(
-                    context,
-                    course.info == ""
-                        ? S.of(context).unknown_info
-                        : course.info ?? S.of(context).unknown_info)),
-          ]),
-        ],
-      )),
+      Builder(
+        builder: (dialogContext) {
+          Widget detailRow(IconData icon, String text) => Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 3),
+                  child: Icon(icon, size: 24),
+                ),
+                const SizedBox(width: 10),
+                Expanded(child: linkifyText(dialogContext, text)),
+              ],
+            ),
+          );
+          final teacher = course.teacher?.trim() ?? '';
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              detailRow(
+                Icons.location_on,
+                (course.classroom?.isEmpty ?? true)
+                    ? S.of(context).unknown_place
+                    : course.classroom!,
+              ),
+              if (teacher.isNotEmpty) detailRow(Icons.account_circle, teacher),
+              detailRow(Icons.access_time, weekString),
+              detailRow(Icons.event, weekListString),
+              detailRow(Icons.settings_suggest, importTypeStr),
+              detailRow(
+                Icons.description,
+                (course.info?.isEmpty ?? true)
+                    ? S.of(context).unknown_info
+                    : course.info!,
+              ),
+            ],
+          );
+        },
+      ),
       widgetOKAction: onPressed,
     );
   }

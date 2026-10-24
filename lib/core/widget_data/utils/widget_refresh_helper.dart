@@ -6,7 +6,11 @@ import '../services/unified_data_service.dart';
 /// 在课程数据变化后自动刷新 Widget
 class WidgetRefreshHelper {
   static UnifiedDataService? _cachedService;
-  
+
+  /// 当前平台是否具备原生小组件实现
+  /// iOS 使用 WidgetKit，Android 使用 AppWidgetProvider，两端共用同一套数据通道
+  static bool get isSupportedPlatform => Platform.isIOS || Platform.isAndroid;
+
   /// 获取 Widget 数据服务实例（单例模式）
   static Future<UnifiedDataService> _getService() async {
     if (_cachedService != null) return _cachedService!;
@@ -49,8 +53,8 @@ class WidgetRefreshHelper {
   /// 通用刷新方法
   static Future<void> _refreshWidget(String reason) async {
     try {
-      // 仅在 iOS 平台执行
-      if (!Platform.isIOS) return;
+      // 仅在具备原生小组件实现的平台执行
+      if (!isSupportedPlatform) return;
       
       final service = await _getService();
       
@@ -78,7 +82,7 @@ class WidgetRefreshHelper {
   /// 手动刷新 Widget（供开发调试使用）
   static Future<bool> manualRefresh() async {
     try {
-      if (!Platform.isIOS) return false;
+      if (!isSupportedPlatform) return false;
       
       final service = await _getService();
       service.clearCache();

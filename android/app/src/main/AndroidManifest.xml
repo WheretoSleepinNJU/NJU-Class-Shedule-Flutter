@@ -70,5 +70,25 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+        <!-- 课表桌面小组件，对应 iOS 端的 ScheduleWidget Extension -->
+        <receiver
+            android:name=".widget.ScheduleWidgetProvider"
+            android:exported="false"
+            android:label="@string/widget_schedule_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <!-- 系统时间 / 时区 / 日期变化都会影响上课状态判定，需要重绘 -->
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.DATE_CHANGED" />
+                <action android:name="com.lilystudio.wheretosleepinnju.widget.ACTION_REFRESH" />
+                <action android:name="com.lilystudio.wheretosleepinnju.widget.ACTION_SCHEDULED_UPDATE" />
+                <action android:name="com.lilystudio.wheretosleepinnju.widget.ACTION_COURSE_ARRIVED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_schedule_info" />
+        </receiver>
     </application>
 </manifest>

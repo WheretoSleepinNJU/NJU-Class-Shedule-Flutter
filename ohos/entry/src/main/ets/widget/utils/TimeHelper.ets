@@ -15,6 +15,6 @@ export function isCourseActive(startTimeStr: string, endTimeStr: string, current
   const end = parseTime(endTimeStr);
   const now = parseTime(currentTimeStr);
 
-  // 判定区间：[开始前30分钟] ~ [课程结束]
-  return now >= (start - bufferMinutes) && now <= end;
+  // 判定区间：[开始前30分钟, 课程结束)
+  return now >= (start - bufferMinutes) && now < end;
 }

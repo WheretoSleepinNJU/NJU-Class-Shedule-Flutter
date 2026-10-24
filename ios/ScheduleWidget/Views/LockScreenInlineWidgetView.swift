@@ -28,7 +28,7 @@ struct LockScreenInlineWidgetView: View {
             return entry.nextCourse
         case .tomorrowPreview:
             return entry.widgetData?.tomorrowCourses.first
-        case .classesEnded, .error:
+        case .classesEnded, .noCourses, .error:
             return nil
         }
     }
@@ -38,7 +38,7 @@ struct LockScreenInlineWidgetView: View {
             return "打开应用更新数据"
         }
 
-        return "今日无课"
+        return entry.displayState == .classesEnded ? "今日课程已结束" : "今日无课"
     }
 
     private var destinationURL: URL? {
@@ -53,7 +53,7 @@ struct LockScreenInlineWidgetView: View {
     }
 
     private var isNoDataState: Bool {
-        entry.widgetData == nil || entry.errorMessage != nil
+        entry.widgetData == nil || entry.errorMessage != nil || entry.displayState == .error
     }
 
     private func buildTimeText(for course: WidgetCourse) -> String {
@@ -70,7 +70,7 @@ struct LockScreenInlineWidgetView: View {
             return formatTime(period.endTime) + "下课"
         case .approachingClass, .beforeFirstClass, .betweenClasses, .tomorrowPreview:
             return formatTime(period.startTime) + "上课"
-        case .classesEnded, .error:
+        case .classesEnded, .noCourses, .error:
             return "第\(course.startPeriod)节"
         }
     }

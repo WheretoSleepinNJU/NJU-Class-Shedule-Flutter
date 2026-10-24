@@ -5,7 +5,8 @@ import 'package:wheretosleepinnju/Utils/ColorUtil.dart';
 import '../core/widget_data/utils/widget_refresh_helper.dart';
 import '../Models/CourseModel.dart';
 import '../Models/CourseTableModel.dart';
-import '../Models/ScheduleModel.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../core/widget_data/services/course_selector.dart';
 
 class WidgetHelper {
   static const MethodChannel _channel =
@@ -24,22 +25,16 @@ class WidgetHelper {
       List rawList = await courseProvider.getAllCourses(tableId);
       List<Course> allCourses = rawList.map((e) => Course.fromMap(e)).toList();
 
-      ScheduleModel model = ScheduleModel(allCourses, currentWeek);
-      model.init(); // 执行 classify 和 deduplicate
-
-      int todayWeekday = DateTime.now().weekday; // 1-7
-
-      List<Course> todayCourses = [];
-
-      todayCourses
-          .addAll(model.activeCourses.where((c) => c.weekTime == todayWeekday));
-
-      for (var list in model.multiCourses) {
-        todayCourses.addAll(list.where((c) => c.weekTime == todayWeekday));
-      }
-
-      todayCourses
-          .sort((a, b) => (a.startTime ?? 0).compareTo(b.startTime ?? 0));
+      final now = DateTime.now();
+      final prefs = await SharedPreferences.getInstance();
+      currentWeek = widgetWeekAt(
+        now,
+        prefs.getInt('weekIndex') ?? currentWeek,
+        prefs.getString('lastWeekMonday'),
+      );
+      final todayWeekday = now.weekday;
+      final todayCourses = selectWidgetCourses(
+          allCourses, currentWeek, day: todayWeekday);
 
       String dateStr = _getWeekdayStr(todayWeekday);
 
@@ -63,11 +58,17 @@ class WidgetHelper {
   static Future<void> _updateAndroidWidget(
       List<Course> courses, String dateStr, List<Map> classTimeList) async {
     try {
-      print("Flutter[Android]: Updating widget...");
-      // TODO: 实现 Android 逻辑
-      // Android 通常使用 home_widget 插件，或者你自己的 MethodChannel
-      // 比如：
-      // await _androidChannel.invokeMethod('update', ...);
+      print("Flutter[Android]: Updating widget via UnifiedDataService...");
+      // 与 iOS 端保持一致：不手动传递此处的 courses，而是触发 UnifiedDataService
+      // 的完整刷新流程，由它统一从数据库取数并通过 MethodChannel 下发给原生端，
+      // 保证两端小组件的数据口径完全相同。
+      bool success = await WidgetRefreshHelper.manualRefresh();
+
+      if (success) {
+        print("Flutter[Android]: Widget update triggered successfully");
+      } else {
+        print("Flutter[Android]: Widget update failed or skipped");
+      }
     } catch (e) {
       print("Flutter[Android]: Failed to update: $e");
     }
@@ -101,10 +102,21 @@ class WidgetHelper {
       print(
           "Flutter[Harmony]: Preparing data for ${courses.length} courses...");
 
+      final widgetData = buildHarmonyWidgetData(courses, dateStr, classTimeList, colorPool);
+
+      await _channel.invokeMethod('updateWidget', jsonEncode(widgetData));
+      print("Flutter[Harmony]: Widget update sent! Weekday: $dateStr");
+    } catch (e) {
+      print("Flutter[Harmony]: Failed to send widget data: $e");
+    }
+  }
+
+  static Map<String, dynamic> buildHarmonyWidgetData(List<Course> courses, String dateStr,
+      List<Map> classTimeList, List colorPool) {
       final List<Map<String, dynamic>> courseListJson = courses.map((course) {
         String startStr = _convertNodeToTime(course.startTime!, classTimeList);
         String endStr = _convertNodeToTime(
-            course.startTime! + course.timeCount! - 1, classTimeList,
+            course.startTime! + course.timeCount!, classTimeList,
             isEnd: true);
 
         String? calculatedColor = course.getColor(colorPool);
@@ -122,20 +134,15 @@ class WidgetHelper {
           "startTimeStr": startStr,
           "endTimeStr": endStr,
           "startNode": course.startTime,
-          "step": course.timeCount
+          "step": (course.timeCount ?? 0) + 1
         };
       }).toList();
 
-      final Map<String, dynamic> widgetData = {
+      return {
         "date": dateStr,
         "courses": courseListJson
       };
 
-      await _channel.invokeMethod('updateWidget', jsonEncode(widgetData));
-      print("Flutter[Harmony]: Widget update sent! Weekday: $dateStr");
-    } catch (e) {
-      print("Flutter[Harmony]: Failed to send widget data: $e");
-    }
   }
 
   static String _convertNodeToTime(int node, List<Map> classTimeList,

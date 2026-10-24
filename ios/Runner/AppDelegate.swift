@@ -115,6 +115,17 @@ import ActivityKit
     // Save to UserDefaults (App Group)
     print("🔐 [AppDelegate] Attempting to access App Group: \(kAppGroupIdentifier)")
 
+    // A named UserDefaults suite can exist without App Group access, in which
+    // case writes stay in the app sandbox and the extension never sees them.
+    guard FileManager.default.containerURL(
+      forSecurityApplicationGroupIdentifier: kAppGroupIdentifier
+    ) != nil else {
+      result(FlutterError(code: "APP_GROUP_ERROR",
+                          message: "App Group container unavailable; check signing entitlements",
+                          details: nil))
+      return
+    }
+
     if let appGroup = UserDefaults(suiteName: kAppGroupIdentifier) {
       print("✅ [AppDelegate] App Group accessed successfully")
 

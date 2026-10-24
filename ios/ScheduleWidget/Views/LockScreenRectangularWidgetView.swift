@@ -61,6 +61,8 @@ struct LockScreenRectangularWidgetView: View {
                     } else {
                         fallbackView
                     }
+                case .noCourses:
+                    noCoursesView
                 case .classesEnded:
                     fallbackView
                 case .error:
@@ -119,7 +121,7 @@ struct LockScreenRectangularWidgetView: View {
 
     private var isNoCoursesState: Bool {
         guard let data = entry.widgetData else { return false }
-        return data.todayCourses.isEmpty && data.tomorrowCourses.isEmpty
+        return data.todayCourses.isEmpty
     }
 
     private func combineCourseInfo(_ classroom: String?, _ teacher: String?) -> String? {

@@ -25,6 +25,10 @@ class ScheduleModel {
   ScheduleModel(this.courses, this.nowWeek);
 
   init() {
+    activeCourses.clear();
+    hideCourses.clear();
+    multiCourses.clear();
+    freeCourses.clear();
     classify();
     deduplicate();
   }
@@ -56,6 +60,7 @@ class ScheduleModel {
       for (List<Course> checked in multiCourses) {
         if (_checkIfOverlapping(course, checked[0])) {
           checked.add(course);
+          needToDelete.add(course);
           _checkMultiCousesElement(checked);
           isOverlapped = true;
         }
@@ -83,6 +88,7 @@ class ScheduleModel {
       for (List<Course> checked in multiCourses) {
         if (_checkIfOverlapping(course, checked[0])) {
           checked.add(course);
+          needToDelete.add(course);
           _checkMultiCousesElement(checked);
           isOverlapped = true;
           break;
@@ -104,7 +110,7 @@ class ScheduleModel {
     }
     for (Course item in needToDelete) {
       if (hideCourses.contains(item)) {
-        activeCourses.remove(item);
+        hideCourses.remove(item);
       } else {
         activeCourses.remove(item);
       }
@@ -123,7 +129,7 @@ class ScheduleModel {
 
   // TODO: Shit codes, may have bugs here.
   void _checkMultiCousesElement(List<Course> multiCoursesElement) {
-    int maxCount = 0;
+    int maxCount = -1;
     int maxIndex = 0;
     for (int i = 0; i < multiCoursesElement.length; i++) {
       List weeks = json.decode(multiCoursesElement[i].weeks!);

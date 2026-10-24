@@ -17,7 +17,9 @@ class AppThemes {
     '#638190',
   ];
 
-  static ThemeData build(String hex, Brightness brightness, {
+  static ThemeData build(
+    String hex,
+    Brightness brightness, {
     required bool useSeedScheme,
   }) {
     final rawSeed = HexColor(hex);
@@ -32,23 +34,33 @@ class AppThemes {
     // - Light: 直接用 Hex 原色
     // - Dark:  使用 "Light模式下计算出的 Primary" (这样能保持鲜艳，而不是 M3 默认的粉彩色)
 
-    final Color targetPrimary = useSeedScheme
-      ? (isDark
-        ? ColorScheme.fromSeed(seedColor: rawSeed, brightness: Brightness.dark).primary
-        : ColorScheme.fromSeed(seedColor: rawSeed, brightness: Brightness.light).primary)
-      : rawSeed;
+    final Color targetPrimary =
+        useSeedScheme
+            ? (isDark
+                ? ColorScheme.fromSeed(
+                  seedColor: rawSeed,
+                  brightness: Brightness.dark,
+                ).primary
+                : ColorScheme.fromSeed(
+                  seedColor: rawSeed,
+                  brightness: Brightness.light,
+                ).primary)
+            : rawSeed;
 
     // 背景色层级设定
-    final background = isDark ? const Color(0xFF0F0F11) : const Color(0xFFF8F8FA);
-    final appBarSurface = isDark ? const Color(0xFF17171A) : const Color(0xFFEEEEF1);
-    final surfaceHigh = isDark ? const Color(0xFF1F1F23) : const Color(0xFFE9E9ED);
+    final background =
+        isDark ? const Color(0xFF0F0F11) : const Color(0xFFF8F8FA);
+    final appBarSurface =
+        isDark ? const Color(0xFF17171A) : const Color(0xFFEEEEF1);
+    final surfaceHigh =
+        isDark ? const Color(0xFF1F1F23) : const Color(0xFFE9E9ED);
 
     // 组合最终 Scheme
     // 强制覆盖 primary 为我们计算出的 targetPrimary
     final scheme = baseScheme.copyWith(
       primary: targetPrimary,
-      // onPrimary: Colors.white, 
-      
+
+      // onPrimary: Colors.white,
       background: background,
       surface: background,
       surfaceContainerHighest: surfaceHigh,
@@ -58,7 +70,8 @@ class AppThemes {
     // AppBar 配置
     final appBarBg = appBarSurface;
     final appBarFg = scheme.onSurface; // 标题颜色跟随内容色
-    final overlayStyle = isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark;
+    final overlayStyle =
+        isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark;
 
     const radius = 14.0;
     final shape = RoundedRectangleBorder(
@@ -89,7 +102,7 @@ class AppThemes {
       ),
 
       // Card
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         color: scheme.surfaceContainerHighest,
@@ -97,13 +110,13 @@ class AppThemes {
       ),
 
       // Dialog
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         shape: shape,
         backgroundColor: isDark ? const Color(0xFF25252A) : Colors.white,
       ),
-      
+
       // BottomSheet
       bottomSheetTheme: const BottomSheetThemeData(
         elevation: 0,
@@ -118,8 +131,9 @@ class AppThemes {
           // 如果你想要新版那种 "只有字变色" 的风格，可以删掉 backgroundColor 设置
           // 下面保留你新版代码里写的 "有背景" 的 TextButton 样式：
           backgroundColor: MaterialStateProperty.resolveWith((states) {
-             if (states.contains(MaterialState.disabled)) return scheme.primary.withOpacity(0.3);
-             return scheme.primary; // 用回鲜艳色
+            if (states.contains(MaterialState.disabled))
+              return scheme.primary.withOpacity(0.3);
+            return scheme.primary; // 用回鲜艳色
           }),
           foregroundColor: MaterialStateProperty.all(Colors.white), // 强制白字
           shape: MaterialStateProperty.all(shape),
@@ -172,7 +186,9 @@ class AppThemes {
           if (states.contains(MaterialState.selected)) return scheme.primary;
           return scheme.surfaceContainerHighest;
         }),
-        trackOutlineColor: MaterialStateProperty.resolveWith((states) => Colors.transparent),
+        trackOutlineColor: MaterialStateProperty.resolveWith(
+          (states) => Colors.transparent,
+        ),
       ),
 
       // FAB
@@ -224,8 +240,11 @@ class _PresetThemeList extends ListBase<ThemeData> {
       throw UnsupportedError('read-only');
 }
 
-ThemeData getThemeData(String hex, Brightness brightness, { required bool useSeedScheme }) =>
-    AppThemes.build(hex, brightness, useSeedScheme: useSeedScheme);
+ThemeData getThemeData(
+  String hex,
+  Brightness brightness, {
+  required bool useSeedScheme,
+}) => AppThemes.build(hex, brightness, useSeedScheme: useSeedScheme);
 
 final themeDataList = _PresetThemeList(Brightness.light);
 final darkThemeDataList = _PresetThemeList(Brightness.dark);

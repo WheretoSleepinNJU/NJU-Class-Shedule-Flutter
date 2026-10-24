@@ -46,22 +46,24 @@ class WeekTitle extends StatelessWidget {
 //                height: 40,
                 child: Center(
                   child: _isShowDate
-                      ? Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                              Text(
-                                Constant.WEEK_WITHOUT_BIAS[i],
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                    color: getColor()),
-                              ),
-                              Text(
-                                _dayList[i],
-                                style:
-                                    TextStyle(fontSize: 10, color: getColor()),
-                              )
-                            ])
+                      ? FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Text(
+                                  Constant.WEEK_WITHOUT_BIAS[i],
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: getColor()),
+                                ),
+                                Text(
+                                  _dayList[i],
+                                  style: TextStyle(
+                                      fontSize: 10, color: getColor()),
+                                )
+                              ]))
                       : Center(
                           child: Text(
                             Constant.WEEK_WITHOUT_BIAS_WITHOUT_PRE[i],
@@ -69,7 +71,7 @@ class WeekTitle extends StatelessWidget {
                           ),
                         ),
                 ),
-                padding: const EdgeInsets.all(0.0),
+                padding: const EdgeInsets.symmetric(horizontal: 3),
               ),
             ));
 

@@ -139,8 +139,8 @@ private struct LargeContentAreaView: View {
                     LargeClassesEndedView()
                 }
 
-            case .classesEnded:
-                LargeClassesEndedView()
+            case .classesEnded, .noCourses:
+                LargeClassesEndedView(noCourses: entry.displayState == .noCourses)
 
             case .tomorrowPreview:
                 if let tomorrowCourses = entry.widgetData?.tomorrowCourses, !tomorrowCourses.isEmpty {
@@ -375,6 +375,7 @@ private struct LargeInClassView: View {
 
 // MARK: - 4. 课程结束视图
 private struct LargeClassesEndedView: View {
+    var noCourses: Bool = false
     var body: some View {
         VStack {
             Spacer()
@@ -384,7 +385,7 @@ private struct LargeClassesEndedView: View {
                     .font(.system(size: 48))
                     .foregroundColor(.green)
 
-                Text("今日课程已结束")
+                Text(noCourses ? "今日无课" : "今日课程已结束")
                     .font(.system(size: 18, weight: .semibold))
                     .foregroundColor(.primary)
             }

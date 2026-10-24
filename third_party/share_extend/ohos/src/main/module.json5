@@ -1,0 +1,10 @@
+{
+  "module": {
+    "name": "share_extend",
+    "type": "har",
+    "deviceTypes": [
+      "default",
+      "tablet"
+    ]
+  }
+}

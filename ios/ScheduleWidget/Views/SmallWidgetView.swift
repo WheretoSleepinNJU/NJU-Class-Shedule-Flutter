@@ -144,8 +144,8 @@ private struct ContentAreaView: View {
                     ClassesEndedView()
                 }
 
-            case .classesEnded:
-                ClassesEndedView()
+            case .classesEnded, .noCourses:
+                ClassesEndedView(noCourses: entry.displayState == .noCourses)
 
             case .tomorrowPreview:
                 if let tomorrowCourses = entry.widgetData?.tomorrowCourses, !tomorrowCourses.isEmpty {
@@ -165,7 +165,7 @@ private struct ContentAreaView: View {
                 if let errorMessage = entry.errorMessage {
                     ErrorView(message: errorMessage)
                 } else {
-                    ErrorView(message: "发生错误")
+                    ErrorView(message: "打开应用更新数据")
                 }
             }
         }
@@ -323,6 +323,7 @@ private struct InClassView: View {
 
 // MARK: - 4. 课程结束视图
 private struct ClassesEndedView: View {
+    var noCourses: Bool = false
     var body: some View {
         VStack {
             Spacer()
@@ -332,7 +333,7 @@ private struct ClassesEndedView: View {
                     .font(.system(size: 32))
                     .foregroundColor(.green)
 
-                Text("今日课程已结束")
+                Text(noCourses ? "今日无课" : "今日课程已结束")
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundColor(.primary)
             }

@@ -1280,6 +1280,16 @@ class S {
     );
   }
 
+  /// `This timetable has no courses. Add or import courses before exporting.`
+  String get qrcode_empty_table_toast {
+    return Intl.message(
+      'This timetable has no courses. Add or import courses before exporting.',
+      name: 'qrcode_empty_table_toast',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `读取课程表，可能是 bug`
   String get qrcode_read_error_toast {
     return Intl.message(

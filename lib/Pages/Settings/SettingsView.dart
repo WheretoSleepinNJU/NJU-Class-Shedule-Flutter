@@ -23,6 +23,7 @@ import '../../Resources/Config.dart';
 import '../../Resources/Url.dart';
 
 import 'Widgets/WeekChanger.dart';
+import '../../core/widget_data/utils/widget_refresh_helper.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({Key? key}) : super(key: key);
@@ -148,8 +149,8 @@ class _SettingsViewState extends State<SettingsView> {
                 builder: (BuildContext context) => const MoreSettingsView()));
           },
         ),
-        // Widget settings - iOS only
-        if (Platform.isIOS)
+        // Widget settings - 具备原生小组件实现的平台（iOS / Android）
+        if (WidgetRefreshHelper.isSupportedPlatform)
           ListTile(
             title: Text(S.of(context).widget_and_live_activity_settings_title),
             subtitle:

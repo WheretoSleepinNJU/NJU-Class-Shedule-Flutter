@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 小组件文字配色：深色模式 -->
+    <color name="widget_text_primary">#EEFFFFFF</color>
+    <color name="widget_text_secondary">#99FFFFFF</color>
+    <color name="widget_accent">#5FB8FF</color>
+    <color name="widget_warning">#FFB74D</color>
+    <color name="widget_success">#81C784</color>
+    <color name="widget_divider">#33FFFFFF</color>
+    <color name="widget_arrived_button_bg">#335FB8FF</color>
+</resources>

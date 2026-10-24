@@ -55,9 +55,11 @@ class ImportView extends StatefulWidget {
 
 class _ImportViewState extends State<ImportView> {
   List<bool> importVisibility = [false, false, false];
+  late Future<List> _onlineConfig;
 
   @override
   void initState() {
+    _onlineConfig = getOnlineConfig();
     getImportVisibility();
     super.initState();
   }
@@ -144,9 +146,20 @@ class _ImportViewState extends State<ImportView> {
               color: Theme.of(context).hoverColor),
           Expanded(
               child: FutureBuilder<List>(
-                  future: getOnlineConfig(),
+                  future: _onlineConfig,
                   builder:
                       (BuildContext context, AsyncSnapshot<List> snapshot) {
+                    if (snapshot.hasError) {
+                      return Column(children: [
+                        TextButton(
+                          onPressed: () => setState(() {
+                            _onlineConfig = getOnlineConfig();
+                          }),
+                          child: Text(S.of(context).network_error_toast),
+                        ),
+                        moreSchools(),
+                      ]);
+                    }
                     if (snapshot.hasData) {
                       if (snapshot.data!.isEmpty) {
                         return Column(
@@ -154,7 +167,7 @@ class _ImportViewState extends State<ImportView> {
                             Container(
                               padding: const EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 0),
-                              child: const Text("加载中..."),
+                              child: Text(S.of(context).import_more_schools),
                             ),
                             moreSchools()
                           ],
@@ -214,7 +227,7 @@ class _ImportViewState extends State<ImportView> {
                             SuspensionUtil.getTagIndexList(schoolList),
                       );
                     } else {
-                      return moreSchools();
+                      return const Center(child: CircularProgressIndicator());
                     }
                   }))
         ]).toList())));
@@ -226,10 +239,12 @@ class _ImportViewState extends State<ImportView> {
       String url = Url.UPDATE_ROOT + '/importVisibility.json';
       Response response = await dio.get(url);
       List<bool> rst = List<bool>.from(response.data['data']);
+      if (!mounted) return;
       setState(() {
         importVisibility = rst;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         importVisibility = [true, false, false];
       });
@@ -238,7 +253,9 @@ class _ImportViewState extends State<ImportView> {
 
   Future<List> getOnlineConfig() async {
     try {
-      Dio dio = Dio();
+      Dio dio = Dio(BaseOptions(
+          connectTimeout: const Duration(seconds: 10),
+          receiveTimeout: const Duration(seconds: 15)));
       String url = Url.UPDATE_ROOT + '/schoolList.json';
       Response response = await dio.get(url);
       List rst = response.data['data'];
@@ -298,7 +315,7 @@ class _ImportViewState extends State<ImportView> {
       // ];
       return rst;
     } catch (e) {
-      return [];
+      rethrow;
     }
   }
 

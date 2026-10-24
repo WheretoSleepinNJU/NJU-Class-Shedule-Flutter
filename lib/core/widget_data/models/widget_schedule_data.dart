@@ -19,6 +19,9 @@ class WidgetScheduleData {
   // 本周课表
   final Map<int, List<WidgetCourse>> weekSchedule; // 本周每天课程
   
+  // Complete semester source for native timelines across week boundaries.
+  final List<WidgetCourse>? semesterCourses;
+
   // 统计信息
   final int weekCourseCount;
   final bool hasCoursesToday;
@@ -45,6 +48,7 @@ class WidgetScheduleData {
     required this.todayCourses,
     required this.tomorrowCourses,
     required this.weekSchedule,
+    this.semesterCourses,
     required this.weekCourseCount,
     required this.hasCoursesToday,
     required this.hasCoursesTomorrow,
@@ -70,6 +74,8 @@ class WidgetScheduleData {
     'weekSchedule': weekSchedule.map((k, v) => 
       MapEntry(k.toString(), v.map((c) => c.toJson()).toList())
     ),
+    if (semesterCourses != null)
+      'semesterCourses': semesterCourses!.map((c) => c.toJson()).toList(),
     'weekCourseCount': weekCourseCount,
     'hasCoursesToday': hasCoursesToday,
     'hasCoursesTomorrow': hasCoursesTomorrow,
@@ -101,6 +107,8 @@ class WidgetScheduleData {
             int.parse(k), 
             (v as List).map((c) => WidgetCourse.fromJson(c)).toList()
         )),
+    semesterCourses: (json['semesterCourses'] as List?)
+        ?.map((c) => WidgetCourse.fromJson(c)).toList(),
     weekCourseCount: json['weekCourseCount'],
     hasCoursesToday: json['hasCoursesToday'],
     hasCoursesTomorrow: json['hasCoursesTomorrow'],

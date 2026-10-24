@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_schedule_label">南哪课表</string>
+    <string name="widget_schedule_description">查看今日课程和下节课信息</string>
+
+    <string name="widget_state_in_class">上课中</string>
+    <string name="widget_state_next">接下来</string>
+    <string name="widget_classes_ended">今日课程已结束</string>
+    <string name="widget_rest_well">好好休息吧</string>
+    <string name="widget_thats_all">这就是全部啦</string>
+    <string name="widget_remaining_courses">剩余课程</string>
+    <string name="widget_arrived">我已到达</string>
+    <string name="widget_tap_to_open">轻触打开应用</string>
+    <string name="widget_no_data">打开应用更新数据</string>
+
+    <string name="widget_today_course_count">今天有 %1$d 门课</string>
+    <string name="widget_tomorrow_course_count">明天有 %1$d 门课</string>
+    <string name="widget_today_remaining_count">今天还有 %1$d 门</string>
+    <string name="widget_remaining_count">还有 %1$d 门</string>
+    <string name="widget_more_courses">还有 %1$d 门课……</string>
+    <string name="widget_week_index">第 %1$d 周</string>
+    <string name="widget_period_index">第%1$d节</string>
+    <string name="widget_period_range">第 %1$d-%2$d 节</string>
+</resources>
