@@ -17,6 +17,7 @@ public class MimeUtils {
     private static final Map<String, String> extensionToMimeTypeMap = new HashMap<>();
 
     static {
+        add("ics", "text/calendar");
         add("epub", "application/epub+zip");
         add("ogx", "application/ogg");
         add("odp", "application/vnd.oasis.opendocument.presentation");

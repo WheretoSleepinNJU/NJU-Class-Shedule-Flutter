@@ -1,6 +1,7 @@
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/widget_data/utils/widget_refresh_helper.dart';
+import '../WeekUtil.dart';
 
 mixin WeekStateModel on Model {
   int? _weekIndex;
@@ -10,13 +11,11 @@ mixin WeekStateModel on Model {
 
   get tmpWeekIndex => _tmpWeekIndex;
 
-  void changeWeek(int weekIndex) async {
+  Future<void> changeWeek(int weekIndex) async {
+    await WeekUtil.setNowWeek(weekIndex);
     _weekIndex = weekIndex;
+    _tmpWeekIndex = weekIndex;
     notifyListeners();
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    sp.setInt("weekIndex", weekIndex);
-    // 同时更新 tmpWeekIndex
-    sp.setInt("tmpWeekIndex", weekIndex);
 
     // 刷新 Widget
     await WidgetRefreshHelper.refreshAfterWeekChanged();
@@ -31,11 +30,11 @@ mixin WeekStateModel on Model {
     return 1;
   }
 
-  void changeTmpWeek(int weekIndex) async {
+  Future<void> changeTmpWeek(int weekIndex) async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    await sp.setInt("tmpWeekIndex", weekIndex);
     _tmpWeekIndex = weekIndex;
     notifyListeners();
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    sp.setInt("tmpWeekIndex", weekIndex);
   }
 
   Future<int> getTmpWeek() async {

@@ -16,6 +16,10 @@ import '../../../Utils/ColorUtil.dart';
 /// 为 Widget 和 Live Activity 提供数据支持
 /// 这是一个简化版本，具体实现需要根据实际数据源集成
 class UnifiedDataService {
+  // Startup and course edits use different service instances. Keep the entire
+  // read/send operation ordered across them so an older empty read cannot
+  // arrive after the snapshot containing a newly saved course.
+  static Future<void> _widgetUpdates = Future<void>.value();
   final SharedPreferences _preferences;
   final NativeDataBridge _bridge;
 
@@ -79,7 +83,21 @@ class UnifiedDataService {
   }
 
   /// 更新 Widget 数据
-  Future<bool> updateWidgetData() async {
+  Future<bool> updateWidgetData() {
+    final update = _widgetUpdates.then((_) {
+      // Invalidate here, when this queued read starts, rather than before an
+      // earlier refresh has finished populating its cache.
+      clearCache();
+      return _updateWidgetData();
+    });
+    _widgetUpdates = update.then<void>(
+      (_) {},
+      onError: (Object _, StackTrace __) {},
+    );
+    return update;
+  }
+
+  Future<bool> _updateWidgetData() async {
     try {
       print('[UnifiedDataService] 开始更新 Widget 数据...');
       final data = await getWidgetData();

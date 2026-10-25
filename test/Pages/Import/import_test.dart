@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:wheretosleepinnju/Pages/Import/ImportView.dart';
 import 'package:wheretosleepinnju/Pages/Import/ImportTestView.dart';
 import 'package:wheretosleepinnju/Utils/OnlineImportService.dart';
+import 'package:wheretosleepinnju/Utils/ImportTestScript.dart';
 import '../EditCourse/edit_course_test.dart' show localized;
 
 void main() {
@@ -142,4 +143,59 @@ void main() {
       [],
     );
   });
+  test('test extraction reports native-wrapped JavaScript exceptions', () {
+    final error = jsonEncode({
+      '__nju_schedule_extract_error__': true,
+      'name': 'Error',
+      'message': '请先登录清华研究生教学日历',
+    });
+    for (final value in [error, jsonEncode(error)]) {
+      expect(
+        () => validateImportTestExtraction(
+          value,
+          emptyResultMessage: 'extractJS empty',
+        ),
+        throwsA(
+          isA<FormatException>().having(
+            (e) => e.message,
+            'message',
+            contains('请先登录清华研究生教学日历'),
+          ),
+        ),
+      );
+    }
+  });
+  test(
+    'test extraction distinguishes empty completion from timetable data',
+    () {
+      for (final value in ['', 'null', '"null"', 'undefined']) {
+        expect(
+          () => validateImportTestExtraction(
+            value,
+            emptyResultMessage: 'extractJS empty',
+          ),
+          throwsA(
+            isA<FormatException>().having(
+              (e) => e.message,
+              'message',
+              'extractJS empty',
+            ),
+          ),
+        );
+      }
+      final encoded = Uri.encodeComponent(jsonEncode(payload));
+      for (final value in [
+        encoded,
+        jsonEncode(encoded),
+        jsonEncode(payload),
+        payload,
+      ]) {
+        validateImportTestExtraction(
+          value,
+          emptyResultMessage: 'extractJS empty',
+        );
+        expect(decodeOnlineImportResult(value), payload);
+      }
+    },
+  );
 }

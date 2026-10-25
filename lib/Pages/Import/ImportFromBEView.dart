@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:async';
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,6 +16,7 @@ import '../../generated/l10n.dart';
 import '../../Components/Toast.dart';
 import '../../Resources/Url.dart';
 import '../../Utils/OnlineImportService.dart';
+import '../../Utils/ImportTestScript.dart';
 
 class ImportFromBEView extends StatefulWidget {
   final String? title;
@@ -40,6 +42,10 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
 
   bool _extracting = false;
   bool _completed = false;
+  bool _pageLoading = true;
+  String? _testStatus;
+  String? _testUrl;
+  String? _testJsError;
 
   @override
   void initState() {
@@ -62,16 +68,22 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
           )
           ..setNavigationDelegate(
             NavigationDelegate(
+              onPageStarted: (url) {
+                _pageLoading = true;
+                _recordTestNavigation(url);
+              },
               onPageFinished: (String url) {
-                if (!mounted || _completed) return;
-                final target = (widget.config['targetUrl'] ?? '').toString();
-                final redirect =
-                    (widget.config['redirectUrl'] ?? '').toString();
-                // A target may share the redirect prefix; extract before redirecting.
-                if (target.isNotEmpty && url.startsWith(target)) {
-                  import(_webViewController, context);
-                } else if (redirect.isNotEmpty && url.startsWith(redirect)) {
-                  _webViewController.loadRequest(Uri.parse(target));
+                _pageLoading = false;
+                _recordTestNavigation(url);
+                _handleImportUrl(url);
+              },
+              onUrlChange: (change) {
+                if (change.url != null) _recordTestNavigation(change.url!);
+                // History API navigation does not finish a new page load.
+                // Full navigation still waits for onPageFinished so scripts
+                // run in the destination document, rather than the old page.
+                if (!_pageLoading && change.url != null) {
+                  _handleImportUrl(change.url!);
                 }
               },
             ),
@@ -79,6 +91,77 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
 
     // 启用第三方 Cookie 支持
     _enableThirdPartyCookies();
+  }
+
+  void _recordTestNavigation(String url) {
+    if (!mounted || !widget.testMode) return;
+    setState(() {
+      _testUrl = url;
+      if (!_extracting) {
+        _testStatus =
+            _pageLoading
+                ? S.of(context).import_test_loading
+                : S.of(context).import_test_waiting_url;
+      }
+    });
+  }
+
+  void _testStep(String status) {
+    if (mounted && widget.testMode) {
+      setState(() => _testStatus = status);
+    }
+  }
+
+  String get _testAddress {
+    // Login tickets and fragments are unnecessary for matching diagnosis.
+    return (_testUrl ?? widget.config['initialUrl'])
+        .toString()
+        .split('?')
+        .first
+        .split('#')
+        .first;
+  }
+
+  Future<void> _runTestPreScript(
+    WebViewController controller,
+    String script,
+  ) async {
+    // Android does not propagate JS exceptions. A final marker verifies that
+    // the script completed, while preserving its global declaration scope.
+    // Avoid eval()/Function(), which the portal's CSP may forbid.
+    const marker = 'NJU_IMPORT_PRE_COMPLETED';
+    dynamic result = await controller
+        .runJavaScriptReturningResult('$script\n;"$marker";')
+        .timeout(const Duration(seconds: 30));
+    for (var i = 0; i < 4 && result is String; i++) {
+      try {
+        result = jsonDecode(result);
+      } on FormatException {
+        break;
+      }
+    }
+    if (result != marker) {
+      throw FormatException(
+        _testJsError != null
+            ? 'preExtractJS: $_testJsError'
+            : S.of(context).import_test_script_invalid,
+      );
+    }
+  }
+
+  void _handleImportUrl(String url) {
+    if (!mounted || _completed || _extracting) return;
+    final target = (widget.config['targetUrl'] ?? '').toString();
+    final redirect = (widget.config['redirectUrl'] ?? '').toString();
+    // A target may share the redirect prefix; extract before redirecting.
+    if (target.isNotEmpty && url.startsWith(target)) {
+      import(_webViewController, context);
+    } else if (target.isNotEmpty &&
+        redirect.isNotEmpty &&
+        url.startsWith(redirect)) {
+      _pageLoading = true;
+      _webViewController.loadRequest(Uri.parse(target));
+    }
   }
 
   Future<void> _enableThirdPartyCookies() async {
@@ -91,6 +174,13 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
         androidController,
         true,
       );
+      if (widget.testMode) {
+        await androidController.setOnConsoleMessage((message) {
+          if (_extracting && message.level == JavaScriptLogLevel.error) {
+            _testJsError = message.message;
+          }
+        });
+      }
     }
     // 等待第三方 cookie 设置完成后再加载页面
     if (mounted) {
@@ -108,18 +198,25 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
         actions: <Widget>[
           if (widget.testMode)
             IconButton(
+              key: const ValueKey('import-test-retry'),
               tooltip: S.of(context).import_test_retry,
               icon: const Icon(Icons.play_arrow),
-              onPressed: () => import(_webViewController, context),
+              onPressed:
+                  _extracting
+                      ? null
+                      : () => import(_webViewController, context),
             ),
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: () async {
-              await cookieManager.clearCookies();
-              _webViewController.loadRequest(
-                Uri.parse(widget.config['initialUrl']),
-              );
-            },
+            onPressed:
+                widget.testMode && _extracting
+                    ? null
+                    : () async {
+                      await cookieManager.clearCookies();
+                      _webViewController.loadRequest(
+                        Uri.parse(widget.config['initialUrl']),
+                      );
+                    },
           ),
           // IconButton(
           //   icon: const Icon(Icons.gamepad),
@@ -134,6 +231,51 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
         builder: (BuildContext context) {
           return Column(
             children: <Widget>[
+              if (widget.testMode)
+                Material(
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 8, 4, 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          _testStatus ?? S.of(context).import_test_loading,
+                          key: const ValueKey('import-test-status'),
+                          style: Theme.of(context).textTheme.labelLarge,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: SelectableText(
+                                _testAddress.replaceFirstMapped(
+                                  RegExp(r'/(https?)/[a-f0-9]{30,}/'),
+                                  (match) => '/${match[1]}/…/',
+                                ),
+                                key: const ValueKey('import-test-current-url'),
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ),
+                            IconButton(
+                              tooltip:
+                                  MaterialLocalizations.of(
+                                    context,
+                                  ).copyButtonLabel,
+                              onPressed:
+                                  () => Clipboard.setData(
+                                    ClipboardData(text: _testAddress),
+                                  ),
+                              icon: const Icon(Icons.copy, size: 18),
+                            ),
+                          ],
+                        ),
+                        if (_extracting &&
+                            _testStatus != S.of(context).import_test_error)
+                          const LinearProgressIndicator(),
+                      ],
+                    ),
+                  ),
+                ),
               widget.config['banner_content'] == null
                   ? Container()
                   : MaterialBanner(
@@ -176,18 +318,34 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
   }) async {
     if (_extracting || _completed || !mounted) return;
     _extracting = true;
+    _testJsError = null;
+    _testStep(S.of(context).import_test_preparing);
     try {
-      Toast.showToast(S.of(context).class_parse_toast_importing, context);
+      if (!widget.testMode) {
+        Toast.showToast(S.of(context).class_parse_toast_importing, context);
+      }
       Object response;
       if (rsp != null) {
         response = rsp;
       } else {
         final pre = (widget.config['preExtractJS'] ?? '').toString();
-        if (pre.isNotEmpty) await controller.runJavaScript(pre);
+        if (pre.isNotEmpty) {
+          if (widget.testMode) {
+            await _runTestPreScript(controller, pre);
+          } else {
+            await controller.runJavaScript(pre);
+          }
+        }
+        if (!mounted) return;
+        _testStep(
+          '${S.of(context).import_test_delay} (${widget.config['delayTime'] ?? 0}s)',
+        );
         await Future.delayed(
           Duration(seconds: widget.config['delayTime'] ?? 0),
         );
         if (!mounted) return;
+        _testStep(S.of(context).import_test_extracting);
+        _testJsError = null;
         String js;
         if (widget.testMode) {
           js = widget.config['extractJS'] as String;
@@ -210,10 +368,23 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
           js = serverRsp.data ?? '';
         }
         if (!mounted) return;
-        response = await controller.runJavaScriptReturningResult(js);
+        final execution = controller.runJavaScriptReturningResult(
+          widget.testMode ? guardImportTestExtraction(js) : js,
+        );
+        response =
+            widget.testMode
+                ? await execution.timeout(const Duration(seconds: 60))
+                : await execution;
+        if (widget.testMode && mounted) {
+          validateImportTestExtraction(
+            response,
+            emptyResultMessage: S.of(context).import_test_extract_empty,
+          );
+        }
       }
       final data = decodeOnlineImportResult(response);
       if (!mounted) return;
+      _testStep(S.of(context).import_test_saving);
       final state = ScopedModel.of<MainStateModel>(context);
       final index = await saveOnlineImport(data, widget.config);
       _completed = true;
@@ -230,13 +401,23 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
     } catch (e) {
       if (!mounted) return;
       if (widget.testMode) {
+        final failedStep = _testStatus;
+        _testStep(S.of(context).import_test_error);
         await showDialog<void>(
           context: context,
           builder:
               (dialogContext) => AlertDialog(
                 title: Text(S.of(context).import_test_error),
                 content: SingleChildScrollView(
-                  child: SelectableText(e.toString()),
+                  child: SelectableText(
+                    [
+                      if (failedStep != null) failedStep,
+                      e.toString(),
+                      if (_testJsError != null &&
+                          !e.toString().contains(_testJsError!))
+                        _testJsError!,
+                    ].join('\n'),
+                  ),
                 ),
                 actions: [
                   TextButton(
@@ -330,6 +511,7 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
       return;
     } finally {
       _extracting = false;
+      if (mounted && widget.testMode) setState(() {});
     }
   }
 }

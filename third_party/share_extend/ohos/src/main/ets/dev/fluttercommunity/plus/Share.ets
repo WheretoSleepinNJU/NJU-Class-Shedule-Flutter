@@ -43,6 +43,7 @@ export default class Share {
    */
   public shareText(text: string, withResult?: boolean, result?: MethodResult): void {
     if (!this.ability) {
+      result?.error('no_ability', 'Share ability unavailable', null);
       Log.w(TAG, "share ability not exist");
       return
     }
@@ -66,6 +67,7 @@ export default class Share {
    */
   public async shareFiles(paths: List<string>, subject: string | null, withResult?: boolean, result?: MethodResult): Promise<void> {
     if (!this.ability) {
+      result?.error('no_ability', 'Share ability unavailable', null);
       Log.w(TAG, "shareFiles ability not exist");
       return
     }
@@ -74,6 +76,7 @@ export default class Share {
     let fileUris = await this.getUrisForPaths(paths)
     Log.d(TAG, "shareFiles: path->" + JSON.stringify(fileUris));
     if (!fileUris || fileUris.length == 0) {
+      result?.error('share_failed', 'Cannot prepare shared files', null);
       Log.w(TAG, "shareFiles copy to cache failed");
       return
     }
@@ -95,6 +98,7 @@ export default class Share {
 
   private startShare(data: systemShare.SharedData | null, withResult?: boolean, result?: MethodResult): void {
     if (!this.ability || !data) {
+      result?.error('no_data', 'No share data or ability', null);
       Log.w(TAG, "startShare ability not exist or data empty");
       return
     }
@@ -109,9 +113,14 @@ export default class Share {
       controller.show(this.ability!.context, {
         previewMode: systemShare.SharePreviewMode.DETAIL,
         selectionMode: systemShare.SelectionMode.BATCH
+      }).then(() => {
+        if (!withResult) result?.success('');
+      }).catch(() => {
+        result?.error('share_failed', 'Cannot open share panel', null);
       });
     } catch (err) {
       Log.e(TAG, 'startShare err:' + JSON.stringify(err));
+      result?.error('share_failed', 'Cannot open share panel', null);
     }
   }
 
@@ -147,12 +156,10 @@ export default class Share {
     Log.i(TAG, "getUrisForPaths");
     let uris = new Array<string>();
     try {
-      paths.forEach(async path => {
-        let file: string = await this.copyToShareCache(path);
-        if (file) {
-          uris.push(fileUri.getUriFromPath(file));
-        }
-      })
+      for (let index = 0; index < paths.length; index++) {
+        const file: string = await this.copyToShareCache(paths[index]);
+        if (file) uris.push(fileUri.getUriFromPath(file));
+      }
     } catch (err) {
       Log.e(TAG, 'getUrisForPaths err:' + JSON.stringify(err));
     }
@@ -199,7 +206,11 @@ export default class Share {
     }
     let oldFile: fs.File = fs.openSync(file);
     let newFile = folder + '/' + oldFile.name;
-    fs.copyFileSync(oldFile.fd, newFile);
+    try {
+      fs.copyFileSync(oldFile.fd, newFile);
+    } finally {
+      fs.closeSync(oldFile);
+    }
     return newFile
   }
 }

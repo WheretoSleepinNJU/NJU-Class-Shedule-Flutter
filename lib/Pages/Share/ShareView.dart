@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../../Utils/CalendarExporter.dart';
+import '../../Utils/IcsExporter.dart';
+import 'package:share_extend/share_extend.dart';
 import '../../Utils/States/MainState.dart';
 import '../../Components/Toast.dart';
 import '../../Models/CourseModel.dart';
@@ -23,33 +25,73 @@ class _ShareViewState extends State<ShareView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(S.of(context).import_or_export_title),
+      appBar: AppBar(title: Text(S.of(context).import_or_export_title)),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              SingleChildScrollView(
+                child: Column(
+                  children:
+                      ListTile.divideTiles(
+                        context: context,
+                        tiles: [
+                          ListTile(
+                            title: Text(S.of(context).export_classtable_title),
+                            subtitle: Text(
+                              S.of(context).export_classtable_subtitle,
+                            ),
+                            onTap: _exportClassTable,
+                          ),
+                          ListTile(
+                            title: Text(S.of(context).import_from_qrcode_title),
+                            subtitle: Text(
+                              S.of(context).import_from_qrcode_subtitle,
+                            ),
+                            onTap: _importFromQr,
+                          ),
+                          ListTile(
+                            key: const ValueKey('export-ics'),
+                            title: Text(S.of(context).export_ics_title),
+                            subtitle: Text(S.of(context).export_ics_subtitle),
+                            trailing:
+                                _exportingCalendar
+                                    ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                    : null,
+                            onTap:
+                                _exportingCalendar
+                                    ? null
+                                    : () => _exportToSystemCalendar(
+                                      context,
+                                      asFile: true,
+                                    ),
+                          ),
+                          ListTile(
+                            title: Text(
+                              S.of(context).export_to_system_calendar_title,
+                            ),
+                            subtitle: Text(
+                              S.of(context).export_to_system_calendar_subtitle,
+                            ),
+                            onTap: () async {
+                              _exportToSystemCalendar(context);
+                            },
+                          ),
+                        ],
+                      ).toList(),
+                ),
+              ),
+            ],
+          ),
         ),
-        body: SafeArea(child: SingleChildScrollView(
-            child: Column(children: <Widget>[
-          SingleChildScrollView(
-              child: Column(
-                  children: ListTile.divideTiles(context: context, tiles: [
-            ListTile(
-              title: Text(S.of(context).export_classtable_title),
-              subtitle: Text(S.of(context).export_classtable_subtitle),
-              onTap: _exportClassTable,
-            ),
-            ListTile(
-              title: Text(S.of(context).import_from_qrcode_title),
-              subtitle: Text(S.of(context).import_from_qrcode_subtitle),
-              onTap: _importFromQr,
-            ),
-            ListTile(
-              title: Text(S.of(context).export_to_system_calendar_title),
-              subtitle: Text(S.of(context).export_to_system_calendar_subtitle),
-              onTap: () async {
-                _exportToSystemCalendar(context);
-              },
-            ),
-          ]).toList()))
-        ]))));
+      ),
+    );
   }
 
   Future<void> _exportClassTable() async {
@@ -63,8 +105,9 @@ class _ShareViewState extends State<ShareView> {
       return;
     }
     final CourseTableProvider courseTableProvider = CourseTableProvider();
-    final CourseTable? courseTable =
-        await courseTableProvider.getCourseTable(index);
+    final CourseTable? courseTable = await courseTableProvider.getCourseTable(
+      index,
+    );
     if (!mounted) return;
     if (courseTable == null) {
       Toast.showToast(S.of(context).qrcode_name_error_toast, context);
@@ -76,7 +119,8 @@ class _ShareViewState extends State<ShareView> {
         tableName: courseTable.name ?? '',
         tableData: courseTable.data ?? '',
         courseRows: List<Map<String, dynamic>>.from(
-            allCoursesMap.map((e) => Map<String, dynamic>.from(e))),
+          allCoursesMap.map((e) => Map<String, dynamic>.from(e)),
+        ),
       );
       final bundle = QrPayloadCodec.encodePayloadWithStats(payload);
       final encoded = bundle.encodedPayload;
@@ -88,9 +132,13 @@ class _ShareViewState extends State<ShareView> {
         'compressedBytes=${bundle.compressedBytes} base64Chars=${bundle.base64Chars} '
         'frames=${frames.length} partLimit=${QrPayloadCodec.defaultPartMaxLength}',
       );
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (BuildContext context) =>
-              QRShareView(frames: frames, singleShareText: singleShareText)));
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder:
+              (BuildContext context) =>
+                  QRShareView(frames: frames, singleShareText: singleShareText),
+        ),
+      );
     } catch (_) {
       Toast.showToast(S.of(context).qrcode_read_error_toast, context);
     }
@@ -108,16 +156,19 @@ class _ShareViewState extends State<ShareView> {
 
     final tableMap = Map<String, dynamic>.from(payload['table'] as Map);
     final courses = List<Map<String, dynamic>>.from(
-      (payload['courses'] as List)
-          .map((e) => Map<String, dynamic>.from(e as Map)),
+      (payload['courses'] as List).map(
+        (e) => Map<String, dynamic>.from(e as Map),
+      ),
     );
 
     final CourseTableProvider courseTableProvider = CourseTableProvider();
     int index;
     try {
       final CourseTable courseTable = await courseTableProvider.insert(
-        CourseTable((tableMap['name'] ?? '').toString(),
-            data: (tableMap['data'] ?? '').toString()),
+        CourseTable(
+          (tableMap['name'] ?? '').toString(),
+          data: (tableMap['data'] ?? '').toString(),
+        ),
       );
       index = courseTable.id!;
     } catch (_) {
@@ -130,8 +181,10 @@ class _ShareViewState extends State<ShareView> {
 
     try {
       for (final coursePayload in courses) {
-        final courseMap =
-            QrPayloadCodec.payloadCourseToDbMap(coursePayload, tableId: index);
+        final courseMap = QrPayloadCodec.payloadCourseToDbMap(
+          coursePayload,
+          tableId: index,
+        );
         final course = Course.fromMap(courseMap);
         await courseProvider.insert(course);
       }
@@ -148,9 +201,12 @@ class _ShareViewState extends State<ShareView> {
 
   bool _exportingCalendar = false;
 
-  Future<bool> _exportToSystemCalendar(BuildContext ctx) async {
+  Future<bool> _exportToSystemCalendar(
+    BuildContext ctx, {
+    bool asFile = false,
+  }) async {
     if (_exportingCalendar) return false;
-    _exportingCalendar = true;
+    setState(() => _exportingCalendar = true);
     try {
       final exporter = CalendarExporter();
       final model = MainStateModel.of(context);
@@ -161,8 +217,10 @@ class _ShareViewState extends State<ShareView> {
       final table = await tables.getCourseTable(tableId);
       final times = await tables.getClassTimeList(tableId);
       final events = CalendarExporter.buildEvents(
-        courses: rows.map((row) => Course.fromMap(
-            Map<String, dynamic>.from(row))).toList(),
+        courses:
+            rows
+                .map((row) => Course.fromMap(Map<String, dynamic>.from(row)))
+                .toList(),
         classTimes: times,
         now: DateTime.now(),
         currentWeek: currentWeek,
@@ -172,19 +230,48 @@ class _ShareViewState extends State<ShareView> {
         Toast.showToast(S.of(ctx).qrcode_empty_table_toast, ctx);
         return false;
       }
-      await exporter.export(table?.name ?? '南哪课表', events);
-      if (mounted) {
-        Toast.showToast(S.of(ctx).export_to_system_calendar_success_toast, ctx);
+      final name = table?.name ?? '南哪课表';
+      if (asFile) {
+        final file = await IcsExporter.write(
+          calendarName: name,
+          events: events,
+        );
+        if (!mounted) return false;
+        final size = MediaQuery.sizeOf(context);
+        await ShareExtend.share(
+          file.path,
+          'file',
+          subject: name,
+          sharePositionOrigin: Rect.fromLTWH(
+            size.width / 2,
+            size.height / 2,
+            1,
+            1,
+          ),
+        );
+      } else {
+        await exporter.export(name, events);
+        if (mounted) {
+          Toast.showToast(
+            S.of(ctx).export_to_system_calendar_success_toast,
+            ctx,
+          );
+        }
       }
       return true;
     } catch (error) {
       debugPrint('[CALENDAR_EXPORT] $error');
       if (mounted) {
-        Toast.showToast(S.of(ctx).export_to_system_calendar_fail_toast, ctx);
+        Toast.showToast(
+          asFile
+              ? S.of(ctx).export_ics_fail
+              : S.of(ctx).export_to_system_calendar_fail_toast,
+          ctx,
+        );
       }
       return false;
     } finally {
-      _exportingCalendar = false;
+      if (mounted) setState(() => _exportingCalendar = false);
     }
   }
 }

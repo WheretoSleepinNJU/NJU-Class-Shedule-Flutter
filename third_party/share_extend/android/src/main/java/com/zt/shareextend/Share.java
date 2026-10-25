@@ -84,7 +84,9 @@ public class Share {
             } else if ("audio".equals(type)) {
                 shareIntent.setType("audio/*");
             } else {
-                shareIntent.setType("application/*");
+                shareIntent.setType(list.size() == 1
+                        ? MimeUtils.getMineType(new File(list.get(0)))
+                        : "application/octet-stream");
             }
             if (uriList.size() == 1) {
                 shareIntent.putExtra(Intent.EXTRA_TEXT, extraTexts != null && !extraTexts.isEmpty() ? extraTexts.get(0) : null);

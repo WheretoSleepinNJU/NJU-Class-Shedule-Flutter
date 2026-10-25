@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -71,15 +72,28 @@ class ColorUtil {
       final File file = File(imagePath);
       if (!file.existsSync()) return false;
 
-      final ImageProvider imageProvider = FileImage(file);
-
-      // 生成调色板
-      final PaletteGenerator generator =
-          await PaletteGenerator.fromImageProvider(
-            imageProvider,
-            region: Offset.zero & const Size(1000, 150),
-            maximumColorCount: 10,
-          );
+      final codec = await ui.instantiateImageCodec(
+        await file.readAsBytes(),
+        targetWidth: 200,
+      );
+      late PaletteGenerator generator;
+      final frame = await codec.getNextFrame();
+      try {
+        generator = await PaletteGenerator.fromImage(
+          frame.image,
+          region: Rect.fromLTWH(
+            0,
+            0,
+            frame.image.width.toDouble(),
+            min(32, frame.image.height).toDouble(),
+          ),
+          maximumColorCount: 10,
+          filters: const [], // Black/white backgrounds must participate too.
+        );
+      } finally {
+        frame.image.dispose();
+        codec.dispose();
+      }
 
       // 获取主色调，如果没有则默认白色
       Color dominantColor = generator.dominantColor?.color ?? Colors.white;

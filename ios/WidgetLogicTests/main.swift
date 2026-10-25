@@ -62,4 +62,14 @@ let boundaries = decode(shortValues).transitionDates(after: date("2026-10-19T07:
 check(boundaries.contains(date("2026-10-19T08:00:00+08:00")), "short course start is scheduled")
 check(boundaries.contains(date("2026-10-19T08:02:00+08:00")), "end within five minutes is never discarded")
 check(boundaries.contains(date("2026-10-20T00:00:00+08:00")), "timeline retains midnight transition")
+var sundayValues = fixture
+sundayValues["timestamp"] = "2026-10-25T14:00:00.123456+08:00"
+sundayValues["currentWeekDay"] = 7
+sundayValues["semesterCourses"] = [course("AddedSunday", day: 7, weeks: [1]), course("OtherSunday", day: 7, weeks: [2]), nextWeek]
+sundayValues["todayCourses"] = [course("AddedSunday", day: 7, weeks: [1])]
+let addedSunday = decode(sundayValues).normalized(at: date("2026-10-25T14:01:00+08:00"), calendar: calendar)
+check(addedSunday.currentWeek == 1 && addedSunday.currentWeekDay == 7, "fresh Sunday payload keeps week and weekday")
+check(addedSunday.todayCourses.map(\.id) == ["AddedSunday"], "new Sunday course remains visible and other-week Sunday is excluded")
+check(addedSunday.tomorrowCourses.map(\.id) == ["NextWeek"], "fresh Sunday payload previews next week's Monday")
+check(!addedSunday.requiresRefresh && addedSunday.hasCoursesToday, "new Sunday course cannot become a valid empty day")
 print("\(checks) widget calendar checks passed")

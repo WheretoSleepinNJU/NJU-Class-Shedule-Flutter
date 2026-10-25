@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import '../../generated/l10n.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +15,7 @@ import '../Lecture/LecturesView.dart';
 import '../About/AboutView.dart';
 import '../AddCourse/AddCourseView.dart';
 import 'MoreSettingsView.dart';
+import 'BackgroundSettingsView.dart';
 import 'WidgetSettingsView.dart';
 import '../Share/ShareView.dart';
 import '../../Components/Toast.dart';
@@ -139,6 +139,13 @@ class _SettingsViewState extends State<SettingsView> {
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (BuildContext context) => const ManageTableView()));
           },
+        ),
+        ListTile(
+          key: const ValueKey('background-settings'),
+          title: Text(S.of(context).background_settings_title),
+          subtitle: Text(S.of(context).background_settings_subtitle),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => const BackgroundSettingsView())),
         ),
         ListTile(
           title: Text(S.of(context).more_settings_title),

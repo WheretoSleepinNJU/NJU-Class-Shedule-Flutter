@@ -27,7 +27,11 @@ import 'package:wheretosleepinnju/Utils/WidgetHelper.dart';
 import 'package:wheretosleepinnju/core/widget_data/utils/widget_refresh_helper.dart';
 
 final platform = Platform.operatingSystem;
-final endpoint = Uri.parse('http://127.0.0.1:8768');
+const recorderPort = int.fromEnvironment(
+  'QA_RECORDER_PORT',
+  defaultValue: 8768,
+);
+final endpoint = Uri.parse('http://127.0.0.1:$recorderPort');
 Future<dynamic> record(Map<String, dynamic> data) async {
   final client = HttpClient();
   try {
@@ -37,7 +41,11 @@ Future<dynamic> record(Map<String, dynamic> data) async {
     request.contentLength = bytes.length;
     request.add(bytes);
     final response = await request.close();
-    return jsonDecode(await utf8.decoder.bind(response).join());
+    final body = await utf8.decoder.bind(response).join();
+    if (response.statusCode != HttpStatus.ok) {
+      throw HttpException('QA recorder rejected capture: $body');
+    }
+    return jsonDecode(body);
   } finally {
     client.close();
   }
@@ -54,12 +62,27 @@ class Offline extends HttpOverrides {
   }
 }
 
+class QaThrottledNetwork extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    final client = super.createHttpClient(context);
+    client.findProxy =
+        (uri) =>
+            ['cdn.idealclover.cn', 'lecture.idealclover.cn'].contains(uri.host)
+                ? 'PROXY 127.0.0.1:8774'
+                : 'DIRECT';
+    return client;
+  }
+}
+
 void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   binding.framePolicy = LiveTestWidgetsFlutterBindingFramePolicy.fullyLive;
   testWidgets(
     'three-platform checklist on native simulator',
     (tester) async {
+      tester.platformDispatcher.localeTestValue = const Locale('zh', 'CN');
+      tester.platformDispatcher.localesTestValue = const [Locale('zh', 'CN')];
       final prefs = await SharedPreferences.getInstance();
       final original = {for (final key in prefs.getKeys()) key: prefs.get(key)};
       final tables = CourseTableProvider();
@@ -113,6 +136,12 @@ void main() {
           app.MyApp(conf[0], ThemeMode.system, conf[2], key: UniqueKey()),
         );
         await until(find.byIcon(Icons.settings));
+        expect(
+          Localizations.localeOf(
+            tester.element(find.byIcon(Icons.settings).first),
+          ),
+          const Locale('zh', 'CN'),
+        );
         await settle();
       }
 
@@ -135,6 +164,10 @@ void main() {
       }
 
       Future<void> scenario(String id, Future<void> Function() body) async {
+        const retryCases = String.fromEnvironment('QA_RETRY_CASES');
+        if (retryCases.isNotEmpty && !retryCases.split(',').contains(id)) {
+          return;
+        }
         if (const bool.fromEnvironment('QA_PLUGIN_ONLY') &&
             id != 'R06-native-plugin-upgrade') {
           return;
@@ -149,8 +182,9 @@ void main() {
         }
         if (const bool.fromEnvironment('QA_LAYOUT_ONLY') &&
             !id.startsWith('R02') &&
-            !id.startsWith('U04'))
+            !id.startsWith('U04')) {
           return;
+        }
         try {
           await body();
           final error = tester.takeException();
@@ -169,6 +203,10 @@ void main() {
           while (tester.takeException() != null) {}
         } finally {
           HttpOverrides.global = null;
+          if (id == 'R01' &&
+              const bool.fromEnvironment('QA_ANDROID_NETWORK_RETAKE')) {
+            await record({'event': 'sdk-network', 'mode': 'restore'});
+          }
         }
       }
 
@@ -329,7 +367,7 @@ void main() {
             await text('查看');
             await snap('U03-free', '展开自由时间课程。');
           });
-          if (!const bool.fromEnvironment('QA_SKIP_SHARE'))
+          if (!const bool.fromEnvironment('QA_SKIP_SHARE')) {
             await scenario('S02', () async {
               await settings();
               await text('导入/导出课表');
@@ -393,11 +431,16 @@ void main() {
               });
               await prefs.setInt('tableId', fixture.id!);
             });
+          }
           await scenario('A01-A02', () async {
             await settings();
             await text('自定义选项');
             await tap(find.byWidgetPredicate((w) => w is DropdownButton<int>));
             await text('深色模式');
+            expect(
+              Theme.of(tester.element(find.text('自定义选项'))).brightness,
+              Brightness.dark,
+            );
             await snap('A01-dark', '实际选择深色模式，随后恢复跟随系统。');
             await tap(find.byWidgetPredicate((w) => w is DropdownButton<int>));
             await text('跟随系统');
@@ -413,6 +456,9 @@ void main() {
             await home();
             expect(find.text('周六'), findsNothing);
             expect(find.text('周日'), findsNothing);
+            await prefs.reload();
+            expect(prefs.getBool('showWeekend'), isFalse);
+            expect(prefs.getBool('showClassTime'), isFalse);
             await snap('A02-weekend-time', '通过设置关闭周末、上课时间，检查主课表显示。');
             await prefs.setBool('showWeekend', true);
             await prefs.setBool('showClassTime', true);
@@ -436,6 +482,20 @@ void main() {
             )).where((r) => r['name'] == card.lecture.name);
             expect(found.length, 1);
             expect(found.first['classroom'], card.lecture.classroom);
+            for (final field in [
+              'weeks',
+              'week_time',
+              'start_time',
+              'time_count',
+            ]) {
+              expect(found.first[field], card.lecture.toMap()[field]);
+            }
+            await until(find.textContaining('已添加('));
+            await Scrollable.ensureVisible(
+              tester.element(find.byType(LectureCard).first),
+              alignment: 0,
+            );
+            await settle();
             await snap('L01-added', '讲座实际导入，数据库名称、教室、周次和节次核对。');
             await record({'event': 'lecture-readback', 'row': found.first});
           });
@@ -458,23 +518,73 @@ void main() {
             });
           }
           await scenario('R01', () async {
-            HttpOverrides.global = Offline();
+            if (const bool.fromEnvironment('QA_ANDROID_NETWORK_RETAKE')) {
+              await record({'event': 'sdk-network', 'mode': 'offline'});
+            } else {
+              HttpOverrides.global = Offline();
+            }
             await settings();
             await text('导入课程表');
             await settle(25);
-            await snap('R01-school-failed', '测试进程连接拒绝注入（非断开 Mac 网络），检查错误状态。');
+            await until(find.text('暂时无法获取学校列表'));
+            await snap(
+              'R01-school-failed',
+              const bool.fromEnvironment('QA_ANDROID_NETWORK_RETAKE')
+                  ? '通过SDK关闭模拟器Wi-Fi与移动数据，确认无默认网络，检查学校列表错误状态。'
+                  : '测试进程连接拒绝注入（非断开 Mac 网络），检查错误状态。',
+            );
             expect(find.text('加载中...'), findsNothing, reason: '失败后不能永久显示加载中');
             await settings();
             await text('查看/添加讲座');
             await settle(25);
+            await until(find.text('网络错误，请重试'));
             await snap('R01-lecture-failed', '讲座网络失败状态。');
             final error = tester.takeException();
             if (error != null) throw error;
             HttpOverrides.global = null;
+            if (const bool.fromEnvironment('QA_ANDROID_NETWORK_RETAKE')) {
+              await record({'event': 'sdk-network', 'mode': 'restore'});
+            }
             await settings();
             await text('查看/添加讲座');
             await until(find.byType(LectureCard));
-            await snap('R01-recovered', '解除连接拒绝后重新进入列表，数据恢复。');
+            await snap(
+              'R01-recovered',
+              const bool.fromEnvironment('QA_ANDROID_NETWORK_RETAKE')
+                  ? '通过SDK恢复模拟器原网络状态后重新进入列表，真实讲座数据恢复。'
+                  : '解除连接拒绝后重新进入列表，数据恢复。',
+            );
+          });
+          await scenario('R01-throttled', () async {
+            HttpOverrides.global = QaThrottledNetwork();
+            await record({'event': 'network-mode', 'mode': 'slow'});
+            final timer = Stopwatch()..start();
+            await settings();
+            await text('导入课程表');
+            await settle(55);
+            expect(find.text('暂时无法获取学校列表'), findsNothing);
+            expect(find.byType(CircularProgressIndicator), findsNothing);
+            expect(find.byType(ListTile), findsWidgets);
+            expect(timer.elapsedMilliseconds, greaterThan(2500));
+            await snap(
+              'R01-slow-real-tls',
+              '真实线上学校配置经端到端 TLS 隧道，连接延迟3秒、下行32KiB/s。',
+            );
+            await record({'event': 'network-mode', 'mode': 'drop'});
+            await settings();
+            await text('导入课程表');
+            await until(find.text('暂时无法获取学校列表'));
+            await snap(
+              'R01-dropped-connection',
+              '在本地 TLS 隧道中断开上游连接；页面进入可重试错误态。',
+            );
+            await record({'event': 'network-mode', 'mode': 'normal'});
+            HttpOverrides.global = null;
+            await text('重新加载');
+            await settle(40);
+            expect(find.text('暂时无法获取学校列表'), findsNothing);
+            expect(find.byType(ListTile), findsWidgets);
+            await snap('R01-retry-real-network', '恢复连接并点击同页重新加载，线上学校列表恢复。');
           });
           await scenario('R05-accessibility', () async {
             await prefs.setInt('tableId', fixture.id!);
@@ -799,7 +909,7 @@ void main() {
             await courses.deleteByTable(fixture.id!);
             final now = DateTime.now();
             String time(int offset) {
-              final quick = const bool.fromEnvironment('QA_WIDGET_QUICK');
+              const quick = bool.fromEnvironment('QA_WIDGET_QUICK');
               final t = now.add(
                 Duration(minutes: quick ? (offset - 4) ~/ 2 : offset),
               );
@@ -880,6 +990,71 @@ void main() {
                 return record({'event': 'native-poll'});
               });
               if (status['done'] == true) break;
+              if (status['mode'] != null) {
+                final mode = status['mode'] as String;
+                final instant = DateTime.now();
+                String offsetTime(int minutes) {
+                  final value = instant.add(Duration(minutes: minutes));
+                  return '${value.hour.toString().padLeft(2, '0')}:${value.minute.toString().padLeft(2, '0')}';
+                }
+
+                final offsets = switch (mode) {
+                  'approaching' => [3, 8, 25, 30],
+                  'in-class' => [-2, 3, 20, 25],
+                  'between' => [-10, -5, 20, 25],
+                  'ended' || 'tomorrow' => [-20, -15, -10, -5],
+                  _ => [60, 65, 90, 95],
+                };
+                fixture.data = jsonEncode({
+                  'class_time_list': [
+                    {
+                      'start': offsetTime(offsets[0]),
+                      'end': offsetTime(offsets[1]),
+                    },
+                    {
+                      'start': offsetTime(offsets[2]),
+                      'end': offsetTime(offsets[3]),
+                    },
+                  ],
+                });
+                await tables.update(fixture);
+                await prefs.setInt('widgetApproachingMinutes', 5);
+                await prefs.setInt(
+                  'widgetTomorrowPreviewHour',
+                  mode == 'tomorrow' ? 0 : 23,
+                );
+                await courses.deleteByTable(fixture.id!);
+                if (mode != 'empty') {
+                  for (var index = 0; index < 2; index++) {
+                    await courses.insert(
+                      Course(
+                        fixture.id,
+                        'QA-Widget-${index + 1}',
+                        '[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]',
+                        instant.weekday,
+                        index + 1,
+                        0,
+                        0,
+                        classroom: 'QA-${index + 1}01',
+                      ),
+                    );
+                  }
+                  await courses.insert(
+                    Course(
+                      fixture.id,
+                      'QA-Tomorrow',
+                      '[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]',
+                      instant.add(const Duration(days: 1)).weekday,
+                      1,
+                      0,
+                      0,
+                      classroom: 'QA-301',
+                    ),
+                  );
+                }
+                await WidgetHelper.refreshWidget(fixture.id!);
+                await record({'event': 'native-mode-applied', 'mode': mode});
+              }
             }
           });
         }
@@ -907,8 +1082,9 @@ void main() {
           if (v is List<String>) await prefs.setStringList(entry.key, v);
         }
         await WidgetRefreshHelper.manualRefresh();
-        if (prefs.getInt('tableId') != null)
+        if (prefs.getInt('tableId') != null) {
           await WidgetHelper.refreshWidget(prefs.getInt('tableId')!);
+        }
         await record({
           'event': 'complete',
           'failed': failures,

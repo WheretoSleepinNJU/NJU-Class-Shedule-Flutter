@@ -4,9 +4,15 @@
 
 仅使用一次性测试模拟器：`flutter test -d` 的安装阶段可能重置应用容器，脚本中的 finally 无法恢复安装前的数据。运行前应备份需要保留的数据库和配置。
 
+`flutter drive` 默认在退出时停止并卸载应用；需要保留模拟器数据时必须使用 `--keep-app-running`，并在测试后安装正常 `lib/main.dart` 入口。鸿蒙普通 Ability 没有原生测试 Delegator，VM 驱动模式使用 `--dart-define=INTEGRATION_TEST_SHOULD_REPORT_RESULTS_TO_NATIVE=false`，避免测试结束时 IntegrationTestPlugin 的原生上报异常；仍需检查 VM 驱动的完整结果，不能只看某一行“All tests passed”。
+
 Debug/集成测试与 Release 构建应串行执行，切换模式后首次构建不要加 `--no-pub`。Flutter 3.35 需要按模式重新生成插件注册文件；跳过后可能残留 `IntegrationTestPlugin`，与 Release 已排除的测试依赖不匹配。
 
 采集服务需监听 `127.0.0.1:8768`，接受脚本中的 snapshot、exchange、import-readback、result 和 native-poll JSON 请求。Android / 鸿蒙需要 SDK 反向端口转发。2026-10-24 本地实测报告的 `qa-round2/recorder.py` 保留该服务及原始事件日志。
+
+截图采集器应检查原生前台窗口，拒绝系统权限弹窗遮挡的画面。采集接口返回非 200 时，测试会明确失败，不能仅凭 Flutter 页面断言通过认定截图有效。Android 一次性模拟器可预先授予本场景需要的相机权限。
+
+`QA_RECORDER_PORT` 可指定采集端口，`QA_RETRY_CASES` 可指定逗号分隔的场景 ID。Android 权限遮挡补测使用 `QA_ANDROID_NETWORK_RETAKE=true`：采集器还需处理 `sdk-network` 的 `offline` / `restore` 请求，通过 SDK 关闭模拟器 Wi-Fi 和移动数据、确认无默认网络，并恢复原状态；R01 的 finally 也会请求恢复。
 
 ```sh
 flutter test integration_test/checklist_test.dart -d DEVICE_ID --reporter expanded
@@ -34,3 +40,7 @@ flutter test integration_test/checklist_test.dart -d DEVICE_ID --reporter expand
 课表七列总览将文字比例上限设为 1.4，统一放大节次、日期与课程文字；设置页仍保留系统文字比例。弹窗统一采用最高 2 倍文字比例，标题、正文和操作同步放大；长标题换行，长内容滚动，操作按钮固定可用。R05 另使用正常产品包与 iOS 系统最大辅助功能字号实拍，避免只凭无异常日志判断可读性。
 
 `test/Components/dialog_accessibility_test.dart` 覆盖默认字号、3.2 倍输入比例下的 393×852 / 320×568 / 852×393 详情、删除取消以及 320×568 的键盘遮挡回归。检查完整课名、链接正文放大、滚动与按钮可操作性；不能仅以 MediaQuery 数值或没有异常判断视觉通过。
+
+ICS / 多图背景原生回归：`integration_test/ics_background_test.dart` 使用端口8782的本地记录器，创建匿名课表与PNG图片，在真实生产页面验证配置和导出。Android使用官方模拟器主机地址10.0.2.2，避免drive清理reverse映射造成记录器断线。系统相册选择需要由adb、iOS XCTest或hdc在`picker-wait`后实际选择预置的两张测试图；不替换图片选择插件结果。测试最后恢复偏好和原有课表ID，使用`--keep-app-running`后再安装正常main.dart入口。鸿蒙需先把测试图从系统文件管理器保存到图库（Download目录中的图片不能直接出现在图库选择器）。
+
+`background_refresh_test.dart` 使用真实首页和设置路由，回归立即换图后连续回退、深浅图自动标题色、逐图手动设置及主设置入口顺序。它用匿名生成图片，恢复原偏好与课表；截图记录服务端口为 8789，Android 使用 10.0.2.2，iOS/鸿蒙使用 127.0.0.1（鸿蒙需配置 hdc rport）。

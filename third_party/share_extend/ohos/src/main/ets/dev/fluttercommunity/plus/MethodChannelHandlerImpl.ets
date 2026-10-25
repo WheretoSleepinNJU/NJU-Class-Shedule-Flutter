@@ -38,9 +38,11 @@ export default class MethodCallHandlerImpl implements MethodCallHandler {
       switch (method) {
         case 'share':
           if ("text" === type) {
-            this.share?.shareText(list[0]);
+            this.share?.shareText(list[0], false, result);
           } else {
-            this.share?.shareFiles(list, subject);
+            this.share?.shareFiles(list, subject, false, result).catch(() => {
+              result.error('share_failed', 'Cannot share file', null);
+            });
           }
           break;
         default:
@@ -49,6 +51,7 @@ export default class MethodCallHandlerImpl implements MethodCallHandler {
       }
     } catch (err) {
       Log.e(TAG, 'err:' + JSON.stringify(err));
+      result.error('share_failed', 'Cannot open share panel', null);
     }
   }
 }

@@ -162,3 +162,12 @@ test('merging preserves the exact set of name, room, date and occupied periods',
   }
   assert.deepEqual([...after].sort(),[...before].sort());
 });
+
+
+test('quotes, percent signs, ampersands, backslashes, line breaks and emoji survive the import encoding',()=>{
+  const title='带"引号" 100% & \\ 换行\n单引号\' 🙂';
+  const {encoded,result}=run({responses:[[sample({nr:title,dd:'A&B教室'})]]});
+  assert.equal(result.courses[0].name,title);
+  assert.equal(result.courses[0].classroom,'A&B教室');
+  assert.deepEqual(JSON.parse(decodeURIComponent(encoded)),result);
+});

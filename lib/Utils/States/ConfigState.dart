@@ -1,7 +1,5 @@
-import 'dart:io';
-import 'package:path/path.dart' as path;
-import 'package:path_provider/path_provider.dart';
 import 'package:scoped_model/scoped_model.dart';
+import '../BackgroundService.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 mixin ConfigStateModel on Model {
@@ -14,7 +12,6 @@ mixin ConfigStateModel on Model {
   bool _forceZoom = false;
   bool _addButton = false;
   bool _whiteMode = false;
-  String? _bgImgPath = "";
   int _lastCheckUpdateTime = 0;
   int _coolDownTime = 600;
   bool _showNonCurrentWeekCourses = true;
@@ -164,11 +161,10 @@ mixin ConfigStateModel on Model {
     return _addButton;
   }
 
-  void setWhiteMode(bool whiteMode) async {
+  Future<void> setWhiteMode(bool whiteMode) async {
+    await BackgroundService.instance.setWhiteMode(whiteMode);
     _whiteMode = whiteMode;
     notifyListeners();
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    sp.setBool("whiteMode", _whiteMode);
   }
 
   Future<bool> getWhiteMode() async {
@@ -182,37 +178,18 @@ mixin ConfigStateModel on Model {
   }
 
   Future<bool> setBgImgPath(String bgImgPath) async {
-    _bgImgPath = bgImgPath;
+    final sp = await SharedPreferences.getInstance();
+    await sp.remove('backgroundImages');
+    await sp.setString('bgImgPath', bgImgPath);
+    await BackgroundService.instance.ensureCurrent();
     notifyListeners();
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    sp.setString("bgImgPath", _bgImgPath!);
     return true;
   }
 
-  Future<String> getBgImgPath() async {
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    String? bgImgPath = sp.getString("bgImgPath");
-    if (bgImgPath != null) {
-      // iOS can move the data container on an app update. The image is still
-      // in Documents, but the stored absolute path then points to the old UUID.
-      if (Platform.isIOS && bgImgPath.isNotEmpty &&
-          !await File(bgImgPath).exists()) {
-        final documents = await getApplicationDocumentsDirectory();
-        final relocated = path.join(documents.path, path.basename(bgImgPath));
-        if (await File(relocated).exists()) {
-          await sp.setString('bgImgPath', relocated);
-          _bgImgPath = relocated;
-          return relocated;
-        }
-      }
-      return bgImgPath;
-    }
-    return _bgImgPath!;
-  }
+  Future<String> getBgImgPath() => BackgroundService.instance.ensureCurrent();
 
   Future<bool> removeBgImgPath() async {
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    await sp.remove("bgImgPath");
+    await BackgroundService.instance.clear();
     notifyListeners();
     return true;
   }

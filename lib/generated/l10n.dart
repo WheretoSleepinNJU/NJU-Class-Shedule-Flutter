@@ -18,17 +18,20 @@ class S {
   static S? _current;
 
   static S get current {
-    assert(_current != null,
-        'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.');
+    assert(
+      _current != null,
+      'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.',
+    );
     return _current!;
   }
 
   static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
   static Future<S> load(Locale locale) {
-    final name = (locale.countryCode?.isEmpty ?? false)
-        ? locale.languageCode
-        : locale.toString();
+    final name =
+        (locale.countryCode?.isEmpty ?? false)
+            ? locale.languageCode
+            : locale.toString();
     final localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
@@ -41,8 +44,10 @@ class S {
 
   static S of(BuildContext context) {
     final instance = S.maybeOf(context);
-    assert(instance != null,
-        'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?');
+    assert(
+      instance != null,
+      'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?',
+    );
     return instance!;
   }
 
@@ -52,12 +57,7 @@ class S {
 
   /// `南哪课表`
   String get app_name {
-    return Intl.message(
-      '南哪课表',
-      name: 'app_name',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('南哪课表', name: 'app_name', desc: '', args: []);
   }
 
   /// `(Flutter LTS)`
@@ -72,42 +72,22 @@ class S {
 
   /// `@`
   String get at {
-    return Intl.message(
-      '@',
-      name: 'at',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('@', name: 'at', desc: '', args: []);
   }
 
   /// `-`
   String get to {
-    return Intl.message(
-      '-',
-      name: 'to',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('-', name: 'to', desc: '', args: []);
   }
 
   /// `月`
   String get month {
-    return Intl.message(
-      '月',
-      name: 'month',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('月', name: 'month', desc: '', args: []);
   }
 
-  /// `第 {num} 周`
+  /// `第{num}周`
   String week(Object num) {
-    return Intl.message(
-      '第 $num 周',
-      name: 'week',
-      desc: '',
-      args: [num],
-    );
+    return Intl.message('第$num周', name: 'week', desc: '', args: [num]);
   }
 
   /// `{start}-{end} 周`
@@ -142,92 +122,47 @@ class S {
 
   /// `[非本周]`
   String get not_this_week {
-    return Intl.message(
-      '[非本周]',
-      name: 'not_this_week',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('[非本周]', name: 'not_this_week', desc: '', args: []);
   }
 
   /// `单周`
   String get single_week {
-    return Intl.message(
-      '单周',
-      name: 'single_week',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('单周', name: 'single_week', desc: '', args: []);
   }
 
   /// `双周`
   String get double_week {
-    return Intl.message(
-      '双周',
-      name: 'double_week',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('双周', name: 'double_week', desc: '', args: []);
   }
 
   /// `[未开学]`
   String get not_open {
-    return Intl.message(
-      '[未开学]',
-      name: 'not_open',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('[未开学]', name: 'not_open', desc: '', args: []);
   }
 
   /// `自由时间`
   String get free_time {
-    return Intl.message(
-      '自由时间',
-      name: 'free_time',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('自由时间', name: 'free_time', desc: '', args: []);
   }
 
   /// `未知地点`
   String get unknown_place {
-    return Intl.message(
-      '未知地点',
-      name: 'unknown_place',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('未知地点', name: 'unknown_place', desc: '', args: []);
   }
 
   /// `暂无备注`
   String get unknown_info {
-    return Intl.message(
-      '暂无备注',
-      name: 'unknown_info',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('暂无备注', name: 'unknown_info', desc: '', args: []);
   }
 
   /// `自动导入`
   String get import_auto {
-    return Intl.message(
-      '自动导入',
-      name: 'import_auto',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('自动导入', name: 'import_auto', desc: '', args: []);
   }
 
   /// `手动导入`
   String get import_manually {
-    return Intl.message(
-      '手动导入',
-      name: 'import_manually',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('手动导入', name: 'import_manually', desc: '', args: []);
   }
 
   /// `讲座导入`
@@ -252,12 +187,7 @@ class S {
 
   /// `查看`
   String get free_class_button {
-    return Intl.message(
-      '查看',
-      name: 'free_class_button',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('查看', name: 'free_class_button', desc: '', args: []);
   }
 
   /// `隐藏`
@@ -312,12 +242,7 @@ class S {
 
   /// `设置`
   String get settings_title {
-    return Intl.message(
-      '设置',
-      name: 'settings_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('设置', name: 'settings_title', desc: '', args: []);
   }
 
   /// `手动添加`
@@ -422,12 +347,7 @@ class S {
 
   /// `查看全校课表`
   String get all_course_title {
-    return Intl.message(
-      '查看全校课表',
-      name: 'all_course_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('查看全校课表', name: 'all_course_title', desc: '', args: []);
   }
 
   /// `查看南哪全校课表，方便添加和蹭课`
@@ -482,12 +402,7 @@ class S {
 
   /// `课表管理`
   String get manage_table_title {
-    return Intl.message(
-      '课表管理',
-      name: 'manage_table_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('课表管理', name: 'manage_table_title', desc: '', args: []);
   }
 
   /// `添加或删除课表数据`
@@ -502,12 +417,7 @@ class S {
 
   /// `修改主题`
   String get change_theme_title {
-    return Intl.message(
-      '修改主题',
-      name: 'change_theme_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('修改主题', name: 'change_theme_title', desc: '', args: []);
   }
 
   /// `浅色/深色模式切换`
@@ -552,12 +462,7 @@ class S {
 
   /// `修改当前周`
   String get change_week_title {
-    return Intl.message(
-      '修改当前周',
-      name: 'change_week_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('修改当前周', name: 'change_week_title', desc: '', args: []);
   }
 
   /// `当前周数：`
@@ -572,12 +477,7 @@ class S {
 
   /// `反馈`
   String get report_title {
-    return Intl.message(
-      '反馈',
-      name: 'report_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('反馈', name: 'report_title', desc: '', args: []);
   }
 
   /// `加入用户群一起愉快地玩耍吧！\n轻触直接加群，长按复制群号`
@@ -592,12 +492,7 @@ class S {
 
   /// `投喂`
   String get donate_title {
-    return Intl.message(
-      '投喂',
-      name: 'donate_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('投喂', name: 'donate_title', desc: '', args: []);
   }
 
   /// `给傻翠买支棒棒糖吧！`
@@ -612,12 +507,7 @@ class S {
 
   /// `分享此应用`
   String get share_title {
-    return Intl.message(
-      '分享此应用',
-      name: 'share_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('分享此应用', name: 'share_title', desc: '', args: []);
   }
 
   /// `把南哪课表分享给更多小伙伴吧！`
@@ -642,12 +532,7 @@ class S {
 
   /// `关于`
   String get about_title {
-    return Intl.message(
-      '关于',
-      name: 'about_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('关于', name: 'about_title', desc: '', args: []);
   }
 
   /// `自定义选项`
@@ -712,12 +597,7 @@ class S {
 
   /// `显示月份`
   String get show_month_title {
-    return Intl.message(
-      '显示月份',
-      name: 'show_month_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('显示月份', name: 'show_month_title', desc: '', args: []);
   }
 
   /// `在课表的左上角显示当前月份`
@@ -732,12 +612,7 @@ class S {
 
   /// `显示日期`
   String get show_date_title {
-    return Intl.message(
-      '显示日期',
-      name: 'show_date_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('显示日期', name: 'show_date_title', desc: '', args: []);
   }
 
   /// `显示当前周的日期`
@@ -812,12 +687,7 @@ class S {
 
   /// `强制缩放`
   String get force_zoom_title {
-    return Intl.message(
-      '强制缩放',
-      name: 'force_zoom_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('强制缩放', name: 'force_zoom_title', desc: '', args: []);
   }
 
   /// `强制缩放课程表为一页`
@@ -992,42 +862,22 @@ class S {
 
   /// `讲座列表`
   String get lecture_title {
-    return Intl.message(
-      '讲座列表',
-      name: 'lecture_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('讲座列表', name: 'lecture_title', desc: '', args: []);
   }
 
   /// `暂无名称`
   String get lecture_no_name {
-    return Intl.message(
-      '暂无名称',
-      name: 'lecture_no_name',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('暂无名称', name: 'lecture_no_name', desc: '', args: []);
   }
 
   /// `暂无时间`
   String get lecture_no_time {
-    return Intl.message(
-      '暂无时间',
-      name: 'lecture_no_time',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('暂无时间', name: 'lecture_no_time', desc: '', args: []);
   }
 
   /// `暂无老师`
   String get lecture_no_teacher {
-    return Intl.message(
-      '暂无老师',
-      name: 'lecture_no_teacher',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('暂无老师', name: 'lecture_no_teacher', desc: '', args: []);
   }
 
   /// `暂无地点`
@@ -1042,22 +892,12 @@ class S {
 
   /// `暂无信息`
   String get lecture_no_info {
-    return Intl.message(
-      '暂无信息',
-      name: 'lecture_no_info',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('暂无信息', name: 'lecture_no_info', desc: '', args: []);
   }
 
   /// `搜索讲座`
   String get lecture_search {
-    return Intl.message(
-      '搜索讲座',
-      name: 'lecture_search',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('搜索讲座', name: 'lecture_search', desc: '', args: []);
   }
 
   /// `主讲人：`
@@ -1252,12 +1092,7 @@ class S {
 
   /// `导入中 请稍后`
   String get importing_toast {
-    return Intl.message(
-      '导入中 请稍后',
-      name: 'importing_toast',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('导入中 请稍后', name: 'importing_toast', desc: '', args: []);
   }
 
   /// `分享串或二维码无效`
@@ -1442,22 +1277,12 @@ class S {
 
   /// `导出课程表`
   String get export_title {
-    return Intl.message(
-      '导出课程表',
-      name: 'export_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('导出课程表', name: 'export_title', desc: '', args: []);
   }
 
   /// `二维码导入`
   String get import_qr_title {
-    return Intl.message(
-      '二维码导入',
-      name: 'import_qr_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('二维码导入', name: 'import_qr_title', desc: '', args: []);
   }
 
   /// `重置颜色池成功 >v<`
@@ -1522,42 +1347,22 @@ class S {
 
   /// `确认`
   String get ok {
-    return Intl.message(
-      '确认',
-      name: 'ok',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('确认', name: 'ok', desc: '', args: []);
   }
 
   /// `取消`
   String get cancel {
-    return Intl.message(
-      '取消',
-      name: 'cancel',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('取消', name: 'cancel', desc: '', args: []);
   }
 
   /// `添加课程`
   String get add_manually_title {
-    return Intl.message(
-      '添加课程',
-      name: 'add_manually_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('添加课程', name: 'add_manually_title', desc: '', args: []);
   }
 
   /// `课程名称`
   String get class_name {
-    return Intl.message(
-      '课程名称',
-      name: 'class_name',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('课程名称', name: 'class_name', desc: '', args: []);
   }
 
   /// `请输入课程名称`
@@ -1572,32 +1377,17 @@ class S {
 
   /// `上课老师`
   String get class_teacher {
-    return Intl.message(
-      '上课老师',
-      name: 'class_teacher',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('上课老师', name: 'class_teacher', desc: '', args: []);
   }
 
   /// `上课地点`
   String get class_room {
-    return Intl.message(
-      '上课地点',
-      name: 'class_room',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('上课地点', name: 'class_room', desc: '', args: []);
   }
 
   /// `备注`
   String get class_info {
-    return Intl.message(
-      '备注',
-      name: 'class_info',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('备注', name: 'class_info', desc: '', args: []);
   }
 
   /// `选择上课时间`
@@ -1652,12 +1442,7 @@ class S {
 
   /// `添加课程`
   String get add_class {
-    return Intl.message(
-      '添加课程',
-      name: 'add_class',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('添加课程', name: 'add_class', desc: '', args: []);
   }
 
   /// `添加成功！>v<`
@@ -1712,12 +1497,7 @@ class S {
 
   /// `导入课程表`
   String get import_title {
-    return Intl.message(
-      '导入课程表',
-      name: 'import_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('导入课程表', name: 'import_title', desc: '', args: []);
   }
 
   /// `注意：如加载失败，请连接南京大学VPN\n试试浏览器访问教务网，没准系统又抽风了\n听起来有点离谱，不过在南京大学，倒也正常`
@@ -1742,62 +1522,32 @@ class S {
 
   /// `用户名`
   String get username {
-    return Intl.message(
-      '用户名',
-      name: 'username',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('用户名', name: 'username', desc: '', args: []);
   }
 
   /// `密码`
   String get password {
-    return Intl.message(
-      '密码',
-      name: 'password',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('密码', name: 'password', desc: '', args: []);
   }
 
   /// `验证码`
   String get captcha {
-    return Intl.message(
-      '验证码',
-      name: 'captcha',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('验证码', name: 'captcha', desc: '', args: []);
   }
 
   /// `点击刷新`
   String get tap_to_refresh {
-    return Intl.message(
-      '点击刷新',
-      name: 'tap_to_refresh',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('点击刷新', name: 'tap_to_refresh', desc: '', args: []);
   }
 
   /// `记住密码`
   String get remember_password {
-    return Intl.message(
-      '记住密码',
-      name: 'remember_password',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('记住密码', name: 'remember_password', desc: '', args: []);
   }
 
   /// `导入`
   String get import {
-    return Intl.message(
-      '导入',
-      name: 'import',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('导入', name: 'import', desc: '', args: []);
   }
 
   /// `密码错误 = =||`
@@ -2052,12 +1802,7 @@ class S {
 
   /// `彩蛋与致谢`
   String get easter_egg_title {
-    return Intl.message(
-      '彩蛋与致谢',
-      name: 'easter_egg_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('彩蛋与致谢', name: 'easter_egg_title', desc: '', args: []);
   }
 
   /// `感谢小百合工作室\n感谢 @ns @lgt @FengChendian @SuperKenVery 协助开发\n感谢 @ovoclover 制作图标\n感谢 @无忌 @子枨 提供配色方案\n特别感谢 1A335 三位室友的支持\n感谢各位提供反馈的 NJUers\n谨以此 APP 敬我的大学时光`
@@ -2122,12 +1867,7 @@ class S {
 
   /// `欢迎使用南哪课表！`
   String get welcome_title {
-    return Intl.message(
-      '欢迎使用南哪课表！',
-      name: 'welcome_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('欢迎使用南哪课表！', name: 'welcome_title', desc: '', args: []);
   }
 
   /// `修改当前周数请前往设置ww`
@@ -2249,6 +1989,7 @@ class S {
       args: [],
     );
   }
+
   /// `编辑课程`
   String get edit_course {
     return Intl.message('编辑课程', name: 'edit_course', desc: '', args: []);
@@ -2300,12 +2041,18 @@ class S {
   }
 
   /// `时间待定`
-  String get free_or_pending_time {
-    return Intl.message('自由时间/时间待定', name: 'free_or_pending_time', desc: '', args: []);
-  }
-
   String get time_pending {
     return Intl.message('时间待定', name: 'time_pending', desc: '', args: []);
+  }
+
+  /// `Free time / Time TBD`
+  String get free_or_pending_time {
+    return Intl.message(
+      'Free time / Time TBD',
+      name: 'free_or_pending_time',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `上课日期`
@@ -2367,42 +2114,581 @@ class S {
       args: [count],
     );
   }
+
   /// `点击空白处关闭`
   String get tap_blank_to_close {
-    return Intl.message('点击空白处关闭', name: 'tap_blank_to_close', desc: '', args: []);
+    return Intl.message(
+      '点击空白处关闭',
+      name: 'tap_blank_to_close',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `将同时删除该课程的全部 {count} 个上课时段。`
   String delete_all_meetings(Object count) {
-    return Intl.message('将同时删除该课程的全部 $count 个上课时段。', name: 'delete_all_meetings', desc: '', args: [count]);
+    return Intl.message(
+      '将同时删除该课程的全部 $count 个上课时段。',
+      name: 'delete_all_meetings',
+      desc: '',
+      args: [count],
+    );
   }
 
   /// `删除失败，请重新打开课程后重试`
   String get delete_failed {
-    return Intl.message('删除失败，请重新打开课程后重试', name: 'delete_failed', desc: '', args: []);
+    return Intl.message(
+      '删除失败，请重新打开课程后重试',
+      name: 'delete_failed',
+      desc: '',
+      args: [],
+    );
   }
 
-  String get rename_table => Intl.message("修改课表名称", name: 'rename_table', args: []);
-  String get table_name => Intl.message("课表名称", name: 'table_name', args: []);
-  String get table_name_required => Intl.message("请输入课表名称", name: 'table_name_required', args: []);
-  String get table_rename_failed => Intl.message("修改失败，请重试", name: 'table_rename_failed', args: []);
-  String get import_load_failed => Intl.message("暂时无法获取学校列表", name: 'import_load_failed', args: []);
-  String get import_load_failed_hint => Intl.message("请检查网络连接后重试", name: 'import_load_failed_hint', args: []);
-  String get import_list_empty => Intl.message("暂时没有可用的学校", name: 'import_list_empty', args: []);
-  String get import_list_empty_hint => Intl.message("稍后刷新，或查看学校适配信息", name: 'import_list_empty_hint', args: []);
-  String get retry => Intl.message("重新加载", name: 'retry', args: []);
-  String get import_test => Intl.message("测试", name: 'import_test', args: []);
-  String get import_test_title => Intl.message("导入测试", name: 'import_test_title', args: []);
-  String get import_test_enabled => Intl.message("测试模式已开启", name: 'import_test_enabled', args: []);
-  String get import_test_hint => Intl.message("填写导入配置，按与学校在线导入相同的流程测试。delayTime 的单位是秒。", name: 'import_test_hint', args: []);
-  String get import_test_start => Intl.message("开始测试", name: 'import_test_start', args: []);
-  String get import_test_url_required => Intl.message("请输入完整的 http 或 https 地址", name: 'import_test_url_required', args: []);
-  String get import_test_redirect_hint => Intl.message("选填，登录完成后匹配此地址并跳转到 targetUrl", name: 'import_test_redirect_hint', args: []);
-  String get import_test_delay_invalid => Intl.message("请输入 0–60 的整数秒数", name: 'import_test_delay_invalid', args: []);
-  String get import_test_script_required => Intl.message("请输入提取脚本", name: 'import_test_script_required', args: []);
-  String get import_test_error => Intl.message("测试未完成", name: 'import_test_error', args: []);
-  String get import_test_retry => Intl.message("重新提取", name: 'import_test_retry', args: []);
+  /// `Rename timetable`
+  String get rename_table {
+    return Intl.message(
+      'Rename timetable',
+      name: 'rename_table',
+      desc: '',
+      args: [],
+    );
+  }
 
+  /// `Timetable name`
+  String get table_name {
+    return Intl.message(
+      'Timetable name',
+      name: 'table_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a timetable name`
+  String get table_name_required {
+    return Intl.message(
+      'Enter a timetable name',
+      name: 'table_name_required',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not rename. Try again.`
+  String get table_rename_failed {
+    return Intl.message(
+      'Could not rename. Try again.',
+      name: 'table_rename_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to load schools`
+  String get import_load_failed {
+    return Intl.message(
+      'Unable to load schools',
+      name: 'import_load_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check your connection and try again.`
+  String get import_load_failed_hint {
+    return Intl.message(
+      'Check your connection and try again.',
+      name: 'import_load_failed_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No schools available`
+  String get import_list_empty {
+    return Intl.message(
+      'No schools available',
+      name: 'import_list_empty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Try again later or see school support information.`
+  String get import_list_empty_hint {
+    return Intl.message(
+      'Try again later or see school support information.',
+      name: 'import_list_empty_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retry`
+  String get retry {
+    return Intl.message('Retry', name: 'retry', desc: '', args: []);
+  }
+
+  /// `Test`
+  String get import_test {
+    return Intl.message('Test', name: 'import_test', desc: '', args: []);
+  }
+
+  /// `Import test`
+  String get import_test_title {
+    return Intl.message(
+      'Import test',
+      name: 'import_test_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Test mode enabled`
+  String get import_test_enabled {
+    return Intl.message(
+      'Test mode enabled',
+      name: 'import_test_enabled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Test a configuration through the online import flow. delayTime is in seconds.`
+  String get import_test_hint {
+    return Intl.message(
+      'Test a configuration through the online import flow. delayTime is in seconds.',
+      name: 'import_test_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start test`
+  String get import_test_start {
+    return Intl.message(
+      'Start test',
+      name: 'import_test_start',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a full http or https URL`
+  String get import_test_url_required {
+    return Intl.message(
+      'Enter a full http or https URL',
+      name: 'import_test_url_required',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Optional: redirect from this login result to targetUrl`
+  String get import_test_redirect_hint {
+    return Intl.message(
+      'Optional: redirect from this login result to targetUrl',
+      name: 'import_test_redirect_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter an integer from 0 to 60 seconds`
+  String get import_test_delay_invalid {
+    return Intl.message(
+      'Enter an integer from 0 to 60 seconds',
+      name: 'import_test_delay_invalid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter an extraction script`
+  String get import_test_script_required {
+    return Intl.message(
+      'Enter an extraction script',
+      name: 'import_test_script_required',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Test failed`
+  String get import_test_error {
+    return Intl.message(
+      'Test failed',
+      name: 'import_test_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retry extraction`
+  String get import_test_retry {
+    return Intl.message(
+      'Retry extraction',
+      name: 'import_test_retry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Loading page`
+  String get import_test_loading {
+    return Intl.message(
+      'Loading page',
+      name: 'import_test_loading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Waiting for targetUrl / redirectUrl`
+  String get import_test_waiting_url {
+    return Intl.message(
+      'Waiting for targetUrl / redirectUrl',
+      name: 'import_test_waiting_url',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Running preExtractJS`
+  String get import_test_preparing {
+    return Intl.message(
+      'Running preExtractJS',
+      name: 'import_test_preparing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Waiting for delayTime before extraction`
+  String get import_test_delay {
+    return Intl.message(
+      'Waiting for delayTime before extraction',
+      name: 'import_test_delay',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Running extractJS`
+  String get import_test_extracting {
+    return Intl.message(
+      'Running extractJS',
+      name: 'import_test_extracting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Saving courses`
+  String get import_test_saving {
+    return Intl.message(
+      'Saving courses',
+      name: 'import_test_saving',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `preExtractJS did not complete. Check the script and current page.`
+  String get import_test_script_invalid {
+    return Intl.message(
+      'preExtractJS did not complete. Check the script and current page.',
+      name: 'import_test_script_invalid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `extractJS returned no timetable data. Keep the complete script and finish by calling the parser (for example, scheduleHtmlParser();). Check the script error below if one is shown.`
+  String get import_test_extract_empty {
+    return Intl.message(
+      'extractJS returned no timetable data. Keep the complete script and finish by calling the parser (for example, scheduleHtmlParser();). Check the script error below if one is shown.',
+      name: 'import_test_extract_empty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View week timetable`
+  String get view_week_timetable {
+    return Intl.message(
+      'View week timetable',
+      name: 'view_week_timetable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This week`
+  String get this_week {
+    return Intl.message('This week', name: 'this_week', desc: '', args: []);
+  }
+
+  /// `Select a week and confirm to change the current academic week.`
+  String get change_current_week_hint {
+    return Intl.message(
+      'Select a week and confirm to change the current academic week.',
+      name: 'change_current_week_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set as current week`
+  String get set_current_week {
+    return Intl.message(
+      'Set as current week',
+      name: 'set_current_week',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export ICS file`
+  String get export_ics_title {
+    return Intl.message(
+      'Export ICS file',
+      name: 'export_ics_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save a calendar file or import it into another calendar app`
+  String get export_ics_subtitle {
+    return Intl.message(
+      'Save a calendar file or import it into another calendar app',
+      name: 'export_ics_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not export ICS. Check course times and try again.`
+  String get export_ics_fail {
+    return Intl.message(
+      'Could not export ICS. Check course times and try again.',
+      name: 'export_ics_fail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Timetable background`
+  String get background_settings_title {
+    return Intl.message(
+      'Timetable background',
+      name: 'background_settings_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Manage photos and random rotation frequency`
+  String get background_settings_subtitle {
+    return Intl.message(
+      'Manage photos and random rotation frequency',
+      name: 'background_settings_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tap a photo to switch backgrounds`
+  String get background_intro {
+    return Intl.message(
+      'Tap a photo to switch backgrounds',
+      name: 'background_intro',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No background photos yet`
+  String get background_empty {
+    return Intl.message(
+      'No background photos yet',
+      name: 'background_empty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add photos`
+  String get background_add {
+    return Intl.message(
+      'Add photos',
+      name: 'background_add',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove photo`
+  String get background_remove {
+    return Intl.message(
+      'Remove photo',
+      name: 'background_remove',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `In use`
+  String get background_current {
+    return Intl.message(
+      'In use',
+      name: 'background_current',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Use this background`
+  String get background_use {
+    return Intl.message(
+      'Use this background',
+      name: 'background_use',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Applies only to the current photo`
+  String get background_title_color_hint {
+    return Intl.message(
+      'Applies only to the current photo',
+      name: 'background_title_color_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Up to {count} photos`
+  String background_limit(Object count) {
+    return Intl.message(
+      'Up to $count photos',
+      name: 'background_limit',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Rotation frequency`
+  String get background_frequency {
+    return Intl.message(
+      'Rotation frequency',
+      name: 'background_frequency',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Every timetable visit`
+  String get background_every_visit {
+    return Intl.message(
+      'Every timetable visit',
+      name: 'background_every_visit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change every X days`
+  String get background_by_days {
+    return Intl.message(
+      'Change every X days',
+      name: 'background_by_days',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change every {days} days`
+  String background_every_days(Object days) {
+    return Intl.message(
+      'Change every $days days',
+      name: 'background_every_days',
+      desc: '',
+      args: [days],
+    );
+  }
+
+  /// `Interval`
+  String get background_days_label {
+    return Intl.message(
+      'Interval',
+      name: 'background_days_label',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `days`
+  String get background_days_unit {
+    return Intl.message(
+      'days',
+      name: 'background_days_unit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter an integer from 1 to 365`
+  String get background_days_error {
+    return Intl.message(
+      'Enter an integer from 1 to 365',
+      name: 'background_days_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change photo now`
+  String get background_shuffle {
+    return Intl.message(
+      'Change photo now',
+      name: 'background_shuffle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove all backgrounds`
+  String get background_clear {
+    return Intl.message(
+      'Remove all backgrounds',
+      name: 'background_clear',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not update the background. Try again.`
+  String get background_error {
+    return Intl.message(
+      'Could not update the background. Try again.',
+      name: 'background_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `When to switch background photos`
+  String get background_frequency_subtitle {
+    return Intl.message(
+      'When to switch background photos',
+      name: 'background_frequency_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
@@ -2430,5 +2716,4 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
     }
     return false;
   }
-
 }
