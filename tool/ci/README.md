@@ -14,6 +14,7 @@
 
 - Flutter 使用 `.fvmrc` 中的 `3.35.8-ohos-1.0.4`，并校验提交 `8320f6ded3f0bdc5409545e26dcd2596bf054203`，三端不混用官方 Flutter SDK。初始化时显式保留本地版本标签；修复缺少标签的 SDK 缓存时，同时清除旧版本元数据，避免被识别成 `0.0.0-unknown`。
 - `bootstrap.sh` 固定三个 `external` 路径依赖的提交，并按 `pubspec.lock` 严格恢复 Pub 依赖。`mobile_scanner` 直接使用 `pubspec.yaml` 中固定的 Git 提交，不在主仓库登记 `external/fluttertpc_mobile_scanner` 子模块。
+- CI 全局使用 `PUB_HOSTED_URL=https://pub.flutter-io.cn`，与 `pubspec.lock` 记录的包源一致，依赖安装、测试和构建均使用同一包源，保留 `--enforce-lockfile` 校验。
 - Release 构建保留 Flutter 自动 Pub / 平台注册文件生成步骤，并在构建后检查 `pubspec.lock` 没有变化。此 SDK 在 `--no-pub` 时也会跳过 Release 插件注册文件重建，可能把 `integration_test` 留在 Android 注册文件中，导致编译失败。
 - Android 使用 Ubuntu 24.04、JDK 17、SDK 36、Gradle 8.13；显式设置 Flutter 的 `jdk-dir`，避免它优先选择 Android Studio 自带的新 JDK。在临时空项目中生成 Gradle wrapper，不依赖本机未提交的 wrapper 文件。未提供 `key.properties` 时产出无签名 Release，不会退回 Debug 签名。
 - iOS 使用 GitHub 托管 `macos-15` ARM64 runner，明确选择该镜像提供的 Xcode 26.3，使用 Ruby 3.3、CocoaPods 1.17.0 和 xcodeproj 1.27.0。版本来源见 [官方镜像清单](https://github.com/actions/runner-images/blob/main/images/macos/macos-15-arm64-Readme.md)。提交 `ios/Podfile.lock` 固定原生依赖，并在构建后检查锁文件没有漂移。主应用最低 iOS 15，小组件最低 iOS 17。

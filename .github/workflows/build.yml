@@ -27,6 +27,7 @@ concurrency:
 env:
   BUILD_SIGNED: ${{ github.event_name == 'workflow_dispatch' && inputs.signed && 'true' || 'false' }}
   FLUTTER_SUPPRESS_ANALYTICS: 'true'
+  PUB_HOSTED_URL: https://pub.flutter-io.cn
 
 jobs:
   plan:
