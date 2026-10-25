@@ -105,13 +105,15 @@ jobs:
         if: matrix.platform != 'ios'
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: ${{ matrix.platform == 'ohos' && '21' || '17' }}
       - name: Select Flutter JDK
         if: matrix.platform == 'android'
         run: flutter config --jdk-dir "$JAVA_HOME"
 
       - uses: android-actions/setup-android@v3
         if: matrix.platform == 'android'
+        with:
+          packages: platform-tools
       - uses: gradle/actions/setup-gradle@v4
         if: matrix.platform == 'android'
         with:
@@ -160,9 +162,9 @@ jobs:
       - name: Install CocoaPods
         if: matrix.platform == 'ios'
         run: |
-          gem install xcodeproj -v 1.27.0 --no-document
+          gem install xcodeproj -v 1.28.1 --no-document
           gem install cocoapods -v 1.17.0 --conservative --no-document
-          ruby -rxcodeproj -e 'abort "Unexpected xcodeproj version" unless Xcodeproj::VERSION == "1.27.0"'
+          ruby -rxcodeproj -e 'abort "Unexpected xcodeproj version" unless Xcodeproj::VERSION == "1.28.1"'
       - name: Configure iOS signing
         if: matrix.platform == 'ios' && env.BUILD_SIGNED == 'true'
         env:

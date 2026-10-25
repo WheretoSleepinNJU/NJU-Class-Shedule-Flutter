@@ -65,11 +65,19 @@ def android(root, temp):
 
 def ohos(root):
     import json5  # CI installs the pinned version before calling this command.
+    sdk_root = os.environ.get("DEVECO_SDK_HOME")
+    if not sdk_root:
+        raise SystemExit("Set DEVECO_SDK_HOME before configuring the HarmonyOS build")
+    sdk = json.loads((Path(sdk_root) / "default/sdk-pkg.json").read_text())["data"]
+    if int(sdk["apiVersion"]) < 26:
+        raise SystemExit("The pinned Flutter engine requires HarmonyOS SDK API 26 or newer")
     path = root / "ohos/build-profile.json5"
     config = json5.loads(path.read_text())
     config["app"]["signingConfigs"] = []
     for product in config["app"]["products"]:
         product.pop("signingConfig", None)
+        # DevEco 26 selects its bundled SDK; legacy explicit versions are rejected.
+        product.pop("compileSdkVersion", None)
     write_private(path, (json.dumps(config, ensure_ascii=False, indent=2) + "\n").encode())
 
 

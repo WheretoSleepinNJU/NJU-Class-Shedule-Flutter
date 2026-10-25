@@ -1,5 +1,5 @@
 require 'json'
-gem 'xcodeproj', '1.27.0'
+gem 'xcodeproj', '1.28.1'
 require 'xcodeproj'
 
 project = Xcodeproj::Project.open(ARGV.fetch(0))
