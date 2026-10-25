@@ -193,6 +193,7 @@ jobs:
       - name: Configure HarmonyOS build
         if: matrix.platform == 'ohos'
         run: |
+          flutter config --enable-ohos
           python3 -m venv "$RUNNER_TEMP/ci-python"
           "$RUNNER_TEMP/ci-python/bin/pip" install json5==0.9.25
           "$RUNNER_TEMP/ci-python/bin/python" tool/ci/configure_signing.py ohos

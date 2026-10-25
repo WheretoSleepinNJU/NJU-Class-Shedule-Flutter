@@ -52,5 +52,7 @@ if [[ -n "${GITHUB_ENV:-}" ]]; then
   printf '%s\n' "$FLUTTER_ROOT/bin" >> "$GITHUB_PATH"
 fi
 flutter --version
-flutter config --no-analytics --enable-ohos
+# Pub regenerates tooling for every enabled platform. The OHOS job enables
+# HarmonyOS support after installing its SDK; tests, Android and iOS do not need it.
+flutter config --no-analytics --no-enable-ohos
 flutter pub get --enforce-lockfile
