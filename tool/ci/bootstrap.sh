@@ -6,17 +6,30 @@ cd "$(dirname "$0")/../.."
 flutter_ref=3.35.8-ohos-1.0.4
 flutter_commit=8320f6ded3f0bdc5409545e26dcd2596bf054203
 checkout_dependency() {
-  local destination=$1 remote=$2 commit=$3 ref=${4:-$3}
+  local destination=$1 remote=$2 commit=$3 tag=${4:-}
+  local ref=$commit tag_commit=$commit
   if [[ ! -d "$destination/.git" ]]; then
     mkdir -p "$destination"
     git -C "$destination" init --quiet
     git -C "$destination" remote add origin "$remote"
   fi
-  if [[ "$(git -C "$destination" rev-parse HEAD 2>/dev/null || true)" != "$commit" ]]; then
+  if [[ -n "$tag" ]]; then
+    # Flutter discovers its version from local tags, not FETCH_HEAD.
+    ref="refs/tags/$tag:refs/tags/$tag"
+    tag_commit=$(git -C "$destination" rev-parse --verify "refs/tags/$tag^{commit}" 2>/dev/null || true)
+  fi
+  if [[ "$(git -C "$destination" rev-parse HEAD 2>/dev/null || true)" != "$commit" || "$tag_commit" != "$commit" ]]; then
     git -C "$destination" fetch --depth 1 origin "$ref"
     git -C "$destination" checkout --detach "$commit"
+    if [[ -n "$tag" ]]; then
+      # Recompute version metadata after repairing an incomplete SDK cache.
+      rm -f "$destination/bin/cache/flutter.version.json" "$destination/version"
+    fi
   fi
   test "$(git -C "$destination" rev-parse HEAD)" = "$commit"
+  if [[ -n "$tag" ]]; then
+    test "$(git -C "$destination" rev-parse "refs/tags/$tag^{commit}")" = "$commit"
+  fi
 }
 
 checkout_dependency .fvm/flutter_sdk \

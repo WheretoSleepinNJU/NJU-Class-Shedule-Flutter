@@ -12,7 +12,7 @@
 
 ## 固定工具链与依赖
 
-- Flutter 使用 `.fvmrc` 中的 `3.35.8-ohos-1.0.4`，并校验提交 `8320f6ded3f0bdc5409545e26dcd2596bf054203`，三端不混用官方 Flutter SDK。
+- Flutter 使用 `.fvmrc` 中的 `3.35.8-ohos-1.0.4`，并校验提交 `8320f6ded3f0bdc5409545e26dcd2596bf054203`，三端不混用官方 Flutter SDK。初始化时显式保留本地版本标签；修复缺少标签的 SDK 缓存时，同时清除旧版本元数据，避免被识别成 `0.0.0-unknown`。
 - `bootstrap.sh` 固定三个 `external` 路径依赖的提交，并按 `pubspec.lock` 严格恢复 Pub 依赖。`mobile_scanner` 直接使用 `pubspec.yaml` 中固定的 Git 提交，不在主仓库登记 `external/fluttertpc_mobile_scanner` 子模块。
 - Release 构建保留 Flutter 自动 Pub / 平台注册文件生成步骤，并在构建后检查 `pubspec.lock` 没有变化。此 SDK 在 `--no-pub` 时也会跳过 Release 插件注册文件重建，可能把 `integration_test` 留在 Android 注册文件中，导致编译失败。
 - Android 使用 Ubuntu 24.04、JDK 17、SDK 36、Gradle 8.13；显式设置 Flutter 的 `jdk-dir`，避免它优先选择 Android Studio 自带的新 JDK。在临时空项目中生成 Gradle wrapper，不依赖本机未提交的 wrapper 文件。未提供 `key.properties` 时产出无签名 Release，不会退回 Debug 签名。
