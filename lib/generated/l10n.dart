@@ -2249,6 +2249,160 @@ class S {
       args: [],
     );
   }
+  /// `编辑课程`
+  String get edit_course {
+    return Intl.message('编辑课程', name: 'edit_course', desc: '', args: []);
+  }
+
+  /// `编辑`
+  String get edit {
+    return Intl.message('编辑', name: 'edit', desc: '', args: []);
+  }
+
+  /// `保存`
+  String get save {
+    return Intl.message('保存', name: 'save', desc: '', args: []);
+  }
+
+  /// `保存失败，请重试`
+  String get save_failed {
+    return Intl.message('保存失败，请重试', name: 'save_failed', desc: '', args: []);
+  }
+
+  /// `未填写`
+  String get not_filled {
+    return Intl.message('未填写', name: 'not_filled', desc: '', args: []);
+  }
+
+  /// `上课周次`
+  String get course_weeks {
+    return Intl.message('上课周次', name: 'course_weeks', desc: '', args: []);
+  }
+
+  /// `请至少选择一周`
+  String get select_weeks_required {
+    return Intl.message(
+      '请至少选择一周',
+      name: 'select_weeks_required',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `全部`
+  String get select_all {
+    return Intl.message('全部', name: 'select_all', desc: '', args: []);
+  }
+
+  /// `清空`
+  String get clear_selection {
+    return Intl.message('清空', name: 'clear_selection', desc: '', args: []);
+  }
+
+  /// `时间待定`
+  String get free_or_pending_time {
+    return Intl.message('自由时间/时间待定', name: 'free_or_pending_time', desc: '', args: []);
+  }
+
+  String get time_pending {
+    return Intl.message('时间待定', name: 'time_pending', desc: '', args: []);
+  }
+
+  /// `上课日期`
+  String get week_day {
+    return Intl.message('上课日期', name: 'week_day', desc: '', args: []);
+  }
+
+  /// `开始节次`
+  String get start_class {
+    return Intl.message('开始节次', name: 'start_class', desc: '', args: []);
+  }
+
+  /// `结束节次`
+  String get end_class {
+    return Intl.message('结束节次', name: 'end_class', desc: '', args: []);
+  }
+
+  /// `周次待定`
+  String get weeks_pending {
+    return Intl.message('周次待定', name: 'weeks_pending', desc: '', args: []);
+  }
+
+  /// `添加方式`
+  String get add_method {
+    return Intl.message('添加方式', name: 'add_method', desc: '', args: []);
+  }
+
+  /// `上课时段`
+  String get course_meetings {
+    return Intl.message('上课时段', name: 'course_meetings', desc: '', args: []);
+  }
+
+  /// `时段 {number}`
+  String meeting_number(Object number) {
+    return Intl.message(
+      '时段 $number',
+      name: 'meeting_number',
+      desc: '',
+      args: [number],
+    );
+  }
+
+  /// `添加时段`
+  String get add_meeting {
+    return Intl.message('添加时段', name: 'add_meeting', desc: '', args: []);
+  }
+
+  /// `移除此时段`
+  String get remove_meeting {
+    return Intl.message('移除此时段', name: 'remove_meeting', desc: '', args: []);
+  }
+
+  /// `{count} 个上课时段`
+  String meetings_count(Object count) {
+    return Intl.message(
+      '$count 个上课时段',
+      name: 'meetings_count',
+      desc: '',
+      args: [count],
+    );
+  }
+  /// `点击空白处关闭`
+  String get tap_blank_to_close {
+    return Intl.message('点击空白处关闭', name: 'tap_blank_to_close', desc: '', args: []);
+  }
+
+  /// `将同时删除该课程的全部 {count} 个上课时段。`
+  String delete_all_meetings(Object count) {
+    return Intl.message('将同时删除该课程的全部 $count 个上课时段。', name: 'delete_all_meetings', desc: '', args: [count]);
+  }
+
+  /// `删除失败，请重新打开课程后重试`
+  String get delete_failed {
+    return Intl.message('删除失败，请重新打开课程后重试', name: 'delete_failed', desc: '', args: []);
+  }
+
+  String get rename_table => Intl.message("修改课表名称", name: 'rename_table', args: []);
+  String get table_name => Intl.message("课表名称", name: 'table_name', args: []);
+  String get table_name_required => Intl.message("请输入课表名称", name: 'table_name_required', args: []);
+  String get table_rename_failed => Intl.message("修改失败，请重试", name: 'table_rename_failed', args: []);
+  String get import_load_failed => Intl.message("暂时无法获取学校列表", name: 'import_load_failed', args: []);
+  String get import_load_failed_hint => Intl.message("请检查网络连接后重试", name: 'import_load_failed_hint', args: []);
+  String get import_list_empty => Intl.message("暂时没有可用的学校", name: 'import_list_empty', args: []);
+  String get import_list_empty_hint => Intl.message("稍后刷新，或查看学校适配信息", name: 'import_list_empty_hint', args: []);
+  String get retry => Intl.message("重新加载", name: 'retry', args: []);
+  String get import_test => Intl.message("测试", name: 'import_test', args: []);
+  String get import_test_title => Intl.message("导入测试", name: 'import_test_title', args: []);
+  String get import_test_enabled => Intl.message("测试模式已开启", name: 'import_test_enabled', args: []);
+  String get import_test_hint => Intl.message("填写导入配置，按与学校在线导入相同的流程测试。delayTime 的单位是秒。", name: 'import_test_hint', args: []);
+  String get import_test_start => Intl.message("开始测试", name: 'import_test_start', args: []);
+  String get import_test_url_required => Intl.message("请输入完整的 http 或 https 地址", name: 'import_test_url_required', args: []);
+  String get import_test_redirect_hint => Intl.message("选填，登录完成后匹配此地址并跳转到 targetUrl", name: 'import_test_redirect_hint', args: []);
+  String get import_test_delay_invalid => Intl.message("请输入 0–60 的整数秒数", name: 'import_test_delay_invalid', args: []);
+  String get import_test_script_required => Intl.message("请输入提取脚本", name: 'import_test_script_required', args: []);
+  String get import_test_error => Intl.message("测试未完成", name: 'import_test_error', args: []);
+  String get import_test_retry => Intl.message("重新提取", name: 'import_test_retry', args: []);
+
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
@@ -2276,4 +2430,5 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
     }
     return false;
   }
+
 }

@@ -177,10 +177,11 @@ jobs:
           flutter precache --ios
           mkdir -p artifacts
           if [[ "$BUILD_SIGNED" == true ]]; then
-            flutter build ipa --release --export-options-plist "$RUNNER_TEMP/nju-signing/ExportOptions.plist"
+            flutter build ipa --release --target lib/main.dart --export-options-plist "$RUNNER_TEMP/nju-signing/ExportOptions.plist"
             cp build/ios/ipa/*.ipa artifacts/ios-app-store.ipa
+            python3 tool/ci/verify_ios_release.py artifacts/ios-app-store.ipa --output artifacts/ios-verification.json
           else
-            flutter build ipa --release --no-codesign
+            flutter build ipa --release --target lib/main.dart --no-codesign
             ditto -c -k --sequesterRsrc --keepParent build/ios/archive/Runner.xcarchive artifacts/ios-unsigned.xcarchive.zip
           fi
           git diff --exit-code -- ios/Podfile.lock

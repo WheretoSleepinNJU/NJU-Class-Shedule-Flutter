@@ -5,6 +5,7 @@
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_root"
+    android:background="@drawable/widget_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -76,13 +77,17 @@
             android:visibility="gone" />
     </LinearLayout>
 
-    <LinearLayout
+    <ListView
         android:id="@+id/widget_course_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_marginTop="8dp"
-        android:orientation="vertical" />
+        android:scrollbars="vertical"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="4dp"
+        android:background="@android:color/transparent"
+        android:overScrollMode="never" />
 
     <TextView
         android:id="@+id/widget_right_more"

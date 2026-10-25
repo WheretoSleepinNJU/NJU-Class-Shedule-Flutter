@@ -47,8 +47,59 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m12(minutes) => "${minutes} 分钟";
 
+  static String m13(number) => "时段 ${number}";
+
+  static String m14(count) => "${count} 个上课时段";
+
+  static String m15(count) => "将同时删除该课程的全部 ${count} 个上课时段。";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+      "rename_table": MessageLookupByLibrary.simpleMessage("修改课表名称"),
+      "table_name": MessageLookupByLibrary.simpleMessage("课表名称"),
+      "table_name_required": MessageLookupByLibrary.simpleMessage("请输入课表名称"),
+      "table_rename_failed": MessageLookupByLibrary.simpleMessage("修改失败，请重试"),
+      "import_load_failed": MessageLookupByLibrary.simpleMessage("暂时无法获取学校列表"),
+      "import_load_failed_hint": MessageLookupByLibrary.simpleMessage("请检查网络连接后重试"),
+      "import_list_empty": MessageLookupByLibrary.simpleMessage("暂时没有可用的学校"),
+      "import_list_empty_hint": MessageLookupByLibrary.simpleMessage("稍后刷新，或查看学校适配信息"),
+      "retry": MessageLookupByLibrary.simpleMessage("重新加载"),
+      "import_test": MessageLookupByLibrary.simpleMessage("测试"),
+      "import_test_title": MessageLookupByLibrary.simpleMessage("导入测试"),
+      "import_test_enabled": MessageLookupByLibrary.simpleMessage("测试模式已开启"),
+      "import_test_hint": MessageLookupByLibrary.simpleMessage("填写导入配置，按与学校在线导入相同的流程测试。delayTime 的单位是秒。"),
+      "import_test_start": MessageLookupByLibrary.simpleMessage("开始测试"),
+      "import_test_url_required": MessageLookupByLibrary.simpleMessage("请输入完整的 http 或 https 地址"),
+      "import_test_redirect_hint": MessageLookupByLibrary.simpleMessage("选填，登录完成后匹配此地址并跳转到 targetUrl"),
+      "import_test_delay_invalid": MessageLookupByLibrary.simpleMessage("请输入 0–60 的整数秒数"),
+      "import_test_script_required": MessageLookupByLibrary.simpleMessage("请输入提取脚本"),
+      "import_test_error": MessageLookupByLibrary.simpleMessage("测试未完成"),
+      "import_test_retry": MessageLookupByLibrary.simpleMessage("重新提取"),
+
+        "tap_blank_to_close": MessageLookupByLibrary.simpleMessage("点击空白处关闭"),
+        "delete_all_meetings": m15,
+        "delete_failed": MessageLookupByLibrary.simpleMessage("删除失败，请重新打开课程后重试"),
+        "add_meeting": MessageLookupByLibrary.simpleMessage("添加时段"),
+        "add_method": MessageLookupByLibrary.simpleMessage("添加方式"),
+        "clear_selection": MessageLookupByLibrary.simpleMessage("清空"),
+        "course_meetings": MessageLookupByLibrary.simpleMessage("上课时段"),
+        "course_weeks": MessageLookupByLibrary.simpleMessage("上课周次"),
+        "edit": MessageLookupByLibrary.simpleMessage("编辑"),
+        "edit_course": MessageLookupByLibrary.simpleMessage("编辑课程"),
+        "end_class": MessageLookupByLibrary.simpleMessage("结束节次"),
+        "meeting_number": m13,
+        "meetings_count": m14,
+        "not_filled": MessageLookupByLibrary.simpleMessage("未填写"),
+        "remove_meeting": MessageLookupByLibrary.simpleMessage("移除此时段"),
+        "save": MessageLookupByLibrary.simpleMessage("保存"),
+        "save_failed": MessageLookupByLibrary.simpleMessage("保存失败，请重试"),
+        "select_all": MessageLookupByLibrary.simpleMessage("全部"),
+        "select_weeks_required": MessageLookupByLibrary.simpleMessage("请至少选择一周"),
+        "start_class": MessageLookupByLibrary.simpleMessage("开始节次"),
+        "time_pending": MessageLookupByLibrary.simpleMessage("时间待定"),
+        "free_or_pending_time": MessageLookupByLibrary.simpleMessage("自由时间/时间待定"),
+        "week_day": MessageLookupByLibrary.simpleMessage("上课日期"),
+        "weeks_pending": MessageLookupByLibrary.simpleMessage("周次待定"),
         "QQ_copy_success_toast":
             MessageLookupByLibrary.simpleMessage("已复制群号到剪贴板"),
         "QQ_open_fail_toast":

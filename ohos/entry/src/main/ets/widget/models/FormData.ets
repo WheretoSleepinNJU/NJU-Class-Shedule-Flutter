@@ -1,3 +1,4 @@
+import { selectWidgetDay } from '../utils/WidgetDaySelector';
 import { TodayWidgetData } from './WidgetDataModel';
 
 export class WidgetFormData {
@@ -5,13 +6,14 @@ export class WidgetFormData {
   currentTime: string;
 
   constructor(widgetData: TodayWidgetData, currentTime: string) {
-    this.widgetData = widgetData;
+    this.widgetData = selectWidgetDay(widgetData);
     this.currentTime = currentTime;
   }
 }
 
 export const DEFAULT_WIDGET_DATA: TodayWidgetData = {
-  date: '加载中...',
+  date: '南哪课表',
+  stale: true,
   courses: []
 };
 

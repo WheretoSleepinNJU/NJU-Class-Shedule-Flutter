@@ -15,17 +15,14 @@ class CourseTable {
   String? name;
   String? data;
 
-//  CourseTable(id, name){
-//    this.id = id;
-//    this.name = name;
-//  };
+  //  CourseTable(id, name){
+  //    this.id = id;
+  //    this.name = name;
+  //  };
   CourseTable(this.name, {this.data = ''});
 
   Map<String, dynamic> toMap() {
-    var map = <String, dynamic>{
-      columnName: name,
-      columnData: data,
-    };
+    var map = <String, dynamic>{columnName: name, columnData: data};
     if (id != null) {
       map[columnId] = id;
       map[columnData] = data;
@@ -53,27 +50,29 @@ class CourseTableProvider {
   Future<CourseTable> insert(CourseTable courseTable) async {
     await open();
     courseTable.id = await db!.insert(tableName, courseTable.toMap());
-//    await close();
+    //    await close();
     return courseTable;
   }
 
   Future<CourseTable?> getCourseTable(int id) async {
     await open();
-    List<Map<String, dynamic>> maps = await db!.query(tableName,
-        columns: [columnId, columnName, columnData],
-        where: '$columnId = ?',
-        whereArgs: [id]);
+    List<Map<String, dynamic>> maps = await db!.query(
+      tableName,
+      columns: [columnId, columnName, columnData],
+      where: '$columnId = ?',
+      whereArgs: [id],
+    );
     if (maps.isNotEmpty) {
       return CourseTable.fromMap(maps.first);
     }
-//    await close();
+    //    await close();
     return null;
   }
 
   Future<List> getAllCourseTable() async {
     await open();
     List<Map> rst = await db!.query(tableName, columns: [columnId, columnName]);
-//    await close();
+    //    await close();
     return rst.toList();
   }
 
@@ -81,10 +80,12 @@ class CourseTableProvider {
     await open();
     List<Map> defaultClassTimeList = Constant.CLASS_TIME_LIST;
 
-    List<Map<String, dynamic>> maps = await db!.query(tableName,
-        columns: [columnId, columnName, columnData],
-        where: '$columnId = ?',
-        whereArgs: [id]);
+    List<Map<String, dynamic>> maps = await db!.query(
+      tableName,
+      columns: [columnId, columnName, columnData],
+      where: '$columnId = ?',
+      whereArgs: [id],
+    );
     if (maps.isEmpty || maps[0]["data"] == null) {
       return defaultClassTimeList;
     }
@@ -104,10 +105,12 @@ class CourseTableProvider {
 
   Future<String> getSemesterStartMonday(int id) async {
     await open();
-    List<Map<String, dynamic>> maps = await db!.query(tableName,
-        columns: [columnId, columnName, columnData],
-        where: '$columnId = ?',
-        whereArgs: [id]);
+    List<Map<String, dynamic>> maps = await db!.query(
+      tableName,
+      columns: [columnId, columnName, columnData],
+      where: '$columnId = ?',
+      whereArgs: [id],
+    );
     if (maps.isEmpty || maps[0]["data"] == null || maps[0]["data"] == "") {
       return "";
     }
@@ -127,17 +130,38 @@ class CourseTableProvider {
     await open();
     CourseProvider courseProvider = CourseProvider();
     await courseProvider.deleteByTable(id);
-    int rst =
-        await db!.delete(tableName, where: '$columnId = ?', whereArgs: [id]);
-//    await close();
+    int rst = await db!.delete(
+      tableName,
+      where: '$columnId = ?',
+      whereArgs: [id],
+    );
+    //    await close();
     return rst;
   }
 
   Future<int> update(CourseTable courseTable) async {
     await open();
-    int rst = await db!.update(tableName, courseTable.toMap(),
-        where: '$columnId = ?', whereArgs: [courseTable.id]);
-//    await close();
+    int rst = await db!.update(
+      tableName,
+      courseTable.toMap(),
+      where: '$columnId = ?',
+      whereArgs: [courseTable.id],
+    );
+    //    await close();
     return rst;
+  }
+
+  /// Only update the name: preserve custom periods, semester and all courses.
+  Future<bool> rename(int id, String name) async {
+    final value = name.trim();
+    if (value.isEmpty) return false;
+    await open();
+    return await db!.update(
+          tableName,
+          {columnName: value},
+          where: '$columnId = ?',
+          whereArgs: [id],
+        ) ==
+        1;
   }
 }

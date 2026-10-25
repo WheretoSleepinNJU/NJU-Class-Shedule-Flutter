@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:padding="12dp" android:background="@drawable/widget_background">
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:maxLines="1" android:ellipsize="end" android:text="9.1 周一   第 1 周" android:textSize="12sp" android:textColor="@color/widget_accent" android:textStyle="bold"/>
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:maxLines="1" android:ellipsize="end" android:text="今天有 4 门课" android:textSize="10sp" android:textColor="@color/widget_text_secondary"/>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:orientation="vertical" android:background="@drawable/widget_preview_course" android:padding="8dp">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:maxLines="1" android:ellipsize="end" android:text="高等数学" android:textSize="12sp" android:textColor="@color/widget_text_primary" android:textStyle="bold"/>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:maxLines="1" android:ellipsize="end" android:text="仙林 101 · 张老师" android:textSize="10sp" android:textColor="@color/widget_text_secondary"/>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:maxLines="1" android:ellipsize="end" android:text="08:00 – 09:50" android:textSize="10sp" android:textColor="@color/widget_text_secondary"/>
+    </LinearLayout>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:orientation="vertical" android:background="@drawable/widget_preview_course" android:padding="8dp">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:maxLines="1" android:ellipsize="end" android:text="线性代数" android:textSize="12sp" android:textColor="@color/widget_text_primary" android:textStyle="bold"/>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:maxLines="1" android:ellipsize="end" android:text="10:10 · 仙林 201" android:textSize="10sp" android:textColor="@color/widget_text_secondary"/>
+    </LinearLayout>
+</LinearLayout>

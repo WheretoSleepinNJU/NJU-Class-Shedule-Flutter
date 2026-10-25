@@ -1,475 +1,130 @@
 package com.lilystudio.wheretosleepinnju.widget;
 
 import android.app.PendingIntent;
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.widget.RemoteViews;
-
+import com.lilystudio.wheretosleepinnju.MainActivity;
 import com.lilystudio.wheretosleepinnju.R;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * 小组件渲染器：把 {@link WidgetStateResolver.WidgetState} 画成 RemoteViews。
- *
- * 对标 iOS 端 SmallWidgetView / MediumWidgetView / LargeWidgetView 三套视图，
- * 状态与文案保持一致。RemoteViews 不支持自定义 View，因此课程卡片通过
- * {@code addView} 动态装配子布局实现。
- */
+/** Header and current-course summary, backed by a scrolling remote collection. */
 public class WidgetRenderer {
+    public enum SizeClass { SMALL, MEDIUM, LARGE }
 
-    /** 小组件尺寸档位，对应 iOS 的 WidgetFamily。 */
-    public enum SizeClass {
-        SMALL,
-        MEDIUM,
-        LARGE
-    }
-
-    /** 中尺寸右栏最多展示的课程数，与 iOS 端保持一致。 */
-    private static final int MEDIUM_RIGHT_MAX_COURSES = 3;
-
-    /** 大尺寸最多展示的后续课程数。 */
-    private static final int LARGE_MAX_FOLLOWING_COURSES = 4;
-
-    private WidgetRenderer() {
-    }
-
-    // ------------------------------------------------------------------
-    // 入口
-    // ------------------------------------------------------------------
-
-    public static RemoteViews render(Context context,
-                                     WidgetStateResolver.WidgetState state,
-                                     SizeClass sizeClass) {
-        switch (sizeClass) {
-            case LARGE:
-                return renderLarge(context, state);
-            case MEDIUM:
-                return renderMedium(context, state);
-            case SMALL:
-            default:
-                return renderSmall(context, state);
-        }
-    }
-
-    // ------------------------------------------------------------------
-    // 小尺寸
-    // ------------------------------------------------------------------
-
-    private static RemoteViews renderSmall(Context context,
-                                           WidgetStateResolver.WidgetState state) {
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_schedule_small);
-        views.removeAllViews(R.id.widget_course_container);
+    public static RemoteViews render(Context context, WidgetStateResolver.WidgetState state,
+                                     SizeClass size, int widgetId) {
+        int layout = size == SizeClass.SMALL ? R.layout.widget_schedule_small
+                : size == SizeClass.MEDIUM ? R.layout.widget_schedule_medium
+                : R.layout.widget_schedule_large;
+        RemoteViews views = new RemoteViews(context.getPackageName(), layout);
         resetCommonVisibility(views);
-
         bindDateHeader(context, views, state);
         views.setOnClickPendingIntent(R.id.widget_root, openAppIntent(context));
+        if (size == SizeClass.MEDIUM) views.removeAllViews(R.id.widget_course_container);
 
-        if (!state.hasData()) {
-            showEmpty(context, views, state.errorMessage, context.getString(R.string.widget_tap_to_open));
+        List<WidgetCourse> courses = WidgetCourseList.forState(state);
+        if (!state.hasData() || courses.isEmpty()) {
+            showEmpty(context, views, state.hasData()
+                    ? context.getString(R.string.widget_classes_ended) : state.errorMessage,
+                    state.hasData() ? null : context.getString(R.string.widget_tap_to_open));
+            if (size == SizeClass.MEDIUM) showRightEmpty(context, views);
             return views;
         }
 
-        SchoolTimeTemplate template = state.timeTemplate();
-
         switch (state.displayState) {
-            case IN_CLASS: {
-                WidgetCourse current = state.currentCourse;
-                if (current == null) {
-                    showClassesEnded(context, views);
-                    break;
-                }
-                Integer remaining = remainingCountIncludingCurrent(state);
-                setStatus(views,
-                        context.getString(R.string.widget_state_in_class),
-                        context.getColor(R.color.widget_success),
-                        remaining == null ? null
-                                : context.getString(R.string.widget_today_remaining_count, remaining));
-
-                addDetailedCard(context, views, R.id.widget_course_container, current, template);
-                if (state.nextCourse != null) {
-                    addCompactCard(context, views, R.id.widget_course_container,
-                            state.nextCourse, template, 8);
-                }
-                break;
-            }
-
-            case APPROACHING_CLASS: {
-                WidgetCourse next = state.nextCourse;
-                if (next == null) {
-                    showClassesEnded(context, views);
-                    break;
-                }
-                setStatus(views, context.getString(R.string.widget_state_next),
-                        context.getColor(R.color.widget_warning), null);
-                addDetailedCard(context, views, R.id.widget_course_container, next, template);
-                showArrivedButton(context, views, next.id);
-                break;
-            }
-
-            case BEFORE_FIRST_CLASS:
-            case BETWEEN_CLASSES: {
-                List<WidgetCourse> remaining = remainingCoursesFromNext(state);
-                if (remaining.isEmpty()) {
-                    showClassesEnded(context, views);
-                    break;
-                }
-                boolean isBetween = state.displayState == WidgetStateResolver.DisplayState.BETWEEN_CLASSES;
-                setStatus(views,
-                        isBetween
-                                ? context.getString(R.string.widget_state_next)
-                                : context.getString(R.string.widget_today_course_count, remaining.size()),
-                        context.getColor(R.color.widget_text_secondary), null);
-
-                addDetailedCard(context, views, R.id.widget_course_container, remaining.get(0), template);
-                if (remaining.size() > 1) {
-                    addCompactCard(context, views, R.id.widget_course_container,
-                            remaining.get(1), template, 8);
-                }
-                break;
-            }
-
-            case TOMORROW_PREVIEW: {
-                List<WidgetCourse> tomorrow = state.tomorrowCourses();
-                if (tomorrow.isEmpty()) {
-                    showClassesEnded(context, views);
-                    break;
-                }
-                setStatus(views,
-                        context.getString(R.string.widget_tomorrow_course_count, tomorrow.size()),
-                        context.getColor(R.color.widget_text_secondary), null);
-
-                addDetailedCard(context, views, R.id.widget_course_container, tomorrow.get(0), template);
-                if (tomorrow.size() > 1) {
-                    addCompactCard(context, views, R.id.widget_course_container,
-                            tomorrow.get(1), template, 8);
-                }
-                break;
-            }
-
-            case CLASSES_ENDED:
-            case ERROR:
-            default:
-                showClassesEnded(context, views);
-                break;
-        }
-
-        return views;
-    }
-
-    // ------------------------------------------------------------------
-    // 中尺寸
-    // ------------------------------------------------------------------
-
-    private static RemoteViews renderMedium(Context context,
-                                            WidgetStateResolver.WidgetState state) {
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_schedule_medium);
-        views.removeAllViews(R.id.widget_course_container);
-        views.removeAllViews(R.id.widget_right_container);
-        resetCommonVisibility(views);
-
-        bindDateHeader(context, views, state);
-        views.setOnClickPendingIntent(R.id.widget_root, openAppIntent(context));
-
-        if (!state.hasData()) {
-            showEmpty(context, views, state.errorMessage, context.getString(R.string.widget_tap_to_open));
-            showRightEmpty(context, views, context.getString(R.string.widget_rest_well));
-            return views;
-        }
-
-        SchoolTimeTemplate template = state.timeTemplate();
-
-        // ---- 左栏 ----
-        WidgetCourse leftCourse = null;
-        switch (state.displayState) {
-            case IN_CLASS: {
-                leftCourse = state.currentCourse;
-                Integer remaining = remainingCountIncludingCurrent(state);
+            case IN_CLASS:
                 setStatus(views, context.getString(R.string.widget_state_in_class),
                         context.getColor(R.color.widget_success),
-                        remaining == null ? null
-                                : context.getString(R.string.widget_remaining_count, remaining));
+                        context.getString(R.string.widget_remaining_count, courses.size()));
                 break;
-            }
-            case APPROACHING_CLASS: {
-                leftCourse = state.nextCourse;
+            case APPROACHING_CLASS:
                 setStatus(views, context.getString(R.string.widget_state_next),
                         context.getColor(R.color.widget_warning), null);
+                showArrivedButton(context, views, courses.get(0).id);
                 break;
-            }
-            case BEFORE_FIRST_CLASS:
-            case BETWEEN_CLASSES: {
-                List<WidgetCourse> remaining = remainingCoursesFromNext(state);
-                if (!remaining.isEmpty()) {
-                    leftCourse = remaining.get(0);
-                    boolean isBetween =
-                            state.displayState == WidgetStateResolver.DisplayState.BETWEEN_CLASSES;
-                    setStatus(views,
-                            isBetween
-                                    ? context.getString(R.string.widget_state_next)
-                                    : context.getString(R.string.widget_today_course_count, remaining.size()),
-                            context.getColor(R.color.widget_text_secondary), null);
-                }
+            case TOMORROW_PREVIEW:
+                setStatus(views, context.getString(R.string.widget_tomorrow_course_count, courses.size()),
+                        context.getColor(R.color.widget_text_secondary), null);
                 break;
-            }
-            case TOMORROW_PREVIEW: {
-                List<WidgetCourse> tomorrow = state.tomorrowCourses();
-                if (!tomorrow.isEmpty()) {
-                    leftCourse = tomorrow.get(0);
-                    setStatus(views,
-                            context.getString(R.string.widget_tomorrow_course_count, tomorrow.size()),
-                            context.getColor(R.color.widget_text_secondary), null);
-                }
+            case BETWEEN_CLASSES:
+                setStatus(views, context.getString(R.string.widget_state_next),
+                        context.getColor(R.color.widget_text_secondary), null);
                 break;
-            }
             default:
-                break;
+                setStatus(views, context.getString(R.string.widget_today_course_count, courses.size()),
+                        context.getColor(R.color.widget_text_secondary), null);
         }
 
-        if (leftCourse == null) {
-            showClassesEnded(context, views);
-        } else {
-            addDetailedCard(context, views, R.id.widget_course_container, leftCourse, template);
+        int listId = size == SizeClass.MEDIUM ? R.id.widget_right_container
+                : R.id.widget_course_container;
+        if (size == SizeClass.MEDIUM) {
+            views.addView(R.id.widget_course_container,
+                    detailedCard(context, courses.get(0), state.timeTemplate()));
+            views.setViewVisibility(R.id.widget_right_more, android.view.View.GONE);
+            views.setViewVisibility(R.id.widget_right_empty, android.view.View.GONE);
+            views.setViewVisibility(R.id.widget_right_container, android.view.View.VISIBLE);
+            views.setViewVisibility(R.id.widget_right_title, android.view.View.VISIBLE);
+            if (courses.size() == 1) showRightEmpty(context, views);
         }
-
-        // ---- 右栏 ----
-        renderMediumRight(context, views, state, template);
+        bindCollection(context, views, listId, size, widgetId);
         return views;
     }
 
-    private static void renderMediumRight(Context context,
-                                          RemoteViews views,
-                                          WidgetStateResolver.WidgetState state,
-                                          SchoolTimeTemplate template) {
-        switch (state.displayState) {
-            case APPROACHING_CLASS: {
-                if (state.nextCourse != null) {
-                    // 右栏整体让位给"我已到达"按钮
-                    views.setViewVisibility(R.id.widget_right_title, android.view.View.GONE);
-                    views.setViewVisibility(R.id.widget_right_container, android.view.View.GONE);
-                    views.setViewVisibility(R.id.widget_right_more, android.view.View.GONE);
-                    views.setViewVisibility(R.id.widget_right_empty, android.view.View.GONE);
-                    showArrivedButton(context, views, state.nextCourse.id);
-                } else {
-                    showRightEmpty(context, views, context.getString(R.string.widget_rest_well));
-                }
-                return;
-            }
-
-            case TOMORROW_PREVIEW: {
-                List<WidgetCourse> tomorrow = state.tomorrowCourses();
-                List<WidgetCourse> rest = dropFirst(tomorrow);
-                if (rest.isEmpty()) {
-                    showRightEmpty(context, views, context.getString(R.string.widget_rest_well));
-                } else {
-                    fillRightList(context, views, rest, template);
-                }
-                return;
-            }
-
-            case CLASSES_ENDED:
-            case ERROR: {
-                showRightEmpty(context, views, context.getString(R.string.widget_rest_well));
-                return;
-            }
-
-            default: {
-                // 从"当前课或下一节课"起算，右栏展示其后的剩余课程
-                List<WidgetCourse> todayCourses = state.todayCourses();
-                WidgetCourse anchor = state.currentCourse != null
-                        ? state.currentCourse : state.nextCourse;
-                if (anchor == null) {
-                    showRightEmpty(context, views, context.getString(R.string.widget_thats_all));
-                    return;
-                }
-
-                int index = WidgetStateResolver.indexOfCourse(todayCourses, anchor);
-                if (index < 0 || index + 1 >= todayCourses.size()) {
-                    showRightEmpty(context, views, context.getString(R.string.widget_thats_all));
-                    return;
-                }
-
-                List<WidgetCourse> rest =
-                        new ArrayList<>(todayCourses.subList(index + 1, todayCourses.size()));
-                fillRightList(context, views, rest, template);
-            }
-        }
-    }
-
-    private static void fillRightList(Context context,
-                                      RemoteViews views,
-                                      List<WidgetCourse> courses,
-                                      SchoolTimeTemplate template) {
-        views.setViewVisibility(R.id.widget_right_title, android.view.View.VISIBLE);
-        views.setViewVisibility(R.id.widget_right_container, android.view.View.VISIBLE);
-        views.setViewVisibility(R.id.widget_right_empty, android.view.View.GONE);
-
-        int shown = Math.min(courses.size(), MEDIUM_RIGHT_MAX_COURSES);
-        for (int i = 0; i < shown; i++) {
-            addCompactCard(context, views, R.id.widget_right_container,
-                    courses.get(i), template, i == 0 ? 0 : 4);
-        }
-
-        if (courses.size() > shown) {
-            views.setViewVisibility(R.id.widget_right_more, android.view.View.VISIBLE);
-            views.setTextViewText(R.id.widget_right_more,
-                    context.getString(R.string.widget_more_courses, courses.size() - shown));
-        } else {
-            views.setViewVisibility(R.id.widget_right_more, android.view.View.GONE);
-        }
-    }
-
-    private static void showRightEmpty(Context context, RemoteViews views, String text) {
+    private static void showRightEmpty(Context context, RemoteViews views) {
         views.setViewVisibility(R.id.widget_right_title, android.view.View.GONE);
         views.setViewVisibility(R.id.widget_right_container, android.view.View.GONE);
         views.setViewVisibility(R.id.widget_right_more, android.view.View.GONE);
         views.setViewVisibility(R.id.widget_right_empty, android.view.View.VISIBLE);
-        views.setTextViewText(R.id.widget_right_empty_text, text);
+        views.setTextViewText(R.id.widget_right_empty_text,
+                context.getString(R.string.widget_thats_all));
     }
 
-    // ------------------------------------------------------------------
-    // 大尺寸
-    // ------------------------------------------------------------------
-
-    private static RemoteViews renderLarge(Context context,
-                                           WidgetStateResolver.WidgetState state) {
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_schedule_large);
-        views.removeAllViews(R.id.widget_course_container);
-        resetCommonVisibility(views);
-
-        bindDateHeader(context, views, state);
-        views.setOnClickPendingIntent(R.id.widget_root, openAppIntent(context));
-
-        if (!state.hasData()) {
-            showEmpty(context, views, state.errorMessage, context.getString(R.string.widget_tap_to_open));
-            return views;
-        }
-
-        SchoolTimeTemplate template = state.timeTemplate();
-
-        switch (state.displayState) {
-            case IN_CLASS: {
-                WidgetCourse current = state.currentCourse;
-                if (current == null) {
-                    showClassesEnded(context, views);
-                    break;
-                }
-                Integer remaining = remainingCountIncludingCurrent(state);
-                setStatus(views, context.getString(R.string.widget_state_in_class),
-                        context.getColor(R.color.widget_success),
-                        remaining == null ? null
-                                : context.getString(R.string.widget_today_remaining_count, remaining));
-
-                addLargeCard(context, views, current, template);
-                appendFollowingCourses(context, views, state.todayCourses(), current, template,
-                        Integer.MAX_VALUE);
-                break;
-            }
-
-            case APPROACHING_CLASS: {
-                WidgetCourse next = state.nextCourse;
-                if (next == null) {
-                    showClassesEnded(context, views);
-                    break;
-                }
-                setStatus(views, context.getString(R.string.widget_state_next),
-                        context.getColor(R.color.widget_warning), null);
-                addLargeCard(context, views, next, template);
-                appendFollowingCourses(context, views, state.todayCourses(), next, template,
-                        LARGE_MAX_FOLLOWING_COURSES);
-                showArrivedButton(context, views, next.id);
-                break;
-            }
-
-            case BEFORE_FIRST_CLASS:
-            case BETWEEN_CLASSES: {
-                List<WidgetCourse> remaining = remainingCoursesFromNext(state);
-                if (remaining.isEmpty()) {
-                    showClassesEnded(context, views);
-                    break;
-                }
-                boolean isBetween =
-                        state.displayState == WidgetStateResolver.DisplayState.BETWEEN_CLASSES;
-                setStatus(views,
-                        isBetween
-                                ? context.getString(R.string.widget_state_next)
-                                : context.getString(R.string.widget_today_course_count, remaining.size()),
-                        context.getColor(R.color.widget_text_secondary), null);
-
-                addLargeCard(context, views, remaining.get(0), template);
-                for (int i = 1; i < remaining.size(); i++) {
-                    addCompactCard(context, views, R.id.widget_course_container,
-                            remaining.get(i), template, i == 1 ? 6 : 4);
-                }
-                break;
-            }
-
-            case TOMORROW_PREVIEW: {
-                List<WidgetCourse> tomorrow = state.tomorrowCourses();
-                if (tomorrow.isEmpty()) {
-                    showClassesEnded(context, views);
-                    break;
-                }
-                setStatus(views,
-                        context.getString(R.string.widget_tomorrow_course_count, tomorrow.size()),
-                        context.getColor(R.color.widget_text_secondary), null);
-
-                addLargeCard(context, views, tomorrow.get(0), template);
-                for (int i = 1; i < tomorrow.size(); i++) {
-                    addCompactCard(context, views, R.id.widget_course_container,
-                            tomorrow.get(i), template, i == 1 ? 6 : 4);
-                }
-                break;
-            }
-
-            case CLASSES_ENDED:
-            case ERROR:
-            default:
-                showClassesEnded(context, views);
-                break;
-        }
-
-        return views;
+    private static void bindCollection(Context context, RemoteViews views, int listId,
+                                       SizeClass size, int widgetId) {
+        Intent service = new Intent(context, ScheduleWidgetService.class);
+        service.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+        service.putExtra(ScheduleWidgetService.EXTRA_SIZE, size.name());
+        // Intent extras do not participate in adapter identity. Keep each widget and
+        // responsive layout isolated so resizing cannot reuse another list's factory.
+        service.setData(Uri.parse("ncs-widget://courses/" + widgetId + "/" + size.name()));
+        views.setRemoteAdapter(listId, service);
+        Intent launch = new Intent(context, MainActivity.class);
+        launch.setAction(Intent.ACTION_VIEW);
+        launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) flags |= PendingIntent.FLAG_MUTABLE;
+        views.setPendingIntentTemplate(listId,
+                PendingIntent.getActivity(context, widgetId, launch, flags));
     }
 
-    /** 在强调卡片之后追加后续课程的紧凑卡片。 */
-    private static void appendFollowingCourses(Context context,
-                                               RemoteViews views,
-                                               List<WidgetCourse> allCourses,
-                                               WidgetCourse anchor,
-                                               SchoolTimeTemplate template,
-                                               int limit) {
-        int index = WidgetStateResolver.indexOfCourse(allCourses, anchor);
-        if (index < 0 || index + 1 >= allCourses.size()) {
-            return;
+    static RemoteViews courseRow(Context context, WidgetCourse course,
+                                  SchoolTimeTemplate template, SizeClass size, int position) {
+        RemoteViews row;
+        int root;
+        if (position == 0 && size == SizeClass.SMALL) {
+            row = detailedCard(context, course, template);
+            root = R.id.course_card_root;
+        } else if (position == 0 && size == SizeClass.LARGE) {
+            row = largeCard(context, course, template);
+            root = R.id.course_large_root;
+        } else {
+            row = compactCard(context, course, template, 0);
+            root = R.id.course_compact_root;
         }
-        List<WidgetCourse> following =
-                new ArrayList<>(allCourses.subList(index + 1, allCourses.size()));
-        int shown = Math.min(following.size(), limit);
-        for (int i = 0; i < shown; i++) {
-            addCompactCard(context, views, R.id.widget_course_container,
-                    following.get(i), template, i == 0 ? 6 : 4);
-        }
-        if (following.size() > shown) {
-            views.setViewVisibility(R.id.widget_right_more, android.view.View.VISIBLE);
-            views.setTextViewText(R.id.widget_right_more,
-                    context.getString(R.string.widget_more_courses, following.size() - shown));
-        }
+        row.setOnClickFillInIntent(root,
+                new Intent(Intent.ACTION_VIEW, Uri.parse("ncs://course/" + course.id)));
+        return row;
     }
 
-    // ------------------------------------------------------------------
-    // 卡片装配
-    // ------------------------------------------------------------------
-
-    private static void addDetailedCard(Context context,
-                                        RemoteViews parent,
-                                        int containerId,
+    private static RemoteViews detailedCard(Context context,
                                         WidgetCourse course,
                                         SchoolTimeTemplate template) {
         RemoteViews card = new RemoteViews(context.getPackageName(),
@@ -501,12 +156,10 @@ public class WidgetRenderer {
             card.setTextViewText(R.id.course_card_time, timeRange);
         }
 
-        parent.addView(containerId, card);
+        return card;
     }
 
-    private static void addCompactCard(Context context,
-                                       RemoteViews parent,
-                                       int containerId,
+    private static RemoteViews compactCard(Context context,
                                        WidgetCourse course,
                                        SchoolTimeTemplate template,
                                        int topMarginDp) {
@@ -526,11 +179,10 @@ public class WidgetRenderer {
             applyTopSpacing(card, R.id.course_compact_root, context, topMarginDp);
         }
 
-        parent.addView(containerId, card);
+        return card;
     }
 
-    private static void addLargeCard(Context context,
-                                     RemoteViews parent,
+    private static RemoteViews largeCard(Context context,
                                      WidgetCourse course,
                                      SchoolTimeTemplate template) {
         RemoteViews card = new RemoteViews(context.getPackageName(),
@@ -568,7 +220,7 @@ public class WidgetRenderer {
                     WidgetStateResolver.formatTime(period.endTime));
         }
 
-        parent.addView(R.id.widget_course_container, card);
+        return card;
     }
 
     private static void applyTopSpacing(RemoteViews card, int viewId, Context context, int dp) {
@@ -581,10 +233,6 @@ public class WidgetRenderer {
             card.setViewPadding(viewId, 0, px, 0, 0);
         }
     }
-
-    // ------------------------------------------------------------------
-    // 文案构造
-    // ------------------------------------------------------------------
 
     /** "教室 · 教师"，两者皆空时返回 null。 */
     private static String buildLocationText(WidgetCourse course) {
@@ -758,54 +406,6 @@ public class WidgetRenderer {
         views.setViewVisibility(R.id.widget_arrived_button, android.view.View.VISIBLE);
         views.setOnClickPendingIntent(R.id.widget_arrived_button, arrivedIntent(context, courseId));
     }
-
-    // ------------------------------------------------------------------
-    // 课程集合工具
-    // ------------------------------------------------------------------
-
-    /** 从下一节课开始的今日剩余课程。 */
-    private static List<WidgetCourse> remainingCoursesFromNext(
-            WidgetStateResolver.WidgetState state) {
-        List<WidgetCourse> result = new ArrayList<>();
-        WidgetCourse next = state.nextCourse;
-        if (next == null) {
-            return result;
-        }
-
-        List<WidgetCourse> todayCourses = state.todayCourses();
-        int index = WidgetStateResolver.indexOfCourse(todayCourses, next);
-        if (index < 0) {
-            result.add(next);
-            return result;
-        }
-        result.addAll(todayCourses.subList(index, todayCourses.size()));
-        return result;
-    }
-
-    /** 含当前课在内的今日剩余课程数。 */
-    private static Integer remainingCountIncludingCurrent(
-            WidgetStateResolver.WidgetState state) {
-        if (state.currentCourse == null) {
-            return null;
-        }
-        List<WidgetCourse> todayCourses = state.todayCourses();
-        int index = WidgetStateResolver.indexOfCourse(todayCourses, state.currentCourse);
-        if (index < 0) {
-            return null;
-        }
-        return todayCourses.size() - index;
-    }
-
-    private static List<WidgetCourse> dropFirst(List<WidgetCourse> courses) {
-        if (courses == null || courses.size() <= 1) {
-            return new ArrayList<>();
-        }
-        return new ArrayList<>(courses.subList(1, courses.size()));
-    }
-
-    // ------------------------------------------------------------------
-    // 点击意图
-    // ------------------------------------------------------------------
 
     /** 点击卡片打开 App，对标 iOS 的 widgetURL(ncs://course/...)。 */
     private static PendingIntent openAppIntent(Context context) {

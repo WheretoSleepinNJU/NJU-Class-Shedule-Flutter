@@ -15,6 +15,7 @@ import 'Resources/Themes.dart';
 import 'Resources/Constant.dart';
 import 'Utils/States/MainState.dart';
 import 'Utils/InitUtil.dart';
+import 'Utils/ThemeUtil.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -23,21 +24,35 @@ void main() async {
   List themeConf = await InitUtil.initialize();
   //初始化组件化基础库, 所有友盟业务SDK都必须调用此初始化接口。
   UmengCommonSdk.initCommon(
-      '5f8ef217fac90f1c19a7b0f3', '5f9e1efa1c520d30739d2737', 'Umeng');
+    '5f8ef217fac90f1c19a7b0f3',
+    '5f9e1efa1c520d30739d2737',
+    'Umeng',
+  );
   UmengCommonSdk.setPageCollectionModeAuto();
   // UmengCommonSdk.onEvent("privacy_accept", {"result":"accept"});
 
   /// 原生安卓上去除状态栏遮罩
   /// https://blog.csdn.net/q515656712/article/details/139235710
   if (Platform.isAndroid) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
         systemNavigationBarColor: Colors.transparent,
-        statusBarColor: Colors.transparent));
+        statusBarColor: Colors.transparent,
+      ),
+    );
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   }
 
   runApp(
-      MyApp(themeConf[0], Constant.themeModeList[themeConf[1]], themeConf[2]));
+    MyApp(
+      themeConf[0],
+      Constant.themeModeList[normalizeThemeModeIndex(
+        themeConf[1],
+        Constant.themeModeList.length,
+      )],
+      themeConf[2],
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -46,7 +61,7 @@ class MyApp extends StatefulWidget {
   final String themeCustom;
 
   const MyApp(this.themeIndex, this.themeMode, this.themeCustom, {Key? key})
-      : super(key: key);
+    : super(key: key);
 
   @override
   _MyAppState createState() => _MyAppState();
@@ -65,51 +80,64 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return ScopedModel<MainStateModel>(
-        model: _model,
-        child: ScopedModelDescendant<MainStateModel>(
-          builder: (context, child, model) {
-            // print("MainView rebuild.");
-            ThemeData lightTheme;
-            ThemeData darkTheme;
-            int themeIndex = model.themeIndex ?? widget.themeIndex;
-            String customTheme = model.themeCustomColor ?? widget.themeCustom;
-            if (themeIndex < themeDataList.length || customTheme == '') {
-              lightTheme = themeDataList[themeIndex];
-              darkTheme = darkThemeDataList[themeIndex];
-            } else {
-              lightTheme = getThemeData(customTheme, Brightness.light,
-                  useSeedScheme: model.material3ColorForLight);
-              darkTheme = getThemeData(customTheme, Brightness.dark,
-                  useSeedScheme: model.material3ColorForDark);
-            }
-            return MaterialApp(
-              debugShowCheckedModeBanner: false,
-              onGenerateTitle: (BuildContext context) => S.of(context).app_name,
-              localizationsDelegates: const [
-                S.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              supportedLocales: S.delegate.supportedLocales,
-              title: '南哪课表',
-              theme: lightTheme,
-              darkTheme: darkTheme,
-              themeMode: model.themeMode ?? widget.themeMode,
-              home: const CourseTableView(),
-              builder: (context, child) {
-                // 获取当前系统的配置（包含屏幕尺寸、亮度、系统设置的字重等）
-                final mediaQueryData = MediaQuery.of(context);
-
-                // 强行覆盖 boldText 为 false
-                // 这样无论系统怎么发"变粗"的指令，Flutter 都会无视
-                return MediaQuery(
-                  data: mediaQueryData.copyWith(boldText: false),
-                  child: child!,
-                );
-              },
+      model: _model,
+      child: ScopedModelDescendant<MainStateModel>(
+        builder: (context, child, model) {
+          // print("MainView rebuild.");
+          ThemeData lightTheme;
+          ThemeData darkTheme;
+          final customTheme = normalizeThemeColor(
+            model.themeCustomColor ?? widget.themeCustom,
+          );
+          final themeIndex = normalizeThemeIndex(
+            model.themeIndex ?? widget.themeIndex,
+            themeDataList.length,
+            customTheme,
+          );
+          if (themeIndex < themeDataList.length) {
+            lightTheme = themeDataList[themeIndex];
+            darkTheme = darkThemeDataList[themeIndex];
+          } else {
+            lightTheme = getThemeData(
+              customTheme,
+              Brightness.light,
+              useSeedScheme: model.material3ColorForLight,
             );
-          },
-        ));
+            darkTheme = getThemeData(
+              customTheme,
+              Brightness.dark,
+              useSeedScheme: model.material3ColorForDark,
+            );
+          }
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            onGenerateTitle: (BuildContext context) => S.of(context).app_name,
+            localizationsDelegates: const [
+              S.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: S.delegate.supportedLocales,
+            title: '南哪课表',
+            theme: lightTheme,
+            darkTheme: darkTheme,
+            themeMode: model.themeMode ?? widget.themeMode,
+            home: const CourseTableView(),
+            builder: (context, child) {
+              // 获取当前系统的配置（包含屏幕尺寸、亮度、系统设置的字重等）
+              final mediaQueryData = MediaQuery.of(context);
+
+              // 强行覆盖 boldText 为 false
+              // 这样无论系统怎么发"变粗"的指令，Flutter 都会无视
+              return MediaQuery(
+                data: mediaQueryData.copyWith(boldText: false),
+                child: child!,
+              );
+            },
+          );
+        },
+      ),
+    );
   }
 }

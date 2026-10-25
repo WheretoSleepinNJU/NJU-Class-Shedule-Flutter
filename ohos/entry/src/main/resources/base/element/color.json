@@ -10,23 +10,27 @@
     },
     {
       "name": "widget_background",
-      "value": "#FFFFFF"
+      "value": "#F8FAFC"
     },
     {
       "name": "widget_font_primary",
-      "value": "#333333"
+      "value": "#1F2937"
     },
     {
       "name": "widget_font_secondary",
-      "value": "#666666"
+      "value": "#5F6B7A"
     },
     {
       "name": "widget_font_tertiary",
-      "value": "#999999"
+      "value": "#687587"
     },
     {
       "name": "widget_fill_color",
-      "value": "#F7F8FA"
+      "value": "#EEF2F6"
+    },
+    {
+      "name": "widget_accent",
+      "value": "#007BC8"
     }
   ]
 }

@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'package:sqflite/sqflite.dart';
 import '../Resources/Colors.dart';
 import './Db/DbHelper.dart';
+import 'CourseGroup.dart';
 
 const String tableName = DbHelper.COURSE_TABLE_NAME;
 const String columnId = DbHelper.COURSE_COLUMN_ID;
@@ -41,6 +43,22 @@ class Course {
   int? importType;
   String? color;
   int? courseId;
+
+  List<int> get weekNumbers {
+    try {
+      final values = jsonDecode(weeks ?? '[]');
+      if (values is! List) return [];
+      return values
+          .map((value) => int.tryParse(value.toString()))
+          .whereType<int>()
+          .where((week) => week > 0)
+          .toSet()
+          .toList()
+        ..sort();
+    } on FormatException {
+      return [];
+    }
+  }
 
   Course(this.tableId, this.name, this.weeks, this.weekTime, this.startTime,
       this.timeCount, this.importType,
@@ -138,7 +156,6 @@ class CourseProvider {
   Future<Course?> getCourse(int id) async {
     await open();
     List<Map<String, dynamic>> maps = await db!.query(tableName,
-        columns: [columnId, columnName],
         where: '$columnId = ?',
         whereArgs: [id]);
 //    await close();
@@ -186,6 +203,123 @@ class CourseProvider {
         where: '$columnId = ?', whereArgs: [course.id]);
 //    await close();
     return rst;
+  }
+
+  Future<List<Course>> getMeetings(Course course) async {
+    final rows = await getAllCourses(course.tableId!);
+    return rows
+        .map((row) => Course.fromMap(Map<String, dynamic>.from(row)))
+        .where((item) => CourseGroup.sameCourse(course, item))
+        .toList();
+  }
+
+  /// Commit all meetings together, including additions and removed meetings.
+  Future<bool> saveMeetingGroup(
+    List<Course> originals,
+    List<Course> meetings,
+  ) async {
+    if (meetings.isEmpty || meetings.first.tableId == null) return false;
+    final tableId = meetings.first.tableId!;
+    final ids = originals.map((c) => c.id).toSet();
+    final updatedIds = meetings
+        .where((c) => c.id != null)
+        .map((c) => c.id!)
+        .toList();
+    if (ids.contains(null) ||
+        ids.length != originals.length ||
+        updatedIds.toSet().length != updatedIds.length ||
+        updatedIds.any((id) => !ids.contains(id)) ||
+        meetings.any((c) => c.tableId != tableId) ||
+        originals.any((c) => c.tableId != tableId)) {
+      return false;
+    }
+    await open();
+    return db!.transaction((txn) async {
+      if (originals.isNotEmpty && !await _groupUnchanged(txn, originals)) {
+        return false;
+      }
+      var courseId = originals.isEmpty ? null : originals.first.courseId;
+      if (courseId == null) {
+        final rows = await txn.rawQuery(
+          'SELECT MAX($columnCourseId) AS maxId FROM $tableName',
+        );
+        courseId = ((rows.first['maxId'] as num?)?.toInt() ?? -1) + 1;
+      }
+      for (final meeting in meetings) {
+        final data = meeting.toMap()..[columnCourseId] = courseId;
+        if (meeting.id == null) {
+          data.remove(columnId);
+          await txn.insert(tableName, data);
+        } else if (await txn.update(
+              tableName,
+              data,
+              where: '$columnId = ? AND $columnTableId = ?',
+              whereArgs: [meeting.id, tableId],
+            ) !=
+            1) {
+          throw StateError('Course meeting disappeared while saving');
+        }
+      }
+      for (final id in ids.difference(updatedIds.toSet())) {
+        if (await txn.delete(
+              tableName,
+              where: '$columnId = ? AND $columnTableId = ?',
+              whereArgs: [id, tableId],
+            ) !=
+            1) {
+          throw StateError('Course meeting disappeared while removing');
+        }
+      }
+      return true;
+    });
+  }
+
+  Future<bool> _groupUnchanged(Transaction txn, List<Course> originals) async {
+    final current = await txn.query(
+      tableName,
+      where: '$columnTableId = ?',
+      whereArgs: [originals.first.tableId],
+    );
+    final group = current
+        .where(
+          (r) => CourseGroup.sameCourse(originals.first, Course.fromMap(r)),
+        )
+        .toList();
+    // Never replace or delete a course changed while its editor was open.
+    return group.length == originals.length &&
+        originals.every((original) {
+          final row = group
+              .where((r) => r[columnId] == original.id)
+              .firstOrNull;
+          return row != null &&
+              original.toMap().entries.every((e) => row[e.key] == e.value);
+        });
+  }
+
+  Future<bool> deleteMeetingGroup(List<Course> originals) async {
+    if (originals.isEmpty ||
+        originals.first.tableId == null ||
+        originals.any(
+          (c) => c.id == null || c.tableId != originals.first.tableId,
+        ) ||
+        originals.map((c) => c.id).toSet().length != originals.length) {
+      return false;
+    }
+    await open();
+    return db!.transaction((txn) async {
+      if (!await _groupUnchanged(txn, originals)) return false;
+      for (final original in originals) {
+        final count = await txn.delete(
+          tableName,
+          where: '$columnId = ? AND $columnTableId = ?',
+          whereArgs: [original.id, original.tableId],
+        );
+        if (count != 1) {
+          throw StateError('Course meeting disappeared while deleting');
+        }
+      }
+      return true;
+    });
   }
 
   Future<bool> checkHasClassByName(int tableId, String name) async {

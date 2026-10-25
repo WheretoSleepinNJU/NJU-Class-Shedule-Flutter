@@ -2,23 +2,27 @@
   "color": [
     {
       "name": "widget_background",
-      "value": "#121212"
+      "value": "#1E242C"
     },
     {
       "name": "widget_font_primary",
-      "value": "#E6E6E6"
+      "value": "#F1F5F9"
     },
     {
       "name": "widget_font_secondary",
-      "value": "#AAAAAA"
+      "value": "#C1CAD5"
     },
     {
       "name": "widget_font_tertiary",
-      "value": "#666666"
+      "value": "#A8B4C3"
     },
     {
       "name": "widget_fill_color",
-      "value": "#1E1E1E"
+      "value": "#2A323D"
+    },
+    {
+      "name": "widget_accent",
+      "value": "#409EFF"
     }
   ]
 }

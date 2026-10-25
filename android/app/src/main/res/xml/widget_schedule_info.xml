@@ -14,6 +14,7 @@
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen"
     android:initialLayout="@layout/widget_schedule_small"
-    android:previewLayout="@layout/widget_schedule_small"
+    android:previewLayout="@layout/widget_preview_small"
+    android:previewImage="@drawable/widget_preview_small"
     android:description="@string/widget_schedule_description"
     android:updatePeriodMillis="1800000" />

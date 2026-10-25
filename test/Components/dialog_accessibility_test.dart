@@ -46,6 +46,27 @@ Future<void> openDialog(
 }
 
 void main() {
+  testWidgets('dialog clamps transient negative iOS keyboard insets', (
+    tester,
+  ) async {
+    await openDialog(
+      tester,
+      (context) => MediaQuery(
+        data: MediaQuery.of(
+          context,
+        ).copyWith(viewInsets: const EdgeInsets.only(bottom: -50)),
+        child: const MDialog('修改课表名称', TextField()),
+      ),
+      scale: 1,
+    );
+    expect(tester.takeException(), isNull);
+    expect(find.text('修改课表名称'), findsOneWidget);
+    final padding = tester.widget<AnimatedPadding>(
+      find.byType(AnimatedPadding),
+    );
+    expect(padding.padding.isNonNegative, isTrue);
+  });
+
   const title = 'QA-超过十五字的完整课程名称与课堂讨论实践';
   for (final size in [
     const Size(393, 852),
@@ -68,7 +89,7 @@ void main() {
         0,
         classroom: '仙林校区教学楼三层 QA-101',
         teacher: '测试教师',
-        info: List.filled(20, '长备注需要滚动阅读，确认按钮保持可见。').join(),
+        info: List.filled(20, '长备注需要滚动阅读，关闭提示保持可见。').join(),
       );
       await openDialog(
         tester,
@@ -98,14 +119,15 @@ void main() {
         find.byType(Scrollable).first,
       );
       expect(scroll.position.maxScrollExtent, greaterThan(0));
-      expect(find.text('确认').hitTestable(), findsOneWidget);
+      expect(find.text('确认'), findsNothing);
+      expect(find.text('点击空白处关闭').hitTestable(), findsOneWidget);
       scroll.position.jumpTo(scroll.position.maxScrollExtent);
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
-      expect(find.text('确认').hitTestable(), findsOneWidget);
-      await tester.tap(find.text('确认'));
+      expect(find.text('点击空白处关闭').hitTestable(), findsOneWidget);
+      await tester.tapAt(const Offset(4, 100));
       await tester.pumpAndSettle();
-      expect(find.byType(AlertDialog), findsNothing);
+      expect(find.byType(CourseDetailsDialog), findsNothing);
     });
   }
 

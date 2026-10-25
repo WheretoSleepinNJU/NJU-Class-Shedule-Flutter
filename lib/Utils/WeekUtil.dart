@@ -2,18 +2,23 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
 class WeekUtil {
-  static checkWeek() async {
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    String? lastMondayString = sp.getString("lastWeekMonday");
-    String thisMondayString = _getMonday();
-    DateTime thisMonday = DateTime.parse(thisMondayString);
-    // print(lastMondayString);
-    if (lastMondayString == null) {
-      await _initWeek(thisMondayString, 1);
-    } else {
-      DateTime lastMonday = DateTime.parse(lastMondayString);
-      int weekBias = thisMonday.difference(lastMonday).inDays ~/ 7;
-      if (weekBias != 0) await _setWeek(thisMondayString, weekBias);
+  static Future<void> checkWeek() async {
+    final sp = await SharedPreferences.getInstance();
+    final currentMonday = _getMonday();
+    final previousMonday = DateTime.tryParse(
+      sp.getString('lastWeekMonday') ?? '',
+    );
+    final previousWeek = sp.getInt('weekIndex');
+    if (previousMonday == null || previousWeek == null) {
+      await _initWeek(currentMonday, previousWeek ?? 1);
+      return;
+    }
+    final bias =
+        DateTime.parse(currentMonday).difference(previousMonday).inDays ~/ 7;
+    if (bias != 0) {
+      await _setWeek(currentMonday, bias);
+    } else if (sp.getInt('tmpWeekIndex') == null) {
+      await sp.setInt('tmpWeekIndex', previousWeek < 1 ? 1 : previousWeek);
     }
   }
 
@@ -41,7 +46,7 @@ class WeekUtil {
   }
 
   static int getNowMonth() {
-//    DateTime now = new DateTime(2019,10,1);
+    //    DateTime now = new DateTime(2019,10,1);
     DateTime now = DateTime.now();
     return now.month;
   }
@@ -123,22 +128,23 @@ class WeekUtil {
     DateTime now = DateTime.now();
 
     while (now.weekday != monday) {
-      now = now.subtract(const Duration(
-          days: 1)); // Fix: subtract 1 day at a time, not monday days
+      now = now.subtract(
+        const Duration(days: 1),
+      ); // Fix: subtract 1 day at a time, not monday days
     }
 
     var formatter = DateFormat('yyyy-MM-dd');
     String formatted = formatter.format(now);
 
-//    print('Recent monday $formatted');
+    //    print('Recent monday $formatted');
     return formatted;
   }
 
   static _setWeek(String monday, int bias) async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     await sp.setString("lastWeekMonday", monday);
-    int? nowWeek = sp.getInt('weekIndex');
-    await sp.setInt('weekIndex', nowWeek! + bias);
+    int nowWeek = sp.getInt('weekIndex') ?? 1;
+    await sp.setInt('weekIndex', nowWeek + bias);
     await sp.setInt('tmpWeekIndex', nowWeek + bias);
   }
 

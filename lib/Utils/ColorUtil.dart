@@ -26,25 +26,37 @@ class HexColor extends Color {
 }
 
 class ColorPool {
-  static checkColorPool() async {
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    String? colorPool = sp.getString("colorPool");
-    if (colorPool == null) shuffleColorPool();
+  static Future<void> checkColorPool() async {
+    await getColorPool();
   }
 
-  static Future<List> getColorPool() async {
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    String? colorPoolString = sp.getString('colorPool');
-//    print(colorPoolString);
-    List colorPool = json.decode(colorPoolString!);
-    return colorPool;
+  static Future<List<int>> getColorPool() async {
+    final sp = await SharedPreferences.getInstance();
+    final raw = sp.getString('colorPool');
+    if (raw != null) {
+      try {
+        final decoded = jsonDecode(raw);
+        if (decoded is List &&
+            decoded.length == colorList.length &&
+            decoded.every((v) => v is int && v >= 0 && v < colorList.length) &&
+            decoded.toSet().length == colorList.length) {
+          return List<int>.from(decoded);
+        }
+      } on FormatException {
+        /* Repair incomplete or obsolete preferences. */
+      }
+    }
+    return _writeNewPool(sp);
   }
 
-  static shuffleColorPool() async {
-    List<int> colorPool = List<int>.generate(colorList.length, (i) => i);
-    colorPool.shuffle();
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    sp.setString('colorPool', colorPool.toString());
+  static Future<List<int>> _writeNewPool(SharedPreferences sp) async {
+    final pool = List<int>.generate(colorList.length, (i) => i)..shuffle();
+    await sp.setString('colorPool', jsonEncode(pool));
+    return pool;
+  }
+
+  static Future<void> shuffleColorPool() async {
+    await _writeNewPool(await SharedPreferences.getInstance());
   }
 }
 
@@ -64,10 +76,10 @@ class ColorUtil {
       // 生成调色板
       final PaletteGenerator generator =
           await PaletteGenerator.fromImageProvider(
-        imageProvider,
-        region: Offset.zero & const Size(1000, 150),
-        maximumColorCount: 10,
-      );
+            imageProvider,
+            region: Offset.zero & const Size(1000, 150),
+            maximumColorCount: 10,
+          );
 
       // 获取主色调，如果没有则默认白色
       Color dominantColor = generator.dominantColor?.color ?? Colors.white;

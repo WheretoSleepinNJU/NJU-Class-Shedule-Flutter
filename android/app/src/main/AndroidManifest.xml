@@ -75,7 +75,7 @@
         <receiver
             android:name=".widget.ScheduleWidgetProvider"
             android:exported="false"
-            android:label="@string/widget_schedule_label">
+            android:label="@string/widget_schedule_small_label">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <!-- 系统时间 / 时区 / 日期变化都会影响上课状态判定，需要重绘 -->
@@ -90,5 +90,20 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_schedule_info" />
         </receiver>
+        <receiver
+            android:name=".widget.ScheduleMediumWidgetProvider"
+            android:exported="false"
+            android:label="@string/widget_schedule_medium_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_schedule_medium_info" />
+        </receiver>
+        <service
+            android:name=".widget.ScheduleWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"
+            android:exported="false" />
     </application>
 </manifest>

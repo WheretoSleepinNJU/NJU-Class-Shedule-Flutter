@@ -21,4 +21,6 @@
     <string name="widget_week_index">第 %1$d 周</string>
     <string name="widget_period_index">第%1$d节</string>
     <string name="widget_period_range">第 %1$d-%2$d 节</string>
+    <string name="widget_schedule_small_label">南哪课表 · 2×2</string>
+    <string name="widget_schedule_medium_label">南哪课表 · 4×2</string>
 </resources>

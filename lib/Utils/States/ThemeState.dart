@@ -41,9 +41,13 @@ mixin ThemeStateModel on Model {
 
   int? _themeModeIndex;
 
-  get themeMode => (_themeModeIndex == null)
-      ? null
-      : Constant.themeModeList[_themeModeIndex!];
+  get themeMode =>
+      (_themeModeIndex == null)
+          ? null
+          : Constant.themeModeList[normalizeThemeModeIndex(
+            _themeModeIndex!,
+            Constant.themeModeList.length,
+          )];
 
   get themeModeIndex => _themeModeIndex;
 

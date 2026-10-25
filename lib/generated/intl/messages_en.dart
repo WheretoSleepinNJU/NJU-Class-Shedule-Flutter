@@ -47,8 +47,59 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m12(minutes) => "${minutes} 分钟";
 
+  static String m13(number) => "时段 ${number}";
+
+  static String m14(count) => "${count} 个上课时段";
+
+  static String m15(count) => "将同时删除该课程的全部 ${count} 个上课时段。";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+      "rename_table": MessageLookupByLibrary.simpleMessage("Rename timetable"),
+      "table_name": MessageLookupByLibrary.simpleMessage("Timetable name"),
+      "table_name_required": MessageLookupByLibrary.simpleMessage("Enter a timetable name"),
+      "table_rename_failed": MessageLookupByLibrary.simpleMessage("Could not rename. Try again."),
+      "import_load_failed": MessageLookupByLibrary.simpleMessage("Unable to load schools"),
+      "import_load_failed_hint": MessageLookupByLibrary.simpleMessage("Check your connection and try again."),
+      "import_list_empty": MessageLookupByLibrary.simpleMessage("No schools available"),
+      "import_list_empty_hint": MessageLookupByLibrary.simpleMessage("Try again later or see school support information."),
+      "retry": MessageLookupByLibrary.simpleMessage("Retry"),
+      "import_test": MessageLookupByLibrary.simpleMessage("Test"),
+      "import_test_title": MessageLookupByLibrary.simpleMessage("Import test"),
+      "import_test_enabled": MessageLookupByLibrary.simpleMessage("Test mode enabled"),
+      "import_test_hint": MessageLookupByLibrary.simpleMessage("Test a configuration through the online import flow. delayTime is in seconds."),
+      "import_test_start": MessageLookupByLibrary.simpleMessage("Start test"),
+      "import_test_url_required": MessageLookupByLibrary.simpleMessage("Enter a full http or https URL"),
+      "import_test_redirect_hint": MessageLookupByLibrary.simpleMessage("Optional: redirect from this login result to targetUrl"),
+      "import_test_delay_invalid": MessageLookupByLibrary.simpleMessage("Enter an integer from 0 to 60 seconds"),
+      "import_test_script_required": MessageLookupByLibrary.simpleMessage("Enter an extraction script"),
+      "import_test_error": MessageLookupByLibrary.simpleMessage("Test failed"),
+      "import_test_retry": MessageLookupByLibrary.simpleMessage("Retry extraction"),
+
+        "tap_blank_to_close": MessageLookupByLibrary.simpleMessage("点击空白处关闭"),
+        "delete_all_meetings": m15,
+        "delete_failed": MessageLookupByLibrary.simpleMessage("删除失败，请重新打开课程后重试"),
+        "add_meeting": MessageLookupByLibrary.simpleMessage("添加时段"),
+        "add_method": MessageLookupByLibrary.simpleMessage("添加方式"),
+        "clear_selection": MessageLookupByLibrary.simpleMessage("清空"),
+        "course_meetings": MessageLookupByLibrary.simpleMessage("上课时段"),
+        "course_weeks": MessageLookupByLibrary.simpleMessage("上课周次"),
+        "edit": MessageLookupByLibrary.simpleMessage("编辑"),
+        "edit_course": MessageLookupByLibrary.simpleMessage("编辑课程"),
+        "end_class": MessageLookupByLibrary.simpleMessage("结束节次"),
+        "meeting_number": m13,
+        "meetings_count": m14,
+        "not_filled": MessageLookupByLibrary.simpleMessage("未填写"),
+        "remove_meeting": MessageLookupByLibrary.simpleMessage("移除此时段"),
+        "save": MessageLookupByLibrary.simpleMessage("保存"),
+        "save_failed": MessageLookupByLibrary.simpleMessage("保存失败，请重试"),
+        "select_all": MessageLookupByLibrary.simpleMessage("全部"),
+        "select_weeks_required": MessageLookupByLibrary.simpleMessage("请至少选择一周"),
+        "start_class": MessageLookupByLibrary.simpleMessage("开始节次"),
+        "time_pending": MessageLookupByLibrary.simpleMessage("时间待定"),
+        "free_or_pending_time": MessageLookupByLibrary.simpleMessage("Free time / Time TBD"),
+        "week_day": MessageLookupByLibrary.simpleMessage("上课日期"),
+        "weeks_pending": MessageLookupByLibrary.simpleMessage("周次待定"),
         "QQ_copy_success_toast":
             MessageLookupByLibrary.simpleMessage("已复制群号到剪贴板"),
         "QQ_open_fail_toast":

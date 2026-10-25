@@ -4,17 +4,16 @@ import WidgetKit
 import ActivityKit
 
 @main
-@objc class AppDelegate: FlutterAppDelegate {
+@objc class AppDelegate: FlutterAppDelegate, FlutterPluginRegistrant {
   private var widgetDataChannel: FlutterMethodChannel?
 
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    GeneratedPluginRegistrant.register(with: self)
-
-    // Set up widget data method channel
-    setupWidgetDataChannel()
+    // With UIScene the Flutter controller is created after didFinishLaunching.
+    // Let that controller register plugins against its own engine.
+    pluginRegistrant = self
     setupSystemTimeChangeObserver()
 
 //     MobClick.handle(url)
@@ -22,6 +21,15 @@ import ActivityKit
 //     UMCommonSwift.setLogEnabled(bFlag: true)
 //     UMConfigure.initWithAppkey("5f9e1afa1c520d30739d2737", channel: "umeng")
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+
+  func register(with registry: FlutterPluginRegistry) {
+    GeneratedPluginRegistrant.register(with: registry)
+  }
+
+  func connectSceneWindow(_ sceneWindow: UIWindow) {
+    window = sceneWindow
+    setupWidgetDataChannel()
   }
 
   private func setupSystemTimeChangeObserver() {
@@ -409,4 +417,40 @@ import ActivityKit
 //       //其它第三方处理
 //       return true
 //   }
+}
+
+
+/// FlutterSceneDelegate forwards URL and shortcut events to registered plugins.
+@objc class SceneDelegate: FlutterSceneDelegate {
+  override func scene(
+    _ scene: UIScene,
+    willConnectTo session: UISceneSession,
+    options connectionOptions: UIScene.ConnectionOptions
+  ) {
+    super.scene(scene, willConnectTo: session, options: connectionOptions)
+    guard let sceneWindow = window else { return }
+    (UIApplication.shared.delegate as? AppDelegate)?.connectSceneWindow(sceneWindow)
+    // Cold launches receive URLs in connectionOptions rather than openURLContexts.
+    if !connectionOptions.urlContexts.isEmpty {
+      self.scene(scene, openURLContexts: connectionOptions.urlContexts)
+    }
+  }
+
+  override func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+    for context in URLContexts {
+      var options: [UIApplication.OpenURLOptionsKey: Any] = [
+        .openInPlace: context.options.openInPlace
+      ]
+      if let source = context.options.sourceApplication {
+        options[.sourceApplication] = source
+      }
+      if let annotation = context.options.annotation {
+        options[.annotation] = annotation
+      }
+      _ = appDelegate.application(UIApplication.shared, open: context.url, options: options)
+      NSLog("[SceneLifecycle] URL forwarded to app delegate: %@", context.url.host ?? "")
+    }
+  }
+
 }

@@ -11,7 +11,7 @@ mixin ClassTableStateModel on Model {
     _classTableIndex = classTableIndex;
     notifyListeners();
     SharedPreferences sp = await SharedPreferences.getInstance();
-    sp.setInt("tableId", classTableIndex);
+    await sp.setInt("tableId", classTableIndex);
 
     // 刷新 Widget
     await WidgetRefreshHelper.refreshAfterTableChanged();

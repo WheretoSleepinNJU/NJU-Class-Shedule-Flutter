@@ -5,6 +5,7 @@
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_root"
+    android:background="@drawable/widget_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
@@ -92,6 +93,21 @@
             android:layout_marginTop="6dp"
             android:orientation="vertical" />
 
+<TextView
+            android:id="@+id/widget_arrived_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/widget_arrived_button_background"
+            android:gravity="center"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:text="@string/widget_arrived"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/widget_accent"
+            android:visibility="gone" />
+
         <LinearLayout
             android:id="@+id/widget_empty_container"
             android:layout_width="match_parent"
@@ -150,13 +166,17 @@
             android:textColor="@color/widget_text_secondary"
             android:visibility="gone" />
 
-        <LinearLayout
+        <ListView
             android:id="@+id/widget_right_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:layout_marginTop="4dp"
-            android:orientation="vertical" />
+            android:scrollbars="vertical"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="4dp"
+        android:background="@android:color/transparent"
+        android:overScrollMode="never" />
 
         <TextView
             android:id="@+id/widget_right_more"
@@ -186,21 +206,5 @@
                 android:textSize="13sp"
                 android:textColor="@color/widget_text_secondary" />
         </LinearLayout>
-
-        <!-- "我已到达"按钮 -->
-        <TextView
-            android:id="@+id/widget_arrived_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/widget_arrived_button_background"
-            android:gravity="center"
-            android:paddingTop="14dp"
-            android:paddingBottom="14dp"
-            android:text="@string/widget_arrived"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:textColor="@color/widget_accent"
-            android:visibility="gone" />
     </LinearLayout>
 </LinearLayout>

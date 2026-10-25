@@ -41,27 +41,31 @@ class _ClassTitleState extends State<ClassTitle> {
           height: widget._classTitleHeight,
           width: widget._classTitleWidth,
           child: Center(
-              child: widget._isShowWeekTime
-                  ? Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Text((i + 1).toString(),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: getColor())),
-                        Text(
-                          widget.classTimeList[i]['start'] +
-                              '\n' +
-                              widget.classTimeList[i]['end'],
-                          style: TextStyle(fontSize: 10, color: getColor()),
+              // A system font change can arrive before async row geometry.
+              // Keep the labels within the old row until that refresh finishes.
+              child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: widget._isShowWeekTime
+                      ? Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Text((i + 1).toString(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: getColor())),
+                            Text(
+                              widget.classTimeList[i]['start'] +
+                                  '\n' +
+                                  widget.classTimeList[i]['end'],
+                              style: TextStyle(fontSize: 10, color: getColor()),
+                            )
+                          ],
                         )
-                      ],
-                    )
-                  : Text((i + 1).toString(),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: getColor())))),
+                      : Text((i + 1).toString(),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: getColor()))))),
     );
     return Column(children: _classTitle);
   }

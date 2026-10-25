@@ -3,6 +3,8 @@ import { TodayWidgetData } from "../models/WidgetDataModel";
 // --- Mock 数据 (直接按照你的类结构构造) ---
 export const MOCK_DATA: TodayWidgetData = {
   date: '周一',
+  dateKey: '2026-10-26',
+  week: 8,
   courses: [
     {
       name: '操作系统原理与Linux实践', // 长文本测试

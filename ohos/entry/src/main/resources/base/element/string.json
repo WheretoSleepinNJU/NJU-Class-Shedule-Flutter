@@ -22,13 +22,12 @@
     },
     {
       "name": "widget_desc",
-      "value": "课表小组件"
+      "value": "可上下滚动查看今日课程、时间和教室"
     },
     {
       "name": "widget_display_name",
-      "value": "南哪课表"
+      "value": "今日课表 · 小号"
     },
-
     {
       "name": "reason_tracking",
       "value": "需要上传追踪信息用于统计分析"
@@ -48,6 +47,14 @@
     {
       "name": "reason_read_pasteboard",
       "value": "需要剪贴板权限以进行课表分享与导入"
+    },
+    {
+      "name": "widget_medium_display_name",
+      "value": "今日课表 · 宽版"
+    },
+    {
+      "name": "widget_medium_desc",
+      "value": "当前课程与后续安排，可上下滚动查看全部课程"
     }
   ]
 }

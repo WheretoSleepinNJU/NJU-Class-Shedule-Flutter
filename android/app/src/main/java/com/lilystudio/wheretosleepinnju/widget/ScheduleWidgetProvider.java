@@ -8,6 +8,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
+import android.os.Build;
+import android.content.ComponentName;
+import android.util.SizeF;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * 课表桌面小组件。
@@ -45,8 +51,7 @@ public class ScheduleWidgetProvider extends AppWidgetProvider {
     public static void refreshAllWidgets(Context context) {
         Context appContext = context.getApplicationContext();
         AppWidgetManager manager = AppWidgetManager.getInstance(appContext);
-        int[] ids = manager.getAppWidgetIds(
-                new android.content.ComponentName(appContext, ScheduleWidgetProvider.class));
+        int[] ids = allWidgetIds(appContext, manager);
 
         if (ids == null || ids.length == 0) {
             Log.i(TAG, "refreshAllWidgets: no widget placed on launcher");
@@ -88,8 +93,12 @@ public class ScheduleWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onDisabled(Context context) {
-        // 最后一个小组件被移除，撤销刷新计划
-        WidgetUpdateScheduler.cancel(context);
+        // Each provider receives onDisabled independently. Keep the other size alive.
+        if (allWidgetIds(context, AppWidgetManager.getInstance(context)).length == 0) {
+            WidgetUpdateScheduler.cancel(context);
+        } else {
+            WidgetUpdateScheduler.scheduleNext(context);
+        }
     }
 
     @Override
@@ -132,8 +141,24 @@ public class ScheduleWidgetProvider extends AppWidgetProvider {
             WidgetStateResolver.WidgetState state = WidgetStateResolver.resolve(context);
             WidgetRenderer.SizeClass sizeClass =
                     resolveSizeClass(appWidgetManager, appWidgetId);
-            RemoteViews views = WidgetRenderer.render(context, state, sizeClass);
+            RemoteViews views;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                Map<SizeF, RemoteViews> layouts = new LinkedHashMap<>();
+                layouts.put(new SizeF(110, 110), WidgetRenderer.render(context, state,
+                        WidgetRenderer.SizeClass.SMALL, appWidgetId));
+                layouts.put(new SizeF(MEDIUM_MIN_WIDTH_DP, 110), WidgetRenderer.render(context, state,
+                        WidgetRenderer.SizeClass.MEDIUM, appWidgetId));
+                layouts.put(new SizeF(MEDIUM_MIN_WIDTH_DP, LARGE_MIN_HEIGHT_DP),
+                        WidgetRenderer.render(context, state, WidgetRenderer.SizeClass.LARGE, appWidgetId));
+                views = new RemoteViews(layouts);
+            } else {
+                views = WidgetRenderer.render(context, state, sizeClass, appWidgetId);
+            }
             appWidgetManager.updateAppWidget(appWidgetId, views);
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId,
+                    com.lilystudio.wheretosleepinnju.R.id.widget_course_container);
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId,
+                    com.lilystudio.wheretosleepinnju.R.id.widget_right_container);
         } catch (Exception e) {
             // 小组件里抛异常会被系统标记为"无法加载"，这里兜底渲染错误态
             Log.e(TAG, "updateWidget failed for id=" + appWidgetId, e);
@@ -141,7 +166,8 @@ public class ScheduleWidgetProvider extends AppWidgetProvider {
                 WidgetStateResolver.WidgetState errorState =
                         WidgetStateResolver.resolve(context, new java.util.Date());
                 appWidgetManager.updateAppWidget(appWidgetId,
-                        WidgetRenderer.render(context, errorState, WidgetRenderer.SizeClass.SMALL));
+                        WidgetRenderer.render(context, errorState, WidgetRenderer.SizeClass.SMALL,
+                                appWidgetId));
             } catch (Exception ignored) {
                 Log.e(TAG, "updateWidget fallback also failed", ignored);
             }
@@ -157,14 +183,17 @@ public class ScheduleWidgetProvider extends AppWidgetProvider {
         }
 
         int minWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0);
-        int maxHeight = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 0);
+        int minHeight = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 0);
 
         if (minWidth <= 0) {
-            return WidgetRenderer.SizeClass.SMALL;
+            android.appwidget.AppWidgetProviderInfo info = appWidgetManager.getAppWidgetInfo(appWidgetId);
+            return info != null && info.provider.getClassName().equals(
+                    ScheduleMediumWidgetProvider.class.getName())
+                    ? WidgetRenderer.SizeClass.MEDIUM : WidgetRenderer.SizeClass.SMALL;
         }
 
         boolean wide = minWidth >= MEDIUM_MIN_WIDTH_DP;
-        boolean tall = maxHeight >= LARGE_MIN_HEIGHT_DP;
+        boolean tall = minHeight >= LARGE_MIN_HEIGHT_DP;
 
         if (wide && tall) {
             return WidgetRenderer.SizeClass.LARGE;
@@ -173,6 +202,17 @@ public class ScheduleWidgetProvider extends AppWidgetProvider {
             return WidgetRenderer.SizeClass.MEDIUM;
         }
         return WidgetRenderer.SizeClass.SMALL;
+    }
+
+    private static int[] allWidgetIds(Context context, AppWidgetManager manager) {
+        ArrayList<Integer> ids = new ArrayList<>();
+        for (Class<?> provider : new Class<?>[]{ScheduleWidgetProvider.class,
+                ScheduleMediumWidgetProvider.class}) {
+            for (int id : manager.getAppWidgetIds(new ComponentName(context, provider))) ids.add(id);
+        }
+        int[] result = new int[ids.size()];
+        for (int i = 0; i < ids.size(); i++) result[i] = ids.get(i);
+        return result;
     }
 
     /**
