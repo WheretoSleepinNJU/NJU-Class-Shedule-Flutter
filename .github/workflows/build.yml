@@ -162,9 +162,13 @@ jobs:
       - name: Install CocoaPods
         if: matrix.platform == 'ios'
         run: |
+          gem install json -v 2.18.0 --no-document
           gem install xcodeproj -v 1.28.1 --no-document
           gem install cocoapods -v 1.17.0 --conservative --no-document
-          ruby -rxcodeproj -e 'abort "Unexpected xcodeproj version" unless Xcodeproj::VERSION == "1.28.1"'
+          ruby -rjson -rxcodeproj - <<'RUBY'
+          abort "Unexpected JSON version" unless JSON::VERSION == "2.18.0"
+          abort "Unexpected xcodeproj version" unless Xcodeproj::VERSION == "1.28.1"
+          RUBY
       - name: Configure iOS signing
         if: matrix.platform == 'ios' && env.BUILD_SIGNED == 'true'
         env:
