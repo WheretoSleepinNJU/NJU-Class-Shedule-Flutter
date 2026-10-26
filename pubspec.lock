@@ -69,10 +69,10 @@ packages:
     dependency: transitive
     description:
       name: characters
-      sha256: f71061c654a3380576a52b451dd5532377954cf9dbd272a78fc8479606670803
+      sha256: faf38497bda5ead2a8c7615f4f7939df04333478bf32e4173fcb06d428b5716b
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.4.0"
+    version: "1.4.1"
   charcode:
     dependency: transitive
     description:
@@ -129,6 +129,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.2"
+  cupertino_icons:
+    dependency: transitive
+    description:
+      name: cupertino_icons
+      sha256: "41e005c33bd814be4d3096aff55b1908d419fde52ca656c8c47719ec745873cd"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.9"
   dart_style:
     dependency: transitive
     description:
@@ -168,6 +176,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.2"
+  dynamic_color:
+    dependency: transitive
+    description:
+      name: dynamic_color
+      sha256: "4aeb76de323e8eb660bab5557d826ad7ebbf1434a598f0c6aa8a11a9696a6757"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.9.0"
   fake_async:
     dependency: transitive
     description:
@@ -271,6 +287,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_miuix:
+    dependency: "direct main"
+    description:
+      name: flutter_miuix
+      sha256: "79557980f191131888dd6b164d460d03a70e9cae1cbce9799046942ef4719513"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.3.0"
   flutter_native_splash:
     dependency: "direct main"
     description:
@@ -308,11 +332,9 @@ packages:
   fluttertoast:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "66d587d5114c18cc5b8cdb23699d76dc812da393"
-      resolved-ref: "66d587d5114c18cc5b8cdb23699d76dc812da393"
-      url: "https://gitcode.com/CPF-Flutter/flutter_fluttertoast.git"
-    source: git
+      path: "third_party/fluttertoast"
+      relative: true
+    source: path
     version: "9.0.0"
   fuchsia_remote_debug_protocol:
     dependency: transitive
@@ -456,10 +478,10 @@ packages:
     dependency: transitive
     description:
       name: intl
-      sha256: "3df61194eb431efc39c4ceba583b95633a403f46c9fd341e550ce0bfa50e9aa5"
+      sha256: "1ca20c894b1717686a2319b8548763d812bc0aabdac580420a44c5178c57a867"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.20.2"
+    version: "0.20.3"
   intl_utils:
     dependency: "direct dev"
     description:
@@ -520,26 +542,26 @@ packages:
     dependency: transitive
     description:
       name: matcher
-      sha256: dc58c723c3c24bf8d3e2d3ad3f2f9d7bd9cf43ec6feaa64181775e60190153f2
+      sha256: "31bd099b47c10cd1aeb55146a2d46ce0277630ecef3f7dae54ad7873f36696cd"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.12.17"
+    version: "0.12.20"
   material_color_utilities:
     dependency: transitive
     description:
       name: material_color_utilities
-      sha256: f7142bb1154231d7ea5f96bc7bde4bda2a0945d2806bb11670e30b850d56bdec
+      sha256: "9c337007e82b1889149c82ed242ed1cb24a66044e30979c44912381e9be4c48b"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.11.1"
+    version: "0.13.0"
   meta:
     dependency: transitive
     description:
       name: meta
-      sha256: e3641ec5d63ebf0d9b41bd43201a66e3fc79a65db5f61fc181f04cd27aab950c
+      sha256: "307249ce4ff29d58a18e97f6345f539382eb9c9c29ecda628900f31de0443dd9"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.16.0"
+    version: "1.19.0"
   mime:
     dependency: transitive
     description:
@@ -551,11 +573,9 @@ packages:
   mobile_scanner:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "789adb2638ce9063376baeacc9909aad003db48b"
-      resolved-ref: "789adb2638ce9063376baeacc9909aad003db48b"
-      url: "https://gitcode.com/CPF-Flutter/fluttertpc_mobile_scanner.git"
-    source: git
+      path: "third_party/mobile_scanner"
+      relative: true
+    source: path
     version: "7.1.4"
   package_config:
     dependency: transitive
@@ -568,18 +588,18 @@ packages:
   package_info_plus:
     dependency: "direct main"
     description:
-      path: "external/flutter_plus_plugins_package_info_plus/packages/package_info_plus/package_info_plus"
+      path: "third_party/package_info_plus"
       relative: true
     source: path
-    version: "8.3.0"
+    version: "4.2.0"
   package_info_plus_platform_interface:
     dependency: transitive
     description:
       name: package_info_plus_platform_interface
-      sha256: "202a487f08836a592a6bd4f901ac69b3a8f146af552bbd14407b6b41e1c3f086"
+      sha256: "9bc8ba46813a4cc42c66ab781470711781940780fd8beddd0c3da62506d3a6c6"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.2.1"
+    version: "2.0.1"
   palette_generator:
     dependency: "direct main"
     description:
@@ -925,10 +945,10 @@ packages:
     dependency: transitive
     description:
       name: test_api
-      sha256: "522f00f556e73044315fa4585ec3270f1808a4b186c936e612cab0b565ff1e00"
+      sha256: "2a122cbe059f8b610d3a5415f42e255b6c17b1f21eee1d960f31080237fb4f11"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.7.6"
+    version: "0.7.12"
   time:
     dependency: transitive
     description:
@@ -1053,10 +1073,10 @@ packages:
     dependency: transitive
     description:
       name: vector_math
-      sha256: d530bd74fea330e6e364cda7a85019c434070188383e1cd8d9777ee586914c5b
+      sha256: "92b9910f66ed1057fd4da7b040ae7c74cafacf885bdc81be496928d5049b032d"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.2.0"
+    version: "2.4.3"
   vm_service:
     dependency: transitive
     description:
@@ -1175,5 +1195,5 @@ packages:
     source: hosted
     version: "0.2.4"
 sdks:
-  dart: ">=3.9.0 <4.0.0"
+  dart: ">=3.12.2 <4.0.0"
   flutter: ">=3.35.7"

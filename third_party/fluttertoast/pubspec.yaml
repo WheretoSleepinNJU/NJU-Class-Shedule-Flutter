@@ -1,0 +1,37 @@
+name: fluttertoast
+description: Toast Library for Flutter, Easily create toast messages in single line of code
+version: 9.0.0
+homepage: https://github.com/PonnamKarthik/FlutterToast
+issue_tracker: https://github.com/ponnamkarthik/FlutterToast/issues
+
+environment:
+  sdk: ">=2.12.0 <4.0.0"
+  flutter: ">=1.10.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
+  web: ">=1.0.0 <2.0.0"
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  coverage: ^1.7.0
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: io.github.ponnamkarthik.toast.fluttertoast
+        pluginClass: FlutterToastPlugin
+      ios:
+        pluginClass: FluttertoastPlugin
+      web:
+        pluginClass: FluttertoastWebPlugin
+        fileName: fluttertoast_web.dart
+      ohos:
+        pluginClass: FluttertoastPlugin
+  assets:
+    - assets/

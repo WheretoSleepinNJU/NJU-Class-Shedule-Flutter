@@ -21,6 +21,7 @@ public class WidgetScheduleData {
     public static final int DEFAULT_APPROACHING_MINUTES = 15;
     public static final int DEFAULT_TOMORROW_PREVIEW_HOUR = 21;
 
+    public List<WidgetCourse> semesterCourses;
     public final String version;
     public final String timestamp;
     public final String schoolId;
@@ -115,7 +116,7 @@ public class WidgetScheduleData {
         List<WidgetCourse> tomorrowCourses =
                 WidgetCourse.listFromJson(json.optJSONArray("tomorrowCourses"));
 
-        return new WidgetScheduleData(
+        WidgetScheduleData result = new WidgetScheduleData(
                 JsonUtils.optString(json, "version", "2.0"),
                 JsonUtils.optString(json, "timestamp", null),
                 JsonUtils.optString(json, "schoolId", ""),
@@ -136,6 +137,10 @@ public class WidgetScheduleData {
                 JsonUtils.optInteger(json, "approachingMinutes"),
                 JsonUtils.optInteger(json, "tomorrowPreviewHour")
         );
+        if (json.has("semesterCourses")) {
+            result.semesterCourses = WidgetCourse.listFromJson(json.optJSONArray("semesterCourses"));
+        }
+        return result;
     }
 
     public int resolveApproachingMinutes() {
@@ -153,6 +158,13 @@ public class WidgetScheduleData {
     }
 
     public List<WidgetCourse> coursesForWeekDay(int weekDay) {
+        if (semesterCourses != null) {
+            List<WidgetCourse> courses = new ArrayList<>();
+            for (WidgetCourse course : semesterCourses) {
+                if (course.weekDay == weekDay) courses.add(course);
+            }
+            return courses;
+        }
         List<WidgetCourse> courses = weekSchedule.get(weekDay);
         return courses == null ? Collections.<WidgetCourse>emptyList() : courses;
     }
@@ -162,7 +174,7 @@ public class WidgetScheduleData {
                                           int newCurrentWeekDay,
                                           List<WidgetCourse> newTodayCourses,
                                           List<WidgetCourse> newTomorrowCourses) {
-        return new WidgetScheduleData(
+        WidgetScheduleData result = new WidgetScheduleData(
                 version,
                 timestamp,
                 schoolId,
@@ -183,5 +195,7 @@ public class WidgetScheduleData {
                 approachingMinutes,
                 tomorrowPreviewHour
         );
+        result.semesterCourses = semesterCourses;
+        return result;
     }
 }

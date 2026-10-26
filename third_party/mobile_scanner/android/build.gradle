@@ -1,0 +1,82 @@
+group = 'dev.steenbakker.mobile_scanner'
+version = '1.0-SNAPSHOT'
+
+buildscript {
+    ext.kotlin_version = "2.1.0"
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.13.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    if (project.android.hasProperty("namespace")) {
+        namespace = 'dev.steenbakker.mobile_scanner'
+    }
+
+    compileSdk = 36
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
+    }
+
+    defaultConfig {
+        minSdk = 23
+        consumerProguardFiles 'proguard-rules.pro'
+    }
+
+    dependencies {
+        def useUnbundled = project.findProperty('dev.steenbakker.mobile_scanner.useUnbundled') ?: false
+        if (useUnbundled.toBoolean()) {
+            // Dynamically downloaded model via Google Play Services
+            implementation 'com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1'
+        } else {
+            // Bundled model in app
+            implementation 'com.google.mlkit:barcode-scanning:17.3.0'
+        }
+
+        implementation 'androidx.camera:camera-lifecycle:1.5.1'
+        implementation 'androidx.camera:camera-camera2:1.5.1'
+        implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2'
+
+        testImplementation 'org.jetbrains.kotlin:kotlin-test'
+        testImplementation 'org.mockito:mockito-core:5.20.0'
+    }
+
+    testOptions {
+        unitTests.all {
+            useJUnitPlatform()
+
+            testLogging {
+                events "passed", "skipped", "failed", "standardOut", "standardError"
+                outputs.upToDateWhen {false}
+                showStandardStreams = true
+            }
+        }
+    }
+}

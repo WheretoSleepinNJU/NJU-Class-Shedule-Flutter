@@ -8,12 +8,13 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 4.1.0+71
 
 environment:
-  sdk: ">=3.7.0 <4.0.0"
+  sdk: ">=3.12.2 <4.0.0"
   flutter: ">=3.35.7"
 
 dependencies:
   flutter:
     sdk: flutter
+  flutter_miuix: 1.3.0
   flutter_localizations:
     sdk: flutter
 
@@ -33,10 +34,7 @@ dependencies:
   palette_generator:
     path: ./external/flutter_packages/packages/palette_generator
   mobile_scanner:
-    git:
-      url: https://gitcode.com/CPF-Flutter/fluttertpc_mobile_scanner.git
-      # 7.1.4-ohos-1.0.0-beta.1: Vision on Apple, plus the OHOS implementation.
-      ref: 789adb2638ce9063376baeacc9909aad003db48b
+    path: third_party/mobile_scanner
 
   sqflite:
     git:
@@ -57,7 +55,7 @@ dependencies:
 
   # https://gitcode.com/openharmony-sig/flutter_plus_plugins/pull/52
   package_info_plus:
-    path: ./external/flutter_plus_plugins_package_info_plus/packages/package_info_plus/package_info_plus
+    path: third_party/package_info_plus
   # 只用在iOS，等待鸿蒙支持
   in_app_review: ^2.0.3
 
@@ -71,9 +69,7 @@ dependencies:
   share_extend:
     path: third_party/share_extend
   fluttertoast:
-    git:
-      url: https://gitcode.com/CPF-Flutter/flutter_fluttertoast.git
-      ref: 66d587d5114c18cc5b8cdb23699d76dc812da393
+    path: third_party/fluttertoast
 
 
 dependency_overrides:

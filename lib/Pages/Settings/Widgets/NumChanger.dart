@@ -1,3 +1,4 @@
+import 'MiuixSettings.dart';
 import 'package:flutter/material.dart';
 
 class NumberChangerWidget extends StatefulWidget {
@@ -22,104 +23,44 @@ class NumberChangerWidget extends StatefulWidget {
   //点击减号任意一个回调 数量
   final ValueChanged? updateValueChanged;
 
-  const NumberChangerWidget(
-      {this.height = 30,
-      this.width = 40,
-      this.iconWidth = 40,
-      this.numText = '0',
-      this.addValueChanged,
-      this.removeValueChanged,
-      this.updateValueChanged,
-      Key? key})
-      : super(key: key);
+  const NumberChangerWidget({
+    this.height = 30,
+    this.width = 40,
+    this.iconWidth = 40,
+    this.numText = '0',
+    this.addValueChanged,
+    this.removeValueChanged,
+    this.updateValueChanged,
+    Key? key,
+  }) : super(key: key);
 
   @override
   _NumberChangerWidgetState createState() => _NumberChangerWidgetState();
 }
 
 class _NumberChangerWidgetState extends State<NumberChangerWidget> {
-  var textController = TextEditingController();
-
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    textController.text = widget.numText;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        Container(
-          height: widget.height,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              border: Border.all(width: 1, color: Colors.black12)),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              //减号
-              coustomIconButton(icon: Icons.remove, isAdd: false),
-              //输入框
-              Container(
-                width: widget.width,
-                decoration: const BoxDecoration(
-                    border: Border(
-                        left: BorderSide(width: 1, color: Colors.black12),
-                        right: BorderSide(width: 1, color: Colors.black12))),
-                child: TextField(
-                  controller: textController,
-                  keyboardType: TextInputType.number,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 16),
-                  enableInteractiveSelection: false,
-                  decoration: const InputDecoration(
-                    contentPadding:
-                        EdgeInsets.only(left: 0, top: 2, bottom: 2, right: 0),
-                    border: OutlineInputBorder(
-                      gapPadding: 0,
-                      borderSide: BorderSide(
-                        width: 0,
-                        style: BorderStyle.none,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              //加号
-              coustomIconButton(icon: Icons.add, isAdd: true),
-            ],
+  Widget build(BuildContext context) => MiuixButton(
+    onPressed: () async {
+      var selected = (int.tryParse(widget.numText) ?? 0).clamp(0, 500);
+      final result = await showDialog<int>(
+        context: context,
+        builder: (dialogContext) => StatefulBuilder(
+          builder: (context, update) => SettingsActionDialog(
+            '课程高度',
+            MiuixNumberPicker(
+              value: selected,
+              min: 0,
+              max: 500,
+              onValueChanged: (value) => update(() => selected = value),
+            ),
+            widgetCancelAction: () => Navigator.pop(dialogContext),
+            widgetOKAction: () => Navigator.pop(dialogContext, selected),
           ),
-        )
-      ],
-    );
-  }
-
-  Widget coustomIconButton({required IconData icon, required bool isAdd}) {
-    return SizedBox(
-      width: widget.iconWidth,
-      child: IconButton(
-        padding: const EdgeInsets.all(0),
-        icon: Icon(icon),
-        onPressed: () {
-          var num = int.parse(textController.text);
-          if (!isAdd && num == 0) return;
-          if (isAdd) {
-            num++;
-            if (widget.addValueChanged != null) widget.addValueChanged!(num);
-          } else {
-            num--;
-            if (widget.removeValueChanged != null) {
-              widget.removeValueChanged!(num);
-            }
-          }
-          textController.text = '$num';
-          if (widget.updateValueChanged != null) {
-            widget.updateValueChanged!(num);
-          }
-        },
-      ),
-    );
-  }
+        ),
+      );
+      if (result != null) widget.updateValueChanged?.call(result);
+    },
+    child: Text(widget.numText),
+  );
 }

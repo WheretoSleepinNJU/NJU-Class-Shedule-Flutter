@@ -1,3 +1,4 @@
+import 'Widgets/MiuixSettings.dart';
 import 'package:wheretosleepinnju/Pages/Settings/Widgets/ThemeChanger.dart';
 
 import '../../generated/l10n.dart';
@@ -32,364 +33,403 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
       showCustomClassHeight = !forceZoom;
     });
 
-    final model =
-        ScopedModel.of<MainStateModel>(context, rebuildOnChange: false);
+    final model = ScopedModel.of<MainStateModel>(
+      context,
+      rebuildOnChange: false,
+    );
     model.getMaterial3ColorForLight().then((_) => model.refresh());
     model.getMaterial3ColorForDark().then((_) => model.refresh());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(S.of(context).more_settings_title),
-        ),
-        body: SafeArea(
-            child: SingleChildScrollView(
-                child: Column(children: <Widget>[
-          SingleChildScrollView(
-              child: Column(
-                  children: ListTile.divideTiles(context: context, tiles: [
-            ListTile(
-                title: Text(S.of(context).change_theme_mode_title),
-                subtitle: Text(S.of(context).change_theme_mode_subtitle),
-                trailing: FutureBuilder<int>(
+    return SettingsScaffold(
+      title: S.of(context).more_settings_title,
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          MiuixCard(
+            cornerRadius: 24,
+            child: Column(
+              children: [
+                SettingsTile(
+                  title: Text(S.of(context).change_theme_mode_title),
+                  subtitle: Text(S.of(context).change_theme_mode_subtitle),
+                  trailing: FutureBuilder<int>(
                     future: _getThemeIndex(),
                     builder:
                         (BuildContext context, AsyncSnapshot<int> snapshot) {
-                      if (!snapshot.hasData) {
-                        return Container(width: 0);
-                      } else {
-                        // return DropdownButton(items: items, onChanged: onChanged)
-                        return DropdownButton<int>(
-                            value: snapshot.data,
-                            items: const [
-                              DropdownMenuItem(
-                                  child: Row(children: [
-                                    Icon(Icons.settings),
-                                    Text('跟随系统')
-                                  ]),
-                                  value: 0),
-                              DropdownMenuItem(
-                                  child: Row(children: [
-                                    Icon(Icons.wb_sunny),
-                                    Text('浅色模式')
-                                  ]),
-                                  value: 1),
-                              DropdownMenuItem(
-                                  child: Row(children: [
-                                    Icon(Icons.shield_moon),
-                                    Text('深色模式')
-                                  ]),
-                                  value: 2)
-                            ],
-                            onChanged: (value) {
-                              UmengCommonSdk.onEvent("more_setting",
-                                  {"type": 12, "result": value.toString()});
-                              ScopedModel.of<MainStateModel>(context)
-                                  .changeThemeMode(value ?? 0);
-                              setState(() {});
-                            });
-                      }
-                    })),
-            ListTile(
-              title: Text(S.of(context).shuffle_color_pool_title),
-              subtitle: Text(S.of(context).shuffle_color_pool_subtitle),
-              onTap: () {
-                ColorPool.shuffleColorPool();
-                UmengCommonSdk.onEvent("more_setting", {"type": 1});
-                Toast.showToast(
-                    S.of(context).shuffle_color_pool_success_toast, context);
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
-              },
-            ),
-            // TODO: Refresh multi times when changing themes.
-            const ThemeChanger(),
-            ListTile(
-              title: Text(S.of(context).use_material3_scheme_light_title),
-              subtitle: Text(S.of(context).use_material3_scheme_light_subtitle),
-              trailing: Switch(
-                activeThumbColor: Theme.of(context).appBarTheme.backgroundColor,
-                value: ScopedModel.of<MainStateModel>(context)
-                    .material3ColorForLight,
-                onChanged: (v) {
-                  UmengCommonSdk.onEvent(
-                      "more_setting", {"type": 20, "result": v.toString()});
-                  ScopedModel.of<MainStateModel>(context)
-                      .changeMaterial3Color(light: v);
-                  setState(() {});
-                },
-              ),
-            ),
-            ListTile(
-              title: Text(S.of(context).use_material3_scheme_dark_title),
-              subtitle: Text(S.of(context).use_material3_scheme_dark_subtitle),
-              trailing: Switch(
-                activeThumbColor: Theme.of(context).appBarTheme.backgroundColor,
-                value: ScopedModel.of<MainStateModel>(context)
-                    .material3ColorForDark,
-                onChanged: (v) {
-                  UmengCommonSdk.onEvent(
-                      "more_setting", {"type": 21, "result": v.toString()});
-                  ScopedModel.of<MainStateModel>(context)
-                      .changeMaterial3Color(dark: v);
-                  setState(() {});
-                },
-              ),
-            ),
-            ListTile(
-                title: Text(S.of(context).hide_add_button_title),
-                subtitle: Text(S.of(context).hide_add_button_subtitle),
-                trailing: FutureBuilder<bool>(
-                    future: _getAddButton(),
-                    builder:
-                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                      if (!snapshot.hasData) {
-                        return Container(width: 0);
-                      } else {
-                        return Switch(
-                            activeThumbColor:
-                                Theme.of(context).appBarTheme.backgroundColor,
-                            value: !snapshot.data!,
-                            onChanged: (bool value) {
-                              UmengCommonSdk.onEvent("more_setting",
-                                  {"type": 5, "result": value.toString()});
-                              ScopedModel.of<MainStateModel>(context)
-                                  .setAddButton(!value);
-                              setState(() {});
-                            });
-                      }
-                    })),
-            ListTile(
-              title: Text(S.of(context).if_show_weekend_title),
-              subtitle: Text(S.of(context).if_show_weekend_subtitle),
-              trailing: FutureBuilder<bool>(
-                  future: _getShowWeekend(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                    if (!snapshot.hasData) {
-                      return Container(width: 0);
-                    } else {
-                      return Switch(
-                          activeThumbColor:
-                              Theme.of(context).appBarTheme.backgroundColor,
-                          value: snapshot.data!,
-                          onChanged: (bool value) {
-                            UmengCommonSdk.onEvent("more_setting",
-                                {"type": 6, "result": value.toString()});
-                            ScopedModel.of<MainStateModel>(context)
-                                .setShowWeekend(value);
-                            setState(() {});
-                          });
-                    }
-                  }),
-            ),
-            ListTile(
-              title: Text(S.of(context).if_show_classtime_title),
-              subtitle: Text(S.of(context).if_show_classtime_subtitle),
-              trailing: FutureBuilder<bool>(
-                  future: _getShowClassTime(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                    if (!snapshot.hasData) {
-                      return Container(width: 0);
-                    } else {
-                      return Switch(
-                          activeThumbColor:
-                              Theme.of(context).appBarTheme.backgroundColor,
-                          value: snapshot.data!,
-                          onChanged: (bool value) {
-                            UmengCommonSdk.onEvent("more_setting",
-                                {"type": 7, "result": value.toString()});
-                            ScopedModel.of<MainStateModel>(context)
-                                .setShowClassTime(value);
-                            setState(() {});
-                          });
-                    }
-                  }),
-            ),
-            ListTile(
-              title: Text(S.of(context).if_show_freeclass_title),
-              subtitle: Text(S.of(context).if_show_freeclass_subtitle),
-              trailing: FutureBuilder<bool>(
-                  future: _getShowFreeClass(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                    if (!snapshot.hasData) {
-                      return Container(width: 0);
-                    } else {
-                      return Switch(
-                          activeThumbColor:
-                              Theme.of(context).appBarTheme.backgroundColor,
-                          value: snapshot.data!,
-                          onChanged: (bool value) {
-                            UmengCommonSdk.onEvent("more_setting",
-                                {"type": 8, "result": value.toString()});
-                            ScopedModel.of<MainStateModel>(context)
-                                .setShowFreeClass(value);
-                            setState(() {});
-                          });
-                    }
-                  }),
-            ),
-            ListTile(
-              title: Text(S.of(context).if_show_non_current_week_courses_title),
-              subtitle:
-                  Text(S.of(context).if_show_non_current_week_courses_subtitle),
-              trailing: FutureBuilder<bool>(
-                  future: _getShowNonCurrentWeekCourses(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                    if (!snapshot.hasData) {
-                      return Container(width: 0);
-                    } else {
-                      return Switch(
-                          activeThumbColor:
-                              Theme.of(context).appBarTheme.backgroundColor,
-                          value: snapshot.data!,
-                          onChanged: (bool value) {
-                            UmengCommonSdk.onEvent("more_setting",
-                                {"type": 22, "result": value.toString()});
-                            ScopedModel.of<MainStateModel>(context)
-                                .setShowNonCurrentWeekCourses(value);
-                            setState(() {});
-                          });
-                    }
-                  }),
-            ),
-            ListTile(
-              title: Text(S.of(context).show_month_title),
-              subtitle: Text(S.of(context).show_month_subtitle),
-              trailing: FutureBuilder<bool>(
-                  future: _getShowMonth(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                    if (!snapshot.hasData) {
-                      return Container(width: 0);
-                    } else {
-                      return Switch(
-                          activeThumbColor:
-                              Theme.of(context).appBarTheme.backgroundColor,
-                          value: snapshot.data!,
-                          onChanged: (bool value) {
-                            UmengCommonSdk.onEvent("more_setting",
-                                {"type": 9, "result": value.toString()});
-                            ScopedModel.of<MainStateModel>(context)
-                                .setShowMonth(value);
-                            setState(() {});
-                          });
-                    }
-                  }),
-            ),
-            ListTile(
-              title: Text(S.of(context).show_date_title),
-              subtitle: Text(S.of(context).show_date_subtitle),
-              trailing: FutureBuilder<bool>(
-                  future: _getShowDate(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                    if (!snapshot.hasData) {
-                      return Container(width: 0);
-                    } else {
-                      return Switch(
-                          activeThumbColor:
-                              Theme.of(context).appBarTheme.backgroundColor,
-                          value: snapshot.data!,
-                          onChanged: (bool value) {
-                            UmengCommonSdk.onEvent("more_setting",
-                                {"type": 10, "result": value.toString()});
-                            ScopedModel.of<MainStateModel>(context)
-                                .setShowDate(value);
-                            setState(() {});
-                          });
-                    }
-                  }),
-            ),
-            // ListTile(
-            //     // title: Text(S.of(context).font_mode_title),
-            //     title: Text("字体模式"),
-            //     // subtitle: Text(S.of(context).font_mode_subtitle),
-            //     subtitle: Text("设置字体粗细"),
-            //     trailing: FutureBuilder<bool>(
-            //         future: _getFontMode(),
-            //         builder:
-            //             (BuildContext context, AsyncSnapshot<bool> snapshot) {
-            //           if (!snapshot.hasData) {
-            //             return Container(width: 0);
-            //           } else {
-            //             return Switch(
-            //                 activeThumbColor:
-            //                     Theme.of(context).appBarTheme.backgroundColor,
-            //                 value: snapshot.data!,
-            //                 onChanged: (bool value) {
-            //                   UmengCommonSdk.onEvent("more_setting",
-            //                       {"type": 12, "result": value.toString()});
-            //                   // ScopedModel.of<MainStateModel>(context)
-            //                   //     .setFontMode(value);
-            //                   setState(() {});
-            //                 });
-            //           }
-            //         })),
-            ListTile(
-              title: Text(S.of(context).force_zoom_title),
-              subtitle: Text(S.of(context).force_zoom_subtitle),
-              trailing: FutureBuilder<bool>(
-                  future: _getForceZoom(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                    if (!snapshot.hasData) {
-                      return Container(width: 0);
-                    } else {
-                      return Switch(
-                          activeThumbColor:
-                              Theme.of(context).appBarTheme.backgroundColor,
-                          value: snapshot.data!,
-                          onChanged: (bool value) {
-                            ScopedModel.of<MainStateModel>(context)
-                                .setForceZoom(value);
-                            UmengCommonSdk.onEvent("more_setting",
-                                {"type": 11, "result": value.toString()});
-                            setState(() {
-                              showCustomClassHeight = !value;
-                            });
-                          });
-                    }
-                  }),
-            ),
-            showCustomClassHeight
-                ? ListTile(
-                    title: Text(S.of(context).class_height_title),
-                    subtitle: Text(S.of(context).class_height_subtitle),
-                    trailing: FutureBuilder<int>(
-                        future: _getClassHeight(),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<int> snapshot) {
                           if (!snapshot.hasData) {
                             return Container(width: 0);
                           } else {
-                            return SizedBox(
-                                width: 102,
-                                child: NumberChangerWidget(
-                                  width: 40,
-                                  iconWidth: 30,
-                                  numText: snapshot.data.toString(),
-                                  addValueChanged: (num) {
-                                    _setClassHeight(num);
-                                  },
-                                  removeValueChanged: (num) {
-                                    _setClassHeight(num);
-                                  },
-                                  updateValueChanged: (num) {
-                                    _setClassHeight(num);
-                                  },
-                                ));
+                            return SettingsDropdown<int>(
+                              value: snapshot.data,
+                              items: const [
+                                SettingsOption(
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.settings),
+                                      Text('跟随系统'),
+                                    ],
+                                  ),
+                                  value: 0,
+                                ),
+                                SettingsOption(
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.wb_sunny),
+                                      Text('浅色模式'),
+                                    ],
+                                  ),
+                                  value: 1,
+                                ),
+                                SettingsOption(
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.shield_moon),
+                                      Text('深色模式'),
+                                    ],
+                                  ),
+                                  value: 2,
+                                ),
+                              ],
+                              onChanged: (value) {
+                                UmengCommonSdk.onEvent("more_setting", {
+                                  "type": 12,
+                                  "result": value.toString(),
+                                });
+                                ScopedModel.of<MainStateModel>(
+                                  context,
+                                ).changeThemeMode(value ?? 0);
+                                setState(() {});
+                              },
+                            );
                           }
-                        }),
-                  )
-                : Container(width: 0),
-          ]).toList()))
-        ]))));
+                        },
+                  ),
+                ),
+                SettingsTile(
+                  title: Text(S.of(context).shuffle_color_pool_title),
+                  subtitle: Text(S.of(context).shuffle_color_pool_subtitle),
+                  onTap: () {
+                    ColorPool.shuffleColorPool();
+                    UmengCommonSdk.onEvent("more_setting", {"type": 1});
+                    Toast.showToast(
+                      S.of(context).shuffle_color_pool_success_toast,
+                      context,
+                    );
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                // TODO: Refresh multi times when changing themes.
+                const ThemeChanger(),
+                SettingsTile(
+                  title: Text(S.of(context).use_material3_scheme_light_title),
+                  subtitle: Text(
+                    S.of(context).use_material3_scheme_light_subtitle,
+                  ),
+                  trailing: SettingsSwitch(
+                    value: ScopedModel.of<MainStateModel>(
+                      context,
+                    ).material3ColorForLight,
+                    onChanged: (v) {
+                      UmengCommonSdk.onEvent("more_setting", {
+                        "type": 20,
+                        "result": v.toString(),
+                      });
+                      ScopedModel.of<MainStateModel>(
+                        context,
+                      ).changeMaterial3Color(light: v);
+                      setState(() {});
+                    },
+                  ),
+                ),
+                SettingsTile(
+                  title: Text(S.of(context).use_material3_scheme_dark_title),
+                  subtitle: Text(
+                    S.of(context).use_material3_scheme_dark_subtitle,
+                  ),
+                  trailing: SettingsSwitch(
+                    value: ScopedModel.of<MainStateModel>(
+                      context,
+                    ).material3ColorForDark,
+                    onChanged: (v) {
+                      UmengCommonSdk.onEvent("more_setting", {
+                        "type": 21,
+                        "result": v.toString(),
+                      });
+                      ScopedModel.of<MainStateModel>(
+                        context,
+                      ).changeMaterial3Color(dark: v);
+                      setState(() {});
+                    },
+                  ),
+                ),
+                SettingsTile(
+                  title: Text(S.of(context).hide_add_button_title),
+                  subtitle: Text(S.of(context).hide_add_button_subtitle),
+                  trailing: FutureBuilder<bool>(
+                    future: _getAddButton(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                          if (!snapshot.hasData) {
+                            return Container(width: 0);
+                          } else {
+                            return SettingsSwitch(
+                              value: !snapshot.data!,
+                              onChanged: (bool value) {
+                                UmengCommonSdk.onEvent("more_setting", {
+                                  "type": 5,
+                                  "result": value.toString(),
+                                });
+                                ScopedModel.of<MainStateModel>(
+                                  context,
+                                ).setAddButton(!value);
+                                setState(() {});
+                              },
+                            );
+                          }
+                        },
+                  ),
+                ),
+                SettingsTile(
+                  title: Text(S.of(context).if_show_weekend_title),
+                  subtitle: Text(S.of(context).if_show_weekend_subtitle),
+                  trailing: FutureBuilder<bool>(
+                    future: _getShowWeekend(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                          if (!snapshot.hasData) {
+                            return Container(width: 0);
+                          } else {
+                            return SettingsSwitch(
+                              value: snapshot.data!,
+                              onChanged: (bool value) {
+                                UmengCommonSdk.onEvent("more_setting", {
+                                  "type": 6,
+                                  "result": value.toString(),
+                                });
+                                ScopedModel.of<MainStateModel>(
+                                  context,
+                                ).setShowWeekend(value);
+                                setState(() {});
+                              },
+                            );
+                          }
+                        },
+                  ),
+                ),
+                SettingsTile(
+                  title: Text(S.of(context).if_show_classtime_title),
+                  subtitle: Text(S.of(context).if_show_classtime_subtitle),
+                  trailing: FutureBuilder<bool>(
+                    future: _getShowClassTime(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                          if (!snapshot.hasData) {
+                            return Container(width: 0);
+                          } else {
+                            return SettingsSwitch(
+                              value: snapshot.data!,
+                              onChanged: (bool value) {
+                                UmengCommonSdk.onEvent("more_setting", {
+                                  "type": 7,
+                                  "result": value.toString(),
+                                });
+                                ScopedModel.of<MainStateModel>(
+                                  context,
+                                ).setShowClassTime(value);
+                                setState(() {});
+                              },
+                            );
+                          }
+                        },
+                  ),
+                ),
+                SettingsTile(
+                  title: Text(S.of(context).if_show_freeclass_title),
+                  subtitle: Text(S.of(context).if_show_freeclass_subtitle),
+                  trailing: FutureBuilder<bool>(
+                    future: _getShowFreeClass(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                          if (!snapshot.hasData) {
+                            return Container(width: 0);
+                          } else {
+                            return SettingsSwitch(
+                              value: snapshot.data!,
+                              onChanged: (bool value) {
+                                UmengCommonSdk.onEvent("more_setting", {
+                                  "type": 8,
+                                  "result": value.toString(),
+                                });
+                                ScopedModel.of<MainStateModel>(
+                                  context,
+                                ).setShowFreeClass(value);
+                                setState(() {});
+                              },
+                            );
+                          }
+                        },
+                  ),
+                ),
+                SettingsTile(
+                  title: Text(
+                    S.of(context).if_show_non_current_week_courses_title,
+                  ),
+                  subtitle: Text(
+                    S.of(context).if_show_non_current_week_courses_subtitle,
+                  ),
+                  trailing: FutureBuilder<bool>(
+                    future: _getShowNonCurrentWeekCourses(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                          if (!snapshot.hasData) {
+                            return Container(width: 0);
+                          } else {
+                            return SettingsSwitch(
+                              value: snapshot.data!,
+                              onChanged: (bool value) {
+                                UmengCommonSdk.onEvent("more_setting", {
+                                  "type": 22,
+                                  "result": value.toString(),
+                                });
+                                ScopedModel.of<MainStateModel>(
+                                  context,
+                                ).setShowNonCurrentWeekCourses(value);
+                                setState(() {});
+                              },
+                            );
+                          }
+                        },
+                  ),
+                ),
+                SettingsTile(
+                  title: Text(S.of(context).show_month_title),
+                  subtitle: Text(S.of(context).show_month_subtitle),
+                  trailing: FutureBuilder<bool>(
+                    future: _getShowMonth(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                          if (!snapshot.hasData) {
+                            return Container(width: 0);
+                          } else {
+                            return SettingsSwitch(
+                              value: snapshot.data!,
+                              onChanged: (bool value) {
+                                UmengCommonSdk.onEvent("more_setting", {
+                                  "type": 9,
+                                  "result": value.toString(),
+                                });
+                                ScopedModel.of<MainStateModel>(
+                                  context,
+                                ).setShowMonth(value);
+                                setState(() {});
+                              },
+                            );
+                          }
+                        },
+                  ),
+                ),
+                SettingsTile(
+                  title: Text(S.of(context).show_date_title),
+                  subtitle: Text(S.of(context).show_date_subtitle),
+                  trailing: FutureBuilder<bool>(
+                    future: _getShowDate(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                          if (!snapshot.hasData) {
+                            return Container(width: 0);
+                          } else {
+                            return SettingsSwitch(
+                              value: snapshot.data!,
+                              onChanged: (bool value) {
+                                UmengCommonSdk.onEvent("more_setting", {
+                                  "type": 10,
+                                  "result": value.toString(),
+                                });
+                                ScopedModel.of<MainStateModel>(
+                                  context,
+                                ).setShowDate(value);
+                                setState(() {});
+                              },
+                            );
+                          }
+                        },
+                  ),
+                ),
+                SettingsTile(
+                  title: Text(S.of(context).force_zoom_title),
+                  subtitle: Text(S.of(context).force_zoom_subtitle),
+                  trailing: FutureBuilder<bool>(
+                    future: _getForceZoom(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                          if (!snapshot.hasData) {
+                            return Container(width: 0);
+                          } else {
+                            return SettingsSwitch(
+                              value: snapshot.data!,
+                              onChanged: (bool value) {
+                                ScopedModel.of<MainStateModel>(
+                                  context,
+                                ).setForceZoom(value);
+                                UmengCommonSdk.onEvent("more_setting", {
+                                  "type": 11,
+                                  "result": value.toString(),
+                                });
+                                setState(() {
+                                  showCustomClassHeight = !value;
+                                });
+                              },
+                            );
+                          }
+                        },
+                  ),
+                ),
+                showCustomClassHeight
+                    ? SettingsTile(
+                        title: Text(S.of(context).class_height_title),
+                        subtitle: Text(S.of(context).class_height_subtitle),
+                        trailing: FutureBuilder<int>(
+                          future: _getClassHeight(),
+                          builder:
+                              (
+                                BuildContext context,
+                                AsyncSnapshot<int> snapshot,
+                              ) {
+                                if (!snapshot.hasData) {
+                                  return Container(width: 0);
+                                } else {
+                                  return SizedBox(
+                                    width: 102,
+                                    child: NumberChangerWidget(
+                                      width: 40,
+                                      iconWidth: 30,
+                                      numText: snapshot.data.toString(),
+                                      addValueChanged: (num) {
+                                        _setClassHeight(num);
+                                      },
+                                      removeValueChanged: (num) {
+                                        _setClassHeight(num);
+                                      },
+                                      updateValueChanged: (num) {
+                                        _setClassHeight(num);
+                                      },
+                                    ),
+                                  );
+                                }
+                              },
+                        ),
+                      )
+                    : Container(width: 0),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<int> _getThemeIndex() async {
@@ -409,8 +449,9 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
   }
 
   Future<bool> _getShowNonCurrentWeekCourses() async {
-    return await ScopedModel.of<MainStateModel>(context)
-        .getShowNonCurrentWeekCourses();
+    return await ScopedModel.of<MainStateModel>(
+      context,
+    ).getShowNonCurrentWeekCourses();
   }
 
   Future<bool> _getShowMonth() async {
@@ -436,5 +477,4 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
   Future<bool> _getAddButton() async {
     return await ScopedModel.of<MainStateModel>(context).getAddButton();
   }
-
 }

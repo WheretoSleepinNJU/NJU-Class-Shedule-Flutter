@@ -53,25 +53,28 @@ class LiveActivityData {
     required WidgetCourse course,
     required LiveActivityTrigger trigger,
     DateTime? customStartTime,
+    DateTime? customEndTime,
+    String? schoolName,
+    String? schoolId,
     required DateTime createdAt,
   }) {
     final startTime = customStartTime ?? DateTime.now();
-    final endTime = startTime.add(const Duration(minutes: 50)); // 假设50分钟课程
+    final endTime = customEndTime ?? startTime.add(const Duration(minutes: 50));
 
-    final minutesUntilStart = startTime.difference(DateTime.now()).inMinutes;
+    final minutesUntilStart = startTime.difference(createdAt).inMinutes;
     final timeText = _formatTimeRemaining(minutesUntilStart);
     final progress = _calculateProgress(minutesUntilStart, trigger);
     
     return LiveActivityData(
-      activityId: 'class_${course.id}_${trigger.name}_${startTime.millisecondsSinceEpoch}',
+      activityId: '${schoolId ?? course.schoolId}:${course.id}:${startTime.millisecondsSinceEpoch}',
       courseId: course.id,
       courseName: course.name,
       classroom: course.classroom,
       teacher: course.teacher,
       startTime: startTime,
       endTime: endTime,
-      schoolId: course.schoolId,
-      schoolName: '南京大学', // 可以从模板获取
+      schoolId: schoolId ?? course.schoolId,
+      schoolName: schoolName ?? '南京大学',
       color: course.color,
       status: LiveActivityStatus.scheduled,
       trigger: trigger,
@@ -242,7 +245,7 @@ String _formatTimeRemaining(int minutes) {
 double _calculateProgress(int minutesUntilStart, LiveActivityTrigger trigger) {
   final triggerMinutes = _getTriggerMinutes(trigger);
   final totalMinutes = triggerMinutes + 30; // 假设30分钟前开始计算
-  return (totalMinutes - minutesUntilStart) / totalMinutes;
+  return ((totalMinutes - minutesUntilStart) / totalMinutes).clamp(0.0, 1.0);
 }
 
 /// 获取触发时间（分钟）
