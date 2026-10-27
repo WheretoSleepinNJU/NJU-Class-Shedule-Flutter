@@ -9,6 +9,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "85.0.0"
+  adaptive_platform_ui:
+    dependency: "direct main"
+    description:
+      path: "third_party/adaptive_platform_ui"
+      relative: true
+    source: path
+    version: "1.0.2"
   analyzer:
     dependency: transitive
     description:
@@ -130,7 +137,7 @@ packages:
     source: hosted
     version: "1.0.2"
   cupertino_icons:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: cupertino_icons
       sha256: "41e005c33bd814be4d3096aff55b1908d419fde52ca656c8c47719ec745873cd"
@@ -176,14 +183,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.2"
-  dynamic_color:
-    dependency: transitive
-    description:
-      name: dynamic_color
-      sha256: "4aeb76de323e8eb660bab5557d826ad7ebbf1434a598f0c6aa8a11a9696a6757"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.9.0"
   fake_async:
     dependency: transitive
     description:
@@ -287,14 +286,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_miuix:
-    dependency: "direct main"
-    description:
-      name: flutter_miuix
-      sha256: "79557980f191131888dd6b164d460d03a70e9cae1cbce9799046942ef4719513"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.3.0"
   flutter_native_splash:
     dependency: "direct main"
     description:
@@ -336,6 +327,14 @@ packages:
       relative: true
     source: path
     version: "9.0.0"
+  foldable:
+    dependency: transitive
+    description:
+      name: foldable
+      sha256: c3f539ba3729716a5aacfcc4c3199d6ae0dee6e55f227d19ba25ef6fd96d804a
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.5"
   fuchsia_remote_debug_protocol:
     dependency: transitive
     description: flutter
@@ -976,10 +975,9 @@ packages:
   umeng_common_sdk:
     dependency: "direct main"
     description:
-      name: umeng_common_sdk
-      sha256: "8374ced1ab1d89f596ff71c0eff044d5395337145c9a69a6be02f5d8a678e42c"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
+      path: "third_party/umeng_common_sdk"
+      relative: true
+    source: path
     version: "1.3.0"
   umeng_common_sdk_ohos:
     dependency: "direct main"
@@ -1195,5 +1193,5 @@ packages:
     source: hosted
     version: "0.2.4"
 sdks:
-  dart: ">=3.12.2 <4.0.0"
+  dart: ">=3.11.0-0 <4.0.0"
   flutter: ">=3.35.7"

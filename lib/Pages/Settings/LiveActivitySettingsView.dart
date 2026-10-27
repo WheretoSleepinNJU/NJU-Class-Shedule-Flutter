@@ -1,5 +1,5 @@
 import '../../Components/Toast.dart';
-import 'Widgets/MiuixSettings.dart';
+import 'Widgets/PlatformSettings.dart';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -44,7 +44,7 @@ class _LiveActivitySettingsViewState extends State<LiveActivitySettingsView> {
   Widget build(BuildContext context) => SettingsScaffold(
     title: LiveActivitySettingsView.settingsTitle,
     body: SafeArea(
-      child: ListView(
+      child: SettingsListView(
         children: [
           if (Platform.isAndroid) ...[
             SettingsTile(
@@ -74,7 +74,7 @@ class _LiveActivitySettingsViewState extends State<LiveActivitySettingsView> {
                     : const SizedBox.shrink(),
               ),
             ),
-            const MiuixHorizontalDivider(),
+            const SettingsHorizontalDivider(),
             const AndroidLiveActivitySettings(),
           ] else if (Platform.isIOS)
             const SettingsTile(

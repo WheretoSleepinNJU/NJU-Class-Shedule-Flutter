@@ -1,3 +1,4 @@
+import '../../AdaptiveUI/adaptive_ui.dart';
 import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
@@ -24,8 +25,8 @@ class ShareView extends StatefulWidget {
 class _ShareViewState extends State<ShareView> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(S.of(context).import_or_export_title)),
+    return AdaptiveScaffold(
+      appBar: AdaptiveTopAppBar(title: Text(S.of(context).import_or_export_title)),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(

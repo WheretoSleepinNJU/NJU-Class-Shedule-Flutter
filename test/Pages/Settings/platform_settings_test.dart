@@ -1,10 +1,9 @@
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'dart:io';
-import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wheretosleepinnju/Pages/Settings/Widgets/MiuixSettings.dart';
+import 'package:wheretosleepinnju/Pages/Settings/Widgets/PlatformSettings.dart';
 import 'package:wheretosleepinnju/Pages/Settings/Widgets/SettingsCard.dart';
 
 Widget host(Widget body, {Brightness brightness = Brightness.light}) =>
@@ -20,19 +19,19 @@ Widget host(Widget body, {Brightness brightness = Brightness.light}) =>
     );
 
 void main() {
-  if (Platform.environment['MIUIX_PREVIEW_FONT'] != null &&
-      Platform.environment['MIUIX_PREVIEW_ICON_FONT'] != null) {
+  if (Platform.environment['PLATFORM_UI_PREVIEW_FONT'] != null &&
+      Platform.environment['PLATFORM_UI_PREVIEW_ICON_FONT'] != null) {
     setUpAll(() async {
       final textFont = FontLoader('Roboto')
         ..addFont(
           File(
-            Platform.environment['MIUIX_PREVIEW_FONT']!,
+            Platform.environment['PLATFORM_UI_PREVIEW_FONT']!,
           ).readAsBytes().then((b) => ByteData.sublistView(b)),
         );
       final iconFont = FontLoader('MaterialIcons')
         ..addFont(
           File(
-            Platform.environment['MIUIX_PREVIEW_ICON_FONT']!,
+            Platform.environment['PLATFORM_UI_PREVIEW_ICON_FONT']!,
           ).readAsBytes().then((b) => ByteData.sublistView(b)),
         );
       await textFont.load();
@@ -40,24 +39,26 @@ void main() {
     });
   }
 
-  testWidgets('settings theme follows application brightness', (tester) async {
-    for (final brightness in Brightness.values) {
-      MiuixThemeData? actual;
-      await tester.pumpWidget(
-        host(
-          Builder(
-            builder: (context) {
-              actual = MiuixTheme.of(context);
-              return const Text('主题');
-            },
+  testWidgets('library owns the scaffold, surfaces, rows and switches', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      host(
+        const SettingsSurface(
+          child: SettingsSwitchTile(
+            title: Text('设置'),
+            value: false,
+            onChanged: null,
           ),
-          brightness: brightness,
         ),
-      );
-      await tester.pumpAndSettle();
-      expect(actual!.brightness, brightness);
-      expect(tester.takeException(), isNull);
-    }
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.byType(AdaptiveScaffold), findsOneWidget);
+    expect(find.byType(AdaptiveCard), findsOneWidget);
+    expect(find.byType(AdaptiveListTile), findsOneWidget);
+    expect(find.byType(AdaptiveSwitch), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('entry supports tap and long press and respects disabled state', (
@@ -132,7 +133,7 @@ void main() {
     expect(calls, 1);
   });
 
-  testWidgets('dropdown selects and dismisses within settings popup host', (
+  testWidgets('dropdown selects and dismisses within platform popup menu', (
     tester,
   ) async {
     var selected = 5;
@@ -161,40 +162,41 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('MIUIX dialog returns result and leaves settings route mounted', (
-    tester,
-  ) async {
-    int? result;
-    await tester.pumpWidget(
-      host(
-        Builder(
-          builder: (context) => MiuixButton(
-            child: const Text('编辑周次'),
-            onPressed: () async {
-              result = await showDialog<int>(
-                context: context,
-                builder: (dialogContext) => SettingsActionDialog(
-                  '当前周',
-                  const Text('第 2 周'),
-                  widgetCancelAction: () => Navigator.pop(dialogContext),
-                  widgetOKAction: () => Navigator.pop(dialogContext, 2),
-                ),
-              );
-            },
+  testWidgets(
+    'adaptive dialog returns result and leaves settings route mounted',
+    (tester) async {
+      int? result;
+      await tester.pumpWidget(
+        host(
+          Builder(
+            builder: (context) => SettingsButton(
+              child: const Text('编辑周次'),
+              onPressed: () async {
+                result = await showDialog<int>(
+                  context: context,
+                  builder: (dialogContext) => SettingsActionDialog(
+                    '当前周',
+                    const Text('第 2 周'),
+                    widgetCancelAction: () => Navigator.pop(dialogContext),
+                    widgetOKAction: () => Navigator.pop(dialogContext, 2),
+                  ),
+                );
+              },
+            ),
           ),
         ),
-      ),
-    );
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('编辑周次'));
-    await tester.pumpAndSettle();
-    expect(find.text('当前周'), findsOneWidget);
-    await tester.tap(find.text('OK'));
-    await tester.pumpAndSettle();
-    expect(result, 2);
-    expect(find.text('编辑周次'), findsOneWidget);
-    expect(tester.takeException(), isNull);
-  });
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('编辑周次'));
+      await tester.pumpAndSettle();
+      expect(find.text('当前周'), findsOneWidget);
+      await tester.tap(find.text('OK'));
+      await tester.pumpAndSettle();
+      expect(result, 2);
+      expect(find.text('编辑周次'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   for (final brightness in Brightness.values) {
     testWidgets('narrow settings with large text: ${brightness.name}', (
@@ -269,20 +271,6 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
-      // Optional local visual evidence, kept outside the repository.
-      if (Platform.environment['MIUIX_PREVIEW_DIR']
-          case final String directory) {
-        await tester.runAsync(() async {
-          final boundary =
-              key.currentContext!.findRenderObject() as RenderRepaintBoundary;
-          final image = await boundary.toImage();
-          final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-          await File(
-            '$directory/settings-${brightness.name}.png',
-          ).writeAsBytes(bytes!.buffer.asUint8List());
-          image.dispose();
-        });
-      }
     });
   }
 }

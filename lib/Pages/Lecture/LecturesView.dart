@@ -1,3 +1,4 @@
+import '../../AdaptiveUI/adaptive_ui.dart';
 import '../../generated/l10n.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
@@ -38,8 +39,8 @@ class _LectureViewState extends State<LectureView> {
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 15)));
 
-  AppBar buildAppBar(BuildContext context) {
-    return AppBar(
+  AdaptiveTopAppBar buildAppBar(BuildContext context) {
+    return AdaptiveTopAppBar(
       title: Text(S.of(context).lecture_title),
       // actions: [searchBar.getSearchAction(context)]
     );
@@ -179,10 +180,10 @@ class _LectureViewState extends State<LectureView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AdaptiveScaffold(
         appBar:
             // searchBar.build(context),
-            AppBar(
+            AdaptiveTopAppBar(
                 title: Text(S.of(context).lecture_title),
                 actions: const <Widget>[
               // searchBar.getSearchAction(context),

@@ -1,3 +1,4 @@
+import '../../AdaptiveUI/adaptive_ui.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
@@ -56,8 +57,8 @@ class _WebViewState extends State<ImportFromXKView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    return AdaptiveScaffold(
+      appBar: AdaptiveTopAppBar(
         title: Text(widget.config['page_title']),
         actions: <Widget>[
           IconButton(

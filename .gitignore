@@ -139,3 +139,6 @@ buildServer.json
 
 # Reference
 reference
+
+# Kotlin compiler session files
+/android/.kotlin/

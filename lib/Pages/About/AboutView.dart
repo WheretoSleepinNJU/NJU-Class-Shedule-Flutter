@@ -1,3 +1,4 @@
+import '../../AdaptiveUI/adaptive_ui.dart';
 import 'dart:io';
 import '../../generated/l10n.dart';
 import 'package:dio/dio.dart';
@@ -24,9 +25,9 @@ class _AboutViewState extends State<AboutView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AdaptiveScaffold(
         // backgroundColor: Theme.of(context).hoverColor,
-        appBar: AppBar(
+        appBar: AdaptiveTopAppBar(
           title: Text(S.of(context).about_title),
         ),
         body: SafeArea(

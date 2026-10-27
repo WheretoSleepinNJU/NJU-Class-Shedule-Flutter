@@ -1,3 +1,4 @@
+import '../../AdaptiveUI/adaptive_ui.dart';
 import 'dart:async';
 import 'dart:typed_data';
 
@@ -33,8 +34,8 @@ class _QRScanViewState extends State<QRScanView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    return AdaptiveScaffold(
+      appBar: AdaptiveTopAppBar(
         title: Text(S.of(context).import_from_qrcode_title),
       ),
       body: Column(

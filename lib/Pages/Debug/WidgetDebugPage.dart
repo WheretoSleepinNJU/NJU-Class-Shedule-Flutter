@@ -1,3 +1,4 @@
+import '../../AdaptiveUI/adaptive_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/widget_data/services/unified_data_service.dart';
@@ -174,8 +175,8 @@ class _WidgetDebugPageState extends State<WidgetDebugPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    return AdaptiveScaffold(
+      appBar: AdaptiveTopAppBar(
         title: const Text('Widget 调试工具'),
         actions: [
           IconButton(

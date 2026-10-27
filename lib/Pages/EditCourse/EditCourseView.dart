@@ -1,4 +1,4 @@
-import 'dart:io';
+import '../../AdaptiveUI/adaptive_ui.dart';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -493,7 +493,6 @@ class _EditCourseViewState extends State<EditCourseView> {
   );
   Widget _buildPage(BuildContext context) {
     final theme = Theme.of(context), s = S.of(context);
-    final resize = Platform.operatingSystem != 'ohos';
     final buttons = TextButton.styleFrom(
       foregroundColor: theme.colorScheme.primary,
       backgroundColor: Colors.transparent,
@@ -505,9 +504,8 @@ class _EditCourseViewState extends State<EditCourseView> {
       data: TextButtonThemeData(style: buttons),
       child: PopScope(
         canPop: !_busy,
-        child: Scaffold(
-          resizeToAvoidBottomInset: resize,
-          appBar: AppBar(
+        child: AdaptiveScaffold(
+          appBar: AdaptiveTopAppBar(
             title: Text(_creating ? s.add_manually_title : s.edit_course),
             actions: [
               TextButton(
@@ -562,7 +560,7 @@ class _EditCourseViewState extends State<EditCourseView> {
                   16,
                   20,
                   16,
-                  24 + (resize ? 0 : MediaQuery.viewInsetsOf(context).bottom),
+                  24 + AdaptiveKeyboardInsets.bottomOf(context),
                 ),
                 keyboardDismissBehavior:
                     ScrollViewKeyboardDismissBehavior.onDrag,

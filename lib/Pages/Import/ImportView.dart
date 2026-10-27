@@ -1,3 +1,4 @@
+import '../../AdaptiveUI/adaptive_ui.dart';
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:azlistview/azlistview.dart';
@@ -95,8 +96,8 @@ class _ImportViewState extends State<ImportView> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
+  Widget build(BuildContext context) => AdaptiveScaffold(
+    appBar: AdaptiveTopAppBar(
       title: GestureDetector(
         key: const ValueKey('import-title'),
         behavior: HitTestBehavior.opaque,

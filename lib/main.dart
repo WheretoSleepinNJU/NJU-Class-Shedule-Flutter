@@ -1,6 +1,4 @@
-import 'dart:io';
-
-import 'package:flutter/services.dart';
+import 'AdaptiveUI/adaptive_ui.dart';
 
 import 'generated/l10n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -31,17 +29,7 @@ void main() async {
   UmengCommonSdk.setPageCollectionModeAuto();
   // UmengCommonSdk.onEvent("privacy_accept", {"result":"accept"});
 
-  /// 原生安卓上去除状态栏遮罩
-  /// https://blog.csdn.net/q515656712/article/details/139235710
-  if (Platform.isAndroid) {
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        systemNavigationBarColor: Colors.transparent,
-        statusBarColor: Colors.transparent,
-      ),
-    );
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  }
+  await AdaptiveUIApp.initializeSystemChrome();
 
   runApp(
     MyApp(
@@ -109,8 +97,7 @@ class _MyAppState extends State<MyApp> {
               useSeedScheme: model.material3ColorForDark,
             );
           }
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
+          return AdaptiveUIApp(
             onGenerateTitle: (BuildContext context) => S.of(context).app_name,
             localizationsDelegates: const [
               S.delegate,
@@ -120,8 +107,8 @@ class _MyAppState extends State<MyApp> {
             ],
             supportedLocales: S.delegate.supportedLocales,
             title: '南哪课表',
-            theme: lightTheme,
-            darkTheme: darkTheme,
+            materialLightTheme: lightTheme,
+            materialDarkTheme: darkTheme,
             themeMode: model.themeMode ?? widget.themeMode,
             home: const CourseTableView(),
             builder: (context, child) {
@@ -131,7 +118,15 @@ class _MyAppState extends State<MyApp> {
               // 强行覆盖 boldText 为 false
               // 这样无论系统怎么发"变粗"的指令，Flutter 都会无视
               return MediaQuery(
-                data: mediaQueryData.copyWith(boldText: false),
+                data: mediaQueryData.copyWith(
+                  boldText: false,
+                  platformBrightness:
+                      (model.themeMode ?? widget.themeMode) == ThemeMode.system
+                      ? mediaQueryData.platformBrightness
+                      : (model.themeMode ?? widget.themeMode) == ThemeMode.dark
+                      ? Brightness.dark
+                      : Brightness.light,
+                ),
                 child: child!,
               );
             },

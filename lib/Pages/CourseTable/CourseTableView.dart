@@ -1,3 +1,4 @@
+import '../../AdaptiveUI/adaptive_ui.dart';
 import 'dart:async';
 import 'dart:math' as math;
 
@@ -376,6 +377,8 @@ class CourseTableViewState extends State<CourseTableView>
                           : SystemUiOverlayStyle.dark;
                 }
                 overlayStyle = overlayStyle.copyWith(
+                  statusBarColor: Colors.transparent,
+                  systemStatusBarContrastEnforced: false,
                   systemNavigationBarColor: Colors.transparent,
                   systemNavigationBarDividerColor: Colors.transparent,
                   systemNavigationBarContrastEnforced: false,
@@ -396,9 +399,9 @@ class CourseTableViewState extends State<CourseTableView>
                   appBarColor = Colors.transparent;
                 }
 
-                return Scaffold(
+                return AdaptiveScaffold(
                   extendBodyBehindAppBar: true,
-                  appBar: AppBar(
+                  appBar: AdaptiveTopAppBar(
                     backgroundColor: appBarColor,
                     systemOverlayStyle: overlayStyle,
                     iconTheme: IconThemeData(color: mainColor),

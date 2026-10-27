@@ -1,4 +1,4 @@
-import 'Widgets/MiuixSettings.dart';
+import 'Widgets/PlatformSettings.dart';
 import 'package:flutter/material.dart';
 import '../../core/widget_data/communication/native_data_bridge.dart';
 import '../../core/widget_data/utils/widget_refresh_helper.dart';
@@ -225,7 +225,7 @@ class _AndroidLiveActivitySettingsState
               ? const SizedBox(
                   width: 20,
                   height: 20,
-                  child: MiuixCircularProgressIndicator(),
+                  child: SettingsCircularProgressIndicator(),
                 )
               : const Icon(Icons.refresh),
           onTap: _busy

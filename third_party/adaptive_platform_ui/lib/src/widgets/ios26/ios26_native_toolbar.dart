@@ -1,0 +1,281 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import '../../utils/animation.dart';
+import '../adaptive_app_bar_action.dart';
+
+/// Native iOS 26 UINavigationBar widget using platform views
+/// Implements Liquid Glass design with native blur effects
+class IOS26NativeToolbar extends StatefulWidget {
+  const IOS26NativeToolbar({
+    super.key,
+    this.title,
+    this.leading,
+    this.leadingText,
+    this.actions,
+    this.onLeadingTap,
+    this.onActionTap,
+    this.titleWidget,
+    this.tintColor,
+    this.height = 44.0,
+    this.showNativeView = true,
+    this.showsGradient = true,
+  });
+
+  final String? title;
+  final Widget? leading;
+  final String? leadingText;
+  final List<AdaptiveAppBarAction>? actions;
+  final VoidCallback? onLeadingTap;
+  final ValueChanged<int>? onActionTap;
+
+  /// Custom widget overlaid at the title position.
+  /// When set, the native title is hidden and this widget is centered instead.
+  final Widget? titleWidget;
+
+  /// Tint color for bar button items (action buttons and back button)
+  ///
+  /// When set, this color is applied to the UINavigationBar's tintColor,
+  /// which colors all UIBarButtonItem instances.
+  /// If null, the system default tint color is used.
+  final Color? tintColor;
+
+  final double height;
+  final bool showNativeView;
+
+  /// Whether the native view draws the readability gradient behind the bar.
+  /// The fixed toolbar host turns it off and draws one gradient of its own
+  /// behind all page layers.
+  final bool showsGradient;
+
+  @override
+  State<IOS26NativeToolbar> createState() => _IOS26NativeToolbarState();
+}
+
+class _IOS26NativeToolbarState extends State<IOS26NativeToolbar> {
+  MethodChannel? _channel;
+  bool? _lastIsDark;
+  int? _lastTint;
+  List<AdaptiveAppBarAction>? _lastActions;
+
+  bool get _isDark =>
+      MediaQuery.platformBrightnessOf(context) == Brightness.dark;
+
+  int _colorToARGB(Color color) {
+    // Resolve CupertinoDynamicColor if needed
+    Color resolvedColor = color;
+    if (color is CupertinoDynamicColor) {
+      final brightness = MediaQuery.platformBrightnessOf(context);
+      resolvedColor = brightness == Brightness.dark
+          ? color.darkColor
+          : color.color;
+    }
+
+    return ((resolvedColor.a * 255.0).round() & 0xff) << 24 |
+        ((resolvedColor.r * 255.0).round() & 0xff) << 16 |
+        ((resolvedColor.g * 255.0).round() & 0xff) << 8 |
+        ((resolvedColor.b * 255.0).round() & 0xff);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _syncPropsToNativeIfNeeded();
+  }
+
+  @override
+  void didUpdateWidget(IOS26NativeToolbar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _syncPropsToNativeIfNeeded();
+
+    if (widget.title != oldWidget.title) {
+      final ch = _channel;
+      // Skip when a titleWidget overlay is shown — the native title stays hidden
+      if (ch != null && widget.title != null && widget.titleWidget == null) {
+        ch.invokeMethod('updateTitle', {'title': widget.title!});
+      }
+    }
+  }
+
+  Future<void> _syncPropsToNativeIfNeeded() async {
+    final ch = _channel;
+    if (ch == null) return;
+
+    // Sync brightness
+    final isDark = _isDark;
+    if (_lastIsDark != isDark) {
+      try {
+        await ch.invokeMethod('setBrightness', {'isDark': isDark});
+        _lastIsDark = isDark;
+      } catch (e) {
+        // Ignore errors if platform view is not yet ready
+      }
+    }
+
+    // Sync actions (per-action tint, prominent, etc.). A null list and an
+    // empty one both mean "no actions", so going from null to a real list
+    // (or back) has to reach the native bar too (#84).
+    final actions = widget.actions;
+    if (!_actionsEqual(_lastActions, actions)) {
+      try {
+        final params = <String, dynamic>{
+          if (actions != null && actions.isNotEmpty)
+            'actions': actions.map((a) => a.toNativeMap()).toList(),
+        };
+        await ch.invokeMethod('updateActions', params);
+        _lastActions = actions != null ? List.of(actions) : null;
+      } catch (e) {
+        // Ignore errors if platform view is not yet ready
+      }
+    }
+
+    // Sync tint color
+    final tint = widget.tintColor != null
+        ? _colorToARGB(widget.tintColor!)
+        : null;
+    if (_lastTint != tint) {
+      try {
+        await ch.invokeMethod('setStyle', {'tint': tint});
+        _lastTint = tint;
+      } catch (e) {
+        // Ignore errors if platform view is not yet ready
+      }
+    }
+  }
+
+  bool _actionsEqual(
+    List<AdaptiveAppBarAction>? a,
+    List<AdaptiveAppBarAction>? b,
+  ) {
+    if (identical(a, b)) return true;
+    a ??= const <AdaptiveAppBarAction>[];
+    b ??= const <AdaptiveAppBarAction>[];
+    if (a.length != b.length) return false;
+    for (int i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (defaultTargetPlatform != TargetPlatform.iOS) {
+      return _buildFallbackToolbar();
+    }
+
+    final safePadding = MediaQuery.of(context).padding.top;
+
+    final creationParams = <String, dynamic>{
+      // Hide native title when a titleWidget overlay is provided
+      if (widget.title != null && widget.titleWidget == null)
+        'title': widget.title!,
+      if (widget.leading == null && widget.leadingText != null)
+        'leading': widget.leadingText!,
+      if (widget.actions != null && widget.actions!.isNotEmpty)
+        'actions': widget.actions!.map((a) => a.toNativeMap()).toList(),
+      'isDark': _isDark,
+      if (!widget.showsGradient) 'showsGradient': false,
+      if (widget.tintColor != null) 'tint': _colorToARGB(widget.tintColor!),
+    };
+
+    return AnimatedContainer(
+      height: widget.height + safePadding,
+      duration: const Duration(milliseconds: 1000),
+      curve: const IOSSpringCurve(),
+      child: Stack(
+        children: [
+          if (widget.showNativeView)
+            UiKitView(
+              viewType: 'adaptive_platform_ui/ios26_toolbar',
+              creationParams: creationParams,
+              creationParamsCodec: const StandardMessageCodec(),
+              onPlatformViewCreated: _onPlatformViewCreated,
+              hitTestBehavior: PlatformViewHitTestBehavior.translucent,
+            ),
+          if (widget.leading != null)
+            Positioned(
+              left: 16,
+              bottom: 3,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: widget.leading!,
+              ),
+            ),
+          if (widget.titleWidget != null)
+            Positioned(
+              left: 0,
+              right: 0,
+              top: safePadding,
+              bottom: 0,
+              child: Center(child: widget.titleWidget!),
+            ),
+        ],
+      ),
+    );
+  }
+
+  void _onPlatformViewCreated(int id) {
+    _channel = MethodChannel('adaptive_platform_ui/ios26_toolbar_$id');
+    _channel!.setMethodCallHandler(_handleMethodCall);
+    _lastIsDark = _isDark;
+    _lastTint = widget.tintColor != null
+        ? _colorToARGB(widget.tintColor!)
+        : null;
+    _lastActions = widget.actions != null ? List.of(widget.actions!) : null;
+  }
+
+  Future<dynamic> _handleMethodCall(MethodCall call) async {
+    switch (call.method) {
+      case 'onLeadingTapped':
+        widget.onLeadingTap?.call();
+        break;
+      case 'onMenuItemTapped':
+        if (call.arguments is Map) {
+          final args = call.arguments as Map;
+          final actionIndex = args['action'] as int?;
+          final itemIndex = args['item'] as int?;
+          final actions = widget.actions;
+          if (actions != null &&
+              actionIndex != null &&
+              itemIndex != null &&
+              actionIndex >= 0 &&
+              actionIndex < actions.length) {
+            actions[actionIndex].selectMenuItem(itemIndex);
+          }
+        }
+        break;
+      case 'onActionTapped':
+        if (call.arguments is Map) {
+          final index = (call.arguments as Map)['index'] as int?;
+          if (index != null) widget.onActionTap?.call(index);
+        }
+        break;
+    }
+  }
+
+  Widget _buildFallbackToolbar() {
+    return CupertinoNavigationBar(
+      middle:
+          widget.titleWidget ??
+          (widget.title != null ? Text(widget.title!) : null),
+      leading: widget.leading,
+      trailing: widget.actions != null && widget.actions!.isNotEmpty
+          ? Row(
+              mainAxisSize: MainAxisSize.min,
+              children: widget.actions!.map((action) {
+                return Builder(
+                  builder: (context) => CupertinoButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: () => action.press(context),
+                    child: action.icon != null
+                        ? Icon(action.icon)
+                        : Text(action.title ?? ''),
+                  ),
+                );
+              }).toList(),
+            )
+          : null,
+    );
+  }
+}

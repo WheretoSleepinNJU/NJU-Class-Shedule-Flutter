@@ -1,4 +1,4 @@
-import 'MiuixSettings.dart';
+import 'PlatformSettings.dart';
 import '../../../generated/l10n.dart';
 import 'SettingsCard.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +37,7 @@ class WeekChanger extends StatelessWidget {
                 builder: (dialogContext) => StatefulBuilder(
                   builder: (context, update) => SettingsActionDialog(
                     S.of(context).change_week_title,
-                    MiuixNumberPicker(
+                    SettingsNumberPicker(
                       value: selected,
                       min: 1,
                       max: Config.MAX_WEEKS,

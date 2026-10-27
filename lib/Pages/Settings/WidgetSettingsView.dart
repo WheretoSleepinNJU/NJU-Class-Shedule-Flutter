@@ -1,4 +1,4 @@
-import 'Widgets/MiuixSettings.dart';
+import 'Widgets/PlatformSettings.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -29,7 +29,7 @@ class _WidgetSettingsViewState extends State<WidgetSettingsView> {
     return SettingsScaffold(
       title: '小组件设置',
       body: SafeArea(
-        child: ListView(
+        child: SettingsListView(
           children: [
             // 即将上课提醒时间
             SettingsTile(
@@ -59,7 +59,7 @@ class _WidgetSettingsViewState extends State<WidgetSettingsView> {
               ),
             ),
 
-            const MiuixHorizontalDivider(),
+            const SettingsHorizontalDivider(),
 
             // 明日预览开始时间
             SettingsTile(

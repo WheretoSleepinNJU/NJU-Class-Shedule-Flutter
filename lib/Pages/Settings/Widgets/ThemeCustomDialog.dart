@@ -1,4 +1,4 @@
-import 'MiuixSettings.dart';
+import 'PlatformSettings.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:wheretosleepinnju/Resources/Themes.dart';
 
@@ -165,13 +165,13 @@ class _HexInputRow extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        MiuixTextField(
+        SettingsTextField(
           controller: controller,
           autofocus: true,
           singleLine: true,
           label: '#RRGGBB',
           leadingIcon: Icon(Icons.palette, color: previewColor),
-          trailingIcon: MiuixIconButton(
+          trailingIcon: SettingsIconAction(
             onPressed: onClear,
             child: const Icon(Icons.close_rounded),
           ),

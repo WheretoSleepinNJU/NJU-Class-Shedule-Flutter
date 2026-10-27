@@ -1,4 +1,5 @@
-import 'Widgets/MiuixSettings.dart';
+import '../../AdaptiveUI/adaptive_ui.dart';
+import 'Widgets/PlatformSettings.dart';
 import 'package:wheretosleepinnju/Pages/Settings/Widgets/ThemeChanger.dart';
 
 import '../../generated/l10n.dart';
@@ -19,7 +20,6 @@ class MoreSettingsView extends StatefulWidget {
 
 class _MoreSettingsViewState extends State<MoreSettingsView> {
   bool showCustomClassHeight = false;
-
   @override
   void initState() {
     super.initState();
@@ -45,11 +45,12 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
   Widget build(BuildContext context) {
     return SettingsScaffold(
       title: S.of(context).more_settings_title,
-      body: ListView(
+      body: SettingsListView(
         padding: const EdgeInsets.all(16),
         children: [
-          MiuixCard(
-            cornerRadius: 24,
+          const AdaptiveAppearanceSwitch(),
+          const SizedBox(height: 16),
+          SettingsSurface(
             child: Column(
               children: [
                 SettingsTile(

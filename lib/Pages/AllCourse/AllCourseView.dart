@@ -1,3 +1,4 @@
+import '../../AdaptiveUI/adaptive_ui.dart';
 import '../../generated/l10n.dart';
 import 'package:dio/dio.dart';
 
@@ -33,8 +34,8 @@ class _AllCourseViewState extends State<AllCourseView> {
   final ScrollController _scrollController = ScrollController();
   final List<int> _filterStatus = [];
 
-  AppBar buildAppBar(BuildContext context) {
-    return AppBar(
+  AdaptiveTopAppBar buildAppBar(BuildContext context) {
+    return AdaptiveTopAppBar(
       title: Text(S.of(context).lecture_title),
       // actions: [searchBar.getSearchAction(context)]
     );
@@ -134,10 +135,10 @@ class _AllCourseViewState extends State<AllCourseView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AdaptiveScaffold(
         appBar:
             // searchBar.build(context),
-            AppBar(
+            AdaptiveTopAppBar(
                 title: Text(S.of(context).all_course_title),
                 actions: const <Widget>[
               // searchBar.getSearchAction(context),

@@ -1,4 +1,4 @@
-import 'MiuixSettings.dart';
+import 'PlatformSettings.dart';
 import 'package:flutter/material.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:wheretosleepinnju/Utils/ColorUtil.dart';
@@ -109,7 +109,7 @@ class _ThemeDot extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      child: MiuixPressable(
+      child: SettingsPressable(
         borderRadius: BorderRadius.circular(999),
         onPressed: onTap,
         child: Column(
@@ -200,7 +200,7 @@ class _CustomDot extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      child: MiuixPressable(
+      child: SettingsPressable(
         borderRadius: BorderRadius.circular(999),
         onPressed: onTap,
         child: Column(

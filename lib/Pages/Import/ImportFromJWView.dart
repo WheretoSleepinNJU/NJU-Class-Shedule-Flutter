@@ -1,3 +1,4 @@
+import '../../AdaptiveUI/adaptive_ui.dart';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import '../../Components/Dialog.dart';
@@ -69,8 +70,8 @@ class _ImportFromJWViewState extends State<ImportFromJWView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
+    return AdaptiveScaffold(
+        appBar: AdaptiveTopAppBar(
           title: Text(S.of(context).import_from_JW_title),
         ),
         body: Builder(builder: (BuildContext context) {

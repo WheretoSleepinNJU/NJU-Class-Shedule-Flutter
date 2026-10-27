@@ -1,7 +1,6 @@
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'dart:io';
-import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -35,8 +34,8 @@ void main() {
     );
   });
   setUpAll(() async {
-    final font = Platform.environment['MIUIX_PREVIEW_FONT'];
-    final icons = Platform.environment['MIUIX_PREVIEW_ICON_FONT'];
+    final font = Platform.environment['PLATFORM_UI_PREVIEW_FONT'];
+    final icons = Platform.environment['PLATFORM_UI_PREVIEW_ICON_FONT'];
     if (font != null && icons != null) {
       await (FontLoader(
         'Roboto',
@@ -64,9 +63,11 @@ void main() {
             key: boundaryKey,
             child: ScopedModel<MainStateModel>(
               model: MainStateModel(),
-              child: MaterialApp(
-                debugShowCheckedModeBanner: false,
-                theme: ThemeData(brightness: brightness, fontFamily: 'Roboto'),
+              child: AdaptiveApp(
+                materialLightTheme: ThemeData(
+                  brightness: brightness,
+                  fontFamily: 'Roboto',
+                ),
                 locale: const Locale('zh', 'CN'),
                 supportedLocales: S.delegate.supportedLocales,
                 localizationsDelegates: const [
@@ -83,22 +84,6 @@ void main() {
         await tester.pumpAndSettle();
         expect(tester.takeException(), isNull);
         expect(find.byType(entry.value.runtimeType), findsOneWidget);
-        if (Platform.environment['MIUIX_PREVIEW_DIR']
-            case final String directory) {
-          await tester.runAsync(() async {
-            final image =
-                await (boundaryKey.currentContext!.findRenderObject()
-                        as RenderRepaintBoundary)
-                    .toImage();
-            final bytes = await image.toByteData(
-              format: ui.ImageByteFormat.png,
-            );
-            await File(
-              '$directory/page-${entry.key}-${brightness.name}.png',
-            ).writeAsBytes(bytes!.buffer.asUint8List());
-            image.dispose();
-          });
-        }
         await tester.pumpWidget(const SizedBox.shrink());
         await tester.pumpAndSettle();
       }

@@ -21,3 +21,5 @@ an upstream Git dependency once that compatibility fix is released.
 
 Trailing whitespace in imported documentation and iOS sources is normalized;
 this does not change plugin behavior.
+
+- Android: replace the removed Gradle jcenter() repository shorthand with mavenCentral() for the Compose bridge toolchain (Gradle 9).

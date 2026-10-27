@@ -1,4 +1,4 @@
-import 'MiuixSettings.dart';
+import 'PlatformSettings.dart';
 import 'package:flutter/material.dart';
 
 class NumberChangerWidget extends StatefulWidget {
@@ -40,7 +40,7 @@ class NumberChangerWidget extends StatefulWidget {
 
 class _NumberChangerWidgetState extends State<NumberChangerWidget> {
   @override
-  Widget build(BuildContext context) => MiuixButton(
+  Widget build(BuildContext context) => SettingsButton(
     onPressed: () async {
       var selected = (int.tryParse(widget.numText) ?? 0).clamp(0, 500);
       final result = await showDialog<int>(
@@ -48,7 +48,7 @@ class _NumberChangerWidgetState extends State<NumberChangerWidget> {
         builder: (dialogContext) => StatefulBuilder(
           builder: (context, update) => SettingsActionDialog(
             '课程高度',
-            MiuixNumberPicker(
+            SettingsNumberPicker(
               value: selected,
               min: 0,
               max: 500,

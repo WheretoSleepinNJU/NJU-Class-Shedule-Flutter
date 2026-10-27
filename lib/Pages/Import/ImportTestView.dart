@@ -1,3 +1,4 @@
+import '../../AdaptiveUI/adaptive_ui.dart';
 import 'package:flutter/material.dart';
 import '../../generated/l10n.dart';
 import 'ImportFromBEView.dart';
@@ -73,8 +74,8 @@ class _ImportTestViewState extends State<ImportTestView> {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    return Scaffold(
-      appBar: AppBar(title: Text(s.import_test_title)),
+    return AdaptiveScaffold(
+      appBar: AdaptiveTopAppBar(title: Text(s.import_test_title)),
       body: SafeArea(
         child: Form(
           key: _form,

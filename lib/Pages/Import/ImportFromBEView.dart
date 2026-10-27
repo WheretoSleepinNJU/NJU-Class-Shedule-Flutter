@@ -1,3 +1,4 @@
+import '../../AdaptiveUI/adaptive_ui.dart';
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
@@ -192,8 +193,8 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    return AdaptiveScaffold(
+      appBar: AdaptiveTopAppBar(
         title: Text(widget.config['page_title']),
         actions: <Widget>[
           if (widget.testMode)

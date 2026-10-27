@@ -1,3 +1,4 @@
+import '../../AdaptiveUI/adaptive_ui.dart';
 import 'dart:async';
 
 import '../../generated/l10n.dart';
@@ -52,8 +53,8 @@ class _QRShareViewState extends State<QRShareView> {
         ? '${_index + 1}/${widget.frames.length}'
         : '1/1';
 
-    return Scaffold(
-      appBar: AppBar(
+    return AdaptiveScaffold(
+      appBar: AdaptiveTopAppBar(
         title: Text(S.of(context).export_title),
       ),
       body: SafeArea(

@@ -1,3 +1,4 @@
+import '../../AdaptiveUI/adaptive_ui.dart';
 import 'dart:io';
 import 'dart:async';
 import 'package:dio/dio.dart';
@@ -62,8 +63,8 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    return AdaptiveScaffold(
+      appBar: AdaptiveTopAppBar(
         title: Text(widget.config['page_title']),
         actions: <Widget>[
           IconButton(

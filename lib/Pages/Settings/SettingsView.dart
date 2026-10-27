@@ -1,4 +1,4 @@
-import 'Widgets/MiuixSettings.dart';
+import 'Widgets/PlatformSettings.dart';
 import 'dart:io';
 import '../../generated/l10n.dart';
 import 'package:flutter/services.dart';
@@ -39,7 +39,7 @@ class _SettingsViewState extends State<SettingsView> {
   Widget build(BuildContext context) {
     return SettingsScaffold(
       title: S.of(context).settings_title,
-      body: ListView(
+      body: SettingsListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         children: [
           SettingsCard(

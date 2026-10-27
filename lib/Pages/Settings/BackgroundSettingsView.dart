@@ -1,4 +1,4 @@
-import 'Widgets/MiuixSettings.dart';
+import 'Widgets/PlatformSettings.dart';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -82,9 +82,9 @@ class _BackgroundSettingsViewState extends State<BackgroundSettingsView> {
     return SettingsScaffold(
       title: s.background_settings_title,
       body: settings == null
-          ? const Center(child: MiuixCircularProgressIndicator())
+          ? const Center(child: SettingsCircularProgressIndicator())
           : SafeArea(
-              child: ListView(
+              child: SettingsListView(
                 padding: const EdgeInsets.all(16),
                 children: [
                   Text(
@@ -132,7 +132,7 @@ class _BackgroundSettingsViewState extends State<BackgroundSettingsView> {
                                 button: true,
                                 selected: image == settings.current,
                                 label: s.background_use,
-                                child: MiuixPressable(
+                                child: SettingsPressable(
                                   key: ValueKey('use-background-$i'),
                                   onPressed: _busy
                                       ? null
@@ -173,7 +173,7 @@ class _BackgroundSettingsViewState extends State<BackgroundSettingsView> {
                               Positioned(
                                 top: 0,
                                 right: 0,
-                                child: MiuixIconButton(
+                                child: SettingsIconAction(
                                   key: ValueKey('remove-background-$i'),
                                   backgroundColor: colors.surface.withValues(
                                     alpha: .9,
@@ -256,12 +256,12 @@ class _BackgroundSettingsViewState extends State<BackgroundSettingsView> {
                     label: Text(s.background_shuffle),
                   ),
                   if (settings.images.isNotEmpty)
-                    MiuixButton(
+                    SettingsButton(
                       key: const ValueKey('clear-backgrounds'),
                       onPressed: _busy ? null : () => _run(_service.clear),
                       child: Text(s.background_clear),
                     ),
-                  if (_busy) const MiuixLinearProgressIndicator(),
+                  if (_busy) const SettingsLinearProgressIndicator(),
                 ],
               ),
             ),
@@ -287,14 +287,14 @@ class _FrequencyDialogState extends State<_FrequencyDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          MiuixRadioButtonPreference(
+          SettingsRadioPreference(
             key: const ValueKey('background-mode-visit'),
             title: s.background_every_visit,
             selected: _frequency == BackgroundFrequency.everyVisit,
             onClick: () =>
                 setState(() => _frequency = BackgroundFrequency.everyVisit),
           ),
-          MiuixRadioButtonPreference(
+          SettingsRadioPreference(
             key: const ValueKey('background-mode-days'),
             title: s.background_by_days,
             selected: _frequency == BackgroundFrequency.days,
@@ -302,7 +302,7 @@ class _FrequencyDialogState extends State<_FrequencyDialog> {
                 setState(() => _frequency = BackgroundFrequency.days),
           ),
           if (_frequency == BackgroundFrequency.days)
-            MiuixNumberPicker(
+            SettingsNumberPicker(
               key: const ValueKey('background-days'),
               value: _days,
               min: 1,
@@ -313,11 +313,11 @@ class _FrequencyDialogState extends State<_FrequencyDialog> {
         ],
       ),
       actions: [
-        MiuixButton(
+        SettingsButton(
           onPressed: () => Navigator.pop(context),
           child: Text(s.cancel),
         ),
-        MiuixButton(
+        SettingsButton(
           key: const ValueKey('save-background-frequency'),
           onPressed: () => Navigator.pop(context, (_frequency, _days)),
           child: Text(s.save),
