@@ -471,7 +471,7 @@
     {
       "title": "中国科学院大学研究生课表",
       "pinyin": "zhongguokexueyuandaxueyanjiushengkebiao",
-      "description": "国科大在线个人课表导入",
+      "description": "南哪课表远征果壳！中科院也得排好课表",
       "page_title": "国科大研究生课表",
       "initialUrl": "https://sep.ucas.ac.cn/d_index/Z2tkenhfbG9jYWw=/",
       "redirectUrl": "http://mooc.ucas.edu.cn/portal",
@@ -483,8 +483,8 @@
       "extractJSfileiOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/ucasyjsxk.js",
       "extractJSfileOHOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/ucasyjsxk.js",
       "banner_content": "导入方式：登录 SEP 后将自动跳转国科大在线个人课表\n登录后请耐心等待，脚本会自动读取本学期所有周次的课程\n仅研究生账号实测通过，本科生路径未验证",
-      "banner_action": "前往国科大 SEP",
-      "banner_url": "https://sep.ucas.ac.cn",
+      "banner_action": "朕知道了",
+      "banner_url": "",
       "class_time_list": [
         {
           "start": "08:30",
