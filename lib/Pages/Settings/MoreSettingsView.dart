@@ -2,7 +2,7 @@ import 'package:wheretosleepinnju/Pages/Settings/Widgets/ThemeChanger.dart';
 
 import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
-import 'package:umeng_common_sdk/umeng_common_sdk.dart';
+import '../../Utils/Analytics.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../../Utils/States/MainState.dart';
 import '../../Utils/ColorUtil.dart';
@@ -84,7 +84,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                                   value: 2)
                             ],
                             onChanged: (value) {
-                              UmengCommonSdk.onEvent("more_setting",
+                              Analytics.onEvent("more_setting",
                                   {"type": 12, "result": value.toString()});
                               ScopedModel.of<MainStateModel>(context)
                                   .changeThemeMode(value ?? 0);
@@ -97,7 +97,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
               subtitle: Text(S.of(context).shuffle_color_pool_subtitle),
               onTap: () {
                 ColorPool.shuffleColorPool();
-                UmengCommonSdk.onEvent("more_setting", {"type": 1});
+                Analytics.onEvent("more_setting", {"type": 1});
                 Toast.showToast(
                     S.of(context).shuffle_color_pool_success_toast, context);
                 Navigator.of(context).pop();
@@ -114,7 +114,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                 value: ScopedModel.of<MainStateModel>(context)
                     .material3ColorForLight,
                 onChanged: (v) {
-                  UmengCommonSdk.onEvent(
+                  Analytics.onEvent(
                       "more_setting", {"type": 20, "result": v.toString()});
                   ScopedModel.of<MainStateModel>(context)
                       .changeMaterial3Color(light: v);
@@ -130,7 +130,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                 value: ScopedModel.of<MainStateModel>(context)
                     .material3ColorForDark,
                 onChanged: (v) {
-                  UmengCommonSdk.onEvent(
+                  Analytics.onEvent(
                       "more_setting", {"type": 21, "result": v.toString()});
                   ScopedModel.of<MainStateModel>(context)
                       .changeMaterial3Color(dark: v);
@@ -153,7 +153,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                                 Theme.of(context).appBarTheme.backgroundColor,
                             value: !snapshot.data!,
                             onChanged: (bool value) {
-                              UmengCommonSdk.onEvent("more_setting",
+                              Analytics.onEvent("more_setting",
                                   {"type": 5, "result": value.toString()});
                               ScopedModel.of<MainStateModel>(context)
                                   .setAddButton(!value);
@@ -176,7 +176,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                               Theme.of(context).appBarTheme.backgroundColor,
                           value: snapshot.data!,
                           onChanged: (bool value) {
-                            UmengCommonSdk.onEvent("more_setting",
+                            Analytics.onEvent("more_setting",
                                 {"type": 6, "result": value.toString()});
                             ScopedModel.of<MainStateModel>(context)
                                 .setShowWeekend(value);
@@ -200,7 +200,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                               Theme.of(context).appBarTheme.backgroundColor,
                           value: snapshot.data!,
                           onChanged: (bool value) {
-                            UmengCommonSdk.onEvent("more_setting",
+                            Analytics.onEvent("more_setting",
                                 {"type": 7, "result": value.toString()});
                             ScopedModel.of<MainStateModel>(context)
                                 .setShowClassTime(value);
@@ -224,7 +224,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                               Theme.of(context).appBarTheme.backgroundColor,
                           value: snapshot.data!,
                           onChanged: (bool value) {
-                            UmengCommonSdk.onEvent("more_setting",
+                            Analytics.onEvent("more_setting",
                                 {"type": 8, "result": value.toString()});
                             ScopedModel.of<MainStateModel>(context)
                                 .setShowFreeClass(value);
@@ -249,7 +249,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                               Theme.of(context).appBarTheme.backgroundColor,
                           value: snapshot.data!,
                           onChanged: (bool value) {
-                            UmengCommonSdk.onEvent("more_setting",
+                            Analytics.onEvent("more_setting",
                                 {"type": 22, "result": value.toString()});
                             ScopedModel.of<MainStateModel>(context)
                                 .setShowNonCurrentWeekCourses(value);
@@ -273,7 +273,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                               Theme.of(context).appBarTheme.backgroundColor,
                           value: snapshot.data!,
                           onChanged: (bool value) {
-                            UmengCommonSdk.onEvent("more_setting",
+                            Analytics.onEvent("more_setting",
                                 {"type": 9, "result": value.toString()});
                             ScopedModel.of<MainStateModel>(context)
                                 .setShowMonth(value);
@@ -297,7 +297,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                               Theme.of(context).appBarTheme.backgroundColor,
                           value: snapshot.data!,
                           onChanged: (bool value) {
-                            UmengCommonSdk.onEvent("more_setting",
+                            Analytics.onEvent("more_setting",
                                 {"type": 10, "result": value.toString()});
                             ScopedModel.of<MainStateModel>(context)
                                 .setShowDate(value);
@@ -323,7 +323,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
             //                     Theme.of(context).appBarTheme.backgroundColor,
             //                 value: snapshot.data!,
             //                 onChanged: (bool value) {
-            //                   UmengCommonSdk.onEvent("more_setting",
+            //                   Analytics.onEvent("more_setting",
             //                       {"type": 12, "result": value.toString()});
             //                   // ScopedModel.of<MainStateModel>(context)
             //                   //     .setFontMode(value);
@@ -348,7 +348,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                           onChanged: (bool value) {
                             ScopedModel.of<MainStateModel>(context)
                                 .setForceZoom(value);
-                            UmengCommonSdk.onEvent("more_setting",
+                            Analytics.onEvent("more_setting",
                                 {"type": 11, "result": value.toString()});
                             setState(() {
                               showCustomClassHeight = !value;

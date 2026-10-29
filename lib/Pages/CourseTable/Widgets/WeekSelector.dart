@@ -2,7 +2,7 @@ import '../../../generated/l10n.dart';
 import 'package:flutter/material.dart';
 import '../../../Resources/Config.dart';
 import '../../../Utils/States/MainState.dart';
-import 'package:umeng_common_sdk/umeng_common_sdk.dart';
+import '../../../Utils/Analytics.dart';
 import '../../../Components/Toast.dart';
 
 class WeekSelector extends StatelessWidget {
@@ -30,7 +30,7 @@ class WeekSelector extends StatelessWidget {
                               Toast.showToast(
                                   S.of(context).go_to_settings_toast, context);
                               model.changeTmpWeek(i + 1);
-                              UmengCommonSdk.onEvent(
+                              Analytics.onEvent(
                                   "week_choose", {"action": "change"});
                             },
                             child: Text(

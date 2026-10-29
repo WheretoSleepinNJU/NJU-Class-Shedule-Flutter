@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:azlistview/azlistview.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:umeng_common_sdk/umeng_common_sdk.dart';
+import '../../Utils/Analytics.dart';
 import 'package:flutter/material.dart';
 import '../../generated/l10n.dart';
 import '../../Resources/Url.dart';
@@ -158,7 +158,7 @@ class _ImportViewState extends State<ImportView> {
                 contentPadding: const EdgeInsets.fromLTRB(16, 6, 36, 6),
                 enabled: !(school.isGrey ?? false),
                 onTap: () {
-                  UmengCommonSdk.onEvent('class_import', {
+                  Analytics.onEvent('class_import', {
                     'type': 'be',
                     'action': 'show',
                   });

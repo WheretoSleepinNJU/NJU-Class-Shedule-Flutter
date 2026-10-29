@@ -1,6 +1,6 @@
 import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
-import 'package:umeng_common_sdk/umeng_common_sdk.dart';
+import '../../Utils/Analytics.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../../Utils/CalendarExporter.dart';
 import '../../Utils/IcsExporter.dart';
@@ -194,7 +194,7 @@ class _ShareViewState extends State<ShareView> {
     }
 
     Toast.showToast(S.of(context).import_success_toast, context);
-    UmengCommonSdk.onEvent("qr_import", {"action": "success"});
+    Analytics.onEvent("qr_import", {"action": "success"});
     Navigator.of(context).pop();
     Navigator.of(context).pop();
   }

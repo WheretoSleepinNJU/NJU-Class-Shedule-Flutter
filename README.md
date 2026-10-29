@@ -74,7 +74,7 @@
 
 ## 部署相关
 
-三端使用 `.fvmrc` 固定的 Flutter `3.35.8-ohos-1.0.4`（Dart 3.9.2）。扫码依赖固定到带鸿蒙适配的 mobile_scanner 7.1.4 提交；iOS 改用苹果 Vision，可在 Apple 芯片模拟器原生构建。
+三端使用 `.fvmrc` 固定的 Flutter `3.35.8-ohos-1.0.4`（Dart 3.9.2）。扫码依赖使用 `third_party/mobile_scanner` 中带鸿蒙适配的 7.1.4 源码，并延后 Android 方向传感器访问至实际扫码；来源与补丁见该目录的 `NJU_PATCHES.md`。iOS 使用苹果 Vision，可在 Apple 芯片模拟器原生构建。
 
 同时使用带鸿蒙适配的 WebView 4.13.0、sqflite 2.4.2 和 fluttertoast 9.0.0，清除旧 Android v1 注册接口的依赖。系统分享插件暂保留原实现，并将仅移除 v1 注册代码的兼容补丁放在 `third_party/share_extend`（来源与变更见该目录的 `NJU_PATCHES.md`），无需修改本机 Pub 缓存。
 

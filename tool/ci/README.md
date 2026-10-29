@@ -13,7 +13,7 @@
 ## 固定工具链与依赖
 
 - Flutter 使用 `.fvmrc` 中的 `3.35.8-ohos-1.0.4`，并校验提交 `8320f6ded3f0bdc5409545e26dcd2596bf054203`，三端不混用官方 Flutter SDK。初始化时显式保留本地版本标签；修复缺少标签的 SDK 缓存时，同时清除旧版本元数据，避免被识别成 `0.0.0-unknown`。
-- `bootstrap.sh` 固定三个 `external` 路径依赖的提交，并按 `pubspec.lock` 严格恢复 Pub 依赖。`mobile_scanner` 直接使用 `pubspec.yaml` 中固定的 Git 提交，不在主仓库登记 `external/fluttertpc_mobile_scanner` 子模块。
+- `bootstrap.sh` 固定三个 `external` 路径依赖的提交，并按 `pubspec.lock` 严格恢复 Pub 依赖。`mobile_scanner` 使用主仓库 `third_party/mobile_scanner` 中的 7.1.4 OHOS 源码快照及 Android 隐私补丁，不依赖全局 Pub 缓存修改或 `external/fluttertpc_mobile_scanner` 子模块。
 - CI 全局使用 `PUB_HOSTED_URL=https://pub.flutter-io.cn`，与 `pubspec.lock` 记录的包源一致，依赖安装、测试和构建均使用同一包源，保留 `--enforce-lockfile` 校验。
 - 初始化时关闭鸿蒙平台支持，避免测试、Android 和 iOS 任务在 `flutter pub get` 生成平台文件时要求鸿蒙 SDK。仅鸿蒙构建任务在安装 SDK 后执行 `flutter config --enable-ohos`。
 - Release 构建保留 Flutter 自动 Pub / 平台注册文件生成步骤，并在构建后检查 `pubspec.lock` 没有变化。此 SDK 在 `--no-pub` 时也会跳过 Release 插件注册文件重建，可能把 `integration_test` 留在 Android 注册文件中，导致编译失败。

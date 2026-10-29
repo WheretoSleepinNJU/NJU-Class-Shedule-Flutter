@@ -1,0 +1,11 @@
+[
+    {
+        "Name": "mobile_scanner",
+        "License": "BSD-3-Clause License",
+        "License File": "LICENSE",
+        "Version Number": "1cfad1076b9a3c3610e3046b340b088b19769969",
+        "Owner": "george.lihui@huawei.com",
+        "Upstream URL": "https://github.com/juliansteenbakker/mobile_scanner",
+        "Description": "A universal barcode and QR code scanner for Flutter based on MLKit. Uses CameraX on Android, AVFoundation on iOS and Apple Vision & AVFoundation on macOS."
+    }
+]

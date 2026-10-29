@@ -1,5 +1,5 @@
 import '../../../generated/l10n.dart';
-import 'package:umeng_common_sdk/umeng_common_sdk.dart';
+import '../../../Utils/Analytics.dart';
 import 'package:flutter/material.dart';
 import '../../../Components/Dialog.dart';
 
@@ -23,12 +23,12 @@ class _AddDialogState extends State<AddDialog> {
         ],
       ),
       widgetCancelAction: () {
-        UmengCommonSdk.onEvent(
+        Analytics.onEvent(
             "schedule_manage", {"type": "add", "action": "cancel"});
         Navigator.of(context).pop('');
       },
       widgetOKAction: () {
-        UmengCommonSdk.onEvent(
+        Analytics.onEvent(
             "schedule_manage", {"type": "add", "action": "accept"});
         Navigator.of(context).pop(_controller.text);
       },

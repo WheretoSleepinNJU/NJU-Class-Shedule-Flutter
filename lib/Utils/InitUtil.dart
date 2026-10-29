@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
-import 'package:umeng_common_sdk/umeng_common_sdk.dart';
+import 'Analytics.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:in_app_review/in_app_review.dart';
 import '../Models/CourseTableModel.dart';
@@ -134,7 +134,7 @@ class InitUtil {
         const Duration(seconds: Config.REVIEW_DIALOG_DELAY_SECONDS),
         () async {
           try {
-            UmengCommonSdk.onEvent('review_dialog', {'action': 'show'});
+            Analytics.onEvent('review_dialog', {'action': 'show'});
             await review.requestReview();
             await sp.setBool('hasShowReview', true);
           } catch (error) {

@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:umeng_common_sdk/umeng_common_sdk.dart';
+import '../../Utils/Analytics.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -390,7 +390,7 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
       _completed = true;
       await state.changeclassTable(index);
       if (!widget.testMode) {
-        UmengCommonSdk.onEvent('class_import', {
+        Analytics.onEvent('class_import', {
           'type': 'be',
           'action': 'success',
         });
@@ -458,7 +458,7 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
         );
       } catch (_) {}
 
-      UmengCommonSdk.onEvent("class_import", {"type": "be", "action": "fail"});
+      Analytics.onEvent("class_import", {"type": "be", "action": "fail"});
 
       if (!mounted) return;
       await showDialog<String>(

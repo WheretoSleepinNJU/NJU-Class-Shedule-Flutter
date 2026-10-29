@@ -1,7 +1,7 @@
 import '../../../generated/l10n.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:umeng_common_sdk/umeng_common_sdk.dart';
+import '../../../Utils/Analytics.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../../../Utils/States/MainState.dart';
 import '../../../Utils/WeekUtil.dart';
@@ -25,7 +25,7 @@ class WeekChanger extends StatelessWidget {
               subtitle: Text(S.of(context).change_week_subtitle +
                   S.of(context).week(snapshot.data.toString())),
               onTap: () async {
-                UmengCommonSdk.onEvent("week_change", {"action": "show"});
+                Analytics.onEvent("week_change", {"action": "show"});
                 await showDialog<String>(
                   context: context,
                   builder: (BuildContext context) {
@@ -61,11 +61,11 @@ class WeekChanger extends StatelessWidget {
                                     ),
                                   );
                                 }))), widgetCancelAction: () {
-                      UmengCommonSdk.onEvent(
+                      Analytics.onEvent(
                           "week_change", {"action": "cancel"});
                       Navigator.of(context).pop();
                     }, widgetOKAction: () async {
-                      UmengCommonSdk.onEvent(
+                      Analytics.onEvent(
                           "week_change", {"action": "accept"});
                       await changeWeek(context, changedWeek, snapshot.data!);
                       Navigator.of(context).pop();

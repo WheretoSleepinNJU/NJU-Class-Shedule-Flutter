@@ -17,7 +17,7 @@ public class MainApplication extends FlutterApplication {
 //        sharedPreferencesHelper=new SharedPreferencesHelper(this,"umeng");
 
         //设置LOG开关，默认为false
-        UMConfigure.setLogEnabled(true);
+        UMConfigure.setLogEnabled(false);
 
         //友盟预初始化
         UMConfigure.preInit(getApplicationContext(),"5f8ef217fac90f1c19a7b0f3","Umeng");

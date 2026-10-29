@@ -4,7 +4,7 @@ import 'package:wheretosleepinnju/Resources/Themes.dart';
 
 import '../../../Utils/ColorUtil.dart';
 import '../../../Utils/States/MainState.dart';
-import 'package:umeng_common_sdk/umeng_common_sdk.dart';
+import '../../../Utils/Analytics.dart';
 import 'package:flutter/material.dart';
 import '../../../Components/Dialog.dart';
 
@@ -125,7 +125,7 @@ class _ThemeCustomDialogState extends State<ThemeCustomDialog> {
         ],
       ),
       widgetCancelAction: () {
-        UmengCommonSdk.onEvent(
+        Analytics.onEvent(
             "theme_change", {"type": "theme_change", "action": "cancel"});
         Navigator.of(context).pop('');
       },
@@ -136,7 +136,7 @@ class _ThemeCustomDialogState extends State<ThemeCustomDialog> {
         if (!_isValid6 && _controller.text.trim().isNotEmpty)
           finalHex = defaultColor;
 
-        UmengCommonSdk.onEvent(
+        Analytics.onEvent(
             "theme_change", {"type": "theme_change", "color": finalHex});
         ScopedModel.of<MainStateModel>(context).changeCustomTheme(finalHex);
         ScopedModel.of<MainStateModel>(context)

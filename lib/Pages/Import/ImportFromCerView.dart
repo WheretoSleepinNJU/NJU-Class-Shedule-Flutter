@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:umeng_common_sdk/umeng_common_sdk.dart';
+import '../../Utils/Analytics.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../Components/Dialog.dart';
@@ -130,7 +130,7 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
       String courseTableName = cp.parseCourseName();
       int rst = await cp.addCourseTable(courseTableName, context);
       await cp.parseCourse(rst);
-      UmengCommonSdk.onEvent(
+      Analytics.onEvent(
           "class_import", {"type": "cer", "action": "success"});
       Toast.showToast(S.of(context).class_parse_toast_success, context);
       Navigator.of(context).pop(true);
@@ -154,7 +154,7 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
         print(e);
       }
 
-      UmengCommonSdk.onEvent("class_import", {"type": "cer", "action": "fail"});
+      Analytics.onEvent("class_import", {"type": "cer", "action": "fail"});
 
       showDialog<String>(
           barrierDismissible: false,

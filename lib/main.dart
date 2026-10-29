@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'generated/l10n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 
 // import 'package:talkingdata_sdk_plugin/talkingdata_sdk_plugin.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -22,14 +21,6 @@ void main() async {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   //Initialize the app config.
   List themeConf = await InitUtil.initialize();
-  //初始化组件化基础库, 所有友盟业务SDK都必须调用此初始化接口。
-  UmengCommonSdk.initCommon(
-    '5f8ef217fac90f1c19a7b0f3',
-    '5f9e1efa1c520d30739d2737',
-    'Umeng',
-  );
-  UmengCommonSdk.setPageCollectionModeAuto();
-  // UmengCommonSdk.onEvent("privacy_accept", {"result":"accept"});
 
   /// 原生安卓上去除状态栏遮罩
   /// https://blog.csdn.net/q515656712/article/details/139235710

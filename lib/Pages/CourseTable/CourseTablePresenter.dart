@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:umeng_common_sdk/umeng_common_sdk.dart';
+import '../../Utils/Analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -166,7 +166,7 @@ class CourseTablePresenter {
 
   void showDonateDialog(
       BuildContext context, String welcomeTitle, String welcomeContent) async {
-    UmengCommonSdk.onEvent("import_dialog", {"action": "show"});
+    Analytics.onEvent("import_dialog", {"action": "show"});
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -186,7 +186,7 @@ class CourseTablePresenter {
                                     : Colors.white,
                             child: Text(S.of(context).love_and_donate),
                             onPressed: () async {
-                              UmengCommonSdk.onEvent(
+                              Analytics.onEvent(
                                   "import_dialog", {"action": "donate"});
                               if (Platform.isIOS) {
                                 _launchURL(Url.URL_APPLE);
@@ -206,7 +206,7 @@ class CourseTablePresenter {
                                     : Colors.white,
                             child: Text(S.of(context).bug_and_report),
                             onPressed: () {
-                              UmengCommonSdk.onEvent(
+                              Analytics.onEvent(
                                   "import_dialog", {"action": "bug"});
                               if (Platform.isIOS) {
                                 _launchURL(Url.QQ_GROUP_APPLE_URL);
@@ -224,7 +224,7 @@ class CourseTablePresenter {
                             child: Text(S.of(context).love_but_no_money,
                                 style: const TextStyle(color: Colors.grey)),
                             onPressed: () async {
-                              UmengCommonSdk.onEvent(
+                              Analytics.onEvent(
                                   "import_dialog", {"action": "noMoney"});
                               Navigator.of(context).pop();
                             })),
@@ -330,12 +330,12 @@ class CourseTablePresenter {
     Course course,
     bool isActive,
   ) {
-    UmengCommonSdk.onEvent('class_click', {'type': 'single'});
+    Analytics.onEvent('class_click', {'type': 'single'});
     return _showCourseDetails(context, [course], (_) => isActive);
   }
 
   Future<void> showMultiClassDialog(BuildContext context, int i, int nowWeek) {
-    UmengCommonSdk.onEvent('class_click', {'type': 'multi'});
+    Analytics.onEvent('class_click', {'type': 'multi'});
     return _showCourseDetails(
       context,
       List.of(multiCourses[i]),
@@ -344,7 +344,7 @@ class CourseTablePresenter {
   }
 
   Future<void> showFreeClassDialog(BuildContext context, int nowWeek) {
-    UmengCommonSdk.onEvent('class_click', {'type': 'free'});
+    Analytics.onEvent('class_click', {'type': 'free'});
     return _showCourseDetails(
       context,
       List.of(freeCourses),
@@ -353,7 +353,7 @@ class CourseTablePresenter {
   }
 
   showDeleteDialog(BuildContext context, Course course) {
-    UmengCommonSdk.onEvent("class_delete", {"action": "show"});
+    Analytics.onEvent("class_delete", {"action": "show"});
     return showDialog<String>(
       context: context,
       builder: (BuildContext context) {

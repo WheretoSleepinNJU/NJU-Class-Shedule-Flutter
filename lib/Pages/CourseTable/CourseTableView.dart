@@ -8,7 +8,7 @@ import '../../Utils/WidgetHelper.dart';
 import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:umeng_common_sdk/umeng_common_sdk.dart';
+import '../../Utils/Analytics.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 //import 'package:text_view/text_view.dart';
@@ -216,19 +216,18 @@ class CourseTableViewState extends State<CourseTableView>
   }
 
   basicCheck() async {
-    UpdateUtil updateUtil = UpdateUtil();
-    await updateUtil.checkUpdate(context, false);
     PrivacyUtil privacyUtil = PrivacyUtil();
     bool privacyRst = await privacyUtil.checkPrivacy(context, false);
-    if (!privacyRst) return;
-    //初始化组件化基础库, 所有友盟业务SDK都必须调用此初始化接口。
-    UmengCommonSdk.initCommon(
-      '5f8ef217fac90f1c19a7b0f3',
-      '5f9e1efa1c520d30739d2737',
-      'Umeng',
-    );
-    UmengCommonSdk.setPageCollectionModeAuto();
-    // UmengCommonSdk.onEvent("privacy_accept", {"result":"accept"});
+    if (!privacyRst || !mounted) return;
+    await Analytics.initializeAfterConsent(privacyUtil.requiredVersion);
+    if (!mounted) return;
+    UpdateUtil updateUtil = UpdateUtil();
+    try {
+      await updateUtil.checkUpdate(context, false);
+    } catch (error) {
+      debugPrint('Update check unavailable: $error');
+    }
+    if (!mounted || !privacyUtil.shouldOfferImport) return;
     bool rst =
         await Navigator.of(context).push(
           MaterialPageRoute(
@@ -279,7 +278,7 @@ class CourseTableViewState extends State<CourseTableView>
     } else {
       await model.changeTmpWeek(selection.week);
     }
-    UmengCommonSdk.onEvent('week_choose', {
+    Analytics.onEvent('week_choose', {
       'action': selection.changesCurrentWeek ? 'set_current' : 'view',
     });
   }
@@ -342,7 +341,7 @@ class CourseTableViewState extends State<CourseTableView>
       model: MainStateModel(),
       child: ScopedModelDescendant<MainStateModel>(
         builder: (context, child, model) {
-          UmengCommonSdk.onEvent("course_refresh", {"action": "refresh"});
+          Analytics.onEvent("course_refresh", {"action": "refresh"});
           debugPrint('CourseTableView refreshed.');
 
           return FutureBuilder<bool>(
@@ -420,7 +419,7 @@ class CourseTableViewState extends State<CourseTableView>
                           // color: Colors.white,
                         ),
                         onPressed: () async {
-                          UmengCommonSdk.onEvent("setting_click", {
+                          Analytics.onEvent("setting_click", {
                             "action": "success",
                           });
                           bool? status = await Navigator.of(context).push(
@@ -495,7 +494,7 @@ class CourseTableViewState extends State<CourseTableView>
                                               if (targetWeek !=
                                                   _nowShowWeekNum) {
                                                 model.changeTmpWeek(targetWeek);
-                                                UmengCommonSdk.onEvent(
+                                                Analytics.onEvent(
                                                   "week_choose",
                                                   {"action": "swipe"},
                                                 );

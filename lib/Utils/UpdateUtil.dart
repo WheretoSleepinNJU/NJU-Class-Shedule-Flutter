@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:umeng_common_sdk/umeng_common_sdk.dart';
+import 'Analytics.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -54,7 +54,7 @@ class UpdateUtil {
   }
 
   showUpdateDialog(Map info, BuildContext context) async {
-    UmengCommonSdk.onEvent("update_dialog", {"action": "show"});
+    Analytics.onEvent("update_dialog", {"action": "show"});
     List<Widget> widgets;
     if (info['isForce']) {
       widgets = <Widget>[
@@ -64,7 +64,7 @@ class UpdateUtil {
                 ? Theme.of(context).primaryColor
                 : Colors.white,
             onPressed: () async {
-              UmengCommonSdk.onEvent(
+              Analytics.onEvent(
                   "update_dialog", {"action": "forceAccept"});
               if (info['url'] != '') await launch(info['url']);
             }),
@@ -75,7 +75,7 @@ class UpdateUtil {
           child: Text(info['cancel_text']),
           color: Colors.grey,
           onPressed: () {
-            UmengCommonSdk.onEvent("update_dialog", {"action": "cancel"});
+            Analytics.onEvent("update_dialog", {"action": "cancel"});
             Navigator.of(context).pop();
           },
         ),
@@ -85,7 +85,7 @@ class UpdateUtil {
                 ? Theme.of(context).primaryColor
                 : Colors.white,
             onPressed: () async {
-              UmengCommonSdk.onEvent("update_dialog", {"action": "accept"});
+              Analytics.onEvent("update_dialog", {"action": "accept"});
               if (info['url'] != '') await launch(info['url']);
             }),
       ];
