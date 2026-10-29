@@ -2,9 +2,11 @@
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 
-# Keep these commits aligned with .fvmrc and the path dependencies in pubspec.yaml.
-flutter_ref=3.35.8-ohos-1.0.4
-flutter_commit=8320f6ded3f0bdc5409545e26dcd2596bf054203
+# Keep one OHOS Flutter SDK for Android, iOS, HarmonyOS and host tests.
+flutter_ref=3.47.7+ohos-0.0.1-pre
+flutter_commit=650641656fef1d0578f0bc1ed8f7a35087fc99f3
+flutter_repo=https://gitcode.com/openharmony-sig/flutter_flutter.git
+flutter_dir=.fvm/flutter_sdk
 checkout_dependency() {
   local destination=$1 remote=$2 commit=$3 tag=${4:-}
   local ref=$commit tag_commit=$commit
@@ -32,8 +34,7 @@ checkout_dependency() {
   fi
 }
 
-checkout_dependency .fvm/flutter_sdk \
-  https://gitcode.com/CPF-Flutter/flutter_flutter.git "$flutter_commit" "$flutter_ref"
+checkout_dependency "$flutter_dir" "$flutter_repo" "$flutter_commit" "$flutter_ref"
 checkout_dependency external/flutter_packages \
   https://gitcode.com/openharmony-tpc/flutter_packages.git \
   9c8d592e7d68bc5f1fbe169969111f54347130e7
@@ -44,7 +45,12 @@ checkout_dependency external/fluttertpc_device_calendar \
   https://gitcode.com/openharmony-sig/fluttertpc_device_calendar.git \
   2b81c4dd8025f1c497104edf3b049e431feac88a
 
-export FLUTTER_ROOT="$PWD/.fvm/flutter_sdk"
+checkout_dependency external/adaptive_platform_ui \
+  https://github.com/berkaycatak/adaptive_platform_ui.git \
+  04f81286f7a1b8fbb67c489aa8d0cd663b5cd3ed
+python3 tool/ci/apply_dependency_patches.py
+
+export FLUTTER_ROOT="$PWD/$flutter_dir"
 export PUB_CACHE="$PWD/.fvm/pub-cache"
 export PATH="$FLUTTER_ROOT/bin:$PATH"
 if [[ -n "${GITHUB_ENV:-}" ]]; then
@@ -54,5 +60,6 @@ fi
 flutter --version
 # Pub regenerates tooling for every enabled platform. The OHOS job enables
 # HarmonyOS support after installing its SDK; tests, Android and iOS do not need it.
-flutter config --no-analytics --no-enable-ohos
+flutter config --no-analytics
+flutter config --no-enable-ohos
 flutter pub get --enforce-lockfile

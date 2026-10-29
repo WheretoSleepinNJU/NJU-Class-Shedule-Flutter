@@ -8,12 +8,18 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 4.1.0+71
 
 environment:
-  sdk: ">=3.7.0 <4.0.0"
+  sdk: ">=3.12.2 <4.0.0"
   flutter: ">=3.35.7"
 
 dependencies:
   flutter:
     sdk: flutter
+  adaptive_platform_ui: 1.0.2
+  flutter_miuix: 1.3.0
+  libmonet:
+    hosted: https://pub.dev
+    version: 1.2.0
+  cupertino_icons: ^1.0.9
   flutter_localizations:
     sdk: flutter
 
@@ -35,7 +41,6 @@ dependencies:
   mobile_scanner:
     git:
       url: https://gitcode.com/CPF-Flutter/fluttertpc_mobile_scanner.git
-      # 7.1.4-ohos-1.0.0-beta.1: Vision on Apple, plus the OHOS implementation.
       ref: 789adb2638ce9063376baeacc9909aad003db48b
 
   sqflite:
@@ -77,6 +82,10 @@ dependencies:
 
 
 dependency_overrides:
+  adaptive_platform_ui:
+    path: external/adaptive_platform_ui
+  umeng_common_sdk:
+    path: external/umeng_common_sdk
   collection: ^1.19.0
   scrollable_positioned_list: 0.3.2
   url_launcher:
@@ -97,6 +106,8 @@ dev_dependencies:
   intl_utils: ^2.8.7
 
 flutter:
+  config:
+    enable-swift-package-manager: false
   uses-material-design: true
   assets:
     - res/icon.png

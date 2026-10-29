@@ -3,6 +3,9 @@ package com.lilystudio.wheretosleepinnju.widget;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.app.Activity;
+import com.lilystudio.wheretosleepinnju.liveactivity.CourseLiveActivityBridge;
+import com.lilystudio.wheretosleepinnju.liveactivity.CourseActivityEngine;
 import android.os.Build;
 import android.util.Log;
 
@@ -32,10 +35,12 @@ public class WidgetDataChannel implements MethodChannel.MethodCallHandler {
     private static final String CHANNEL_NAME = "com.wheretosleepinnju/widget_data";
 
     private final Context context;
+    private final Activity activity;
     private MethodChannel channel;
 
     public WidgetDataChannel(Context context) {
         this.context = context.getApplicationContext();
+        this.activity = context instanceof Activity ? (Activity) context : null;
     }
 
     public void register(BinaryMessenger messenger) {
@@ -53,6 +58,7 @@ public class WidgetDataChannel implements MethodChannel.MethodCallHandler {
 
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+        if (CourseLiveActivityBridge.handle(activity, context, call, result)) return;
         switch (call.method) {
             case "sendWidgetData":
                 handleSendWidgetData(call, result);
@@ -72,16 +78,9 @@ public class WidgetDataChannel implements MethodChannel.MethodCallHandler {
                 break;
             case "clearCache":
                 WidgetDataStore.clearAll(context);
+                CourseActivityEngine.clear(context);
                 ScheduleWidgetProvider.refreshAllWidgets(context);
                 result.success(true);
-                break;
-            case "sendLiveActivityData":
-            case "refreshLiveActivities":
-                // Android 没有 Live Activity 对应能力，明确返回 false 而不是假装成功
-                result.success(false);
-                break;
-            case "sendUnifiedDataPackage":
-                handleUnifiedDataPackage(call, result);
                 break;
             default:
                 result.notImplemented();
@@ -111,26 +110,10 @@ public class WidgetDataChannel implements MethodChannel.MethodCallHandler {
             return;
         }
 
+        CourseActivityEngine.onWidgetData(context);
         ScheduleWidgetProvider.refreshAllWidgets(context);
         Log.i(TAG, "sendWidgetData: saved and widgets refreshed");
         result.success(true);
-    }
-
-    private void handleUnifiedDataPackage(MethodCall call, MethodChannel.Result result) {
-        // 统一数据包里真正对 Android 小组件有用的只有 widget 部分
-        Object data = call.argument("data");
-        if (data instanceof Map) {
-            Object widget = ((Map<?, ?>) data).get("widget");
-            if (widget instanceof Map) {
-                String json = mapToJsonString((Map<?, ?>) widget);
-                if (json != null && WidgetDataStore.saveWidgetData(context, json)) {
-                    ScheduleWidgetProvider.refreshAllWidgets(context);
-                    result.success(true);
-                    return;
-                }
-            }
-        }
-        result.success(false);
     }
 
     private void handleDebugReadWidgetData(MethodChannel.Result result) {
@@ -148,6 +131,7 @@ public class WidgetDataChannel implements MethodChannel.MethodCallHandler {
 
     private Map<String, Object> buildDataStatus() {
         Map<String, Object> status = new HashMap<>();
+        status.putAll(CourseLiveActivityBridge.status(context));
         status.put("hasWidgetData", WidgetDataStore.hasData(context));
         status.put("lastUpdateTime", WidgetDataStore.getLastUpdateTime(context));
         status.put("widgetCount", countPlacedWidgets());
@@ -160,7 +144,8 @@ public class WidgetDataChannel implements MethodChannel.MethodCallHandler {
         info.put("version", Build.VERSION.RELEASE);
         info.put("model", Build.MODEL);
         info.put("supportsWidgets", true);
-        info.put("supportsLiveActivities", false);
+        info.put("supportsLiveActivities", true);
+        info.putAll(CourseLiveActivityBridge.status(context));
         info.put("widgetCount", countPlacedWidgets());
         return info;
     }

@@ -143,3 +143,10 @@ buildServer.json
 
 # Reference
 reference
+
+# Kotlin compiler session files
+/android/.kotlin/
+
+# Managed, patched upstream dependencies
+external/adaptive_platform_ui
+external/umeng_common_sdk

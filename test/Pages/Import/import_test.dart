@@ -1,3 +1,4 @@
+import 'package:wheretosleepinnju/AdaptiveUI/adaptive_ui.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -98,7 +99,7 @@ void main() {
     expect(received!['redirectUrl'], '');
     expect(received!['delayTime'], 2);
     expect(received!['preExtractJS'], 'window.ready = true;');
-    final field = tester.widget<TextFormField>(
+    final field = tester.widget<AdaptiveTextFormField>(
       find.byKey(const ValueKey('import-field-extractJS')),
     );
     expect(field.controller!.text, received!['extractJS']);

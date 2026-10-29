@@ -185,6 +185,16 @@ class S {
     );
   }
 
+  /// `自由时间课程 · {num} 门`
+  String free_courses_entry(Object num) {
+    return Intl.message(
+      '自由时间课程 · $num 门',
+      name: 'free_courses_entry',
+      desc: '',
+      args: [num],
+    );
+  }
+
   /// `查看`
   String get free_class_button {
     return Intl.message('查看', name: 'free_class_button', desc: '', args: []);
@@ -2687,6 +2697,71 @@ class S {
       name: 'background_frequency_subtitle',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `课表`
+  String get home_timetable {
+    return Intl.message('课表', name: 'home_timetable', desc: '', args: []);
+  }
+
+  /// `课程`
+  String get home_courses {
+    return Intl.message('课程', name: 'home_courses', desc: '', args: []);
+  }
+
+  /// `我的`
+  String get home_profile {
+    return Intl.message('我的', name: 'home_profile', desc: '', args: []);
+  }
+
+  /// `已添加`
+  String get course_added {
+    return Intl.message('已添加', name: 'course_added', desc: '', args: []);
+  }
+
+  /// `全校`
+  String get course_catalog {
+    return Intl.message('全校', name: 'course_catalog', desc: '', args: []);
+  }
+
+  /// `讲座`
+  String get course_lectures {
+    return Intl.message('讲座', name: 'course_lectures', desc: '', args: []);
+  }
+
+  /// `还没有课程`
+  String get home_empty_title {
+    return Intl.message('还没有课程', name: 'home_empty_title', desc: '', args: []);
+  }
+
+  /// `导入课表，或手动添加第一门课程`
+  String get home_empty_message {
+    return Intl.message(
+      '导入课表，或手动添加第一门课程',
+      name: 'home_empty_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `暂时无法读取课程，点击重试`
+  String get courses_load_failed {
+    return Intl.message(
+      '暂时无法读取课程，点击重试',
+      name: 'courses_load_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} 个上课时段`
+  String course_meetings_count(int count) {
+    return Intl.message(
+      '$count 个上课时段',
+      name: 'course_meetings_count',
+      desc: '',
+      args: [count],
     );
   }
 }

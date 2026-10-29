@@ -1,3 +1,4 @@
+import '../../AdaptiveUI/adaptive_ui.dart';
 import 'dart:async';
 import 'dart:typed_data';
 
@@ -33,8 +34,9 @@ class _QRScanViewState extends State<QRScanView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    return AdaptiveScaffold(
+      scrollUnderAppBar: false,
+      appBar: AdaptiveTopAppBar(
         title: Text(S.of(context).import_from_qrcode_title),
       ),
       body: Column(
@@ -80,14 +82,14 @@ class _QRScanViewState extends State<QRScanView> {
               child: Row(
                 children: [
                   Expanded(
-                    child: ElevatedButton(
+                    child: AdaptiveButton.elevated(
                       onPressed: _pickFromGallery,
                       child: Text(S.of(context).qr_scan_from_gallery_button),
                     ),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
-                    child: ElevatedButton(
+                    child: AdaptiveButton.elevated(
                       onPressed: _importFromClipboard,
                       child: Text(S.of(context).qr_scan_from_clipboard_button),
                     ),
@@ -203,13 +205,15 @@ class _QRScanViewState extends State<QRScanView> {
     _cleanupExpiredGroups();
 
     final merged =
-        QrPayloadCodec.mergeEncodedPayloadParts(buffer.parts, buffer.total);
+        QrPayloadCodec.mergeEncodedPayloadParts(buffer.parts, buffer.total,
+    );
     if (merged == null) {
       Toast.showToast(
           S
               .of(context)
               .qr_scan_parts_received_toast(buffer.parts.length, buffer.total),
-          context);
+          context,
+      );
       return;
     }
 

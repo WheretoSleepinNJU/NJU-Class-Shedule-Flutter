@@ -28,34 +28,38 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m3(num) => "第 ${num} 节";
 
-  static String m4(count) => "将同时删除该课程的全部 ${count} 个上课时段。";
+  static String m4(count) => "${count} 个上课时段";
 
-  static String m5(className) => "确定删除课程【 ${className} 】吗？";
+  static String m5(count) => "将同时删除该课程的全部 ${count} 个上课时段。";
 
-  static String m6(num) => "另有 ${num} 节「自由时间」课程 >>";
+  static String m6(className) => "确定删除课程【 ${className} 】吗？";
 
-  static String m7(num) => "加入当前课表(${num}人已添加)";
+  static String m7(num) => "另有 ${num} 节「自由时间」课程 >>";
 
-  static String m8(num) => "已添加(${num}人已添加)";
+  static String m8(num) => "自由时间课程 · ${num} 门";
 
-  static String m9(num) => "已结束(${num}人已添加)";
+  static String m9(num) => "加入当前课表(${num}人已添加)";
 
-  static String m10(number) => "时段 ${number}";
+  static String m10(num) => "已添加(${num}人已添加)";
 
-  static String m11(count) => "${count} 个上课时段";
+  static String m11(num) => "已结束(${num}人已添加)";
 
-  static String m12(code) =>
+  static String m12(number) => "时段 ${number}";
+
+  static String m13(count) => "${count} 个上课时段";
+
+  static String m14(code) =>
       "看起来导入失败了，都怪傻翠！\n\n本次导入错误码：${code}\n\n点击下方按钮将复制该错误码并加入用户群，你可以报告傻翠并等待修复，当然，也可以试试其他方式是否可以正常导入";
 
-  static String m13(received, total) => "已接收 ${received}/${total}";
+  static String m15(received, total) => "已接收 ${received}/${total}";
 
-  static String m14(num) => "第${num}周";
+  static String m16(num) => "第${num}周";
 
-  static String m15(start, end) => "${start}-${end} 周";
+  static String m17(start, end) => "${start}-${end} 周";
 
-  static String m16(hour) => "${hour}:00";
+  static String m18(hour) => "${hour}:00";
 
-  static String m17(minutes) => "${minutes} 分钟";
+  static String m19(minutes) => "${minutes} 分钟";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -197,8 +201,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "class_table_manage_title": MessageLookupByLibrary.simpleMessage("课表管理"),
     "class_teacher": MessageLookupByLibrary.simpleMessage("上课老师"),
     "clear_selection": MessageLookupByLibrary.simpleMessage("清空"),
+    "course_added": MessageLookupByLibrary.simpleMessage("已添加"),
+    "course_catalog": MessageLookupByLibrary.simpleMessage("全校"),
+    "course_lectures": MessageLookupByLibrary.simpleMessage("讲座"),
     "course_meetings": MessageLookupByLibrary.simpleMessage("上课时段"),
+    "course_meetings_count": m4,
     "course_weeks": MessageLookupByLibrary.simpleMessage("上课周次"),
+    "courses_load_failed": MessageLookupByLibrary.simpleMessage(
+      "暂时无法读取课程，点击重试",
+    ),
     "del_class_table_dialog_content": MessageLookupByLibrary.simpleMessage(
       "此操作无法恢复，这将删除该课程表下的所有课程。",
     ),
@@ -208,7 +219,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "del_class_table_success_toast": MessageLookupByLibrary.simpleMessage(
       "删除课程表成功",
     ),
-    "delete_all_meetings": m4,
+    "delete_all_meetings": m5,
     "delete_backgound_picture_subtitle": MessageLookupByLibrary.simpleMessage(
       "恢复默认白色背景",
     ),
@@ -217,7 +228,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "delete_backgound_picture_title": MessageLookupByLibrary.simpleMessage(
       "清除背景图片",
     ),
-    "delete_class_dialog_content": m5,
+    "delete_class_dialog_content": m6,
     "delete_class_dialog_title": MessageLookupByLibrary.simpleMessage("删除课程"),
     "delete_failed": MessageLookupByLibrary.simpleMessage("删除失败，请重新打开课程后重试"),
     "developer": MessageLookupByLibrary.simpleMessage("开发者 idealclover"),
@@ -263,8 +274,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "flutter_lts": MessageLookupByLibrary.simpleMessage("(Flutter LTS)"),
     "force_zoom_subtitle": MessageLookupByLibrary.simpleMessage("强制缩放课程表为一页"),
     "force_zoom_title": MessageLookupByLibrary.simpleMessage("强制缩放"),
-    "free_class_banner": m6,
+    "free_class_banner": m7,
     "free_class_button": MessageLookupByLibrary.simpleMessage("查看"),
+    "free_courses_entry": m8,
     "free_or_pending_time": MessageLookupByLibrary.simpleMessage(
       "Free time / Time TBD",
     ),
@@ -284,6 +296,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "hide_free_class_dialog_title": MessageLookupByLibrary.simpleMessage(
       "隐藏自由时间课程",
     ),
+    "home_courses": MessageLookupByLibrary.simpleMessage("课程"),
+    "home_empty_message": MessageLookupByLibrary.simpleMessage(
+      "导入课表，或手动添加第一门课程",
+    ),
+    "home_empty_title": MessageLookupByLibrary.simpleMessage("还没有课程"),
+    "home_profile": MessageLookupByLibrary.simpleMessage("我的"),
+    "home_timetable": MessageLookupByLibrary.simpleMessage("课表"),
     "if_show_classtime_subtitle": MessageLookupByLibrary.simpleMessage(
       "设置是否显示课程时间",
     ),
@@ -413,7 +432,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "introduction": MessageLookupByLibrary.simpleMessage(
       "博客：https://idealclover.top\nEmail：idealclover@163.com",
     ),
-    "lecture_add": m7,
+    "lecture_add": m9,
     "lecture_add_expired_toast": MessageLookupByLibrary.simpleMessage(
       "讲座已经结束了喵～",
     ),
@@ -423,7 +442,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "lecture_add_success_toast": MessageLookupByLibrary.simpleMessage(
       "讲座已添加至当前课表～",
     ),
-    "lecture_added": m8,
+    "lecture_added": m10,
     "lecture_added_toast": MessageLookupByLibrary.simpleMessage("这个讲座已经添加过啦～"),
     "lecture_bottom": MessageLookupByLibrary.simpleMessage("讲座列表由南哪消息团队提供与维护"),
     "lecture_cast_dialog_content": MessageLookupByLibrary.simpleMessage(
@@ -432,7 +451,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "lecture_cast_dialog_title": MessageLookupByLibrary.simpleMessage(
       "讲座时间不完全对应",
     ),
-    "lecture_expired": m9,
+    "lecture_expired": m11,
     "lecture_no_classroom": MessageLookupByLibrary.simpleMessage("暂无地点"),
     "lecture_no_info": MessageLookupByLibrary.simpleMessage("暂无信息"),
     "lecture_no_name": MessageLookupByLibrary.simpleMessage("暂无名称"),
@@ -451,8 +470,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "love_but_no_money": MessageLookupByLibrary.simpleMessage("感谢制作，但我没钱"),
     "manage_table_subtitle": MessageLookupByLibrary.simpleMessage("添加或删除课表数据"),
     "manage_table_title": MessageLookupByLibrary.simpleMessage("课表管理"),
-    "meeting_number": m10,
-    "meetings_count": m11,
+    "meeting_number": m12,
+    "meetings_count": m13,
     "month": MessageLookupByLibrary.simpleMessage("月"),
     "more_settings_subtitle": MessageLookupByLibrary.simpleMessage(
       "课表样式设置，高级设置与试验功能",
@@ -481,7 +500,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "parse_error_dialog_add_group": MessageLookupByLibrary.simpleMessage(
       "加入用户群报告问题",
     ),
-    "parse_error_dialog_content": m12,
+    "parse_error_dialog_content": m14,
     "parse_error_dialog_other_ways": MessageLookupByLibrary.simpleMessage(
       "试试其他导入方式",
     ),
@@ -506,7 +525,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "qr_scan_from_gallery_button": MessageLookupByLibrary.simpleMessage(
       "相册导入二维码",
     ),
-    "qr_scan_parts_received_toast": m13,
+    "qr_scan_parts_received_toast": m15,
     "qr_share_copy_button": MessageLookupByLibrary.simpleMessage("复制完整分享串"),
     "qr_share_copy_success_toast": MessageLookupByLibrary.simpleMessage(
       "已复制完整分享串",
@@ -592,9 +611,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "view_week_timetable": MessageLookupByLibrary.simpleMessage(
       "View week timetable",
     ),
-    "week": m14,
+    "week": m16,
     "week_day": MessageLookupByLibrary.simpleMessage("上课日期"),
-    "week_duration": m15,
+    "week_duration": m17,
     "week_num_invalid_dialog_content": MessageLookupByLibrary.simpleMessage(
       "课程结束周数应大于起始周数",
     ),
@@ -623,8 +642,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "widget_approaching_minutes_title": MessageLookupByLibrary.simpleMessage(
       "即将上课提醒时间",
     ),
-    "widget_hour_unit": m16,
-    "widget_minutes_unit": m17,
+    "widget_hour_unit": m18,
+    "widget_minutes_unit": m19,
     "widget_settings_saved": MessageLookupByLibrary.simpleMessage("小组件设置已保存"),
     "widget_tomorrow_preview_hour_subtitle":
         MessageLookupByLibrary.simpleMessage("晚上几点后显示明天的课程"),

@@ -65,13 +65,18 @@ jobs:
             external/flutter_packages
             external/flutter_plus_plugins_package_info_plus
             external/fluttertpc_device_calendar
-          key: flutter-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.fvmrc', 'pubspec.lock', 'tool/ci/bootstrap.sh') }}
+            external/adaptive_platform_ui
+            external/umeng_common_sdk
+          key: flutter-${{ runner.os }}-${{ runner.arch }}-android-${{ hashFiles('.fvmrc', 'pubspec.lock', 'tool/ci/bootstrap.sh', 'tool/ci/apply_dependency_patches.py', 'third_party/patches/**') }}
       - name: Install pinned Flutter and dependencies
         run: bash tool/ci/bootstrap.sh
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
       - name: Flutter and import regression tests
         run: |
           flutter test
-          node --test test/api/thuyjsjw.test.cjs
+          node --test test/api/*.test.cjs test/native/*_test.cjs
 
   build:
     needs: [plan, test]
@@ -80,7 +85,7 @@ jobs:
       matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 90
-    name: ${{ matrix.platform }} (${{ github.event_name == 'workflow_dispatch' && inputs.signed && 'signed' || 'unsigned' }})
+    name: ${{ matrix.platform }} (${{ github.event_name == 'workflow_dispatch' && inputs.signed && 'signed' || (matrix.platform == 'android' && 'default-signed' || 'unsigned') }})
     steps:
       - uses: actions/checkout@v4
         with:
@@ -97,7 +102,9 @@ jobs:
             external/flutter_packages
             external/flutter_plus_plugins_package_info_plus
             external/fluttertpc_device_calendar
-          key: flutter-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.fvmrc', 'pubspec.lock', 'tool/ci/bootstrap.sh') }}
+            external/adaptive_platform_ui
+            external/umeng_common_sdk
+          key: flutter-${{ runner.os }}-${{ runner.arch }}-${{ matrix.platform }}-${{ hashFiles('.fvmrc', 'pubspec.lock', 'tool/ci/bootstrap.sh', 'tool/ci/apply_dependency_patches.py', 'third_party/patches/**') }}
       - name: Install pinned Flutter and dependencies
         run: bash tool/ci/bootstrap.sh
 
@@ -105,7 +112,7 @@ jobs:
         if: matrix.platform != 'ios'
         with:
           distribution: temurin
-          java-version: ${{ matrix.platform == 'ohos' && '21' || '17' }}
+          java-version: '21'
       - name: Select Flutter JDK
         if: matrix.platform == 'android'
         run: flutter config --jdk-dir "$JAVA_HOME"
@@ -117,14 +124,14 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         if: matrix.platform == 'android'
         with:
-          gradle-version: '8.13'
+          gradle-version: '9.5.0'
       - name: Prepare Android SDK and Gradle wrapper
         if: matrix.platform == 'android'
         run: |
-          sdkmanager 'platforms;android-36' 'build-tools;35.0.0'
+          sdkmanager 'platforms;android-37.0' 'build-tools;36.0.0' 'ndk;28.2.13676358'
           mkdir -p "$RUNNER_TEMP/gradle-wrapper"
           touch "$RUNNER_TEMP/gradle-wrapper/settings.gradle"
-          gradle -p "$RUNNER_TEMP/gradle-wrapper" wrapper --gradle-version 8.13 --distribution-type bin
+          gradle -p "$RUNNER_TEMP/gradle-wrapper" wrapper --gradle-version 9.5.0 --distribution-type bin
           cp "$RUNNER_TEMP/gradle-wrapper/gradlew" android/
           cp "$RUNNER_TEMP/gradle-wrapper/gradle/wrapper/gradle-wrapper.jar" android/gradle/wrapper/
           chmod +x android/gradlew
@@ -136,6 +143,9 @@ jobs:
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: python3 tool/ci/configure_signing.py android --signed
+      - name: Android activity and widget regression tests
+        if: matrix.platform == 'android'
+        run: ./android/gradlew -p android :app:testDebugUnitTest -Ptarget-platform=android-arm64
       - name: Build Android APK
         if: matrix.platform == 'android'
         run: |
@@ -144,10 +154,10 @@ jobs:
           apk=$(find build/app/outputs -name '*release*.apk' -type f | head -n 1)
           test -n "$apk"
           if [[ "$BUILD_SIGNED" == true ]]; then
-            "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify "$apk"
+            "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify "$apk"
             cp "$apk" artifacts/android-signed.apk
           else
-            cp "$apk" artifacts/android-unsigned.apk
+            cp "$apk" artifacts/android-default-signed.apk
           fi
 
       - name: Select Xcode
@@ -178,6 +188,9 @@ jobs:
           IOS_WIDGET_PROFILE_BASE64: ${{ secrets.IOS_WIDGET_PROFILE_BASE64 }}
           IOS_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
         run: python3 tool/ci/configure_signing.py ios --signed
+      - name: iOS widget calendar regression tests
+        if: matrix.platform == 'ios'
+        run: sh tool/test_widget_schedule.sh
       - name: Build iOS archive or IPA
         if: matrix.platform == 'ios'
         run: |
@@ -240,7 +253,7 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.platform }}-${{ env.BUILD_SIGNED == 'true' && 'signed' || 'unsigned' }}-${{ github.run_number }}
+          name: ${{ matrix.platform }}-${{ env.BUILD_SIGNED == 'true' && 'signed' || (matrix.platform == 'android' && 'default-signed' || 'unsigned') }}-${{ github.run_number }}
           path: artifacts/
           if-no-files-found: error
           retention-days: 14

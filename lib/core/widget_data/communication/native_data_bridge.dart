@@ -7,20 +7,23 @@ import '../models/live_activity_data.dart';
 /// Flutter 到原生平台的数据通信桥接
 /// 提供统一的数据传输接口，支持 iOS、Android、HarmonyOS 等平台
 class NativeDataBridge {
-  static const MethodChannel _channel = MethodChannel('com.wheretosleepinnju/widget_data');
-  static const EventChannel _eventChannel = EventChannel('com.wheretosleepinnju/widget_data_events');
-  
+  static const MethodChannel _channel =
+      MethodChannel('com.wheretosleepinnju/widget_data');
+  static const EventChannel _eventChannel =
+      EventChannel('com.wheretosleepinnju/widget_data_events');
+
   /// 单例模式
   static final NativeDataBridge _instance = NativeDataBridge._internal();
   factory NativeDataBridge() => _instance;
   NativeDataBridge._internal();
-  
+
   /// 发送 Widget 数据到原生平台
   Future<bool> sendWidgetData(WidgetScheduleData data) async {
     try {
       print('[NativeDataBridge] 准备发送 Widget 数据到原生平台...');
       final dataJson = data.toJson();
-      print('[NativeDataBridge] JSON 序列化成功，数据大小: ${dataJson.toString().length} 字符');
+      print(
+          '[NativeDataBridge] JSON 序列化成功，数据大小: ${dataJson.toString().length} 字符');
       print('[NativeDataBridge] 调用 MethodChannel: sendWidgetData');
 
       final result = await _channel.invokeMethod('sendWidgetData', {
@@ -42,7 +45,7 @@ class NativeDataBridge {
       return false;
     }
   }
-  
+
   /// 发送 Live Activity 数据到原生平台
   Future<bool> sendLiveActivityData(List<LiveActivityData> activities) async {
     try {
@@ -58,7 +61,7 @@ class NativeDataBridge {
       return false;
     }
   }
-  
+
   /// 发送统一数据包（包含所有类型的数据）
   Future<bool> sendUnifiedDataPackage({
     WidgetScheduleData? widgetData,
@@ -72,10 +75,11 @@ class NativeDataBridge {
         'platform': _getCurrentPlatform(),
         'data': {
           if (widgetData != null) 'widget': widgetData.toJson(),
-          if (liveActivities != null) 'liveActivities': {
-            'activities': liveActivities.map((a) => a.toJson()).toList(),
-            'count': liveActivities.length,
-          },
+          if (liveActivities != null)
+            'liveActivities': {
+              'activities': liveActivities.map((a) => a.toJson()).toList(),
+              'count': liveActivities.length,
+            },
           if (customData != null) 'custom': customData,
         },
         'meta': {
@@ -85,15 +89,16 @@ class NativeDataBridge {
           'totalSize': 0, // 将在序列化后填充
         },
       };
-      
-      final result = await _channel.invokeMethod('sendUnifiedDataPackage', package);
+
+      final result =
+          await _channel.invokeMethod('sendUnifiedDataPackage', package);
       return result == true;
     } catch (e) {
       print('发送统一数据包失败: $e');
       return false;
     }
   }
-  
+
   /// 请求原生平台刷新 Widget
   Future<bool> refreshWidgets() async {
     try {
@@ -104,7 +109,7 @@ class NativeDataBridge {
       return false;
     }
   }
-  
+
   /// 请求原生平台刷新 Live Activities
   Future<bool> refreshLiveActivities() async {
     try {
@@ -115,7 +120,45 @@ class NativeDataBridge {
       return false;
     }
   }
-  
+
+  /// Android 实时活动配置，保留原有 widget_data 通道。
+  Future<Map<String, dynamic>> getLiveActivityStatus() async {
+    final result = await _channel
+        .invokeMapMethod<String, dynamic>('getLiveActivityStatus');
+    return result ?? <String, dynamic>{};
+  }
+
+  Future<Map<String, dynamic>> configureLiveActivities(
+      {bool? enabled, String? islandMode}) async {
+    final result = await _channel
+        .invokeMapMethod<String, dynamic>('configureLiveActivities', {
+      if (enabled != null) 'enabled': enabled,
+      if (islandMode != null) 'islandMode': islandMode,
+    });
+    return result ?? <String, dynamic>{};
+  }
+
+  Future<void> openLiveActivitySettings(String target) async {
+    await _channel.invokeMethod('openLiveActivitySettings', {'target': target});
+  }
+
+  Future<void> testLiveActivity() async {
+    await _channel.invokeMethod('testLiveActivity');
+  }
+
+  Future<void> authorizeIsland() async {
+    await _channel.invokeMethod('authorizeIsland');
+  }
+
+  Future<void> restoreIslandNetwork() async {
+    await _channel.invokeMethod('restoreIslandNetwork');
+  }
+
+  Future<bool> endLiveActivity(String activityId) async =>
+      await _channel
+          .invokeMethod<bool>('endLiveActivity', {'activityId': activityId}) ??
+      false;
+
   /// 获取原生平台的数据接收状态
   Future<Map<String, dynamic>?> getNativeDataStatus() async {
     try {
@@ -126,7 +169,7 @@ class NativeDataBridge {
       return null;
     }
   }
-  
+
   /// 监听原生平台的事件
   Stream<Map<String, dynamic>?> get nativeEvents {
     return _eventChannel.receiveBroadcastStream().map((event) {
@@ -136,7 +179,7 @@ class NativeDataBridge {
       return null;
     });
   }
-  
+
   /// 发送压缩数据（大数据包时使用）
   Future<bool> sendCompressedData(Uint8List compressedData) async {
     try {
@@ -151,7 +194,7 @@ class NativeDataBridge {
       return false;
     }
   }
-  
+
   /// 请求原生平台清理缓存数据
   Future<bool> clearNativeCache() async {
     try {
@@ -179,7 +222,7 @@ class NativeDataBridge {
       return null;
     }
   }
-  
+
   /// 获取当前平台
   String _getCurrentPlatform() {
     if (Platform.isIOS) return 'ios';
@@ -192,10 +235,10 @@ class NativeDataBridge {
     // 可以通过其他方式或保持默认，这里假设可能是 android 或 linux 内核，
     // 或者通过 Platform.operatingSystem 判断字符串
     if (Platform.operatingSystem == 'ohos') return 'ohos';
-    
+
     return Platform.operatingSystem;
   }
-  
+
   /// 创建数据包头部信息
   Map<String, dynamic> _createPackageHeader(String dataType) {
     return {
@@ -207,7 +250,7 @@ class NativeDataBridge {
       'encryption': 'none',
     };
   }
-  
+
   /// 验证数据包完整性
   bool _validateDataPackage(Map<String, dynamic> package) {
     try {
@@ -215,17 +258,17 @@ class NativeDataBridge {
       if (!package.containsKey('version')) return false;
       if (!package.containsKey('timestamp')) return false;
       if (!package.containsKey('data')) return false;
-      
+
       // 检查数据格式
       final data = package['data'] as Map<String, dynamic>?;
       if (data == null) return false;
-      
+
       return true;
     } catch (e) {
       return false;
     }
   }
-  
+
   /// 计算数据包大小
   int _calculatePackageSize(Map<String, dynamic> package) {
     final jsonString = jsonEncode(package);
@@ -238,11 +281,12 @@ class DataCommunicationException implements Exception {
   final String message;
   final String? platform;
   final dynamic originalError;
-  
+
   DataCommunicationException(this.message, {this.platform, this.originalError});
-  
+
   @override
-  String toString() => 'DataCommunicationException: $message' + 
+  String toString() =>
+      'DataCommunicationException: $message' +
       (platform != null ? ' (Platform: $platform)' : '') +
       (originalError != null ? ' Original: $originalError' : '');
 }
@@ -253,19 +297,20 @@ class NativePlatformResponse {
   final String? message;
   final Map<String, dynamic>? data;
   final String? error;
-  
+
   NativePlatformResponse({
     required this.success,
     this.message,
     this.data,
     this.error,
   });
-  
+
   factory NativePlatformResponse.fromJson(Map<String, dynamic> json) {
     return NativePlatformResponse(
       success: json['success'] == true,
       message: json['message'],
-      data: json['data'] != null ? Map<String, dynamic>.from(json['data']) : null,
+      data:
+          json['data'] != null ? Map<String, dynamic>.from(json['data']) : null,
       error: json['error'],
     );
   }

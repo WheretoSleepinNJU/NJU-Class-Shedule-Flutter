@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import '../../../AdaptiveUI/adaptive_ui.dart';
 import 'package:intl/intl.dart';
 
 import '../../../Resources/Constant.dart';
 import '../../../generated/l10n.dart';
 
-class TimetableHeader extends StatelessWidget {
+class TimetableHeader extends StatelessWidget implements AdaptiveNativeTitle {
   const TimetableHeader({
     super.key,
     required this.displayedWeek,
@@ -22,6 +23,31 @@ class TimetableHeader extends StatelessWidget {
 
   static double toolbarHeight(TextScaler scaler) =>
       kToolbarHeight * (scaler.clamp(maxScaleFactor: 1.4).scale(14) / 14);
+
+  @override
+  NativeTitleContent nativeTitleContent(BuildContext context) {
+    final s = S.of(context);
+    final status = currentWeek < 1
+        ? s.not_open
+        : currentWeek != displayedWeek
+        ? s.not_this_week
+        : '';
+    final week = '${s.week(displayedWeek)}${status.isEmpty ? '' : ' $status'}';
+    return NativeTitleContent(
+      title: '${s.app_name}  $week',
+      subtitle:
+          '${DateFormat('yyyy/MM/dd').format(date)} ${Constant.WEEK_WITH_BIAS[date.weekday]}',
+      onTap: onTap,
+      foreground: foregroundColor,
+      textScale:
+          MediaQuery.textScalerOf(
+            context,
+          ).clamp(maxScaleFactor: 1.4).scale(14) /
+          14,
+      semanticLabel:
+          '${s.view_week_timetable}，$week，${s.change_week_subtitle}${currentWeek < 1 ? s.not_open : s.week(currentWeek)}',
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

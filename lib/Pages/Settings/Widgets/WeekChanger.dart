@@ -1,81 +1,83 @@
+import 'PlatformSettings.dart';
 import '../../../generated/l10n.dart';
-import 'package:flutter/cupertino.dart';
+import 'SettingsCard.dart';
 import 'package:flutter/material.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../../../Utils/States/MainState.dart';
 import '../../../Utils/WeekUtil.dart';
 import '../../../Components/Toast.dart';
-import '../../../Components/Dialog.dart';
 import '../../../Resources/Config.dart';
 
-class WeekChanger extends StatelessWidget {
+class WeekChanger extends StatefulWidget {
   const WeekChanger({Key? key}) : super(key: key);
+
+  @override
+  State<WeekChanger> createState() => _WeekChangerState();
+}
+
+class _WeekChangerState extends State<WeekChanger> {
+  Future<int>? _week;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Listen to model changes, not to each unrelated parent repaint/rebuild.
+    MainStateModel.of(context);
+    _week = _getWeek(context);
+  }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<int>(
-        future: _getWeek(context),
-        builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-          if (!snapshot.hasData) {
-            return Container();
-          } else {
-            return ListTile(
-              title: Text(S.of(context).change_week_title),
-              subtitle: Text(S.of(context).change_week_subtitle +
-                  S.of(context).week(snapshot.data.toString())),
-              onTap: () async {
-                UmengCommonSdk.onEvent("week_change", {"action": "show"});
-                await showDialog<String>(
-                  context: context,
-                  builder: (BuildContext context) {
-                    int changedWeek = snapshot.data! - 1;
-                    return MDialog(
-                        S.of(context).change_week_title,
-                        SizedBox(
-                            height: 96,
-                            child: CupertinoPicker(
-                                scrollController: FixedExtentScrollController(
-                                  initialItem: snapshot.data! > Config.MAX_WEEKS
-                                      ? -1
-                                      : snapshot.data! - 1,
-                                ),
-                                itemExtent: 32.0,
-                                // backgroundColor: Colors.white,
-                                onSelectedItemChanged: (int index) {
-                                  changedWeek = index;
-                                },
-                                children: List<Widget>.generate(
-                                    Config.MAX_WEEKS, (int index) {
-                                  return Center(
-                                    child: Text(
-                                      S
-                                          .of(context)
-                                          .week((index + 1).toString()),
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          color: Theme.of(context).brightness ==
-                                                  Brightness.light
-                                              ? Colors.black
-                                              : Colors.white),
-                                    ),
-                                  );
-                                }))), widgetCancelAction: () {
-                      UmengCommonSdk.onEvent(
-                          "week_change", {"action": "cancel"});
-                      Navigator.of(context).pop();
-                    }, widgetOKAction: () async {
-                      UmengCommonSdk.onEvent(
-                          "week_change", {"action": "accept"});
-                      await changeWeek(context, changedWeek, snapshot.data!);
-                      Navigator.of(context).pop();
-                    });
-                  },
-                );
-              },
-            );
-          }
-        });
+      future: _week,
+      builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+        if (!snapshot.hasData) {
+          return Container();
+        } else {
+          return SettingsEntry(
+            icon: Icons.date_range_rounded,
+            iconColor: const Color(0xFF37AF77),
+            title: Text(S.of(context).change_week_title),
+            subtitle: Text(
+              S.of(context).change_week_subtitle +
+                  S.of(context).week(snapshot.data.toString()),
+            ),
+            onTap: () async {
+              UmengCommonSdk.onEvent("week_change", {"action": "show"});
+              final nowWeek = snapshot.data!;
+              var selected = nowWeek.clamp(1, Config.MAX_WEEKS);
+              final result = await showDialog<int>(
+                context: context,
+                builder: (dialogContext) => StatefulBuilder(
+                  builder: (context, update) => SettingsActionDialog(
+                    S.of(context).change_week_title,
+                    SettingsNumberPicker(
+                      value: selected,
+                      min: 1,
+                      max: Config.MAX_WEEKS,
+                      label: (value) => S.of(context).week('$value'),
+                      onValueChanged: (value) => update(() => selected = value),
+                    ),
+                    widgetCancelAction: () {
+                      UmengCommonSdk.onEvent('week_change', {
+                        'action': 'cancel',
+                      });
+                      Navigator.pop(dialogContext);
+                    },
+                    widgetOKAction: () =>
+                        Navigator.pop(dialogContext, selected),
+                  ),
+                ),
+              );
+              if (result != null && context.mounted) {
+                UmengCommonSdk.onEvent('week_change', {'action': 'accept'});
+                await changeWeek(context, result - 1, nowWeek);
+              }
+            },
+          );
+        }
+      },
+    );
   }
 
   Future<int> _getWeek(BuildContext context) async {
@@ -84,14 +86,17 @@ class WeekChanger extends StatelessWidget {
   }
 
   Future<bool> changeWeek(
-      BuildContext context, int changedWeek, int nowWeek) async {
+    BuildContext context,
+    int changedWeek,
+    int nowWeek,
+  ) async {
     if (changedWeek == nowWeek - 1) {
       Toast.showToast(S.of(context).nowweek_not_edited_success_toast, context);
     } else {
       await WeekUtil.setNowWeek(changedWeek + 1);
+      if (!context.mounted) return false;
       Toast.showToast(S.of(context).nowweek_edited_success_toast, context);
       ScopedModel.of<MainStateModel>(context).refresh();
-      Navigator.of(context).pop();
     }
     return true;
   }

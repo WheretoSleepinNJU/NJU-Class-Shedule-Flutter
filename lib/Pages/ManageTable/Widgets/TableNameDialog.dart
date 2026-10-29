@@ -1,3 +1,4 @@
+import '../../../AdaptiveUI/adaptive_ui.dart';
 import 'package:flutter/material.dart';
 import '../../../Components/Dialog.dart';
 import '../../../generated/l10n.dart';
@@ -29,7 +30,7 @@ class _TableNameDialogState extends State<TableNameDialog> {
     S.of(context).rename_table,
     Form(
       key: _form,
-      child: TextFormField(
+      child: AdaptiveTextFormField(
         key: const ValueKey('table-name-input'),
         controller: _controller,
         autofocus: true,

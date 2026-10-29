@@ -1,3 +1,4 @@
+import '../../../AdaptiveUI/adaptive_ui.dart';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -21,14 +22,14 @@ Future<WeekSelection?> showWeekPickerSheet(
   isScrollControlled: true,
   useSafeArea: true,
   showDragHandle: true,
-  backgroundColor: Theme.of(context).colorScheme.surface,
+  backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
   shape: const RoundedRectangleBorder(
     borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
   ),
   builder:
       (_) => WeekPickerSheet(
         currentWeek: currentWeek,
-        displayedWeek: displayedWeek,
+        displayedWeek: displayedWeek
       ),
 );
 
@@ -84,7 +85,7 @@ class _WeekPickerSheetState extends State<WeekPickerSheet> {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    TextButton(
+                    AdaptiveButton.text(
                       key: const ValueKey('week-picker-mode'),
                       style: TextButton.styleFrom(
                         foregroundColor: colors.primary,
@@ -190,7 +191,7 @@ class _WeekPickerSheetState extends State<WeekPickerSheet> {
                 ),
                 if (_editingCurrentWeek) ...[
                   const SizedBox(height: 16),
-                  FilledButton(
+                  AdaptiveButton.filled(
                     key: const ValueKey('confirm-current-week'),
                     onPressed:
                         _selectedWeek == widget.currentWeek

@@ -1,3 +1,4 @@
+import 'Widgets/PlatformSettings.dart';
 import 'dart:io';
 import '../../generated/l10n.dart';
 import 'package:flutter/services.dart';
@@ -10,248 +11,331 @@ import 'package:dio/dio.dart';
 import '../ManageTable/ManageTableView.dart';
 import '../Import/ImportView.dart';
 
-// import '../AllCourse/AllCourseView.dart';
 import '../Lecture/LecturesView.dart';
 import '../About/AboutView.dart';
 import '../AddCourse/AddCourseView.dart';
 import 'MoreSettingsView.dart';
 import 'BackgroundSettingsView.dart';
 import 'WidgetSettingsView.dart';
+import 'LiveActivitySettingsView.dart';
 import '../Share/ShareView.dart';
 import '../../Components/Toast.dart';
 import '../../Resources/Config.dart';
 import '../../Resources/Url.dart';
 
 import 'Widgets/WeekChanger.dart';
+import 'Widgets/SettingsCard.dart';
 import '../../core/widget_data/utils/widget_refresh_helper.dart';
 
 class SettingsView extends StatefulWidget {
-  const SettingsView({Key? key}) : super(key: key);
+  const SettingsView({Key? key, this.profile = false}) : super(key: key);
+  final bool profile;
 
   @override
   _SettingsViewState createState() => _SettingsViewState();
 }
 
 class _SettingsViewState extends State<SettingsView> {
-
-
+  late final Future<String> _version = _getVersion();
+  late final Future<bool> _donate = _shouldShowDonate();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(S.of(context).settings_title),
-      ),
-      body: SafeArea(
-          child: SingleChildScrollView(
-              child: Column(
-                  children: ListTile.divideTiles(context: context, tiles: [
-        ListTile(
-          title: Text(S.of(context).import_manually_title),
-          subtitle: Text(S.of(context).import_manually_subtitle),
-          onTap: () {
-            UmengCommonSdk.onEvent(
-                "class_import", {"type": "manual", "action": "show"});
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => const AddView()));
-          },
-        ),
-        ListTile(
-          title: Text(S.of(context).import_title),
-          subtitle: Text(S.of(context).import_subtitle),
-          onTap: () async {
-            UmengCommonSdk.onEvent(
-                "class_import", {"type": "auto", "action": "show"});
-            bool? status = await Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => const ImportView()));
-            if (status == true) Navigator.of(context).pop(status);
-          },
-        ),
-        //TODO: 全校课程
-        // ListTile(
-        //   title: Text(S.of(context).all_course_title),
-        //   subtitle: Text(S.of(context).all_course_subtitle),
-        //   onTap: () async {
-        //     UmengCommonSdk.onEvent(
-        //         "class_import", {"type": "all", "action": "show"});
-        //     bool? status = await Navigator.of(context).push(
-        //         MaterialPageRoute(
-        //             builder: (BuildContext context) => const AllCourseView()));
-        //     if (status == true) Navigator.of(context).pop(status);
-        //   },
-        // ),
-        ListTile(
-          title: Text(S.of(context).view_lecture_title),
-          subtitle: Text(S.of(context).view_lecture_subtitle),
-          onTap: () async {
-            UmengCommonSdk.onEvent(
-                "class_import", {"type": "lecture", "action": "show"});
-            bool? status = await Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => const LectureView()));
-            if (status == true) Navigator.of(context).pop(status);
-          },
-        ),
-        // ListTile(
-        //   title: Text(S.of(context).import_from_NJU_title),
-        //   subtitle: Text(S.of(context).import_from_NJU_subtitle),
-        //   onTap: () async {
-        //     bool status = await Navigator.of(context).push(
-        //         MaterialPageRoute(
-        //             builder: (BuildContext context) => ImportView()));
-        //     if (status == true) Navigator.of(context).pop(status);
-        //   },
-        // ),
-        // ListTile(
-        //   title: Text(S.of(context).import_from_NJU_cer_title),
-        //   subtitle: Text(S.of(context).import_from_NJU_cer_subtitle),
-        //   onTap: () async {
-        //     bool status = await Navigator.of(context).push(
-        //         MaterialPageRoute(
-        //             builder: (BuildContext context) =>
-        //                 ImportFromWebView()));
-        //     if (status == true) Navigator.of(context).pop(status);
-        //   },
-        // ),
-        // ListTile(
-        //   title: Text(S.of(context).import_from_NJU_xk_title),
-        //   subtitle: Text(S.of(context).import_from_NJU_xk_subtitle),
-        //   onTap: () async {
-        //     bool? status = await Navigator.of(context).push(
-        //         MaterialPageRoute(
-        //             builder: (BuildContext context) =>
-        //                 ImportFromXKView()));
-        //     if (status == true) Navigator.of(context).pop(status);
-        //   },
-        // ),
-        ListTile(
-          title: Text(S.of(context).import_or_export_title),
-          subtitle: Text(S.of(context).import_or_export_subtitle),
-          onTap: () {
-            UmengCommonSdk.onEvent("qr_import", {"action": "show"});
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => const ShareView()));
-          },
-        ),
-        ListTile(
-          title: Text(S.of(context).manage_table_title),
-          subtitle: Text(S.of(context).manage_table_subtitle),
-          onTap: () {
-            UmengCommonSdk.onEvent("schedule_manage", {"action": "show"});
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => const ManageTableView()));
-          },
-        ),
-        ListTile(
-          key: const ValueKey('background-settings'),
-          title: Text(S.of(context).background_settings_title),
-          subtitle: Text(S.of(context).background_settings_subtitle),
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (_) => const BackgroundSettingsView())),
-        ),
-        ListTile(
-          title: Text(S.of(context).more_settings_title),
-          subtitle: Text(S.of(context).more_settings_subtitle),
-          onTap: () {
-            UmengCommonSdk.onEvent("more_setting", {"action": "show"});
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => const MoreSettingsView()));
-          },
-        ),
-        // Widget settings - 具备原生小组件实现的平台（iOS / Android）
-        if (WidgetRefreshHelper.isSupportedPlatform)
-          ListTile(
-            title: Text(S.of(context).widget_and_live_activity_settings_title),
-            subtitle:
-                Text(S.of(context).widget_and_live_activity_settings_subtitle),
-            onTap: () {
-              UmengCommonSdk.onEvent("widget_setting", {"action": "show"});
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) =>
-                      const WidgetSettingsView()));
-            },
-          ),
-        const WeekChanger(),
-        ListTile(
-          title: Text(S.of(context).share_title),
-          subtitle: Text(S.of(context).share_subtitle),
-          onTap: () {
-            UmengCommonSdk.onEvent("app_share", {"action": "show"});
-            ShareExtend.share(S.of(context).share_content, "text");
-          },
-        ),
-        ListTile(
-          title: Text(S.of(context).report_title),
-          subtitle: Text(S.of(context).report_subtitle),
-          onTap: () async {
-            UmengCommonSdk.onEvent("group_add", {"action": "show"});
-            bool status = false;
-            if (Platform.isIOS) {
-              status = await _launchURL(Url.QQ_GROUP_APPLE_URL);
-            } else if (Platform.isAndroid) {
-              status = await _launchURL(Url.QQ_GROUP_ANDROID_URL);
-            } else if (Platform.operatingSystem == 'ohos') {
-              status = await _launchURL(Url.QQ_GROUP_OHOS_URL);
-            }
-            if (!status) {
-              Toast.showToast(S.of(context).QQ_open_fail_toast, context);
-            }
-          },
-          onLongPress: () async {
-            UmengCommonSdk.onEvent("group_add", {"action": "copy"});
-            if (Platform.isIOS) {
-              await Clipboard.setData(
-                  const ClipboardData(text: Config.IOS_GROUP));
-            } else if (Platform.isAndroid) {
-              await Clipboard.setData(
-                  const ClipboardData(text: Config.ANDROID_GROUP));
-            } else if (Platform.operatingSystem == 'ohos') {
-              await Clipboard.setData(
-                  const ClipboardData(text: Config.OHOS_GROUP));
-            }
-            Toast.showToast(S.of(context).QQ_copy_success_toast, context);
-          },
-        ),
-        FutureBuilder<bool>(
-            future: _shouldShowDonate(),
-            builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-              if (snapshot.hasData && snapshot.data == false) {
-                return Container(width: 0, height: 0);
-              }
-              return ListTile(
-                  title: Text(S.of(context).donate_title),
-                  subtitle: Text(S.of(context).donate_subtitle),
+    return SettingsScaffold(
+      title: widget.profile
+          ? S.of(context).home_profile
+          : S.of(context).settings_title,
+      body: SettingsListView(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+        children: [
+          SettingsCard(
+            children: [
+              if (!widget.profile)
+                SettingsEntry(
+                  icon: Icons.add_rounded,
+                  iconColor: const Color(0xFF3478F6),
+                  title: Text(S.of(context).import_manually_title),
+                  subtitle: Text(S.of(context).import_manually_subtitle),
+                  onTap: () {
+                    UmengCommonSdk.onEvent("class_import", {
+                      "type": "manual",
+                      "action": "show",
+                    });
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => const AddView(),
+                      ),
+                    );
+                  },
+                ),
+              if (!widget.profile)
+                SettingsEntry(
+                  icon: Icons.download_rounded,
+                  iconColor: const Color(0xFF3478F6),
+                  title: Text(S.of(context).import_title),
+                  subtitle: Text(S.of(context).import_subtitle),
                   onTap: () async {
-                    UmengCommonSdk.onEvent("donate_click", {"action": "show"});
-                    bool status = false;
-                    if (Platform.isIOS) {
-                      status = await _launchURL(Url.URL_APPLE);
-                    } else if (Platform.isAndroid) {
-                      status = await _launchURL(Url.URL_ANDROID);
-                    } else if (Platform.operatingSystem == 'ohos') {
-                      status = await _launchURL(Url.URL_OHOS);
+                    UmengCommonSdk.onEvent("class_import", {
+                      "type": "auto",
+                      "action": "show",
+                    });
+                    bool? status = await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => const ImportView(),
+                      ),
+                    );
+                    if (status == true) {
+                      Navigator.of(context).pop(status);
                     }
-                    if (!status) {
-                      Toast.showToast(S.of(context).pay_open_fail_toast, context);
+                  },
+                ),
+              if (!widget.profile)
+                SettingsEntry(
+                  icon: Icons.campaign_rounded,
+                  iconColor: const Color(0xFFEF9B27),
+                  title: Text(S.of(context).view_lecture_title),
+                  subtitle: Text(S.of(context).view_lecture_subtitle),
+                  onTap: () async {
+                    UmengCommonSdk.onEvent("class_import", {
+                      "type": "lecture",
+                      "action": "show",
+                    });
+                    bool? status = await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => const LectureView(),
+                      ),
+                    );
+                    if (status == true) {
+                      Navigator.of(context).pop(status);
                     }
-                  });
-            }),
-        ListTile(
-          title: Text(S.of(context).about_title),
-          subtitle: FutureBuilder<String>(
-              future: _getVersion(),
-              builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-                if (!snapshot.hasData) {
-                  return Container();
-                } else {
-                  return Text(snapshot.data! + S.of(context).flutter_lts);
-                }
-              }),
-          onTap: () {
-            UmengCommonSdk.onEvent("about_click", {"action": "show"});
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => const AboutView()));
-          },
-        )
-      ]).toList()))),
+                  },
+                ),
+              SettingsEntry(
+                icon: Icons.qr_code_rounded,
+                iconColor: const Color(0xFF4EAAF0),
+                title: Text(S.of(context).import_or_export_title),
+                subtitle: Text(S.of(context).import_or_export_subtitle),
+                onTap: () {
+                  UmengCommonSdk.onEvent("qr_import", {"action": "show"});
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => const ShareView(),
+                    ),
+                  );
+                },
+              ),
+              SettingsEntry(
+                icon: Icons.calendar_month_rounded,
+                iconColor: const Color(0xFF37AF77),
+                title: Text(S.of(context).manage_table_title),
+                subtitle: Text(S.of(context).manage_table_subtitle),
+                onTap: () {
+                  UmengCommonSdk.onEvent("schedule_manage", {"action": "show"});
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          const ManageTableView(),
+                    ),
+                  );
+                },
+              ),
+              const WeekChanger(),
+            ],
+          ),
+          SettingsCard(
+            children: [
+              SettingsEntry(
+                key: const ValueKey('background-settings'),
+                icon: Icons.wallpaper_rounded,
+                iconColor: const Color(0xFF8E6BE8),
+                title: Text(S.of(context).background_settings_title),
+                subtitle: Text(S.of(context).background_settings_subtitle),
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const BackgroundSettingsView(),
+                  ),
+                ),
+              ),
+              SettingsEntry(
+                icon: Icons.tune_rounded,
+                iconColor: const Color(0xFF6C81A6),
+                title: Text(S.of(context).more_settings_title),
+                subtitle: Text(S.of(context).more_settings_subtitle),
+                onTap: () {
+                  UmengCommonSdk.onEvent("more_setting", {"action": "show"});
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          const MoreSettingsView(),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+          if (WidgetRefreshHelper.isSupportedPlatform ||
+              Platform.operatingSystem == 'ohos')
+            SettingsCard(
+              children: [
+                if (WidgetRefreshHelper.isSupportedPlatform)
+                  SettingsEntry(
+                    icon: Icons.widgets_rounded,
+                    iconColor: const Color(0xFF3478F6),
+                    title: Text(
+                      S.of(context).widget_and_live_activity_settings_title,
+                    ),
+                    subtitle: Text(
+                      S.of(context).widget_and_live_activity_settings_subtitle,
+                    ),
+                    onTap: () {
+                      UmengCommonSdk.onEvent("widget_setting", {
+                        "action": "show",
+                      });
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              const WidgetSettingsView(),
+                        ),
+                      );
+                    },
+                  ),
+                if (WidgetRefreshHelper.isSupportedPlatform)
+                  SettingsEntry(
+                    key: const ValueKey('live-activity-settings'),
+                    icon: Icons.notifications_active_rounded,
+                    iconColor: const Color(0xFF37AF77),
+                    title: Text(LiveActivitySettingsView.settingsTitle),
+                    subtitle: Text(
+                      Platform.isIOS ? '暂未完成接入' : '课前提醒、展示模式与运行状态',
+                    ),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const LiveActivitySettingsView(),
+                      ),
+                    ),
+                  ),
+                if (Platform.operatingSystem == 'ohos')
+                  const SettingsEntry(
+                    key: ValueKey('live-view-settings'),
+                    icon: Icons.notifications_active_rounded,
+                    iconColor: Color(0xFF37AF77),
+                    title: Text('实况窗'),
+                    subtitle: Text('暂未接入'),
+                    enabled: false,
+                  ),
+              ],
+            ),
+          SettingsCard(
+            children: [
+              SettingsEntry(
+                icon: Icons.ios_share_rounded,
+                iconColor: const Color(0xFF3478F6),
+                title: Text(S.of(context).share_title),
+                subtitle: Text(S.of(context).share_subtitle),
+                onTap: () {
+                  UmengCommonSdk.onEvent("app_share", {"action": "show"});
+                  ShareExtend.share(S.of(context).share_content, "text");
+                },
+              ),
+              SettingsEntry(
+                icon: Icons.chat_bubble_outline_rounded,
+                iconColor: const Color(0xFF37AF77),
+                title: Text(S.of(context).report_title),
+                subtitle: Text(S.of(context).report_subtitle),
+                onTap: () async {
+                  UmengCommonSdk.onEvent("group_add", {"action": "show"});
+                  bool status = false;
+                  if (Platform.isIOS) {
+                    status = await _launchURL(Url.QQ_GROUP_APPLE_URL);
+                  } else if (Platform.isAndroid) {
+                    status = await _launchURL(Url.QQ_GROUP_ANDROID_URL);
+                  } else if (Platform.operatingSystem == 'ohos') {
+                    status = await _launchURL(Url.QQ_GROUP_OHOS_URL);
+                  }
+                  if (!status) {
+                    Toast.showToast(S.of(context).QQ_open_fail_toast, context);
+                  }
+                },
+                onLongPress: () async {
+                  UmengCommonSdk.onEvent("group_add", {"action": "copy"});
+                  if (Platform.isIOS) {
+                    await Clipboard.setData(
+                      const ClipboardData(text: Config.IOS_GROUP),
+                    );
+                  } else if (Platform.isAndroid) {
+                    await Clipboard.setData(
+                      const ClipboardData(text: Config.ANDROID_GROUP),
+                    );
+                  } else if (Platform.operatingSystem == 'ohos') {
+                    await Clipboard.setData(
+                      const ClipboardData(text: Config.OHOS_GROUP),
+                    );
+                  }
+                  Toast.showToast(S.of(context).QQ_copy_success_toast, context);
+                },
+              ),
+              FutureBuilder<bool>(
+                future: _donate,
+                builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                  if (snapshot.hasData && snapshot.data == false) {
+                    return const SizedBox.shrink();
+                  }
+                  return SettingsEntry(
+                    icon: Icons.favorite_rounded,
+                    iconColor: const Color(0xFFEF789B),
+                    title: Text(S.of(context).donate_title),
+                    subtitle: Text(S.of(context).donate_subtitle),
+                    onTap: () async {
+                      UmengCommonSdk.onEvent("donate_click", {
+                        "action": "show",
+                      });
+                      bool status = false;
+                      if (Platform.isIOS) {
+                        status = await _launchURL(Url.URL_APPLE);
+                      } else if (Platform.isAndroid) {
+                        status = await _launchURL(Url.URL_ANDROID);
+                      } else if (Platform.operatingSystem == 'ohos') {
+                        status = await _launchURL(Url.URL_OHOS);
+                      }
+                      if (!status) {
+                        Toast.showToast(
+                          S.of(context).pay_open_fail_toast,
+                          context,
+                        );
+                      }
+                    },
+                  );
+                },
+              ),
+              SettingsEntry(
+                icon: Icons.info_outline_rounded,
+                iconColor: const Color(0xFF8796A8),
+                title: Text(S.of(context).about_title),
+                subtitle: FutureBuilder<String>(
+                  future: _version,
+                  builder:
+                      (BuildContext context, AsyncSnapshot<String> snapshot) {
+                        if (!snapshot.hasData) {
+                          return Container();
+                        } else {
+                          return Text(
+                            snapshot.data! + S.of(context).flutter_lts,
+                          );
+                        }
+                      },
+                ),
+                onTap: () {
+                  UmengCommonSdk.onEvent("about_click", {"action": "show"});
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => const AboutView(),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -260,8 +344,13 @@ class _SettingsViewState extends State<SettingsView> {
       return true;
     }
     try {
-      String currentVersion = await _getVersion();
-      final dio = Dio();
+      String currentVersion = await _version;
+      final dio = Dio(
+        BaseOptions(
+          connectTimeout: const Duration(seconds: 10),
+          receiveTimeout: const Duration(seconds: 10),
+        ),
+      );
       final response = await dio.get('${Url.UPDATE_ROOT}/showDonate.json');
       return response.data[currentVersion] ?? false;
     } catch (e) {
@@ -275,11 +364,8 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   Future<bool> _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-      return true;
-    } else {
-      return false;
-    }
+    final uri = Uri.tryParse(url);
+    if (uri == null || !await canLaunchUrl(uri)) return false;
+    return launchUrl(uri);
   }
 }

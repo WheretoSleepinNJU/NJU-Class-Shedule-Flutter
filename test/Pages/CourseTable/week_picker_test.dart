@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:wheretosleepinnju/AdaptiveUI/adaptive_ui.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -27,40 +28,33 @@ Widget harness({
     GlobalCupertinoLocalizations.delegate,
   ],
   theme: AppThemes.build('#0095F9', brightness, useSeedScheme: false),
-  builder:
-      (context, child) => MediaQuery(
-        data: MediaQuery.of(
-          context,
-        ).copyWith(textScaler: TextScaler.linear(scale)),
-        child: child!,
-      ),
+  builder: (context, child) => MediaQuery(
+    data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(scale)),
+    child: child!,
+  ),
   home: Builder(
-    builder:
-        (context) => Scaffold(
-          appBar: AppBar(
-            centerTitle: false,
-            titleSpacing: 16,
-            toolbarHeight: TimetableHeader.toolbarHeight(
-              TextScaler.linear(scale),
-            ),
-            title: TimetableHeader(
-              displayedWeek: displayed,
+    builder: (context) => Scaffold(
+      appBar: AppBar(
+        centerTitle: false,
+        titleSpacing: 16,
+        toolbarHeight: TimetableHeader.toolbarHeight(TextScaler.linear(scale)),
+        title: TimetableHeader(
+          displayedWeek: displayed,
+          currentWeek: current,
+          date: DateTime(2026, 10, 25),
+          onTap: () async => result(
+            await showWeekPickerSheet(
+              context,
               currentWeek: current,
-              date: DateTime(2026, 10, 25),
-              onTap:
-                  () async => result(
-                    await showWeekPickerSheet(
-                      context,
-                      currentWeek: current,
-                      displayedWeek: displayed,
-                    ),
-                  ),
+              displayedWeek: displayed,
             ),
-            actions: [
-              IconButton(onPressed: () {}, icon: const Icon(Icons.settings)),
-            ],
           ),
         ),
+        actions: [
+          IconButton(onPressed: () {}, icon: const Icon(Icons.settings)),
+        ],
+      ),
+    ),
   ),
 );
 
@@ -184,11 +178,11 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('week-picker-mode')));
     await tester.pumpAndSettle();
     final confirm = find.byKey(const ValueKey('confirm-current-week'));
-    expect(tester.widget<FilledButton>(confirm).onPressed, isNull);
+    expect(tester.widget<AdaptiveButton>(confirm).onPressed, isNull);
     await tester.tap(find.byKey(const ValueKey('week-picker-9')));
     await tester.pumpAndSettle();
     expect(chosen, isNull);
-    expect(tester.widget<FilledButton>(confirm).onPressed, isNotNull);
+    expect(tester.widget<AdaptiveButton>(confirm).onPressed, isNotNull);
     await tester.tap(confirm);
     await tester.pumpAndSettle();
     expect(chosen?.week, 9);
@@ -237,11 +231,11 @@ void main() {
           of: find.byKey(const ValueKey('week-picker-grid')),
           matching: find.byType(Scrollable),
         );
-        await tester.scrollUntilVisible(
-          find.byKey(const ValueKey('week-picker-25')),
-          160,
-          scrollable: grid,
-        );
+        // Exercise the grid's scroll extent directly; synthetic drags on this
+        // binding also leave the original Material picker at offset zero.
+        final position = tester.state<ScrollableState>(grid).position;
+        expect(position.maxScrollExtent, greaterThan(0));
+        position.jumpTo(position.maxScrollExtent);
         await tester.pumpAndSettle();
         expect(
           find.byKey(const ValueKey('week-picker-25')).hitTestable(),

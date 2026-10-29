@@ -1,3 +1,4 @@
+import 'package:wheretosleepinnju/AdaptiveUI/adaptive_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -57,8 +58,11 @@ void main() {
           ),
         );
         await tester.pumpAndSettle();
-        ListTile tile(String name) => tester.widget<ListTile>(
-          find.ancestor(of: find.text(name), matching: find.byType(ListTile)),
+        AdaptiveListTile tile(String name) => tester.widget<AdaptiveListTile>(
+          find.ancestor(
+            of: find.text(name),
+            matching: find.byType(AdaptiveListTile),
+          ),
         );
         expect(tile('当前学期').selected, isTrue);
         expect(find.byIcon(Icons.check_circle), findsOneWidget);
@@ -80,7 +84,7 @@ void main() {
           find.descendant(
             of: find.ancestor(
               of: find.text('下个学期'),
-              matching: find.byType(ListTile),
+              matching: find.byType(AdaptiveListTile),
             ),
             matching: find.byIcon(Icons.check_circle),
           ),

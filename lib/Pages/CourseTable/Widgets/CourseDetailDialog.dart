@@ -1,3 +1,5 @@
+import '../../../AdaptiveUI/adaptive_ui.dart';
+import 'CourseScheduleText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -67,7 +69,7 @@ class CourseDetailsDialog extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             ),
           ),
-          child: Dialog(
+          child: AdaptiveDialogFrame(
             backgroundColor: Colors.transparent,
             elevation: 0,
             insetPadding: const EdgeInsets.symmetric(
@@ -106,10 +108,9 @@ class CourseDetailsDialog extends StatelessWidget {
                                   meetings: groups?[i],
                                   isActive: isActive(courses[i]),
                                   classTimeList: classTimeList,
-                                  onEdit:
-                                      onEdit == null
-                                          ? null
-                                          : () => onEdit!(courses[i]),
+                                  onEdit: onEdit == null
+                                      ? null
+                                      : () => onEdit!(courses[i]),
                                 ),
                               ),
                             ],
@@ -154,43 +155,6 @@ class CourseDetailCard extends StatelessWidget {
     this.classTimeList = Constant.CLASS_TIME_LIST,
   });
 
-  String _weeks(BuildContext context, Course meeting) {
-    final weeks = meeting.weekNumbers, s = S.of(context);
-    if (weeks.isEmpty) return s.weeks_pending;
-    if (weeks.length == 1) return s.week(weeks.first);
-    final range = s.week_duration(weeks.first, weeks.last);
-    if (List.generate(
-      weeks.length,
-      (i) => weeks[i] == weeks.first + i,
-    ).every((v) => v)) {
-      return range;
-    }
-    if (List.generate(
-      weeks.length,
-      (i) => weeks[i] == weeks.first + 2 * i,
-    ).every((v) => v)) {
-      return '$range ${weeks.first.isOdd ? s.single_week : s.double_week}';
-    }
-    return weeks.map((w) => s.week(w)).join('、');
-  }
-
-  String _time(BuildContext context, Course meeting) {
-    final start = meeting.startTime ?? 0,
-        end = start + (meeting.timeCount ?? 0),
-        day = meeting.weekTime ?? 0;
-    if (day == 0 || start == 0) return S.of(context).free_time;
-    final period =
-        start == end
-            ? S.of(context).class_single('$start')
-            : S.of(context).class_duration('$start', '$end');
-    return [
-      if (day >= 1 && day <= 7) Constant.WEEK_WITH_BIAS[day],
-      period,
-      if (start > 0 && end >= start && end <= classTimeList.length)
-        '${classTimeList[start - 1]['start']}-${classTimeList[end - 1]['end']}',
-    ].join('  |  ');
-  }
-
   Widget _text(BuildContext context, String value, Color color) {
     final style =
         Theme.of(context).textTheme.bodyMedium ?? const TextStyle(fontSize: 14);
@@ -213,6 +177,40 @@ class CourseDetailCard extends StatelessWidget {
     );
   }
 
+  Widget _detailLine(
+    BuildContext context,
+    IconData icon,
+    String label,
+    String text,
+  ) {
+    final scheme = Theme.of(context).colorScheme;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 2),
+          child: Icon(icon, size: 18, color: scheme.onSurfaceVariant),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: AdaptiveTypography.caption.copyWith(
+                  color: scheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 2),
+              _text(context, text, scheme.onSurface),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context),
@@ -229,20 +227,13 @@ class CourseDetailCard extends StatelessWidget {
       Constant.ADD_BY_LECTURE => s.import_from_lecture,
       _ => s.import_manually,
     };
-    return Material(
+    return AdaptiveCard(
+      margin: EdgeInsets.zero,
       key: ValueKey('course-detail-card-${course.id ?? course.name}'),
-      color: Color.alphaBlend(
-        scheme.primary.withValues(
-          alpha: theme.brightness == Brightness.dark ? 0.08 : 0.035,
-        ),
-        scheme.surface,
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-        side: BorderSide(color: scheme.primary.withValues(alpha: .16)),
-      ),
+      color: scheme.surfaceContainer,
+      borderRadius: BorderRadius.circular(AdaptiveLayout.cardRadiusOf(context)),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -263,16 +254,16 @@ class CourseDetailCard extends StatelessWidget {
                 ),
                 if (onEdit != null) ...[
                   const SizedBox(width: 8),
-                  TextButton(
+                  AdaptiveButton.text(
                     key: ValueKey('edit-course-${course.id ?? course.name}'),
                     onPressed: onEdit,
                     style: TextButton.styleFrom(
                       foregroundColor: scheme.primary,
                       backgroundColor: scheme.primary.withValues(alpha: .07),
                       textStyle: theme.textTheme.labelLarge,
-                      minimumSize: const Size(52, 36),
+                      minimumSize: const Size(52, 44),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 10,
@@ -301,49 +292,77 @@ class CourseDetailCard extends StatelessWidget {
                   color: scheme.primary,
                 ),
               ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
             for (var i = 0; i < slots.length; i++) ...[
-              if (i > 0) const Divider(height: 24),
-              if (slots.length > 1)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 6),
-                  child: Text(
-                    s.meeting_number(i + 1),
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      color: scheme.primary,
+              if (i > 0) const SizedBox(height: 12),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: scheme.surfaceContainerHigh,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (slots.length > 1) ...[
+                      Text(
+                        s.meeting_number(i + 1),
+                        style: AdaptiveTypography.section.copyWith(
+                          color: scheme.primary,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                    ],
+                    Text(
+                      CourseScheduleText.weeks(context, slots[i]),
+                      style: AdaptiveTypography.body.copyWith(
+                        color: scheme.onSurface,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 6),
+                    _text(
+                      context,
+                      CourseScheduleText.time(context, slots[i], classTimeList),
+                      scheme.onSurface,
+                    ),
+                    const SizedBox(height: 14),
+                    _detailLine(
+                      context,
+                      Icons.place_outlined,
+                      s.class_room,
+                      value(slots[i].classroom),
+                    ),
+                    const SizedBox(height: 10),
+                    _detailLine(
+                      context,
+                      Icons.person_outline_rounded,
+                      s.class_teacher,
+                      value(slots[i].teacher),
+                    ),
+                    if (!commonInfo &&
+                        (slots[i].info?.trim().isNotEmpty ?? false)) ...[
+                      const SizedBox(height: 14),
+                      _detailLine(
+                        context,
+                        Icons.notes_rounded,
+                        s.class_info,
+                        slots[i].info!.trim(),
+                      ),
+                    ],
+                  ],
                 ),
-              Text(
-                _weeks(context, slots[i]),
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: scheme.onSurface,
-                  fontWeight: FontWeight.w500,
-                ),
               ),
-              const SizedBox(height: 6),
-              _text(context, _time(context, slots[i]), scheme.onSurfaceVariant),
-              const SizedBox(height: 6),
-              _text(
-                context,
-                '${s.class_room}：${value(slots[i].classroom)}',
-                scheme.onSurfaceVariant,
-              ),
-              const SizedBox(height: 6),
-              _text(
-                context,
-                '${s.class_teacher}：${value(slots[i].teacher)}',
-                scheme.onSurfaceVariant,
-              ),
-              if (!commonInfo &&
-                  (slots[i].info?.trim().isNotEmpty ?? false)) ...[
-                const SizedBox(height: 8),
-                _text(context, slots[i].info!.trim(), scheme.onSurfaceVariant),
-              ],
             ],
             if (commonInfo && (course.info?.trim().isNotEmpty ?? false)) ...[
-              const Divider(height: 24),
-              _text(context, course.info!.trim(), scheme.onSurfaceVariant),
+              const SizedBox(height: 16),
+              _detailLine(
+                context,
+                Icons.notes_rounded,
+                s.class_info,
+                course.info!.trim(),
+              ),
             ],
             const SizedBox(height: 12),
             Text(

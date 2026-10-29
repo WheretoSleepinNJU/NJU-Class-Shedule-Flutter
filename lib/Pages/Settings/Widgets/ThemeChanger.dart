@@ -1,7 +1,7 @@
+import 'PlatformSettings.dart';
 import 'package:flutter/material.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:wheretosleepinnju/Utils/ColorUtil.dart';
-import 'package:wheretosleepinnju/Utils/ThemeUtil.dart';
 import '../../../Utils/States/MainState.dart';
 import '../../../Resources/Themes.dart';
 import './ThemeCustomDialog.dart';
@@ -23,9 +23,9 @@ class ThemeChanger extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: Text(
               '选择强调色',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w400,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400),
             ),
           ),
           SingleChildScrollView(
@@ -109,9 +109,9 @@ class _ThemeDot extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      child: InkWell(
+      child: SettingsPressable(
         borderRadius: BorderRadius.circular(999),
-        onTap: onTap,
+        onPressed: onTap,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -128,13 +128,7 @@ class _ThemeDot extends StatelessWidget {
                 ),
               ),
               child: isSelected
-                  ? Center(
-                      child: Icon(
-                        Icons.check,
-                        size: 16,
-                        color: onSeed,
-                      ),
-                    )
+                  ? Center(child: Icon(Icons.check, size: 16, color: onSeed))
                   : null,
             ),
 
@@ -185,10 +179,7 @@ class _MiniDot extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: outlined ? Colors.transparent : color,
-        border: Border.all(
-          color: outlined ? color : outline,
-          width: 1.2,
-        ),
+        border: Border.all(color: outlined ? color : outline, width: 1.2),
       ),
     );
   }
@@ -209,9 +200,9 @@ class _CustomDot extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      child: InkWell(
+      child: SettingsPressable(
         borderRadius: BorderRadius.circular(999),
-        onTap: onTap,
+        onPressed: onTap,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -220,21 +211,18 @@ class _CustomDot extends StatelessWidget {
               height: big,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: scheme.surfaceContainerHighest,
+                color: scheme.surfaceContainer,
                 border: Border.all(color: outline, width: 1.2),
               ),
               child: Icon(
                 Icons.add,
                 size: 18,
-                color: scheme.onSurface.withOpacity(0.85),
+                color: scheme.onSurface.withValues(alpha: 0.85),
               ),
             ),
             const SizedBox(height: 6),
             // 透明占位，保证高度一致
-            SizedBox(
-              height: small,
-              width: small * 2 + 8,
-            ),
+            const SizedBox(height: small, width: small * 2 + 8),
           ],
         ),
       ),

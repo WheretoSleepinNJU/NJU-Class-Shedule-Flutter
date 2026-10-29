@@ -1,3 +1,4 @@
+import '../../AdaptiveUI/adaptive_ui.dart';
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:azlistview/azlistview.dart';
@@ -95,8 +96,8 @@ class _ImportViewState extends State<ImportView> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
+  Widget build(BuildContext context) => AdaptiveScaffold(
+    appBar: AdaptiveTopAppBar(
       title: GestureDetector(
         key: const ValueKey('import-title'),
         behavior: HitTestBehavior.opaque,
@@ -105,7 +106,7 @@ class _ImportViewState extends State<ImportView> {
       ),
       actions: [
         if (_testEnabled)
-          TextButton(
+          AdaptiveButton.text(
             key: const ValueKey('import-test-button'),
             style: TextButton.styleFrom(
               backgroundColor: Colors.transparent,
@@ -126,46 +127,51 @@ class _ImportViewState extends State<ImportView> {
           if (snapshot.hasError) return _emptyState(failed: true);
           final configs = snapshot.data ?? [];
           if (configs.isEmpty) return _emptyState(failed: false);
-          final schools =
-              configs.whereType<Map>().map((data) {
-                final pinyin = (data['pinyin'] ?? '').toString();
-                return School(
-                  name: (data['title'] ?? '').toString(),
-                  namePinyin: pinyin,
-                  tagIndex: pinyin.isEmpty ? '#' : pinyin[0].toUpperCase(),
-                  config: data,
-                  isGrey: data['isGrey3.1.0'] == true,
-                );
-              }).toList();
+          final schools = configs.whereType<Map>().map((data) {
+            final pinyin = (data['pinyin'] ?? '').toString();
+            return School(
+              name: (data['title'] ?? '').toString(),
+              namePinyin: pinyin,
+              tagIndex: pinyin.isEmpty ? '#' : pinyin[0].toUpperCase(),
+              config: data,
+              isGrey: data['isGrey3.1.0'] == true,
+            );
+          }).toList();
           if (schools.isEmpty) return _emptyState(failed: true);
           schools.add(
             School(name: S.of(context).import_more_schools, tagIndex: '#'),
           );
           SuspensionUtil.sortListBySuspensionTag(schools);
           SuspensionUtil.setShowSuspensionStatus(schools);
-          return AzListView(
-            data: schools,
-            itemCount: schools.length,
-            indexBarData: SuspensionUtil.getTagIndexList(schools),
-            itemBuilder: (context, index) {
-              final school = schools[index];
-              if (school.config == null) return _moreSchools();
-              return ListTile(
-                title: Text(school.name),
-                subtitle: Text(
-                  (school.config!['description'] ?? '').toString(),
-                ),
-                contentPadding: const EdgeInsets.fromLTRB(16, 6, 36, 6),
-                enabled: !(school.isGrey ?? false),
-                onTap: () {
-                  UmengCommonSdk.onEvent('class_import', {
-                    'type': 'be',
-                    'action': 'show',
-                  });
-                  _open(ImportFromBEView(config: school.config!));
-                },
-              );
-            },
+          return AdaptivePageFrame(
+            child: AzListView(
+              padding: AdaptiveContentInsets.scrollPaddingOf(
+                context,
+                const EdgeInsets.symmetric(vertical: 8),
+              ),
+              data: schools,
+              itemCount: schools.length,
+              indexBarData: SuspensionUtil.getTagIndexList(schools),
+              itemBuilder: (context, index) {
+                final school = schools[index];
+                if (school.config == null) return _moreSchools();
+                return AdaptiveListTile(
+                  title: Text(school.name),
+                  subtitle: Text(
+                    (school.config!['description'] ?? '').toString(),
+                  ),
+                  padding: const EdgeInsetsDirectional.fromSTEB(16, 6, 36, 6),
+                  enabled: !(school.isGrey ?? false),
+                  onTap: () {
+                    UmengCommonSdk.onEvent('class_import', {
+                      'type': 'be',
+                      'action': 'show',
+                    });
+                    _open(ImportFromBEView(config: school.config!));
+                  },
+                );
+              },
+            ),
           );
         },
       ),
@@ -175,7 +181,7 @@ class _ImportViewState extends State<ImportView> {
   Widget _emptyState({required bool failed}) {
     final s = S.of(context);
     return Center(
-      child: SingleChildScrollView(
+      child: AdaptiveScrollView(
         padding: const EdgeInsets.all(28),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -198,12 +204,12 @@ class _ImportViewState extends State<ImportView> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
-            FilledButton.icon(
+            AdaptiveButton.icon(
+              variant: AdaptiveButtonVariant.filled,
               key: const ValueKey('retry-schools'),
-              onPressed:
-                  () => setState(() {
-                    _onlineConfig = _load();
-                  }),
+              onPressed: () => setState(() {
+                _onlineConfig = _load();
+              }),
               icon: const Icon(Icons.refresh),
               label: Text(s.retry),
             ),
@@ -215,7 +221,7 @@ class _ImportViewState extends State<ImportView> {
     );
   }
 
-  Widget _moreSchools() => TextButton(
+  Widget _moreSchools() => AdaptiveButton.text(
     style: TextButton.styleFrom(
       backgroundColor: Colors.transparent,
       foregroundColor: Theme.of(context).colorScheme.primary,

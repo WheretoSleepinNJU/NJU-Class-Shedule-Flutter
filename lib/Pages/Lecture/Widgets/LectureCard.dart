@@ -1,3 +1,4 @@
+import '../../../AdaptiveUI/adaptive_ui.dart';
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import '../../../generated/l10n.dart';
@@ -20,7 +21,7 @@ class LectureCard extends StatefulWidget {
   final int count;
 
   const LectureCard({Key? key, required this.lecture, required this.count})
-      : super(key: key);
+    : super(key: key);
 
   @override
   _LectureCardState createState() => _LectureCardState();
@@ -38,12 +39,15 @@ class _LectureCardState extends State<LectureCard> {
   }
 
   checkAdded() async {
-    widget.lecture.tableId =
-        await ScopedModel.of<MainStateModel>(context).getClassTable();
+    widget.lecture.tableId = await ScopedModel.of<MainStateModel>(
+      context,
+    ).getClassTable();
     CourseProvider courseProvider = CourseProvider();
     bool rst = await courseProvider.checkHasClassByName(
-        widget.lecture.tableId ?? 0, widget.lecture.name ?? '');
-    if (rst) {
+      widget.lecture.tableId ?? 0,
+      widget.lecture.name ?? '',
+    );
+    if (rst && mounted) {
       setState(() {
         added = true;
       });
@@ -58,10 +62,15 @@ class _LectureCardState extends State<LectureCard> {
     }
     CourseProvider courseProvider = CourseProvider();
     await courseProvider.insert(widget.lecture);
+    if (!mounted) return;
+    MainStateModel.of(context).refresh();
     Dio dio = Dio();
-    await dio.get(Url.URL_BACKEND + '/addCount',
-        queryParameters: {'id': widget.lecture.lectureId});
+    await dio.get(
+      Url.URL_BACKEND + '/addCount',
+      queryParameters: {'id': widget.lecture.lectureId},
+    );
     // print(response);
+    if (!mounted) return;
     Toast.showToast(S.of(context).lecture_add_success_toast, context);
     setState(() {
       added = true;
@@ -71,45 +80,49 @@ class _LectureCardState extends State<LectureCard> {
 
   @override
   Widget build(BuildContext context) {
-    String subtitle = S.of(context).lecture_teacher_title +
+    String subtitle =
+        S.of(context).lecture_teacher_title +
         (widget.lecture.teacher ?? S.of(context).lecture_no_teacher) +
         '\n' +
         (widget.lecture.classroom ?? S.of(context).lecture_no_classroom);
     return Padding(
-        padding: const EdgeInsets.only(bottom: 15, left: 5, right: 5),
-        child: Card(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              ListTile(
-                // leading: Icon(Icons.album),
-                title:
-                    Text(widget.lecture.name ?? S.of(context).lecture_no_name),
-                subtitle: Text(subtitle),
-              ),
-              Container(
-                alignment: Alignment.topLeft,
-                padding: const EdgeInsets.all(15.0),
-                child: SelectableLinkify(
-                  onOpen: (link) async {
-                    String url =
-                        link.url.replaceAll(RegExp('[^\x00-\xff]'), '');
-                    if (await canLaunch(url)) {
-                      await launch(url);
-                    } else {
-                      Toast.showToast(
-                          S.of(context).network_error_toast, context);
-                    }
-                  },
-                  text: widget.lecture.info ?? S.of(context).unknown_info,
-                  linkStyle: TextStyle(
-                      color: Theme.of(context).brightness == Brightness.light
-                          ? Theme.of(context).primaryColor
-                          : Colors.white),
-                  options: const LinkifyOptions(humanize: false),
+      padding: const EdgeInsets.only(bottom: 16),
+      child: AdaptiveCard(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            AdaptiveListTile(
+              // leading: Icon(Icons.album),
+              title: Text(widget.lecture.name ?? S.of(context).lecture_no_name),
+              subtitle: Text(subtitle),
+            ),
+            Container(
+              alignment: Alignment.topLeft,
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: SelectableLinkify(
+                onOpen: (link) async {
+                  String url = link.url.replaceAll(RegExp('[^\x00-\xff]'), '');
+                  if (await canLaunch(url)) {
+                    await launch(url);
+                  } else {
+                    Toast.showToast(S.of(context).network_error_toast, context);
+                  }
+                },
+                text: widget.lecture.info ?? S.of(context).unknown_info,
+                style: AdaptiveTypography.body.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
+                linkStyle: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Theme.of(context).primaryColor
+                      : Colors.white,
+                ),
+                options: const LinkifyOptions(humanize: false),
               ),
-              Row(
+            ),
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 12),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   widget.lecture.expired
@@ -117,63 +130,68 @@ class _LectureCardState extends State<LectureCard> {
                           color: Colors.grey,
                           onPressed: () {
                             Toast.showToast(
-                                S.of(context).lecture_add_expired_toast,
-                                context);
+                              S.of(context).lecture_add_expired_toast,
+                              context,
+                            );
                           },
-                          child: Text(S.of(context).lecture_expired(count)))
+                          child: Text(S.of(context).lecture_expired(count)),
+                        )
                       : added
-                          ? TransBgTextButton(
-                              color: Colors.grey,
-                              child: Text(S.of(context).lecture_added(count)),
-                              onPressed: () {
-                                Toast.showToast(
-                                    S.of(context).lecture_added_toast, context);
-                              },
-                            )
-                          : TransBgTextButton(
-                              color: Theme.of(context).brightness ==
-                                      Brightness.light
-                                  ? Theme.of(context).primaryColor
-                                  : Colors.white,
-                              child: Text(S.of(context).lecture_add(count)),
-                              onPressed: () async {
-                                if (widget.lecture.isAccurate) {
-                                  addLecture();
-                                } else {
-                                  showDialog<String>(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return MDialog(
-                                            S
-                                                .of(context)
-                                                .lecture_cast_dialog_title,
-                                            Text(S
-                                                .of(context)
-                                                .lecture_cast_dialog_content),
-                                            widgetCancelAction: () {
-                                          UmengCommonSdk.onEvent(
-                                              "class_import", {
-                                            "type": "lecture",
-                                            "action": "cancel"
-                                          });
-                                          Navigator.of(context).pop();
-                                        }, widgetOKAction: () async {
-                                          await addLecture();
-                                          UmengCommonSdk.onEvent(
-                                              "class_import", {
-                                            "type": "lecture",
-                                            "action": "success"
-                                          });
-                                          Navigator.of(context).pop();
-                                        });
+                      ? TransBgTextButton(
+                          color: Colors.grey,
+                          child: Text(S.of(context).lecture_added(count)),
+                          onPressed: () {
+                            Toast.showToast(
+                              S.of(context).lecture_added_toast,
+                              context,
+                            );
+                          },
+                        )
+                      : TransBgTextButton(
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                              ? Theme.of(context).primaryColor
+                              : Colors.white,
+                          child: Text(S.of(context).lecture_add(count)),
+                          onPressed: () async {
+                            if (widget.lecture.isAccurate) {
+                              addLecture();
+                            } else {
+                              showDialog<String>(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return MDialog(
+                                    S.of(context).lecture_cast_dialog_title,
+                                    Text(
+                                      S.of(context).lecture_cast_dialog_content,
+                                    ),
+                                    widgetCancelAction: () {
+                                      UmengCommonSdk.onEvent("class_import", {
+                                        "type": "lecture",
+                                        "action": "cancel",
                                       });
-                                }
-                              },
-                            ),
+                                      Navigator.of(context).pop();
+                                    },
+                                    widgetOKAction: () async {
+                                      await addLecture();
+                                      UmengCommonSdk.onEvent("class_import", {
+                                        "type": "lecture",
+                                        "action": "success",
+                                      });
+                                      Navigator.of(context).pop();
+                                    },
+                                  );
+                                },
+                              );
+                            }
+                          },
+                        ),
                 ],
               ),
-            ],
-          ),
-        ));
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -246,11 +246,11 @@ mixin ConfigStateModel on Model {
   }
 
   // Widget configuration getters and setters
-  void setWidgetApproachingMinutes(int minutes) async {
+  Future<void> setWidgetApproachingMinutes(int minutes) async {
     _widgetApproachingMinutes = minutes;
     notifyListeners();
     SharedPreferences sp = await SharedPreferences.getInstance();
-    sp.setInt("widgetApproachingMinutes", _widgetApproachingMinutes);
+    await sp.setInt("widgetApproachingMinutes", _widgetApproachingMinutes);
   }
 
   Future<int> getWidgetApproachingMinutes() async {
@@ -263,11 +263,11 @@ mixin ConfigStateModel on Model {
     return _widgetApproachingMinutes;
   }
 
-  void setWidgetTomorrowPreviewHour(int hour) async {
+  Future<void> setWidgetTomorrowPreviewHour(int hour) async {
     _widgetTomorrowPreviewHour = hour;
     notifyListeners();
     SharedPreferences sp = await SharedPreferences.getInstance();
-    sp.setInt("widgetTomorrowPreviewHour", _widgetTomorrowPreviewHour);
+    await sp.setInt("widgetTomorrowPreviewHour", _widgetTomorrowPreviewHour);
   }
 
   Future<int> getWidgetTomorrowPreviewHour() async {

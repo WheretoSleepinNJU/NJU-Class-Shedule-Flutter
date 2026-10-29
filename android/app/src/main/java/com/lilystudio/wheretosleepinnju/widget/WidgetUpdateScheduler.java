@@ -28,9 +28,6 @@ public class WidgetUpdateScheduler {
     /** 兜底刷新间隔：算不出转换点时（例如无课）最长 1 小时后再看一次。 */
     private static final long FALLBACK_INTERVAL_MS = 60 * 60 * 1000L;
 
-    /** 两个刷新点之间的最小间隔，避免短时间内反复唤醒。 */
-    private static final long MIN_INTERVAL_MS = 30 * 1000L;
-
     private WidgetUpdateScheduler() {
     }
 
@@ -154,7 +151,7 @@ public class WidgetUpdateScheduler {
 
         Collections.sort(transitions);
         for (Date candidate : transitions) {
-            if (candidate.getTime() - now.getTime() >= MIN_INTERVAL_MS) {
+            if (candidate.after(now)) {
                 return candidate;
             }
         }

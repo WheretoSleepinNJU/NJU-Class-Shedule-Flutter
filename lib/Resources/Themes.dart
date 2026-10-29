@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import '../AdaptiveUI/src/adaptive_typography.dart';
 import 'package:flutter/services.dart';
 import 'package:wheretosleepinnju/Utils/ThemeUtil.dart';
 import 'dart:collection';
 import '../Utils/ColorUtil.dart';
+import '../AdaptiveUI/src/theme/deadliner_color_theme.dart';
 
 class AppThemes {
   static const List<String> presetHexColors = [
@@ -22,73 +24,46 @@ class AppThemes {
     Brightness brightness, {
     required bool useSeedScheme,
   }) {
-    final rawSeed = HexColor(hex);
     final isDark = brightness == Brightness.dark;
-
-    final baseScheme = ColorScheme.fromSeed(
-      seedColor: rawSeed,
+    final palette = DeadlinerColorTheme.fromSeed(
+      seed: HexColor(hex),
       brightness: brightness,
+      useMonet: useSeedScheme,
     );
-
-    // 旧版逻辑回顾：
-    // - Light: 直接用 Hex 原色
-    // - Dark:  使用 "Light模式下计算出的 Primary" (这样能保持鲜艳，而不是 M3 默认的粉彩色)
-
-    final Color targetPrimary =
-        useSeedScheme
-            ? (isDark
-                ? ColorScheme.fromSeed(
-                  seedColor: rawSeed,
-                  brightness: Brightness.dark,
-                ).primary
-                : ColorScheme.fromSeed(
-                  seedColor: rawSeed,
-                  brightness: Brightness.light,
-                ).primary)
-            : rawSeed;
-
-    // 背景色层级设定
-    final background =
-        isDark ? const Color(0xFF0F0F11) : const Color(0xFFF8F8FA);
-    final appBarSurface =
-        isDark ? const Color(0xFF17171A) : const Color(0xFFEEEEF1);
-    final surfaceHigh =
-        isDark ? const Color(0xFF1F1F23) : const Color(0xFFE9E9ED);
-
-    // 组合最终 Scheme
-    // 强制覆盖 primary 为我们计算出的 targetPrimary
-    final scheme = baseScheme.copyWith(
-      primary: targetPrimary,
-
-      // onPrimary: Colors.white,
-      background: background,
-      surface: background,
-      surfaceContainerHighest: surfaceHigh,
-      surfaceTint: Colors.transparent, // 禁用 M3 染色
-    );
-
-    // AppBar 配置
-    final appBarBg = appBarSurface;
-    final appBarFg = scheme.onSurface; // 标题颜色跟随内容色
+    final scheme = palette.material;
+    final background = scheme.surface;
+    final appBarBg = scheme.surface;
+    final appBarFg = scheme.onSurface;
     final overlayStyle =
         (isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark)
             .copyWith(
-      systemNavigationBarColor: Colors.transparent,
-      systemNavigationBarDividerColor: Colors.transparent,
-      systemNavigationBarContrastEnforced: false,
-      systemNavigationBarIconBrightness:
-          isDark ? Brightness.light : Brightness.dark,
-    );
+              statusBarColor: Colors.transparent,
+              systemStatusBarContrastEnforced: false,
+              systemNavigationBarColor: Colors.transparent,
+              systemNavigationBarDividerColor: Colors.transparent,
+              systemNavigationBarContrastEnforced: false,
+              systemNavigationBarIconBrightness: isDark
+                  ? Brightness.light
+                  : Brightness.dark,
+            );
 
-    const radius = 14.0;
+    const radius = 20.0;
     final shape = RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(radius),
     );
 
     return ThemeData(
       useMaterial3: true,
+      textTheme: AdaptiveTypography.textTheme(
+        ThemeData(brightness: brightness).textTheme,
+      ),
       brightness: brightness,
       colorScheme: scheme,
+      extensions: [palette],
+      canvasColor: scheme.surface,
+      cardColor: scheme.surfaceContainer,
+      dividerColor: scheme.outlineVariant,
+      disabledColor: palette.miuixColors.disabledOnSurface,
       visualDensity: VisualDensity.standard,
       scaffoldBackgroundColor: background,
 
@@ -112,7 +87,7 @@ class AppThemes {
       cardTheme: CardThemeData(
         elevation: 0,
         surfaceTintColor: Colors.transparent,
-        color: scheme.surfaceContainerHighest,
+        color: scheme.surfaceContainer,
         shape: shape,
       ),
 
@@ -121,11 +96,15 @@ class AppThemes {
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         shape: shape,
-        backgroundColor: isDark ? const Color(0xFF25252A) : Colors.white,
+        backgroundColor: scheme.surfaceContainer,
+        barrierColor: scheme.scrim,
       ),
 
       // BottomSheet
-      bottomSheetTheme: const BottomSheetThemeData(
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: scheme.surfaceContainer,
+        modalBackgroundColor: scheme.surfaceContainer,
+        modalBarrierColor: scheme.scrim,
         elevation: 0,
         modalElevation: 0,
         surfaceTintColor: Colors.transparent,
@@ -134,17 +113,14 @@ class AppThemes {
       // TextButton
       textButtonTheme: TextButtonThemeData(
         style: ButtonStyle(
-          // 保持旧版逻辑：文字按钮直接用 Primary 做背景，白字 (新版 M3 默认是无背景)
-          // 如果你想要新版那种 "只有字变色" 的风格，可以删掉 backgroundColor 设置
-          // 下面保留你新版代码里写的 "有背景" 的 TextButton 样式：
-          backgroundColor: MaterialStateProperty.resolveWith((states) {
-            if (states.contains(MaterialState.disabled))
-              return scheme.primary.withOpacity(0.3);
-            return scheme.primary; // 用回鲜艳色
-          }),
-          foregroundColor: MaterialStateProperty.all(Colors.white), // 强制白字
-          shape: MaterialStateProperty.all(shape),
-          padding: MaterialStateProperty.all(
+          backgroundColor: const WidgetStatePropertyAll(Colors.transparent),
+          foregroundColor: WidgetStateProperty.resolveWith(
+            (states) => states.contains(WidgetState.disabled)
+                ? palette.miuixColors.disabledPrimaryButton
+                : scheme.primary,
+          ),
+          shape: WidgetStateProperty.all(shape),
+          padding: WidgetStateProperty.all(
             const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           ),
         ),
@@ -154,7 +130,7 @@ class AppThemes {
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           backgroundColor: scheme.primary,
-          foregroundColor: Colors.white,
+          foregroundColor: scheme.onPrimary,
           shape: shape,
         ),
       ),
@@ -171,7 +147,7 @@ class AppThemes {
       // Input
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: isDark ? const Color(0xFF1A1A1D) : Colors.white,
+        fillColor: palette.textFieldContainer,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(radius)),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radius),
@@ -185,15 +161,15 @@ class AppThemes {
 
       // Switch
       switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) return Colors.white;
-          return scheme.outline;
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) return scheme.onPrimary;
+          return palette.miuixColors.onSecondary;
         }),
-        trackColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) return scheme.primary;
-          return scheme.surfaceContainerHighest;
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) return scheme.primary;
+          return palette.miuixColors.secondary;
         }),
-        trackOutlineColor: MaterialStateProperty.resolveWith(
+        trackOutlineColor: WidgetStateProperty.resolveWith(
           (states) => Colors.transparent,
         ),
       ),
@@ -201,7 +177,7 @@ class AppThemes {
       // FAB
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: scheme.primary,
-        foregroundColor: Colors.white,
+        foregroundColor: scheme.onPrimary,
         shape: const StadiumBorder(),
       ),
     );

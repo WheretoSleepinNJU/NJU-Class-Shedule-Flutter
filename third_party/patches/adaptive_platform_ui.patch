@@ -1,0 +1,1728 @@
+diff --git a/ios/adaptive_platform_ui/Sources/adaptive_platform_ui/iOS26SegmentedControlView.swift b/ios/adaptive_platform_ui/Sources/adaptive_platform_ui/iOS26SegmentedControlView.swift
+index 71826dc..9531abf 100644
+--- a/ios/adaptive_platform_ui/Sources/adaptive_platform_ui/iOS26SegmentedControlView.swift
++++ b/ios/adaptive_platform_ui/Sources/adaptive_platform_ui/iOS26SegmentedControlView.swift
+@@ -205,6 +205,16 @@ class iOS26SegmentedControlView: NSObject, FlutterPlatformView {
+ 
+     private func handleMethodCall(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+         switch call.method {
++        case "diagnostics":
++            result(["renderer": "UISegmentedControl", "selectedIndex": segmentedControl.selectedSegmentIndex,
++                    "count": segmentedControl.numberOfSegments, "attached": _view.window != nil])
++        case "activateSegment":
++            if let args = call.arguments as? [String: Any], let index = args["index"] as? Int,
++               index >= 0 && index < segmentedControl.numberOfSegments && segmentedControl.isEnabled {
++                segmentedControl.selectedSegmentIndex = index
++                segmentedControl.sendActions(for: .valueChanged)
++            }
++            result(nil)
+         case "setSelectedIndex":
+             if let args = call.arguments as? [String: Any],
+                let index = args["index"] as? Int {
+diff --git a/ios/adaptive_platform_ui/Sources/adaptive_platform_ui/iOS26TabBarPlatformView.swift b/ios/adaptive_platform_ui/Sources/adaptive_platform_ui/iOS26TabBarPlatformView.swift
+index 062ada6..b6a800c 100644
+--- a/ios/adaptive_platform_ui/Sources/adaptive_platform_ui/iOS26TabBarPlatformView.swift
++++ b/ios/adaptive_platform_ui/Sources/adaptive_platform_ui/iOS26TabBarPlatformView.swift
+@@ -408,14 +408,32 @@ class iOS26TabBarPlatformView: NSObject, FlutterPlatformView, UITabBarDelegate {
+ 
+         bar.setNeedsLayout()
+         bar.layoutIfNeeded()
++        channel.invokeMethod("intrinsicSizeChanged", arguments: nil)
+         container.setNeedsLayout()
+     }
+ 
+     private func handleMethodCall(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+         switch call.method {
++        case "diagnostics":
++            let items = tabBar?.items ?? []
++            result(["renderer": "UITabBar", "labels": items.map { $0.title ?? "" },
++                    "selectedIndex": tabBar?.selectedItem.flatMap { items.firstIndex(of: $0) } ?? -1,
++                    "attached": container.window != nil, "width": Double(container.bounds.width),
++                    "height": Double(container.bounds.height),
++                    "safeAreaBottom": Double(tabBar?.safeAreaInsets.bottom ?? 0),
++                    "fittedHeight": Double(tabBar?.sizeThatFits(container.bounds.size).height ?? 0),
++                    "isDark": tabBar?.traitCollection.userInterfaceStyle == .dark])
++        case "activateItem":
++            guard let args = call.arguments as? [String: Any], let index = args["index"] as? Int,
++                  let bar = tabBar, let items = bar.items, items.indices.contains(index) else {
++                result(FlutterError(code: "bad_args", message: "Invalid tab", details: nil)); return
++            }
++            bar.selectedItem = items[index]
++            self.tabBar(bar, didSelect: items[index])
++            result(nil)
+         case "getIntrinsicSize":
+             if let bar = self.tabBar {
+-                let size = bar.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude))
++                let size = bar.sizeThatFits(CGSize(width: max(1, self.container.bounds.width), height: CGFloat.greatestFiniteMagnitude))
+                 result(["width": Double(size.width), "height": Double(size.height)])
+             } else {
+                 result(["width": Double(self.container.bounds.width), "height": 50.0])
+@@ -605,19 +623,19 @@ class iOS26TabBarPlatformView: NSObject, FlutterPlatformView, UITabBarDelegate {
+                 self.tabBar?.tintColor = c
+                 tintColor = c
+             }
+-            if let n = args["unselectedItemTint"] as? NSNumber {
+-                let c = Self.colorFromARGB(n.intValue)
++            if args.keys.contains("unselectedItemTint") {
++                let color = (args["unselectedItemTint"] as? NSNumber).map {
++                    Self.colorFromARGB($0.intValue)
++                }
+                 if #available(iOS 10.0, *) {
+-                    self.tabBar?.unselectedItemTintColor = c
+-                    NSLog("✅ setStyle: unselectedItemTintColor set to \(c)")
+-
+-                    // iOS 26+: Rebuild items with current state so untinted
+-                    // and tinted icon variants are regenerated consistently.
++                    self.tabBar?.unselectedItemTintColor = color
++                    // nil restores UIKit's automatic foreground, and template
++                    // symbols must be regenerated to discard a baked-in tint.
+                     if #available(iOS 26.0, *) {
+                         self.rebuildItemsWithCurrentState()
+                     }
+                 }
+-                unselectedColor = c
++                unselectedColor = color
+             }
+             if let n = args["backgroundColor"] as? NSNumber {
+                 let c = Self.colorFromARGB(n.intValue)
+@@ -961,14 +979,14 @@ class iOS26TabBarPlatformView: NSObject, FlutterPlatformView, UITabBarDelegate {
+         if size.width <= targetSize.width && size.height <= targetSize.height {
+             return image
+         }
+-        
++
+         let widthRatio = targetSize.width / size.width
+         let heightRatio = targetSize.height / size.height
+         let ratio = min(widthRatio, heightRatio)
+-        
++
+         let newSize = CGSize(width: size.width * ratio, height: size.height * ratio)
+         let rect = CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height)
+-        
++
+         if #available(iOS 10.0, *) {
+             let format = UIGraphicsImageRendererFormat()
+             format.scale = UIScreen.main.scale
+diff --git a/ios/adaptive_platform_ui/Sources/adaptive_platform_ui/iOS26ToolbarPlatformView.swift b/ios/adaptive_platform_ui/Sources/adaptive_platform_ui/iOS26ToolbarPlatformView.swift
+index 3123a39..bb63ae2 100644
+--- a/ios/adaptive_platform_ui/Sources/adaptive_platform_ui/iOS26ToolbarPlatformView.swift
++++ b/ios/adaptive_platform_ui/Sources/adaptive_platform_ui/iOS26ToolbarPlatformView.swift
+@@ -32,9 +32,15 @@ class iOS26ToolbarFactory: NSObject, FlutterPlatformViewFactory {
+ class ToolbarContainerView: UIView {
+     var gradientLayer: CAGradientLayer?
+     var onTraitChange: (() -> Void)?
++    var onLayout: (() -> Void)?
++    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
++        let target = super.hitTest(point, with: event)
++        return target === self ? nil : target
++    }
+ 
+     override func layoutSubviews() {
+         super.layoutSubviews()
++        onLayout?()
+         // Extend gradient below the container bounds for smooth fade
+         gradientLayer?.frame = CGRect(x: 0, y: 0, width: bounds.width, height: bounds.height + 30)
+     }
+@@ -56,6 +62,14 @@ class iOS26ToolbarPlatformView: NSObject, FlutterPlatformView {
+ 
+     private var isDark: Bool = false
+     private var perActionTintTags: Set<Int> = []
++    private var currentConfiguration: [String: Any] = [:]
++    private var nativeBackdrop: UIVisualEffectView?
++    private var nativeTitle: NativeToolbarTitleControl?
++    private var navigationBottom: NSLayoutConstraint?
++    private var navigationHeight: NSLayoutConstraint?
++    private var categoryControl: UISegmentedControl?
++    private var categoryLabels: [String] = []
++    private let backdropMask = CAGradientLayer()
+ 
+     init(
+         frame: CGRect,
+@@ -92,6 +106,7 @@ class iOS26ToolbarPlatformView: NSObject, FlutterPlatformView {
+ 
+         if let params = args as? [String: Any] {
+             configureItems(params)
++            configureNativePresentation(params)
+             // Apply global tint color after configuring items
+             if let n = params["tint"] as? NSNumber {
+                 let color = Self.colorFromARGB(n.intValue)
+@@ -154,11 +169,13 @@ class iOS26ToolbarPlatformView: NSObject, FlutterPlatformView {
+ 
+         containerView.addSubview(navigationBar)
+ 
++        navigationBottom = navigationBar.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
++        navigationHeight = navigationBar.heightAnchor.constraint(equalToConstant: 44)
+         NSLayoutConstraint.activate([
+             navigationBar.topAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.topAnchor),
+             navigationBar.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+             navigationBar.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+-            navigationBar.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
++            navigationBottom!
+         ])
+     }
+ 
+@@ -202,6 +219,7 @@ class iOS26ToolbarPlatformView: NSObject, FlutterPlatformView {
+                     action: #selector(leadingTapped)
+                 )
+             }
++            leadingButton.isEnabled = params["backEnabled"] as? Bool != false
+             leadingItems.append(leadingButton)
+         }
+ 
+@@ -248,7 +266,14 @@ class iOS26ToolbarPlatformView: NSObject, FlutterPlatformView {
+                     )
+                 }
+ 
++                if action["loading"] as? Bool == true {
++                    let spinner = UIActivityIndicatorView(style: .medium)
++                    spinner.startAnimating()
++                    spinner.frame = CGRect(x: 0, y: 0, width: 32, height: 32)
++                    button = UIBarButtonItem(customView: spinner)
++                }
+                 if let btn = button {
++                    btn.isEnabled = action["enabled"] as? Bool != false && action["loading"] as? Bool != true
+                     btn.tag = index
+                     if let label = action["label"] as? String {
+                         btn.accessibilityLabel = label
+@@ -304,6 +329,121 @@ class iOS26ToolbarPlatformView: NSObject, FlutterPlatformView {
+         navigationItem.rightBarButtonItems = rightGroup.reversed()
+     }
+ 
++    private func configureNativePresentation(_ params: [String: Any]) {
++        guard params["nativeTitleLayout"] as? Bool == true else { return }
++        currentConfiguration = params
++        navigationBottom?.isActive = false
++        navigationHeight?.constant = CGFloat((params["toolbarHeight"] as? NSNumber)?.doubleValue ?? 44)
++        navigationHeight?.isActive = true
++        containerView.onLayout = { [weak self] in self?.layoutCategories() }
++        configureCategories(params)
++        isDark = params["isDark"] as? Bool ?? false
++        containerView.overrideUserInterfaceStyle = isDark ? .dark : .light
++        let foreground = (params["foreground"] as? NSNumber).map { Self.colorFromARGB($0.intValue) } ?? UIColor.label
++        containerView.tintColor = foreground
++        navigationBar.tintColor = foreground
++        navigationBar.titleTextAttributes = [.foregroundColor: foreground]
++        if nativeBackdrop == nil {
++            let effect = UIVisualEffectView(effect: UIBlurEffect(style: .systemMaterial))
++            effect.translatesAutoresizingMaskIntoConstraints = false
++            effect.isUserInteractionEnabled = false
++            containerView.insertSubview(effect, belowSubview: navigationBar)
++            NSLayoutConstraint.activate([
++                effect.topAnchor.constraint(equalTo: containerView.topAnchor),
++                effect.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
++                effect.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
++                effect.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
++            ])
++            nativeBackdrop = effect
++        }
++        layoutCategories()
++        let offset = (params["scrollOffset"] as? NSNumber)?.doubleValue ?? 0
++        nativeBackdrop?.alpha = CGFloat(max(0, min(offset / 20, 1)))
++        let title = params["title"] as? String ?? ""
++        let subtitle = params["subtitle"] as? String
++        let tappable = params["titleTappable"] as? Bool == true
++        let leading = params["leadingTitle"] as? Bool == true
++        if leading || subtitle != nil || tappable {
++            let control = NativeToolbarTitleControl(frame: .zero)
++            let scale = (params["fontScale"] as? NSNumber)?.doubleValue ?? 1
++            control.configure(title: title, subtitle: subtitle, foreground: foreground,
++                scale: CGFloat(scale), leading: leading)
++            control.isEnabled = tappable && params["interactive"] as? Bool != false
++            control.accessibilityLabel = params["semanticLabel"] as? String ?? [title, subtitle].compactMap { $0 }.joined(separator: ", ")
++            control.accessibilityTraits = tappable ? [.button] : [.header]
++            control.addTarget(self, action: #selector(titleTapped), for: .touchUpInside)
++            nativeTitle = control
++            control.frame = CGRect(origin: .zero, size: control.intrinsicContentSize)
++            if leading {
++                navigationItem.titleView = nil
++                navigationItem.title = nil
++                let titleItem = UIBarButtonItem(customView: control)
++                titleItem.width = control.intrinsicContentSize.width
++                if #available(iOS 26.0, *) { titleItem.hidesSharedBackground = true }
++                navigationItem.leftBarButtonItems = [titleItem]
++            } else {
++                navigationItem.titleView = control
++            }
++        } else {
++            nativeTitle = nil
++            navigationItem.titleView = nil
++            navigationItem.title = title
++        }
++    }
++
++    private func configureCategories(_ params: [String: Any]) {
++        let labels = params["tabLabels"] as? [String] ?? []
++        guard !labels.isEmpty else {
++            categoryControl?.removeFromSuperview()
++            categoryControl = nil
++            categoryLabels = []
++            nativeBackdrop?.layer.mask = nil
++            return
++        }
++        if categoryControl == nil {
++            let control = UISegmentedControl(items: labels)
++            control.addTarget(self, action: #selector(categoryChanged(_:)), for: .valueChanged)
++            containerView.addSubview(control)
++            categoryControl = control
++        } else if labels != categoryLabels {
++            categoryControl?.removeAllSegments()
++            for (i, label) in labels.enumerated() { categoryControl?.insertSegment(withTitle: label, at: i, animated: false) }
++        }
++        categoryLabels = labels
++        categoryControl?.selectedSegmentIndex = min(max(0, (params["selectedTabIndex"] as? Int) ?? 0), labels.count - 1)
++        categoryControl?.isEnabled = params["interactive"] as? Bool != false
++        let scale = CGFloat((params["fontScale"] as? NSNumber)?.doubleValue ?? 1)
++        categoryControl?.setTitleTextAttributes([.font: UIFont.systemFont(ofSize: 14 * scale)], for: .normal)
++        categoryControl?.setTitleTextAttributes([.font: UIFont.systemFont(ofSize: 14 * scale, weight: .medium)], for: .selected)
++        containerView.setNeedsLayout()
++    }
++
++    private func layoutCategories() {
++        guard let control = categoryControl else { return }
++        let width = containerView.bounds.width
++        let column = min(width, 760)
++        let controlWidth = min(420, max(0, column - 32))
++        let leading = (width - column) / 2 + 16
++        let x = currentConfiguration["rtl"] as? Bool == true ? width - leading - controlWidth : leading
++        control.frame = CGRect(x: x, y: navigationBar.frame.maxY, width: controlWidth,
++            height: CGFloat((currentConfiguration["tabRowHeight"] as? NSNumber)?.doubleValue ?? 42))
++        let height = containerView.bounds.height
++        guard height > 0 else { return }
++        backdropMask.frame = containerView.bounds
++        backdropMask.colors = [UIColor.black.cgColor, UIColor.black.cgColor, UIColor.clear.cgColor]
++        backdropMask.locations = [0, NSNumber(value: Double(max(0, height - 20) / height)), 1]
++        nativeBackdrop?.layer.mask = backdropMask
++    }
++
++    @objc private func categoryChanged(_ sender: UISegmentedControl) {
++        guard sender.isEnabled else { return }
++        channel.invokeMethod("onTabSelected", arguments: ["index": sender.selectedSegmentIndex])
++    }
++
++    @objc private func titleTapped() {
++        channel.invokeMethod("onTitleTapped", arguments: nil)
++    }
++
+     /// Builds the menu of a bar button; dividers split it into inline groups
+     private func makeMenu(_ entries: [[String: Any]], actionIndex: Int) -> UIMenu {
+         var groups: [[UIMenuElement]] = []
+@@ -355,6 +495,54 @@ class iOS26ToolbarPlatformView: NSObject, FlutterPlatformView {
+ 
+     private func handleMethodCall(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+         switch call.method {
++        case "updateConfiguration":
++            guard let params = call.arguments as? [String: Any] else { result(FlutterMethodNotImplemented); return }
++            let previousContent = currentConfiguration.filter { $0.key != "scrollOffset" }
++            let newContent = params.filter { $0.key != "scrollOffset" }
++            if NSDictionary(dictionary: previousContent).isEqual(to: newContent) {
++                currentConfiguration = params
++                let offset = (params["scrollOffset"] as? NSNumber)?.doubleValue ?? 0
++                nativeBackdrop?.alpha = CGFloat(max(0, min(offset / 20, 1)))
++            } else {
++                perActionTintTags.removeAll()
++                configureItems(params)
++                configureNativePresentation(params)
++            }
++            result(nil)
++        case "activateTab":
++            if let index = (call.arguments as? [String: Any])?["index"] as? Int,
++               let control = categoryControl, control.isEnabled, categoryLabels.indices.contains(index) {
++                control.selectedSegmentIndex = index
++                control.sendActions(for: .valueChanged)
++            }
++            result(nil)
++        case "diagnostics":
++            let tabsBounds: [Double]
++            if let control = categoryControl {
++                let frame = control.frame
++                tabsBounds = [Double(frame.minX), Double(frame.minY), Double(frame.width), Double(frame.height)]
++            } else {
++                tabsBounds = []
++            }
++            let actionViews: [String] = (navigationItem.rightBarButtonItems ?? []).map { item in
++                guard let customView = item.customView else { return "UIBarButtonItem" }
++                return NSStringFromClass(type(of: customView))
++            }
++            let titleWidth: Double = nativeTitle.map { Double($0.bounds.width) } ?? 0
++            let diagnostics: [String: Any] = [
++                "renderer": NSStringFromClass(type(of: navigationBar)),
++                "titleRenderer": "UIKit",
++                "tabsRenderer": categoryControl == nil ? "none" : "UISegmentedControl",
++                "tabsEnabled": categoryControl?.isEnabled ?? false,
++                "tabsSelectedIndex": categoryControl?.selectedSegmentIndex ?? -1,
++                "tabsBounds": tabsBounds,
++                "headerHeight": Double(containerView.bounds.height),
++                "actionViews": actionViews,
++                "titleWidth": titleWidth,
++                "title": currentConfiguration["title"] ?? "",
++                "configuration": currentConfiguration
++            ]
++            result(diagnostics)
+         case "updateTitle":
+             if let args = call.arguments as? [String: Any], let title = args["title"] as? String {
+                 navigationItem.title = title
+@@ -422,3 +610,39 @@ class iOS26ToolbarPlatformView: NSObject, FlutterPlatformView {
+         return UIColor(red: r, green: g, blue: b, alpha: a)
+     }
+ }
++
++/// UIKit owns both labels, intrinsic size and activation; never a Flutter overlay.
++private final class NativeToolbarTitleControl: UIControl {
++    private let main = UILabel()
++    private let subtitle = UILabel()
++    private let stack = UIStackView()
++    override init(frame: CGRect) {
++        super.init(frame: frame)
++        stack.axis = .vertical
++        stack.spacing = 2
++        stack.addArrangedSubview(main)
++        stack.addArrangedSubview(subtitle)
++        addSubview(stack)
++        isAccessibilityElement = true
++        main.lineBreakMode = .byTruncatingTail
++        subtitle.lineBreakMode = .byTruncatingTail
++    }
++    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
++    func configure(title: String, subtitle detail: String?, foreground: UIColor, scale: CGFloat, leading: Bool) {
++        main.text = title
++        main.font = .systemFont(ofSize: (leading ? 18 : 17) * min(max(scale, 0.8), 2), weight: .semibold)
++        main.textColor = foreground
++        subtitle.text = detail
++        subtitle.font = .systemFont(ofSize: 12 * min(max(scale, 0.8), 1.4), weight: .regular)
++        subtitle.textColor = foreground.withAlphaComponent(0.65)
++        subtitle.isHidden = detail == nil || detail?.isEmpty == true
++        stack.alignment = leading ? .leading : .center
++        invalidateIntrinsicContentSize()
++    }
++    override var intrinsicContentSize: CGSize {
++        let title = main.intrinsicContentSize
++        let detail = subtitle.isHidden ? CGSize.zero : subtitle.intrinsicContentSize
++        return CGSize(width: max(title.width, detail.width), height: title.height + detail.height + (subtitle.isHidden ? 0 : 2))
++    }
++    override func layoutSubviews() { super.layoutSubviews(); stack.frame = bounds }
++}
+diff --git a/lib/adaptive_platform_ui.dart b/lib/adaptive_platform_ui.dart
+index 98d4752..048407a 100644
+--- a/lib/adaptive_platform_ui.dart
++++ b/lib/adaptive_platform_ui.dart
+@@ -81,3 +81,5 @@ export 'src/widgets/ios26/ios26_context_menu.dart';
+ export 'src/widgets/ios26/ios26_native_search_tab_bar.dart';
+ export 'src/widgets/ios26/ios26_native_tab_bar.dart';
+ export 'src/widgets/ios26/ios26_scaffold_legacy.dart';
++
++export 'src/toolbar/native_toolbar_backend.dart';
+diff --git a/lib/src/toolbar/adaptive_toolbar_host.dart b/lib/src/toolbar/adaptive_toolbar_host.dart
+index 5179738..6886a8c 100644
+--- a/lib/src/toolbar/adaptive_toolbar_host.dart
++++ b/lib/src/toolbar/adaptive_toolbar_host.dart
+@@ -12,6 +12,7 @@ import 'hosted_top_toolbar.dart';
+ import 'toolbar_blend.dart';
+ import 'toolbar_chrome_scope.dart';
+ import 'toolbar_registry.dart';
++import 'native_toolbar_backend.dart';
+ 
+ /// Fixed toolbar chrome that lives above the navigator.
+ ///
+@@ -28,13 +29,14 @@ class AdaptiveToolbarHost extends StatefulWidget {
+   const AdaptiveToolbarHost({
+     super.key,
+     required this.child,
++    this.nativeBackend,
+     @visibleForTesting this.debugFold,
+     @visibleForTesting this.debugVerticalBarEdge,
+   });
+ 
+   /// The navigator (or whatever the app's `builder` receives).
+   final Widget child;
+-
++  final NativeToolbarBackend? nativeBackend;
+   /// Replaces the platform's fold readings (the reserved regions) and the
+   /// iOS 26 check, so the chrome can be exercised in widget tests anywhere.
+   @visibleForTesting
+@@ -106,10 +108,11 @@ class _AdaptiveToolbarHostState extends State<AdaptiveToolbarHost>
+   @override
+   Widget build(BuildContext context) {
+     final fold = widget.debugFold ?? _fold;
+-    // The fixed chrome only exists where pages use the native iOS 26
+-    // toolbar; elsewhere pages keep their own Cupertino / Material bars.
++    // iOS pages publish their UIKit toolbar to this shared host. Other
++    // platforms keep their own bars or use the installed native backend.
+     final hostsToolbar =
+-        widget.debugFold != null || PlatformInfo.isIOS26OrHigher();
++        widget.nativeBackend == null &&
++        (widget.debugFold != null || PlatformInfo.isIOS);
+     final edge =
+         widget.debugVerticalBarEdge ??
+         _edge?.value ??
+@@ -131,41 +134,46 @@ class _AdaptiveToolbarHostState extends State<AdaptiveToolbarHost>
+       return true;
+     }());
+ 
+-    return ToolbarRegistryScope(
+-      registry: _registry,
+-      child: ToolbarChromeScope(
+-        hostsToolbar: hostsToolbar,
+-        hostsDuoControls: pose != null,
+-        child: DuoPoseScope(
+-          pose: pose,
+-          child: Stack(
+-            fit: StackFit.expand,
+-            children: [
+-              // Always the first child at a stable position, so toggling the
+-              // chrome never rebuilds the navigator from scratch. The
+-              // MediaQuery in it is always here too, even when it changes
+-              // nothing:
+-              // adding it only in some poses would move the navigator in the
+-              // element tree whenever the pose changes (moving between Split
+-              // View panes), and rebuild every route.
+-              _BarInset(pose: pose, child: widget.child),
+-              if (hostsToolbar)
+-                HostedTopToolbar(blend: _blend, titleOnly: pose != null),
+-              if (pose != null)
+-                // The bar sits on whichever edge the pose names: the right in
+-                // most poses, the left in the leading Split View pane.
+-                Positioned(
+-                  top: 0,
+-                  bottom: 0,
+-                  left: pose.onLeft ? 0 : null,
+-                  right: pose.onLeft ? null : 0,
+-                  width: pose.bandWidth,
+-                  child: HostedDuoBar(
+-                    blend: _blend,
+-                    regions: fold?.regions ?? const <ReservedRegion>[],
++    final native = widget.nativeBackend;
++    return NativeToolbarScope(
++      backend: native,
++      child: ToolbarRegistryScope(
++        registry: _registry,
++        child: ToolbarChromeScope(
++          hostsToolbar: hostsToolbar,
++          hostsDuoControls: pose != null,
++          child: DuoPoseScope(
++            pose: pose,
++            child: Stack(
++              fit: StackFit.expand,
++              children: [
++                // Always the first child at a stable position, so toggling the
++                // chrome never rebuilds the navigator from scratch. The
++                // MediaQuery in it is always here too, even when it changes
++                // nothing:
++                // adding it only in some poses would move the navigator in the
++                // element tree whenever the pose changes (moving between Split
++                // View panes), and rebuild every route.
++                _BarInset(pose: pose, child: widget.child),
++                if (native != null) native.builder(context, _registry),
++                if (hostsToolbar)
++                  HostedTopToolbar(blend: _blend, titleOnly: pose != null),
++                if (pose != null)
++                  // The bar sits on whichever edge the pose names: the right in
++                  // most poses, the left in the leading Split View pane.
++                  Positioned(
++                    top: 0,
++                    bottom: 0,
++                    left: pose.onLeft ? 0 : null,
++                    right: pose.onLeft ? null : 0,
++                    width: pose.bandWidth,
++                    child: HostedDuoBar(
++                      blend: _blend,
++                      regions: fold?.regions ?? const <ReservedRegion>[],
++                    ),
+                   ),
+-                ),
+-            ],
++              ],
++            ),
+           ),
+         ),
+       ),
+diff --git a/lib/src/toolbar/hosted_top_toolbar.dart b/lib/src/toolbar/hosted_top_toolbar.dart
+index 7c8767d..a65a55a 100644
+--- a/lib/src/toolbar/hosted_top_toolbar.dart
++++ b/lib/src/toolbar/hosted_top_toolbar.dart
+@@ -1,5 +1,6 @@
+ import 'package:flutter/cupertino.dart';
+ import 'package:flutter/foundation.dart';
++import 'package:flutter/services.dart';
+ 
+ import '../style/sf_symbol.dart';
+ import '../widgets/adaptive_app_bar_action.dart';
+@@ -23,6 +24,21 @@ class TopToolbarContent {
+     this.actions = const <AdaptiveAppBarAction>[],
+     this.tint,
+     this.navigator,
++    this.nativeTitleLayout = false,
++    this.subtitle,
++    this.leadingTitle = false,
++    this.semanticLabel,
++    this.foreground,
++    this.textScale,
++    this.onTitleTap,
++    this.height = kHostedToolbarHeight,
++    this.scrollOffset = 0,
++    this.route,
++    this.systemOverlayStyle,
++    this.tabLabels,
++    this.selectedTabIndex = 0,
++    this.tabRowHeight = 42,
++    this.onTabSelected,
+   });
+ 
+   /// No page owns the chrome, the page has no toolbar, or it draws a
+@@ -36,6 +52,10 @@ class TopToolbarContent {
+       return const TopToolbarContent();
+     }
+     return TopToolbarContent(
++      tabLabels: appBar.tabLabels,
++      selectedTabIndex: appBar.selectedTabIndex,
++      tabRowHeight: appBar.tabRowHeight,
++      onTabSelected: appBar.onTabSelected,
+       title: appBar.title,
+       titleOverlay: entry.titleOverlay,
+       customLeading: titleOnly ? null : appBar.leading,
+@@ -45,9 +65,35 @@ class TopToolbarContent {
+           : appBar.actions ?? const <AdaptiveAppBarAction>[],
+       tint: appBar.tintColor,
+       navigator: entry.navigator,
++      nativeTitleLayout: appBar.nativeTitleLayout,
++      subtitle: appBar.subtitle,
++      leadingTitle: appBar.leadingTitle,
++      semanticLabel: appBar.semanticLabel,
++      foreground: appBar.foreground,
++      textScale: appBar.textScale,
++      onTitleTap: appBar.onTitleTap,
++      height: appBar.toolbarHeight ?? kHostedToolbarHeight,
++      scrollOffset: entry.scrollOffset,
++      route: entry.route,
++      systemOverlayStyle: appBar.systemOverlayStyle,
+     );
+   }
+ 
++  final List<String>? tabLabels;
++  final int selectedTabIndex;
++  final double tabRowHeight;
++  final ValueChanged<int>? onTabSelected;
++  double get frameHeight =>
++      height + (tabLabels?.isNotEmpty == true ? tabRowHeight + 8 + 20 : 0);
++  final bool nativeTitleLayout, leadingTitle;
++  final String? subtitle, semanticLabel;
++  final Color? foreground;
++  final double? textScale;
++  final VoidCallback? onTitleTap;
++  final double height, scrollOffset;
++  final ModalRoute<Object?>? route;
++  final SystemUiOverlayStyle? systemOverlayStyle;
++
+   final String? title;
+ 
+   /// A Flutter-drawn title (custom widget, or title with subtitle). The
+@@ -100,6 +146,7 @@ class HostedTopToolbar extends StatelessWidget {
+     final upper = TopToolbarContent.of(upperEntry, titleOnly: titleOnly);
+     final lower = TopToolbarContent.of(lowerEntry, titleOnly: titleOnly);
+     final upperOwns = blend.upperOwns;
++    final fullUIKit = upper.nativeTitleLayout || lower.nativeTitleLayout;
+     final upperOpacity = blend.upperOpacity;
+     final lowerOpacity = blend.lowerOpacity;
+ 
+@@ -127,12 +174,12 @@ class HostedTopToolbar extends StatelessWidget {
+       (true, true) => kAlwaysDismissedAnimation,
+     };
+ 
+-    return Align(
++    final bar = Align(
+       alignment: Alignment.topCenter,
+       child: SizedBox(
+         height: titleOnly
+             ? kDuoTitleBandHeight
+-            : kHostedToolbarHeight + topInset,
++            : (upperOwns ? upper.frameHeight : lower.frameHeight) + topInset,
+         child: IgnorePointer(
+           ignoring: blend.ownerIsCovered,
+           child: FadeTransition(
+@@ -146,7 +193,9 @@ class HostedTopToolbar extends StatelessWidget {
+                 FadeTransition(
+                   key: const ValueKey<String>('adaptive_toolbar_backdrop'),
+                   opacity: backdropOpacity,
+-                  child: titleOnly
++                  child: fullUIKit
++                      ? const SizedBox.shrink()
++                      : titleOnly
+                       ? const DuoTitleBackdrop()
+                       : const _Backdrop(),
+                 ),
+@@ -164,7 +213,7 @@ class HostedTopToolbar extends StatelessWidget {
+                     opacity: upperOpacity,
+                     interactive: upperOwns,
+                   ),
+-                if (backOpacity != null)
++                if (backOpacity != null && !fullUIKit)
+                   Positioned(
+                     key: const ValueKey<String>('adaptive_toolbar_back'),
+                     left: 16 + (_isWindowed(context) ? 62 : 0),
+@@ -188,6 +237,16 @@ class HostedTopToolbar extends StatelessWidget {
+         ),
+       ),
+     );
++    if (!fullUIKit) return bar;
++    return AnnotatedRegion<SystemUiOverlayStyle>(
++      value:
++          (upperOwns ? upper : lower).systemOverlayStyle ??
++          SystemUiOverlayStyle(
++            statusBarBrightness: MediaQuery.platformBrightnessOf(context),
++            statusBarColor: const Color(0x00000000),
++          ),
++      child: bar,
++    );
+   }
+ 
+   /// One page's bar. The back button is not part of it: the shared one is
+@@ -211,7 +270,7 @@ class HostedTopToolbar extends StatelessWidget {
+         excluding: !interactive,
+         child: IgnorePointer(
+           ignoring: !interactive,
+-          child: titleOnly
++          child: titleOnly && !content.nativeTitleLayout
+               // On iPhone Duo the title sits at the leading edge and the
+               // controls are in the trailing bar, so there is no bar to draw.
+               ? DuoToolbarTitle(
+@@ -220,15 +279,42 @@ class HostedTopToolbar extends StatelessWidget {
+                 )
+               : defaultTargetPlatform == TargetPlatform.iOS
+               ? IOS26NativeToolbar(
++                  tabLabels: content.tabLabels,
++                  selectedTabIndex: content.selectedTabIndex,
++                  tabRowHeight: content.tabRowHeight,
++                  onTabSelected: content.onTabSelected,
+                   title: content.title,
+                   titleWidget: content.titleOverlay,
++                  nativeTitleLayout: content.nativeTitleLayout,
++                  subtitle: content.subtitle,
++                  leadingTitle: content.leadingTitle || titleOnly,
++                  semanticLabel: content.semanticLabel,
++                  foreground: content.foreground,
++                  textScale: content.textScale,
++                  onTitleTap: content.onTitleTap,
++                  height: content.height,
++                  scrollOffset: content.scrollOffset,
++                  interactive:
++                      interactive && (content.route?.isCurrent ?? true),
++                  backEnabled:
++                      content.route?.popDisposition !=
++                      RoutePopDisposition.doNotPop,
++                  leadingText: content.nativeTitleLayout && content.impliesBack
++                      ? ''
++                      : null,
++                  onLeadingTap: () => content.navigator?.maybePop(),
+                   leading: content.customLeading,
+                   actions: content.actions,
+                   tintColor: content.tint,
+                   showsGradient: false,
+                   onActionTap: (index) {
+                     if (index >= 0 && index < content.actions.length) {
+-                      content.actions[index].onPressed();
++                      if (interactive && (content.route?.isCurrent ?? true)) {
++                        final action = content.actions[index];
++                        if (action.enabled && !action.loading) {
++                          action.onPressed();
++                        }
++                      }
+                     }
+                   },
+                 )
+diff --git a/lib/src/toolbar/native_toolbar_backend.dart b/lib/src/toolbar/native_toolbar_backend.dart
+new file mode 100644
+index 0000000..a350420
+--- /dev/null
++++ b/lib/src/toolbar/native_toolbar_backend.dart
+@@ -0,0 +1,54 @@
++import 'package:flutter/foundation.dart';
++import 'package:flutter/widgets.dart';
++import '../widgets/adaptive_app_bar.dart';
++import 'toolbar_registry.dart';
++
++/// App-owned native chrome installed once above the navigator.
++/// Unsupported app bars keep the standard Material implementation.
++class NativeToolbarBackend {
++  const NativeToolbarBackend({
++    required this.builder,
++    required this.height,
++    required this.supports,
++    this.preferredToolbarHeight,
++  });
++  final Widget Function(BuildContext context, ToolbarRegistry registry) builder;
++  final ValueListenable<double> height;
++
++  /// Native title band height, excluding status bar and optional categories.
++  final double? preferredToolbarHeight;
++  final bool Function(AdaptiveAppBar appBar) supports;
++}
++
++class NativeToolbarScope extends InheritedWidget {
++  const NativeToolbarScope({
++    super.key,
++    required this.backend,
++    required super.child,
++  });
++  final NativeToolbarBackend? backend;
++  static NativeToolbarBackend? maybeOf(BuildContext context) =>
++      context.dependOnInheritedWidgetOfExactType<NativeToolbarScope>()?.backend;
++  @override
++  bool updateShouldNotify(NativeToolbarScope oldWidget) =>
++      backend != oldWidget.backend;
++}
++
++/// Padding for scrollable content that extends behind native chrome.
++/// Put this inside the scrollable's content padding, so it scrolls under the bar.
++class NativeToolbarBodyScope extends InheritedWidget {
++  const NativeToolbarBodyScope({
++    super.key,
++    required this.topInset,
++    required super.child,
++  });
++  final double topInset;
++  static double topInsetOf(BuildContext context) =>
++      context
++          .dependOnInheritedWidgetOfExactType<NativeToolbarBodyScope>()
++          ?.topInset ??
++      0;
++  @override
++  bool updateShouldNotify(NativeToolbarBodyScope oldWidget) =>
++      topInset != oldWidget.topInset;
++}
+diff --git a/lib/src/toolbar/toolbar_registry.dart b/lib/src/toolbar/toolbar_registry.dart
+index 3ea7170..4b9fb27 100644
+--- a/lib/src/toolbar/toolbar_registry.dart
++++ b/lib/src/toolbar/toolbar_registry.dart
+@@ -18,6 +18,8 @@ class ToolbarEntry {
+     required this.navigator,
+     required this.visible,
+     this.shownInPlace = true,
++    this.nativeToolbar = false,
++    this.scrollOffset = 0,
+     this.tabBar,
+     this.enclosingRoutes = const <ModalRoute<Object?>>[],
+     this.titleOverlay,
+@@ -26,6 +28,9 @@ class ToolbarEntry {
+   /// Identifies the registering scaffold instance.
+   final Object id;
+ 
++  final bool nativeToolbar;
++  final double scrollOffset;
++
+   /// The page's app bar configuration; null when the page shows no toolbar.
+   /// A null entry still counts, so the chrome empties out instead of keeping
+   /// the previous page's items on a page that has none.
+diff --git a/lib/src/widgets/adaptive_app.dart b/lib/src/widgets/adaptive_app.dart
+index 2327f7a..9c40c06 100644
+--- a/lib/src/widgets/adaptive_app.dart
++++ b/lib/src/widgets/adaptive_app.dart
+@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
+ import 'package:flutter/services.dart';
+ import '../platform/platform_info.dart';
+ import '../toolbar/adaptive_toolbar_host.dart';
++import '../toolbar/native_toolbar_backend.dart';
+ 
+ /// Platform-specific configuration for MaterialApp
+ class MaterialAppData {
+@@ -77,6 +78,9 @@ enum PlatformTarget {
+ 
+ /// An adaptive app that uses MaterialApp for Android and CupertinoApp for iOS
+ class AdaptiveApp extends StatelessWidget {
++  /// Optional app-owned native toolbar backend; iOS keeps its own host.
++  final NativeToolbarBackend? nativeToolbarBackend;
++
+   /// Creates an AdaptiveApp with navigation
+   const AdaptiveApp({
+     super.key,
+@@ -89,6 +93,7 @@ class AdaptiveApp extends StatelessWidget {
+     this.onUnknownRoute,
+     this.navigatorObservers = const <NavigatorObserver>[],
+     this.builder,
++    this.nativeToolbarBackend,
+     this.title = '',
+     this.onGenerateTitle,
+     this.themeMode,
+@@ -119,6 +124,7 @@ class AdaptiveApp extends StatelessWidget {
+     this.routerDelegate,
+     this.backButtonDispatcher,
+     this.builder,
++    this.nativeToolbarBackend,
+     this.title = '',
+     this.onGenerateTitle,
+     this.themeMode,
+@@ -400,6 +406,7 @@ class AdaptiveApp extends StatelessWidget {
+     // user's builder outermost.
+     Widget materialBuilder(BuildContext context, Widget? child) {
+       final hosted = AdaptiveToolbarHost(
++        nativeBackend: nativeToolbarBackend,
+         child: child ?? const SizedBox.shrink(),
+       );
+       return builder != null ? builder!(context, hosted) : hosted;
+diff --git a/lib/src/widgets/adaptive_app_bar.dart b/lib/src/widgets/adaptive_app_bar.dart
+index cd7a6d4..2695752 100644
+--- a/lib/src/widgets/adaptive_app_bar.dart
++++ b/lib/src/widgets/adaptive_app_bar.dart
+@@ -1,13 +1,14 @@
+ import 'package:flutter/widgets.dart';
++import 'package:flutter/services.dart';
+ import 'adaptive_app_bar_action.dart';
+ 
+ /// Configuration for an adaptive app bar
+ ///
+ /// This class holds the configuration for the app bar in [AdaptiveScaffold].
+ /// The actual rendering is platform-specific:
+-/// - iOS 26+ with useNativeToolbar: Native UIToolbar with Liquid Glass effects
++/// - iOS with useNativeToolbar: UIKit UINavigationBar (Liquid Glass on iOS 26+)
+ /// - iOS 26+ without useNativeToolbar: CupertinoNavigationBar with custom back button
+-/// - iOS <26: CupertinoNavigationBar
++/// - iOS without useNativeToolbar: CupertinoNavigationBar
+ /// - Android: Material AppBar
+ ///
+ /// You can provide custom navigation bars using [cupertinoNavigationBar] or [appBar]:
+@@ -26,8 +27,37 @@ class AdaptiveAppBar {
+     this.titleWidget,
+     this.cupertinoNavigationBar,
+     this.appBar,
++    this.nativeTitleLayout = false,
++    this.onTitleTap,
++    this.leadingTitle = false,
++    this.semanticLabel,
++    this.foreground,
++    this.textScale,
++    this.toolbarHeight,
++    this.systemOverlayStyle,
++    this.tabLabels,
++    this.selectedTabIndex = 0,
++    this.tabRowHeight = 42,
++    this.onTabSelected,
+   });
+ 
++  /// Render structured title/subtitle content entirely inside UIKit. Existing
++  /// custom Flutter title overlays remain available when this opt-in is false.
++  final bool nativeTitleLayout;
++
++  /// Optional controlled categories hosted in the same native header material.
++  final List<String>? tabLabels;
++  final int selectedTabIndex;
++  final double tabRowHeight;
++  final ValueChanged<int>? onTabSelected;
++  double get tabExtent => tabLabels?.isNotEmpty == true ? tabRowHeight + 8 : 0;
++  final VoidCallback? onTitleTap;
++  final bool leadingTitle;
++  final String? semanticLabel;
++  final Color? foreground;
++  final double? textScale, toolbarHeight;
++  final SystemUiOverlayStyle? systemOverlayStyle;
++
+   /// Title for the app bar
+   final String? title;
+ 
+@@ -44,12 +74,10 @@ class AdaptiveAppBar {
+   /// If null and navigation is possible, an automatic back button will be shown
+   final Widget? leading;
+ 
+-  /// Use native iOS 26 toolbar (iOS 26+ only)
+-  /// - When false (default): Uses CupertinoNavigationBar for better compatibility with routers
+-  /// - When true: Uses native iOS 26 UIToolbar with Liquid Glass effect
+-  ///
+-  /// Note: Setting this to true may cause compatibility issues with GoRouter and other
+-  /// router packages. Use with caution.
++  /// Use the hosted UIKit navigation bar (true by default).
++  /// Liquid Glass styling is available on iOS 26+; earlier versions use UIKit
++  /// appearances supported by the operating system. When false, pages use
++  /// CupertinoNavigationBar. The host follows the page toolbar registry.
+   ///
+   /// If true, [cupertinoNavigationBar] will be ignored and native toolbar will be shown.
+   final bool useNativeToolbar;
+@@ -96,6 +124,18 @@ class AdaptiveAppBar {
+     Widget? titleWidget,
+     PreferredSizeWidget? cupertinoNavigationBar,
+     PreferredSizeWidget? appBar,
++    bool? nativeTitleLayout,
++    VoidCallback? onTitleTap,
++    bool? leadingTitle,
++    String? semanticLabel,
++    Color? foreground,
++    double? textScale,
++    double? toolbarHeight,
++    SystemUiOverlayStyle? systemOverlayStyle,
++    List<String>? tabLabels,
++    int? selectedTabIndex,
++    double? tabRowHeight,
++    ValueChanged<int>? onTabSelected,
+   }) {
+     return AdaptiveAppBar(
+       title: title ?? this.title,
+@@ -108,6 +148,18 @@ class AdaptiveAppBar {
+       cupertinoNavigationBar:
+           cupertinoNavigationBar ?? this.cupertinoNavigationBar,
+       appBar: appBar ?? this.appBar,
++      nativeTitleLayout: nativeTitleLayout ?? this.nativeTitleLayout,
++      onTitleTap: onTitleTap ?? this.onTitleTap,
++      leadingTitle: leadingTitle ?? this.leadingTitle,
++      semanticLabel: semanticLabel ?? this.semanticLabel,
++      foreground: foreground ?? this.foreground,
++      textScale: textScale ?? this.textScale,
++      toolbarHeight: toolbarHeight ?? this.toolbarHeight,
++      systemOverlayStyle: systemOverlayStyle ?? this.systemOverlayStyle,
++      tabLabels: tabLabels ?? this.tabLabels,
++      selectedTabIndex: selectedTabIndex ?? this.selectedTabIndex,
++      tabRowHeight: tabRowHeight ?? this.tabRowHeight,
++      onTabSelected: onTabSelected ?? this.onTabSelected,
+     );
+   }
+ }
+diff --git a/lib/src/widgets/adaptive_app_bar_action.dart b/lib/src/widgets/adaptive_app_bar_action.dart
+index 39fac72..fc06610 100644
+--- a/lib/src/widgets/adaptive_app_bar_action.dart
++++ b/lib/src/widgets/adaptive_app_bar_action.dart
+@@ -34,6 +34,8 @@ class AdaptiveAppBarAction {
+     this.spacerAfter = ToolbarSpacerType.none,
+     this.prominent = false,
+     this.tintColor,
++    this.enabled = true,
++    this.loading = false,
+   }) : assert(
+          iosSymbol != null ||
+              icon != null ||
+@@ -52,6 +54,9 @@ class AdaptiveAppBarAction {
+ 
+   static void _noAction() {}
+ 
++  /// Native activation state. A pending action keeps its identity and label.
++  final bool enabled, loading;
++
+   /// SF Symbol name for iOS 26+ ONLY (e.g., 'info.circle', 'plus.circle')
+   /// - iOS 26+: Uses UIImage(systemName:) in native UIBarButtonItem
+   /// - iOS <26: NOT used, use icon parameter instead
+@@ -105,6 +110,7 @@ class AdaptiveAppBarAction {
+ 
+   /// Calls [onPressed], or opens [menuItems] in a bar drawn by Flutter
+   void press(BuildContext context, {NavigatorState? navigator}) {
++    if (!enabled || loading) return;
+     if (!hasMenu) return onPressed();
+     AdaptivePopupMenuButton.show<dynamic>(
+       context,
+@@ -159,6 +165,8 @@ class AdaptiveAppBarAction {
+         other.title == title &&
+         other.label == label &&
+         other.prominent == prominent &&
++        other.enabled == enabled &&
++        other.loading == loading &&
+         other.tintColor == tintColor &&
+         listEquals(_menuSignature, other._menuSignature);
+   }
+@@ -171,6 +179,8 @@ class AdaptiveAppBarAction {
+     title,
+     label,
+     prominent,
++    enabled,
++    loading,
+     tintColor,
+     Object.hashAll(_menuSignature ?? const []),
+   );
+@@ -198,6 +208,8 @@ class AdaptiveAppBarAction {
+       if (iosSymbol != null) 'icon': iosSymbol!,
+       if (title != null) 'title': title!,
+       if (effectiveLabel != null) 'label': effectiveLabel!,
++      'enabled': enabled,
++      'loading': loading,
+       'spacerAfter': spacerAfter.index, // 0=none, 1=fixed, 2=flexible
+       if (prominent) 'prominent': true,
+       if (tintColor != null) 'tint': tintColor!.toARGB32(),
+diff --git a/lib/src/widgets/adaptive_scaffold.dart b/lib/src/widgets/adaptive_scaffold.dart
+index ef19c06..6a5f663 100644
+--- a/lib/src/widgets/adaptive_scaffold.dart
++++ b/lib/src/widgets/adaptive_scaffold.dart
+@@ -11,6 +11,7 @@ import 'adaptive_button.dart';
+ import 'ios26/ios26_scaffold.dart';
+ import '../toolbar/toolbar_chrome_scope.dart';
+ import '../toolbar/toolbar_registry.dart';
++import '../toolbar/native_toolbar_backend.dart';
+ 
+ /// Navigation destination for bottom navigation
+ class AdaptiveNavigationDestination {
+@@ -118,6 +119,8 @@ class AdaptiveScaffold extends StatefulWidget {
+   const AdaptiveScaffold({
+     super.key,
+     this.appBar,
++    this.fallbackBuilder,
++    this.fallbackUsesNativeToolbar = false,
+     this.bottomNavigationBar,
+     this.body,
+     this.resizeToAvoidBottomInset,
+@@ -145,6 +148,13 @@ class AdaptiveScaffold extends StatefulWidget {
+   /// If null, no app bar or toolbar will be shown
+   final AdaptiveAppBar? appBar;
+ 
++  /// Application compatibility renderer; stays within the same route registry.
++  final Widget Function(BuildContext context, Widget body)? fallbackBuilder;
++
++  /// A custom scaffold may retain a Flutter footer while the backend draws its
++  /// entire toolbar. It must omit its own AppBar in this mode.
++  final bool fallbackUsesNativeToolbar;
++
+   /// Bottom navigation bar configuration
+   /// If null, no bottom navigation will be shown
+   final AdaptiveBottomNavigationBar? bottomNavigationBar;
+@@ -255,6 +265,8 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
+   /// The fixed toolbar chrome this page publishes its app bar to, if an
+   /// [AdaptiveToolbarHost] is installed above the navigator.
+   ToolbarRegistry? _toolbarRegistry;
++  double _androidScrollOffset = 0;
++  final Map<int, double> _tabScrollOffsets = {};
+ 
+   @override
+   void didChangeDependencies() {
+@@ -265,6 +277,12 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
+   @override
+   void didUpdateWidget(AdaptiveScaffold oldWidget) {
+     super.didUpdateWidget(oldWidget);
++    if (oldWidget.appBar?.selectedTabIndex != widget.appBar?.selectedTabIndex) {
++      _tabScrollOffsets[oldWidget.appBar?.selectedTabIndex ?? 0] =
++          _androidScrollOffset;
++      _androidScrollOffset =
++          _tabScrollOffsets[widget.appBar?.selectedTabIndex ?? 0] ?? 0;
++    }
+     if (oldWidget.appBar != widget.appBar ||
+         oldWidget.useFixedToolbar != widget.useFixedToolbar ||
+         oldWidget.tabBarHidden != widget.tabBarHidden ||
+@@ -301,6 +319,61 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
+     return route == null || route is PageRoute;
+   }
+ 
++  bool _usesNativeToolbar(BuildContext context) {
++    final backend = NativeToolbarScope.maybeOf(context);
++    final bar = widget.appBar;
++    return (widget.fallbackBuilder == null ||
++            widget.fallbackUsesNativeToolbar) &&
++        backend != null &&
++        _usesFixedToolbar(context) &&
++        bar != null &&
++        bar.useNativeToolbar &&
++        widget.drawer == null &&
++        widget.endDrawer == null &&
++        backend.supports(bar);
++  }
++
++  Widget _androidToolbarBody(BuildContext context, Widget body) {
++    final backend = NativeToolbarScope.maybeOf(context);
++    return ValueListenableBuilder<double>(
++      valueListenable:
++          backend?.height ?? const AlwaysStoppedAnimation<double>(52),
++      builder: (context, height, _) {
++        final native = _usesNativeToolbar(context);
++        final media = MediaQuery.of(context);
++        final inset = native ? media.viewPadding.top + height : 0.0;
++        return Padding(
++          padding: EdgeInsets.only(
++            top: native && !widget.extendBodyBehindAppBar ? inset : 0,
++          ),
++          child: MediaQuery(
++            data: native ? media.removePadding(removeTop: true) : media,
++            child: NativeToolbarBodyScope(
++              topInset: native && widget.extendBodyBehindAppBar ? inset : 0,
++              child: NotificationListener<ScrollNotification>(
++                onNotification: (notification) {
++                  if (notification.depth == 0 &&
++                      notification.metrics.axis == Axis.vertical) {
++                    final offset = notification.metrics.pixels.clamp(
++                      0.0,
++                      double.infinity,
++                    );
++                    if (offset != _androidScrollOffset) {
++                      _androidScrollOffset = offset;
++                      _syncToolbarEntry();
++                    }
++                  }
++                  return false;
++                },
++                child: body,
++              ),
++            ),
++          ),
++        );
++      },
++    );
++  }
++
+   /// The tab bar the fixed chrome may draw in the iPhone Duo trailing bar:
+   /// only the native one. A custom `CupertinoTabBar` or bottom widget
+   /// (`useNativeBottomBar: false`) is the app's own and stays where it is.
+@@ -344,6 +417,8 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
+       ToolbarEntry(
+         id: this,
+         appBar: widget.appBar,
++        nativeToolbar: _usesNativeToolbar(context),
++        scrollOffset: _androidScrollOffset,
+         route: ModalRoute.of(context),
+         navigator: navigator,
+         enclosingRoutes: enclosingRoutes,
+@@ -400,6 +475,7 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
+   /// Colors resolve from the ambient brightness so the overlay matches the
+   /// native title in light and dark mode.
+   Widget? _buildIOS26TitleOverlay() {
++    if (widget.appBar?.nativeTitleLayout == true) return null;
+     return _buildAppBarTitle(
+       nativeTitleFallback: true,
+       titleStyle: TextStyle(
+@@ -434,19 +510,50 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
+   Widget build(BuildContext context) {
+     final page = _buildPage(context);
+     final bg = widget.backgroundColor;
+-    if (bg == null || bg.a < 0.5) return page;
+-    // A page that sets its own background keeps the status bar legible
+-    // over it, whatever the app theme says: light icons on a dark page and
+-    // dark icons on a light one. Pages without a colour follow the theme
+-    // through AdaptiveApp, and an inner AnnotatedRegion still wins (#77).
+-    final dark = ThemeData.estimateBrightnessForColor(bg) == Brightness.dark;
++    final dark = bg != null && bg.a >= .5
++        ? ThemeData.estimateBrightnessForColor(bg) == Brightness.dark
++        : Theme.of(context).brightness == Brightness.dark;
++    final requested = _usesNativeToolbar(context)
++        ? widget.appBar?.systemOverlayStyle
++        : null;
++    // Stable wrapper across renderer changes preserves scroll/form subtree state.
+     return AnnotatedRegion<SystemUiOverlayStyle>(
+-      value: dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
++      value: (dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark)
++          .copyWith(
++            statusBarColor: Colors.transparent,
++            systemStatusBarContrastEnforced: false,
++            systemNavigationBarColor: Colors.transparent,
++            systemNavigationBarDividerColor: Colors.transparent,
++            systemNavigationBarContrastEnforced: false,
++            systemNavigationBarIconBrightness: dark
++                ? Brightness.light
++                : Brightness.dark,
++          )
++          .copyWith(
++            statusBarColor: requested?.statusBarColor,
++            statusBarBrightness: requested?.statusBarBrightness,
++            statusBarIconBrightness: requested?.statusBarIconBrightness,
++            systemStatusBarContrastEnforced:
++                requested?.systemStatusBarContrastEnforced,
++            systemNavigationBarColor: requested?.systemNavigationBarColor,
++            systemNavigationBarDividerColor:
++                requested?.systemNavigationBarDividerColor,
++            systemNavigationBarIconBrightness:
++                requested?.systemNavigationBarIconBrightness,
++            systemNavigationBarContrastEnforced:
++                requested?.systemNavigationBarContrastEnforced,
++          ),
+       child: page,
+     );
+   }
+ 
+   Widget _buildPage(BuildContext context) {
++    if (widget.fallbackBuilder != null) {
++      return widget.fallbackBuilder!(
++        context,
++        _androidToolbarBody(context, widget.body ?? const SizedBox.shrink()),
++      );
++    }
+     final useNativeToolbar = widget.appBar?.useNativeToolbar ?? false;
+     final useNativeBottomBar =
+         widget.bottomNavigationBar?.useNativeBottomBar ?? true;
+@@ -895,8 +1002,11 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
+ 
+       return Scaffold(
+         key: widget.scaffoldKey,
+-        appBar: appBar,
+-        body: widget.body ?? const SizedBox.shrink(),
++        appBar: _usesNativeToolbar(context) ? null : appBar,
++        body: _androidToolbarBody(
++          context,
++          widget.body ?? const SizedBox.shrink(),
++        ),
+         resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
+         bottomNavigationBar: bottomNavBar,
+         floatingActionButton: widget.floatingActionButton,
+@@ -962,8 +1072,11 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
+     // Always use Scaffold to ensure Material context
+     return Scaffold(
+       key: widget.scaffoldKey,
+-      appBar: appBar,
+-      body: widget.body ?? const SizedBox.shrink(),
++      appBar: _usesNativeToolbar(context) ? null : appBar,
++      body: _androidToolbarBody(
++        context,
++        widget.body ?? const SizedBox.shrink(),
++      ),
+       resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
+       floatingActionButton: widget.floatingActionButton,
+       extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
+diff --git a/lib/src/widgets/adaptive_text_field.dart b/lib/src/widgets/adaptive_text_field.dart
+index 47883ef..a564d1b 100644
+--- a/lib/src/widgets/adaptive_text_field.dart
++++ b/lib/src/widgets/adaptive_text_field.dart
+@@ -24,6 +24,9 @@ class AdaptiveTextField extends StatelessWidget {
+     this.maxLength,
+     this.obscureText = false,
+     this.autocorrect = true,
++    this.enableSuggestions = true,
++    this.autofillHints,
++    this.onTapOutside,
+     this.autofocus = false,
+     this.enabled = true,
+     this.readOnly = false,
+@@ -33,6 +36,7 @@ class AdaptiveTextField extends StatelessWidget {
+     this.suffixIcon,
+     this.onChanged,
+     this.onSubmitted,
++    this.onEditingComplete,
+     this.onTap,
+     this.inputFormatters,
+     this.padding,
+@@ -80,6 +84,9 @@ class AdaptiveTextField extends StatelessWidget {
+ 
+   /// Whether to enable autocorrection.
+   final bool autocorrect;
++  final bool enableSuggestions;
++  final Iterable<String>? autofillHints;
++  final TapRegionCallback? onTapOutside;
+ 
+   /// Whether this text field should focus itself if nothing else is already focused.
+   final bool autofocus;
+@@ -107,6 +114,7 @@ class AdaptiveTextField extends StatelessWidget {
+ 
+   /// Called when the user indicates that they are done editing the text.
+   final ValueChanged<String>? onSubmitted;
++  final VoidCallback? onEditingComplete;
+ 
+   /// Called when the text field is tapped.
+   final VoidCallback? onTap;
+@@ -143,7 +151,7 @@ class AdaptiveTextField extends StatelessWidget {
+     return CupertinoTextField(
+       controller: controller,
+       focusNode: focusNode,
+-      placeholder: placeholder,
++      placeholder: placeholder ?? decoration?.hintText ?? decoration?.labelText,
+       keyboardType: keyboardType,
+       textInputAction: textInputAction,
+       textCapitalization: textCapitalization,
+@@ -154,37 +162,44 @@ class AdaptiveTextField extends StatelessWidget {
+       maxLength: maxLength,
+       obscureText: obscureText,
+       autocorrect: autocorrect,
++      enableSuggestions: enableSuggestions,
++      autofillHints: autofillHints,
++      onTapOutside: onTapOutside,
+       autofocus: autofocus,
+       enabled: enabled,
+       readOnly: readOnly,
+       prefix:
+           prefix ??
+-          (prefixIcon != null
++          ((prefixIcon ?? decoration?.prefixIcon ?? decoration?.icon) != null
+               ? Padding(
+                   padding: const EdgeInsets.only(left: 6, right: 6),
+                   child: GestureDetector(
+                     onTap: () {
+                       // Prevent focus when tapping on prefix icon
+                     },
+-                    child: prefixIcon,
++                    child:
++                        prefixIcon ??
++                        decoration?.prefixIcon ??
++                        decoration?.icon,
+                   ),
+                 )
+               : null),
+       suffix:
+           suffix ??
+-          (suffixIcon != null
++          ((suffixIcon ?? decoration?.suffixIcon) != null
+               ? Padding(
+                   padding: const EdgeInsets.only(right: 6),
+                   child: GestureDetector(
+                     onTap: () {
+                       // Prevent focus when tapping on suffix icon
+                     },
+-                    child: suffixIcon,
++                    child: suffixIcon ?? decoration?.suffixIcon,
+                   ),
+                 )
+               : null),
+       onChanged: onChanged,
+       onSubmitted: onSubmitted,
++      onEditingComplete: onEditingComplete,
+       onTap: onTap,
+       inputFormatters: inputFormatters,
+       padding:
+@@ -192,9 +207,12 @@ class AdaptiveTextField extends StatelessWidget {
+       decoration:
+           cupertinoDecoration ??
+           BoxDecoration(
+-            color: enabled
+-                ? CupertinoColors.tertiarySystemBackground
+-                : CupertinoColors.quaternarySystemFill,
++            color: CupertinoDynamicColor.resolve(
++              enabled
++                  ? CupertinoColors.tertiarySystemBackground
++                  : CupertinoColors.quaternarySystemFill,
++              context,
++            ),
+             borderRadius: BorderRadius.circular(8),
+           ),
+     );
+@@ -214,11 +232,15 @@ class AdaptiveTextField extends StatelessWidget {
+       maxLength: maxLength,
+       obscureText: obscureText,
+       autocorrect: autocorrect,
++      enableSuggestions: enableSuggestions,
++      autofillHints: autofillHints,
++      onTapOutside: onTapOutside,
+       autofocus: autofocus,
+       enabled: enabled,
+       readOnly: readOnly,
+       onChanged: onChanged,
+       onSubmitted: onSubmitted,
++      onEditingComplete: onEditingComplete,
+       onTap: onTap,
+       inputFormatters: inputFormatters,
+       decoration:
+diff --git a/lib/src/widgets/ios26/ios26_button.dart b/lib/src/widgets/ios26/ios26_button.dart
+index 955a359..e57d122 100644
+--- a/lib/src/widgets/ios26/ios26_button.dart
++++ b/lib/src/widgets/ios26/ios26_button.dart
+@@ -346,9 +346,13 @@ class _IOS26ButtonState extends State<IOS26Button> {
+                 children: [
+                   Positioned.fill(child: platformView),
+                   Center(
++                    widthFactor: 1,
++                    heightFactor: 1,
+                     child: IgnorePointer(
+                       child: Padding(
+-                        padding: widget.padding ?? const EdgeInsets.symmetric(horizontal: 16.0),
++                        padding:
++                            widget.padding ??
++                            const EdgeInsets.symmetric(horizontal: 16.0),
+                         child: widget.child!,
+                       ),
+                     ),
+diff --git a/lib/src/widgets/ios26/ios26_native_tab_bar.dart b/lib/src/widgets/ios26/ios26_native_tab_bar.dart
+index 94d51c2..3b38654 100644
+--- a/lib/src/widgets/ios26/ios26_native_tab_bar.dart
++++ b/lib/src/widgets/ios26/ios26_native_tab_bar.dart
+@@ -16,6 +16,7 @@ class IOS26NativeTabBar extends StatefulWidget {
+     this.unselectedItemTint,
+     this.backgroundColor,
+     this.height,
++    this.onHeightChanged,
+     this.minimizeBehavior = TabBarMinimizeBehavior.automatic,
+     this.showNativeView = true,
+     this.hidden = false,
+@@ -28,6 +29,9 @@ class IOS26NativeTabBar extends StatefulWidget {
+   final Color? unselectedItemTint;
+   final Color? backgroundColor;
+   final double? height;
++
++  /// The host reserves the height measured by UIKit, including style changes.
++  final ValueChanged<double>? onHeightChanged;
+   final bool showNativeView;
+ 
+   /// Whether the native tab bar is hidden.
+@@ -40,11 +44,18 @@ class IOS26NativeTabBar extends StatefulWidget {
+   final TabBarMinimizeBehavior minimizeBehavior;
+ 
+   @override
+-  State<IOS26NativeTabBar> createState() => _IOS26NativeTabBarState();
++  State<IOS26NativeTabBar> createState() => IOS26NativeTabBarState();
+ }
+ 
+-class _IOS26NativeTabBarState extends State<IOS26NativeTabBar> {
++class IOS26NativeTabBarState extends State<IOS26NativeTabBar> {
+   MethodChannel? _channel;
++  @visibleForTesting
++  Future<Map<Object?, Object?>?> nativeSnapshot() async =>
++      _channel?.invokeMapMethod<Object?, Object?>('diagnostics');
++  @visibleForTesting
++  Future<void> activateNativeItem(int index) async =>
++      _channel?.invokeMethod<void>('activateItem', {'index': index});
++
+   int? _lastIndex;
+   int? _lastTint;
+   int? _lastUnselectedTint;
+@@ -69,7 +80,9 @@ class _IOS26NativeTabBarState extends State<IOS26NativeTabBar> {
+   bool? _lastHidden;
+ 
+   bool get _isDark =>
+-      MediaQuery.platformBrightnessOf(context) == Brightness.dark;
++      (CupertinoTheme.of(context).brightness ??
++          MediaQuery.platformBrightnessOf(context)) ==
++      Brightness.dark;
+   bool get _isRtl => Directionality.of(context) == TextDirection.rtl;
+   Color? get _effectiveTint =>
+       widget.tint ?? CupertinoTheme.of(context).primaryColor;
+@@ -320,6 +333,9 @@ class _IOS26NativeTabBarState extends State<IOS26NativeTabBar> {
+   }
+ 
+   Future<dynamic> _onMethodCall(MethodCall call) async {
++    if (call.method == 'intrinsicSizeChanged') {
++      await _requestIntrinsicSize();
++    }
+     if (call.method == 'valueChanged') {
+       final args = call.arguments as Map?;
+       final idx = (args?['index'] as num?)?.toInt();
+@@ -354,7 +370,7 @@ class _IOS26NativeTabBarState extends State<IOS26NativeTabBar> {
+       style['tint'] = tint;
+       _lastTint = tint;
+     }
+-    if (_lastUnselectedTint != unselectedTint && unselectedTint != null) {
++    if (_lastUnselectedTint != unselectedTint) {
+       style['unselectedItemTint'] = unselectedTint;
+       _lastUnselectedTint = unselectedTint;
+     }
+@@ -505,10 +521,11 @@ class _IOS26NativeTabBarState extends State<IOS26NativeTabBar> {
+     try {
+       final size = await ch.invokeMethod<Map>('getIntrinsicSize');
+       final h = (size?['height'] as num?)?.toDouble();
+-      if (!mounted) return;
+-      setState(() {
+-        if (h != null && h > 0) _intrinsicHeight = h;
+-      });
++      if (!mounted || h == null || !h.isFinite || h <= 0) return;
++      if (_intrinsicHeight != h) {
++        setState(() => _intrinsicHeight = h);
++        widget.onHeightChanged?.call(h);
++      }
+     } catch (_) {}
+   }
+ 
+diff --git a/lib/src/widgets/ios26/ios26_native_toolbar.dart b/lib/src/widgets/ios26/ios26_native_toolbar.dart
+index 2f4ce57..9a54617 100644
+--- a/lib/src/widgets/ios26/ios26_native_toolbar.dart
++++ b/lib/src/widgets/ios26/ios26_native_toolbar.dart
+@@ -21,8 +21,33 @@ class IOS26NativeToolbar extends StatefulWidget {
+     this.height = 44.0,
+     this.showNativeView = true,
+     this.showsGradient = true,
++    this.nativeTitleLayout = false,
++    this.subtitle,
++    this.leadingTitle = false,
++    this.semanticLabel,
++    this.foreground,
++    this.textScale,
++    this.onTitleTap,
++    this.scrollOffset = 0,
++    this.interactive = true,
++    this.backEnabled = true,
++    this.tabLabels,
++    this.selectedTabIndex = 0,
++    this.tabRowHeight = 42,
++    this.onTabSelected,
+   });
+ 
++  final bool nativeTitleLayout, leadingTitle, interactive, backEnabled;
++  final String? subtitle, semanticLabel;
++  final Color? foreground;
++  final double? textScale;
++  final VoidCallback? onTitleTap;
++  final double scrollOffset;
++  final List<String>? tabLabels;
++  final int selectedTabIndex;
++  final double tabRowHeight;
++  final ValueChanged<int>? onTabSelected;
++
+   final String? title;
+   final Widget? leading;
+   final String? leadingText;
+@@ -50,17 +75,53 @@ class IOS26NativeToolbar extends StatefulWidget {
+   final bool showsGradient;
+ 
+   @override
+-  State<IOS26NativeToolbar> createState() => _IOS26NativeToolbarState();
++  State<IOS26NativeToolbar> createState() => IOS26NativeToolbarState();
+ }
+ 
+-class _IOS26NativeToolbarState extends State<IOS26NativeToolbar> {
++class IOS26NativeToolbarState extends State<IOS26NativeToolbar> {
+   MethodChannel? _channel;
++  String? _nativeSignature;
++  @visibleForTesting
++  String? get nativeChannelName => _channel?.name;
++  @visibleForTesting
++  Future<Map<Object?, Object?>?> nativeSnapshot() async =>
++      _channel?.invokeMapMethod<Object?, Object?>('diagnostics');
++  Map<String, dynamic> _nativeParams() => {
++    'nativeTitleLayout': true,
++    'toolbarHeight': widget.height,
++    'tabLabels': widget.tabLabels ?? const <String>[],
++    'selectedTabIndex': widget.selectedTabIndex,
++    'tabRowHeight': widget.tabRowHeight,
++    'rtl': Directionality.of(context) == TextDirection.rtl,
++    'showsGradient': false,
++    'title': widget.title ?? '',
++    'subtitle': widget.subtitle,
++    'leadingTitle': widget.leadingTitle,
++    'titleTappable': widget.onTitleTap != null,
++    'semanticLabel': widget.semanticLabel,
++    'foreground': widget.foreground?.toARGB32(),
++    'fontScale': widget.textScale ?? 1,
++    'isDark': _isDark,
++    'scrollOffset': widget.scrollOffset,
++    'interactive': widget.interactive,
++    'backEnabled': widget.interactive && widget.backEnabled,
++    if (widget.leadingText != null) 'leading': widget.leadingText,
++    'actions': [
++      for (final action in widget.actions ?? const <AdaptiveAppBarAction>[])
++        {
++          ...action.toNativeMap(),
++          'enabled': widget.interactive && action.enabled,
++        },
++    ],
++  };
++  @visibleForTesting
++  Future<void> activateNativeTab(int index) async =>
++      _channel?.invokeMethod<void>('activateTab', {'index': index});
+   bool? _lastIsDark;
+   int? _lastTint;
+   List<AdaptiveAppBarAction>? _lastActions;
+ 
+-  bool get _isDark =>
+-      MediaQuery.platformBrightnessOf(context) == Brightness.dark;
++  bool get _isDark => CupertinoTheme.brightnessOf(context) == Brightness.dark;
+ 
+   int _colorToARGB(Color color) {
+     // Resolve CupertinoDynamicColor if needed
+@@ -89,7 +150,7 @@ class _IOS26NativeToolbarState extends State<IOS26NativeToolbar> {
+     super.didUpdateWidget(oldWidget);
+     _syncPropsToNativeIfNeeded();
+ 
+-    if (widget.title != oldWidget.title) {
++    if (widget.title != oldWidget.title && !widget.nativeTitleLayout) {
+       final ch = _channel;
+       // Skip when a titleWidget overlay is shown — the native title stays hidden
+       if (ch != null && widget.title != null && widget.titleWidget == null) {
+@@ -101,6 +162,18 @@ class _IOS26NativeToolbarState extends State<IOS26NativeToolbar> {
+   Future<void> _syncPropsToNativeIfNeeded() async {
+     final ch = _channel;
+     if (ch == null) return;
++    if (widget.nativeTitleLayout) {
++      final params = _nativeParams();
++      final signature = params.toString();
++      if (signature == _nativeSignature) return;
++      _nativeSignature = signature;
++      try {
++        await ch.invokeMethod('updateConfiguration', params);
++      } catch (_) {
++        _nativeSignature = null;
++      }
++      return;
++    }
+ 
+     // Sync brightness
+     final isDark = _isDark;
+@@ -166,22 +239,32 @@ class _IOS26NativeToolbarState extends State<IOS26NativeToolbar> {
+ 
+     final safePadding = MediaQuery.of(context).padding.top;
+ 
+-    final creationParams = <String, dynamic>{
+-      // Hide native title when a titleWidget overlay is provided
+-      if (widget.title != null && widget.titleWidget == null)
+-        'title': widget.title!,
+-      if (widget.leading == null && widget.leadingText != null)
+-        'leading': widget.leadingText!,
+-      if (widget.actions != null && widget.actions!.isNotEmpty)
+-        'actions': widget.actions!.map((a) => a.toNativeMap()).toList(),
+-      'isDark': _isDark,
+-      if (!widget.showsGradient) 'showsGradient': false,
+-      if (widget.tintColor != null) 'tint': _colorToARGB(widget.tintColor!),
+-    };
++    final creationParams = widget.nativeTitleLayout
++        ? _nativeParams()
++        : <String, dynamic>{
++            // Hide native title when a titleWidget overlay is provided
++            if (widget.title != null && widget.titleWidget == null)
++              'title': widget.title!,
++            if (widget.leading == null && widget.leadingText != null)
++              'leading': widget.leadingText!,
++            if (widget.actions != null && widget.actions!.isNotEmpty)
++              'actions': widget.actions!.map((a) => a.toNativeMap()).toList(),
++            'isDark': _isDark,
++            if (!widget.showsGradient) 'showsGradient': false,
++            if (widget.tintColor != null)
++              'tint': _colorToARGB(widget.tintColor!),
++          };
+ 
+     return AnimatedContainer(
+-      height: widget.height + safePadding,
+-      duration: const Duration(milliseconds: 1000),
++      height:
++          widget.height +
++          safePadding +
++          (widget.tabLabels?.isNotEmpty == true
++              ? widget.tabRowHeight + 8 + 20
++              : 0),
++      duration: widget.nativeTitleLayout
++          ? Duration.zero
++          : const Duration(milliseconds: 1000),
+       curve: const IOSSpringCurve(),
+       child: Stack(
+         children: [
+@@ -202,7 +285,7 @@ class _IOS26NativeToolbarState extends State<IOS26NativeToolbar> {
+                 child: widget.leading!,
+               ),
+             ),
+-          if (widget.titleWidget != null)
++          if (widget.titleWidget != null && !widget.nativeTitleLayout)
+             Positioned(
+               left: 0,
+               right: 0,
+@@ -223,10 +306,22 @@ class _IOS26NativeToolbarState extends State<IOS26NativeToolbar> {
+         ? _colorToARGB(widget.tintColor!)
+         : null;
+     _lastActions = widget.actions != null ? List.of(widget.actions!) : null;
++    if (widget.nativeTitleLayout) _syncPropsToNativeIfNeeded();
+   }
+ 
+   Future<dynamic> _handleMethodCall(MethodCall call) async {
++    if (widget.nativeTitleLayout && !widget.interactive) return;
+     switch (call.method) {
++      case 'onTabSelected':
++        final index = (call.arguments as Map)['index'] as int?;
++        if (index != null &&
++            index >= 0 &&
++            index < (widget.tabLabels?.length ?? 0))
++          widget.onTabSelected?.call(index);
++        break;
++      case 'onTitleTapped':
++        widget.onTitleTap?.call();
++        break;
+       case 'onLeadingTapped':
+         widget.onLeadingTap?.call();
+         break;
+diff --git a/lib/src/widgets/ios26/ios26_segmented_control.dart b/lib/src/widgets/ios26/ios26_segmented_control.dart
+index 4871563..a13ff06 100644
+--- a/lib/src/widgets/ios26/ios26_segmented_control.dart
++++ b/lib/src/widgets/ios26/ios26_segmented_control.dart
+@@ -60,10 +60,16 @@ class IOS26SegmentedControl extends StatefulWidget {
+   final Color? selectedTextColor;
+ 
+   @override
+-  State<IOS26SegmentedControl> createState() => _IOS26SegmentedControlState();
++  State<IOS26SegmentedControl> createState() => IOS26SegmentedControlState();
+ }
+ 
+-class _IOS26SegmentedControlState extends State<IOS26SegmentedControl> {
++class IOS26SegmentedControlState extends State<IOS26SegmentedControl> {
++  @visibleForTesting
++  Future<Map<Object?, Object?>?> nativeSnapshot() =>
++      _channel.invokeMapMethod<Object?, Object?>('diagnostics');
++  @visibleForTesting
++  Future<void> activateNativeSegment(int index) =>
++      _channel.invokeMethod<void>('activateSegment', {'index': index});
+   static int _nextId = 0;
+   late final int _id;
+   late final MethodChannel _channel;
+@@ -176,9 +182,7 @@ class _IOS26SegmentedControlState extends State<IOS26SegmentedControl> {
+ 
+     final effectiveSelectedTextColor =
+         widget.selectedTextColor ??
+-        (widget.color != null
+-            ? CupertinoColors.white
+-            : effectiveTextColor);
++        (widget.color != null ? CupertinoColors.white : effectiveTextColor);
+ 
+     return <String, dynamic>{
+       'textColor': _colorToARGB(effectiveTextColor),

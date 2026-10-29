@@ -19,3 +19,7 @@
 # 混淆或裁剪后桌面会直接加载失败，必须整体保留。
 -keep class com.lilystudio.wheretosleepinnju.widget.** { *; }
 -keep class * extends android.appwidget.AppWidgetProvider { *; }
+
+# Shizuku starts this class by its public no-argument constructor via app_process.
+-keep class com.lilystudio.wheretosleepinnju.liveactivity.IslandShizukuService { *; }
+-keep class com.lilystudio.wheretosleepinnju.liveactivity.IIslandFirewall** { *; }

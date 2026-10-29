@@ -31,6 +31,7 @@ import 'Widgets/CourseWidget.dart';
 
 class CourseTablePresenter {
   CourseProvider courseProvider = CourseProvider();
+  int courseCount = 0;
   List<Course> activeCourses = [];
   List<Course> hideCourses = [];
   List<List<Course>> multiCourses = [];
@@ -38,6 +39,7 @@ class CourseTablePresenter {
 
   refreshClasses(int tableId, int nowWeek) async {
     List allCoursesMap = await courseProvider.getAllCourses(tableId);
+    courseCount = allCoursesMap.length;
     List<Course> allCourses = [];
     for (Map<String, dynamic> courseMap in allCoursesMap) {
       allCourses.add(Course.fromMap(courseMap));
@@ -52,63 +54,70 @@ class CourseTablePresenter {
   }
 
   Future<List<Widget>?> getClassesWidgetList(
-      BuildContext context,
-      double height,
-      double width,
-      int nowWeek,
-      bool showNonCurrentWeekCourses) async {
+    BuildContext context,
+    double height,
+    double width,
+    int nowWeek,
+    bool showNonCurrentWeekCourses,
+  ) async {
     List colorPool = await ColorPool.getColorPool();
 
     // Filter hideCourses based on setting
-    List<Course> filteredHideCourses =
-        showNonCurrentWeekCourses ? hideCourses : [];
+    List<Course> filteredHideCourses = showNonCurrentWeekCourses
+        ? hideCourses
+        : [];
 
     // Filter multiCourses - only show if the first course is for current week or setting is enabled
     List<List<Course>> filteredMultiCourses = showNonCurrentWeekCourses
         ? multiCourses
         : multiCourses
-            .where((courses) => isThisWeek(courses[0], nowWeek))
-            .toList();
+              .where((courses) => isThisWeek(courses[0], nowWeek))
+              .toList();
 
-    List<Widget> result = List.generate(
-            filteredHideCourses.length,
-            (int i) => CourseWidget(
-                  filteredHideCourses[i],
-                  Config.HIDE_CLASS_COLOR,
-                  height,
-                  width,
-                  false,
-                  1,
-                  () => showClassDialog(context, filteredHideCourses[i], false),
-                  () => showDeleteDialog(
-                    context,
-                    filteredHideCourses[i],
-                  ),
-                )) +
+    List<Widget> result =
         List.generate(
-            activeCourses.length,
-            (int i) => CourseWidget(
-                  activeCourses[i],
-                  activeCourses[i].getColor(colorPool)!,
-                  height,
-                  width,
-                  true,
-                  1,
-                  () => showClassDialog(context, activeCourses[i], true),
-                  () => showDeleteDialog(context, activeCourses[i]),
-                )) +
+          filteredHideCourses.length,
+          (int i) => CourseWidget(
+            filteredHideCourses[i],
+            Config.HIDE_CLASS_COLOR,
+            height,
+            width,
+            false,
+            1,
+            () => showClassDialog(context, filteredHideCourses[i], false),
+            () => showDeleteDialog(context, filteredHideCourses[i]),
+          ),
+        ) +
         List.generate(
-            filteredMultiCourses.length,
-            (int i) => CourseWidget(
-                filteredMultiCourses[i][0],
-                filteredMultiCourses[i][0].getColor(colorPool)!,
-                height,
-                width,
-                isThisWeek(filteredMultiCourses[i][0], nowWeek),
-                CourseGroup.collect(filteredMultiCourses[i]).length,
-                () => showMultiClassDialog(context,
-                    multiCourses.indexOf(filteredMultiCourses[i]), nowWeek),
-                () => showDeleteDialog(context, filteredMultiCourses[i][0])));
+          activeCourses.length,
+          (int i) => CourseWidget(
+            activeCourses[i],
+            activeCourses[i].getColor(colorPool)!,
+            height,
+            width,
+            true,
+            1,
+            () => showClassDialog(context, activeCourses[i], true),
+            () => showDeleteDialog(context, activeCourses[i]),
+          ),
+        ) +
+        List.generate(
+          filteredMultiCourses.length,
+          (int i) => CourseWidget(
+            filteredMultiCourses[i][0],
+            filteredMultiCourses[i][0].getColor(colorPool)!,
+            height,
+            width,
+            isThisWeek(filteredMultiCourses[i][0], nowWeek),
+            CourseGroup.collect(filteredMultiCourses[i]).length,
+            () => showMultiClassDialog(
+              context,
+              multiCourses.indexOf(filteredMultiCourses[i]),
+              nowWeek,
+            ),
+            () => showDeleteDialog(context, filteredMultiCourses[i][0]),
+          ),
+        );
     return result;
   }
 
@@ -129,8 +138,8 @@ class CourseTablePresenter {
       String semesterStartMonday = response.data['semester_start_monday'];
       int index = await ScopedModel.of<MainStateModel>(context).getClassTable();
       CourseTableProvider courseTableProvider = CourseTableProvider();
-      String tmpSemesterStartMonday =
-          await courseTableProvider.getSemesterStartMonday(index);
+      String tmpSemesterStartMonday = await courseTableProvider
+          .getSemesterStartMonday(index);
       if (tmpSemesterStartMonday != "") {
         semesterStartMonday = tmpSemesterStartMonday;
       }
@@ -165,72 +174,85 @@ class CourseTablePresenter {
   }
 
   void showDonateDialog(
-      BuildContext context, String welcomeTitle, String welcomeContent) async {
+    BuildContext context,
+    String welcomeTitle,
+    String welcomeContent,
+  ) async {
     UmengCommonSdk.onEvent("import_dialog", {"action": "show"});
     showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => MDialog(
-              welcomeTitle,
-              SingleChildScrollView(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                    Html(data: welcomeContent),
-                    Container(
-                        alignment: Alignment.centerRight,
-                        child: TransBgTextButton(
-                            color:
-                                Theme.of(context).brightness == Brightness.light
-                                    ? Theme.of(context).primaryColor
-                                    : Colors.white,
-                            child: Text(S.of(context).love_and_donate),
-                            onPressed: () async {
-                              UmengCommonSdk.onEvent(
-                                  "import_dialog", {"action": "donate"});
-                              if (Platform.isIOS) {
-                                _launchURL(Url.URL_APPLE);
-                              } else if (Platform.isAndroid) {
-                                _launchURL(Url.URL_ANDROID);
-                              } else if (Platform.operatingSystem == 'ohos') {
-                                _launchURL(Url.URL_OHOS);
-                              }
-                              Navigator.of(context).pop();
-                            })),
-                    Container(
-                        alignment: Alignment.centerRight,
-                        child: TransBgTextButton(
-                            color:
-                                Theme.of(context).brightness == Brightness.light
-                                    ? Theme.of(context).primaryColor
-                                    : Colors.white,
-                            child: Text(S.of(context).bug_and_report),
-                            onPressed: () {
-                              UmengCommonSdk.onEvent(
-                                  "import_dialog", {"action": "bug"});
-                              if (Platform.isIOS) {
-                                _launchURL(Url.QQ_GROUP_APPLE_URL);
-                              } else if (Platform.isAndroid) {
-                                _launchURL(Url.QQ_GROUP_ANDROID_URL);
-                              } else if (Platform.operatingSystem == 'ohos') {
-                                _launchURL(Url.QQ_GROUP_OHOS_URL);
-                              }
-                              Navigator.of(context).pop();
-                            })),
-                    Container(
-                        alignment: Alignment.centerRight,
-                        child: TransBgTextButton(
-                            color: Colors.grey,
-                            child: Text(S.of(context).love_but_no_money,
-                                style: const TextStyle(color: Colors.grey)),
-                            onPressed: () async {
-                              UmengCommonSdk.onEvent(
-                                  "import_dialog", {"action": "noMoney"});
-                              Navigator.of(context).pop();
-                            })),
-                  ])),
-              overrideActions: const [],
-            ));
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => MDialog(
+        welcomeTitle,
+        SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Html(data: welcomeContent),
+              Container(
+                alignment: Alignment.centerRight,
+                child: TransBgTextButton(
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Theme.of(context).primaryColor
+                      : Colors.white,
+                  child: Text(S.of(context).love_and_donate),
+                  onPressed: () async {
+                    UmengCommonSdk.onEvent("import_dialog", {
+                      "action": "donate",
+                    });
+                    if (Platform.isIOS) {
+                      _launchURL(Url.URL_APPLE);
+                    } else if (Platform.isAndroid) {
+                      _launchURL(Url.URL_ANDROID);
+                    } else if (Platform.operatingSystem == 'ohos') {
+                      _launchURL(Url.URL_OHOS);
+                    }
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+              Container(
+                alignment: Alignment.centerRight,
+                child: TransBgTextButton(
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Theme.of(context).primaryColor
+                      : Colors.white,
+                  child: Text(S.of(context).bug_and_report),
+                  onPressed: () {
+                    UmengCommonSdk.onEvent("import_dialog", {"action": "bug"});
+                    if (Platform.isIOS) {
+                      _launchURL(Url.QQ_GROUP_APPLE_URL);
+                    } else if (Platform.isAndroid) {
+                      _launchURL(Url.QQ_GROUP_ANDROID_URL);
+                    } else if (Platform.operatingSystem == 'ohos') {
+                      _launchURL(Url.QQ_GROUP_OHOS_URL);
+                    }
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+              Container(
+                alignment: Alignment.centerRight,
+                child: TransBgTextButton(
+                  color: Colors.grey,
+                  child: Text(
+                    S.of(context).love_but_no_money,
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                  onPressed: () async {
+                    UmengCommonSdk.onEvent("import_dialog", {
+                      "action": "noMoney",
+                    });
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+        overrideActions: const [],
+      ),
+    );
   }
 
   Future<bool> _launchURL(String url) async {
@@ -243,19 +265,25 @@ class CourseTablePresenter {
   }
 
   Future<bool> changeWeek(
-      BuildContext context, String semesterStartMonday) async {
+    BuildContext context,
+    String semesterStartMonday,
+  ) async {
     await showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => MDialog(S.of(context).fix_week_dialog_title,
-          Text(S.of(context).fix_week_dialog_content), widgetCancelAction: () {
-        Navigator.of(context).pop();
-      }, widgetOKAction: () async {
-        await WeekUtil.initWeek(semesterStartMonday, 1);
-        ScopedModel.of<MainStateModel>(context).refresh();
-        Toast.showToast(S.of(context).fix_week_toast_success, context);
-        Navigator.of(context).pop(true);
-      }),
+      builder: (context) => MDialog(
+        S.of(context).fix_week_dialog_title,
+        Text(S.of(context).fix_week_dialog_content),
+        widgetCancelAction: () {
+          Navigator.of(context).pop();
+        },
+        widgetOKAction: () async {
+          await WeekUtil.initWeek(semesterStartMonday, 1);
+          ScopedModel.of<MainStateModel>(context).refresh();
+          Toast.showToast(S.of(context).fix_week_toast_success, context);
+          Navigator.of(context).pop(true);
+        },
+      ),
     );
     return true;
   }
@@ -376,16 +404,16 @@ class CourseTablePresenter {
     return weeks.contains(nowWeek);
   }
 
-//TEST: 测试用函数
-//  Future insertMockData() async {
-//    await courseProvider.insert(new Course(
-//        0, "微积分", "[1,2,3,4,5,6,7]", 3, 5, 2, 0,
-//        color: '#8AD297', classroom: 'QAQ'));
-//    await courseProvider.insert(new Course(
-//        0, "线性代数", "[1,2,3,4,5,6,7]", 4, 2, 3, 0,
-//        color: '#F9A883', classroom: '仙林校区不知道哪个教室'));
-//    await courseProvider.insert(new Course(
-//        1, "并不是线性代数", "[1,2,3,4,5,6,7]", 4, 2, 3, 0,
-//        color: '#F9A883', classroom: 'QAQ'));
-//  }
+  //TEST: 测试用函数
+  //  Future insertMockData() async {
+  //    await courseProvider.insert(new Course(
+  //        0, "微积分", "[1,2,3,4,5,6,7]", 3, 5, 2, 0,
+  //        color: '#8AD297', classroom: 'QAQ'));
+  //    await courseProvider.insert(new Course(
+  //        0, "线性代数", "[1,2,3,4,5,6,7]", 4, 2, 3, 0,
+  //        color: '#F9A883', classroom: '仙林校区不知道哪个教室'));
+  //    await courseProvider.insert(new Course(
+  //        1, "并不是线性代数", "[1,2,3,4,5,6,7]", 4, 2, 3, 0,
+  //        color: '#F9A883', classroom: 'QAQ'));
+  //  }
 }

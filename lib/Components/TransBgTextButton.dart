@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import '../AdaptiveUI/adaptive_ui.dart';
 
-class TransBgTextButton extends TextButton {
+class TransBgTextButton extends AdaptiveButton {
   TransBgTextButton({
     Key? key,
     required Color color,
@@ -12,14 +13,15 @@ class TransBgTextButton extends TextButton {
     bool autofocus = false,
     Clip clipBehavior = Clip.none,
     required Widget child,
-  }) : super(
+  }) : super.text(
           key: key,
           onPressed: onPressed,
           onLongPress: onLongPress,
           onHover: onHover,
           onFocusChange: onFocusChange,
           style: TextButton.styleFrom(
-              foregroundColor: color, backgroundColor: Colors.transparent),
+              foregroundColor: color, backgroundColor: Colors.transparent,
+         ),
           focusNode: focusNode,
           autofocus: autofocus,
           clipBehavior: clipBehavior,

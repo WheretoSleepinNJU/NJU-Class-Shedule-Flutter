@@ -10,6 +10,7 @@ import '../communication/native_data_bridge.dart';
 import '../../../Models/CourseModel.dart';
 import '../../../Models/CourseTableModel.dart' as CourseTableDb;
 import 'course_selector.dart';
+import 'live_activity_builder.dart';
 import '../../../Utils/ColorUtil.dart';
 
 /// 统一数据服务
@@ -49,9 +50,7 @@ class UnifiedDataService {
 
   /// 获取 Live Activity 数据
   Future<List<LiveActivityData>> getLiveActivityData() async {
-    // 示例实现：返回空列表
-    // 实际实现需要根据即将开始的课程生成 LiveActivityData
-    return [];
+    return buildCourseLiveActivities(await getWidgetData());
   }
 
   /// 导出平台特定数据

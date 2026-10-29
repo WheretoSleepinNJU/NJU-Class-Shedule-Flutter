@@ -10,6 +10,11 @@ analyzer:
 #  strong-mode: true
 #  language:
 #    enableSuperMixins: true
-  exclude: [ external/** ]
+  exclude:
+    - external/**
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
   errors:
     mixin_inherits_from_not_object: ignore

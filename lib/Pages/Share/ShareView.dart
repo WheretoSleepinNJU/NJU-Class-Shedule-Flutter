@@ -1,3 +1,4 @@
+import '../../AdaptiveUI/adaptive_ui.dart';
 import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
@@ -24,79 +25,67 @@ class ShareView extends StatefulWidget {
 class _ShareViewState extends State<ShareView> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(S.of(context).import_or_export_title)),
+    final s = S.of(context);
+    return AdaptiveScaffold(
+      appBar: AdaptiveTopAppBar(title: Text(s.import_or_export_title)),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              SingleChildScrollView(
-                child: Column(
-                  children:
-                      ListTile.divideTiles(
-                        context: context,
-                        tiles: [
-                          ListTile(
-                            title: Text(S.of(context).export_classtable_title),
-                            subtitle: Text(
-                              S.of(context).export_classtable_subtitle,
-                            ),
-                            onTap: _exportClassTable,
-                          ),
-                          ListTile(
-                            title: Text(S.of(context).import_from_qrcode_title),
-                            subtitle: Text(
-                              S.of(context).import_from_qrcode_subtitle,
-                            ),
-                            onTap: _importFromQr,
-                          ),
-                          ListTile(
-                            key: const ValueKey('export-ics'),
-                            title: Text(S.of(context).export_ics_title),
-                            subtitle: Text(S.of(context).export_ics_subtitle),
-                            trailing:
-                                _exportingCalendar
-                                    ? const SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                      ),
-                                    )
-                                    : null,
-                            onTap:
-                                _exportingCalendar
-                                    ? null
-                                    : () => _exportToSystemCalendar(
-                                      context,
-                                      asFile: true,
-                                    ),
-                          ),
-                          ListTile(
-                            title: Text(
-                              S.of(context).export_to_system_calendar_title,
-                            ),
-                            subtitle: Text(
-                              S.of(context).export_to_system_calendar_subtitle,
-                            ),
-                            onTap: () async {
-                              _exportToSystemCalendar(context);
-                            },
-                          ),
-                        ],
-                      ).toList(),
+        child: AdaptivePageList(
+          children: [
+            AdaptiveSection(
+              title: Text(s.import_settings_title),
+              children: [
+                AdaptiveListTile(
+                  leading: const Icon(Icons.qr_code_scanner_rounded),
+                  title: Text(s.import_from_qrcode_title),
+                  subtitle: Text(s.import_from_qrcode_subtitle),
+                  onTap: _importFromQr,
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
+            AdaptiveSection(
+              title: Text(s.export_title),
+              children: [
+                AdaptiveListTile(
+                  leading: const Icon(Icons.qr_code_rounded),
+                  title: Text(s.export_classtable_title),
+                  subtitle: Text(s.export_classtable_subtitle),
+                  onTap: _exportClassTable,
+                ),
+                AdaptiveListTile(
+                  key: const ValueKey('export-ics'),
+                  leading: const Icon(Icons.file_download_outlined),
+                  title: Text(s.export_ics_title),
+                  subtitle: Text(s.export_ics_subtitle),
+                  enabled: !_exportingCalendar,
+                  trailing: _exportingCalendar
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: AdaptiveProgressIndicator(),
+                        )
+                      : null,
+                  onTap: _exportingCalendar
+                      ? null
+                      : () => _exportToSystemCalendar(context, asFile: true),
+                ),
+                AdaptiveListTile(
+                  leading: const Icon(Icons.calendar_month_outlined),
+                  title: Text(s.export_to_system_calendar_title),
+                  subtitle: Text(s.export_to_system_calendar_subtitle),
+                  onTap: () => _exportToSystemCalendar(context),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
   }
 
   Future<void> _exportClassTable() async {
-    final int index =
-        await ScopedModel.of<MainStateModel>(context).getClassTable();
+    final int index = await ScopedModel.of<MainStateModel>(
+      context,
+    ).getClassTable();
     final CourseProvider courseProvider = CourseProvider();
     final List allCoursesMap = await courseProvider.getAllCourses(index);
     if (!mounted) return;
@@ -134,9 +123,8 @@ class _ShareViewState extends State<ShareView> {
       );
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder:
-              (BuildContext context) =>
-                  QRShareView(frames: frames, singleShareText: singleShareText),
+          builder: (BuildContext context) =>
+              QRShareView(frames: frames, singleShareText: singleShareText),
         ),
       );
     } catch (_) {
@@ -217,10 +205,9 @@ class _ShareViewState extends State<ShareView> {
       final table = await tables.getCourseTable(tableId);
       final times = await tables.getClassTimeList(tableId);
       final events = CalendarExporter.buildEvents(
-        courses:
-            rows
-                .map((row) => Course.fromMap(Map<String, dynamic>.from(row)))
-                .toList(),
+        courses: rows
+            .map((row) => Course.fromMap(Map<String, dynamic>.from(row)))
+            .toList(),
         classTimes: times,
         now: DateTime.now(),
         currentWeek: currentWeek,

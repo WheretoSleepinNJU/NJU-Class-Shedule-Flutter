@@ -56,14 +56,14 @@ unset NJU_SETUP_SCRIPT
 # 配置 FVM Flutter 路径
 if [ -d "$PROJECT_ROOT/.fvm/flutter_sdk" ]; then
     export FLUTTER_SDK="$PROJECT_ROOT/.fvm/flutter_sdk"
-    export PATH="$PROJECT_ROOT/.fvm/flutter_sdk/bin:$PATH"
+    export PATH="$FLUTTER_SDK/bin:$PATH"
     echo "✅ FVM Flutter 路径已配置"
 else
-    echo "⚠️  未找到 FVM Flutter SDK，请先运行: fvm install"
+    echo "⚠️  未找到 FVM Flutter SDK，请先运行: bash tool/ci/bootstrap.sh"
 fi
 
 # 配置 PUB_CACHE（可选，避免与系统 Flutter 冲突）
-export PUB_CACHE="$PROJECT_ROOT/.fvm/.pub_cache"
+export PUB_CACHE="$PROJECT_ROOT/.fvm/pub-cache"
 
 echo ""
 echo "📝 环境变量摘要:"
@@ -72,5 +72,5 @@ echo "   FLUTTER_STORAGE_BASE_URL: $FLUTTER_STORAGE_BASE_URL"
 echo "   PUB_CACHE: $PUB_CACHE"
 echo ""
 echo "👉 接下来请运行:"
-echo "   1. fvm install        # 安装鸿蒙 Flutter"
-echo "   2. fvm flutter doctor -v  # 验证环境"
+echo "   1. bash tool/ci/bootstrap.sh"
+echo "   2. flutter doctor -v  # 验证环境"

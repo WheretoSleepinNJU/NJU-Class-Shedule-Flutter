@@ -20,6 +20,7 @@
   "import_manually": "手动导入",
   "import_from_lecture": "讲座导入",
   "free_class_banner": "另有 {num} 节「自由时间」课程 >>",
+  "free_courses_entry": "自由时间课程 · {num} 门",
   "free_class_button": "查看",
   "hide_free_class_button": "隐藏",
   "hide_free_class_dialog_title": "隐藏自由时间课程",
@@ -299,5 +300,22 @@
   "background_shuffle": "立即换一张",
   "background_clear": "移除全部背景",
   "background_error": "背景设置失败，请重试",
-  "background_frequency_subtitle": "何时进行图片切换"
+  "background_frequency_subtitle": "何时进行图片切换",
+  "home_timetable": "课表",
+  "home_courses": "课程",
+  "home_profile": "我的",
+  "course_added": "已添加",
+  "course_catalog": "全校",
+  "course_lectures": "讲座",
+  "home_empty_title": "还没有课程",
+  "home_empty_message": "导入课表，或手动添加第一门课程",
+  "courses_load_failed": "暂时无法读取课程，点击重试",
+  "course_meetings_count": "{count} 个上课时段",
+  "@course_meetings_count": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,9 +33,11 @@ class BackgroundService {
   BackgroundService({
     Future<Directory> Function()? documents,
     Future<bool> Function(String)? whiteMode,
+    Future<String?> Function(String)? colorSeed,
     Random? random,
   }) : _documents = documents ?? getApplicationDocumentsDirectory,
        _whiteMode = whiteMode ?? ColorUtil.shouldApplyWhiteMode,
+       _colorSeed = colorSeed ?? ColorUtil.backgroundSeed,
        _random = random ?? Random();
 
   static final instance = BackgroundService();
@@ -42,6 +45,53 @@ class BackgroundService {
   final Future<Directory> Function() _documents;
   final Future<bool> Function(String) _whiteMode;
   final Random _random;
+  final Future<String?> Function(String) _colorSeed;
+  final ValueNotifier<String?> backgroundSeed = ValueNotifier(null);
+
+  Future<String?> _seed(SharedPreferences sp, String image) async {
+    if (image.isEmpty) return null;
+    final stat = await File(image).stat();
+    if (stat.type != FileSystemEntityType.file) return null;
+    final key = await _titleModeKey(image);
+    final fingerprint = '${stat.size}:${stat.modified.microsecondsSinceEpoch}';
+    Map<String, dynamic> cache;
+    try {
+      cache = Map<String, dynamic>.from(
+        jsonDecode(sp.getString('backgroundColorSeeds') ?? '{}'),
+      );
+    } catch (_) {
+      cache = {};
+    }
+    final saved = cache[key];
+    if (saved is Map &&
+        saved['fingerprint'] == fingerprint &&
+        (saved['seed'] == null ||
+            RegExp(r'^#[0-9a-fA-F]{6}$').hasMatch(saved['seed'].toString()))) {
+      return saved['seed'] as String?;
+    }
+    String? seed;
+    try {
+      seed = await _colorSeed(image);
+    } catch (_) {
+      seed = null;
+    }
+    if (seed != null && !RegExp(r'^#[0-9a-fA-F]{6}$').hasMatch(seed)) {
+      seed = null;
+    }
+    cache[key] = {'fingerprint': fingerprint, 'seed': seed};
+    await sp.setString('backgroundColorSeeds', jsonEncode(cache));
+    return seed;
+  }
+
+  String _sampledImage = '';
+  String? seedFor(String image) =>
+      image == _sampledImage ? backgroundSeed.value : null;
+  Future<void> _publishPalette(SharedPreferences sp, String image) async {
+    final seed = await _seed(sp, image);
+    _sampledImage = image;
+    backgroundSeed.value = seed;
+  }
+
   Future<void> _pending = Future.value();
 
   // Home/lifecycle/settings can overlap; serialize preferences and file writes.
@@ -100,20 +150,21 @@ class BackgroundService {
     final settings = BackgroundSettings(
       images: images,
       current: current,
-      frequency:
-          sp.getString('backgroundFrequency') == 'days'
-              ? BackgroundFrequency.days
-              : BackgroundFrequency.everyVisit,
+      frequency: sp.getString('backgroundFrequency') == 'days'
+          ? BackgroundFrequency.days
+          : BackgroundFrequency.everyVisit,
       days: (sp.getInt('backgroundDays') ?? 1).clamp(1, 365),
       whiteMode: await _applyWhiteMode(sp, current),
     );
     if (current != rawCurrent) await sp.setString('bgImgPath', current);
+    await _publishPalette(sp, current);
     return settings;
   }
 
   Future<void> _select(SharedPreferences sp, String image, DateTime now) async {
     await _applyWhiteMode(sp, image);
     await sp.setString('bgImgPath', image);
+    await _publishPalette(sp, image);
     await sp.setInt('backgroundChangedDay', _day(now));
   }
 
@@ -183,17 +234,16 @@ class BackgroundService {
       return '';
     }
     final changed = sp.getInt('backgroundChangedDay');
-    final due =
-        settings.frequency == BackgroundFrequency.everyVisit
-            ? newVisit
-            : changed == null || _day(time) - changed >= settings.days;
+    final due = settings.frequency == BackgroundFrequency.everyVisit
+        ? newVisit
+        : changed == null || _day(time) - changed >= settings.days;
     if (force || due || settings.current.isEmpty) {
-      final choices =
-          settings.images.where((p) => p != settings.current).toList();
-      final next =
-          choices.isEmpty
-              ? settings.images.first
-              : choices[_random.nextInt(choices.length)];
+      final choices = settings.images
+          .where((p) => p != settings.current)
+          .toList();
+      final next = choices.isEmpty
+          ? settings.images.first
+          : choices[_random.nextInt(choices.length)];
       if (next != settings.current || settings.current.isEmpty) {
         await _select(sp, next, time);
       } else {
@@ -235,10 +285,9 @@ class BackgroundService {
     try {
       for (var i = 0; i < files.length; i++) {
         final extension = path.extension(files[i].path).toLowerCase();
-        final safeExtension =
-            RegExp(r'^\.[a-z0-9]{1,6}$').hasMatch(extension)
-                ? extension
-                : '.jpg';
+        final safeExtension = RegExp(r'^\.[a-z0-9]{1,6}$').hasMatch(extension)
+            ? extension
+            : '.jpg';
         final destination = path.join(
           folder.path,
           '${DateTime.now().microsecondsSinceEpoch}_${_random.nextInt(1 << 30)}_$i$safeExtension',
@@ -290,6 +339,7 @@ class BackgroundService {
     final doc = await _documents();
     await sp.setStringList('backgroundImages', []);
     await sp.remove('backgroundWhiteModes');
+    await sp.remove('backgroundColorSeeds');
     await _select(sp, '', DateTime.now());
     for (final image in settings.images) {
       await _deleteOwned(image, doc);

@@ -3,7 +3,6 @@ package com.lilystudio.wheretosleepinnju.widget;
 import android.content.Context;
 import android.util.Log;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -314,25 +313,24 @@ public class WidgetStateResolver {
      * App 长时间未打开时，落盘数据里的 todayCourses 可能仍是若干天前的。
      * 这里按当前真实日期重新推算今日 / 明日课程，避免小组件展示过期课表。
      */
-    static WidgetScheduleData normalizeForCurrentDay(WidgetScheduleData data, Date now) {
+    public static WidgetScheduleData normalizeForCurrentDay(WidgetScheduleData data, Date now) {
         int currentWeekDay = isoWeekDay(now);
 
-        Date dataDate = parseIsoDate(data.lastUpdateTime);
-        int elapsedDays = 0;
+        Date dataDate = parseIsoDate(data.timestamp);
+        if (dataDate == null) dataDate = parseIsoDate(data.lastUpdateTime);
+        int dayShift;
         if (dataDate != null) {
-            elapsedDays = Math.max(0, daysBetween(startOfDay(dataDate), startOfDay(now)));
+            Date sourceDay = startOfDay(dataDate);
+            Date targetDay = startOfDay(now);
+            dayShift = targetDay.before(sourceDay)
+                    ? -daysBetween(targetDay, sourceDay) : daysBetween(sourceDay, targetDay);
+        } else {
+            dayShift = (currentWeekDay - data.currentWeekDay + 7) % 7;
         }
-
-        // 星期未变且不足一周，说明数据仍然新鲜
-        if (data.currentWeekDay == currentWeekDay && elapsedDays < 7) {
-            return data;
-        }
-
-        int dayShift = elapsedDays > 0
-                ? elapsedDays
-                : ((currentWeekDay - data.currentWeekDay + 7) % 7);
-
-        int effectiveWeek = data.currentWeek + ((data.currentWeekDay - 1 + dayShift) / 7);
+        if (data.semesterCourses == null && dayShift == 0
+                && data.currentWeekDay == currentWeekDay) return data;
+        int effectiveWeek = data.currentWeek
+                + Math.floorDiv(data.currentWeekDay - 1 + dayShift, 7);
         int tomorrowWeekDay = currentWeekDay == 7 ? 1 : currentWeekDay + 1;
         int tomorrowWeek = currentWeekDay == 7 ? effectiveWeek + 1 : effectiveWeek;
 
@@ -353,7 +351,7 @@ public class WidgetStateResolver {
                                                      int targetWeek,
                                                      int dayShiftFromSource) {
         List<WidgetCourse> candidates;
-        if (dayShiftFromSource == 1) {
+        if (data.semesterCourses == null && dayShiftFromSource == 1) {
             // 只过了一天时，源数据的 tomorrowCourses 就是最准确的快照
             candidates = data.tomorrowCourses;
         } else {
@@ -362,7 +360,7 @@ public class WidgetStateResolver {
 
         List<WidgetCourse> result = new ArrayList<>();
         for (WidgetCourse course : candidates) {
-            if (course.isActiveInWeek(targetWeek)) {
+            if (data.semesterCourses != null ? course.weeks.contains(targetWeek) : course.isActiveInWeek(targetWeek)) {
                 result.add(course);
             }
         }
@@ -471,25 +469,20 @@ public class WidgetStateResolver {
     }
 
     /** 解析 Dart {@code DateTime.toIso8601String()} 产出的时间串。 */
-    static Date parseIsoDate(String value) {
-        if (value == null || value.isEmpty()) {
-            return null;
-        }
+    public static Date parseIsoDate(String value) {
+        if (value == null || value.isEmpty()) return null;
+        // Dart emits microseconds; SimpleDateFormat expects milliseconds.
+        String normalized = value.replaceFirst("(\\.\\d{3})\\d+", "$1");
         String[] patterns = {
-                "yyyy-MM-dd'T'HH:mm:ss.SSSSSS",
-                "yyyy-MM-dd'T'HH:mm:ss.SSS",
-                "yyyy-MM-dd'T'HH:mm:ss",
+                "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", "yyyy-MM-dd'T'HH:mm:ssXXX",
+                "yyyy-MM-dd'T'HH:mm:ss.SSS", "yyyy-MM-dd'T'HH:mm:ss"
         };
-        String normalized = value.endsWith("Z")
-                ? value.substring(0, value.length() - 1)
-                : value;
         for (String pattern : patterns) {
-            try {
-                SimpleDateFormat format = new SimpleDateFormat(pattern, Locale.US);
-                return format.parse(normalized);
-            } catch (ParseException ignored) {
-                // 尝试下一种格式
-            }
+            SimpleDateFormat format = new SimpleDateFormat(pattern, Locale.US);
+            format.setLenient(false);
+            java.text.ParsePosition position = new java.text.ParsePosition(0);
+            Date parsed = format.parse(normalized, position);
+            if (parsed != null && position.getIndex() == normalized.length()) return parsed;
         }
         Log.w(TAG, "parseIsoDate: unrecognized format: " + value);
         return null;

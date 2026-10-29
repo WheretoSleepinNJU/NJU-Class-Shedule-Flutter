@@ -1,3 +1,4 @@
+import 'package:wheretosleepinnju/AdaptiveUI/adaptive_ui.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -84,7 +85,7 @@ void main() {
         await tester.ensureVisible(finder);
         if (Platform.operatingSystem == 'ohos') {
           // Keep the test input independent of the emulator IME's cached value.
-          tester.widget<TextFormField>(finder).controller!.text = value;
+          tester.widget<AdaptiveTextFormField>(finder).controller!.text = value;
         } else {
           await tester.enterText(finder, value);
         }
@@ -165,7 +166,7 @@ void main() {
                                     loadSchools: () async {
                                       if (++attempts == 1) {
                                         throw const SocketException(
-                                          'QA offline',
+                                          'QA offline'
                                         );
                                       }
                                       return [

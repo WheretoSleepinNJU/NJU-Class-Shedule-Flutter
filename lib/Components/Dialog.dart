@@ -1,6 +1,7 @@
 import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
 import './TransBgTextButton.dart';
+import '../AdaptiveUI/adaptive_ui.dart';
 
 class MDialog extends StatelessWidget {
   // Keep dialog controls usable at the largest accessibility sizes while
@@ -55,7 +56,7 @@ class MDialog extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             ),
           ),
-          child: AlertDialog(
+          child: AdaptiveDialog(
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20)),
             ),

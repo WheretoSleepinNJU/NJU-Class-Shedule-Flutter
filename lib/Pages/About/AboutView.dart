@@ -1,3 +1,4 @@
+import '../../AdaptiveUI/adaptive_ui.dart';
 import 'dart:io';
 import '../../generated/l10n.dart';
 import 'package:dio/dio.dart';
@@ -17,6 +18,23 @@ class AboutView extends StatefulWidget {
 }
 
 class _AboutViewState extends State<AboutView> {
+  Future<String>? _version, _easter;
+  Future<bool>? _developer;
+  Locale? _locale;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final locale = Localizations.localeOf(context);
+    if (locale != _locale) {
+      _locale = locale;
+      _version = _getVersion();
+      _easter = _getEasterEggContent(S.of(context).easter_egg);
+      _developer = Platform.operatingSystem == 'ohos'
+          ? _showDeveloperOhos()
+          : Future.value(false);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -24,100 +42,119 @@ class _AboutViewState extends State<AboutView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        // backgroundColor: Theme.of(context).hoverColor,
-        appBar: AppBar(
-          title: Text(S.of(context).about_title),
-        ),
-        body: SafeArea(
-            child: Stack(children: [
-          RainDropWidget(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height),
-          SingleChildScrollView(
-              child: Column(children: <Widget>[
-            Container(
-              child: Image.asset("res/icon.png"),
-              padding: const EdgeInsets.all(10.0),
-              alignment: Alignment.center,
-              width: 150,
+    final s = S.of(context);
+    final cardColor = Theme.of(
+      context,
+    ).colorScheme.surfaceContainer.withValues(alpha: .92);
+    return AdaptiveScaffold(
+      appBar: AdaptiveTopAppBar(title: Text(s.about_title)),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: LayoutBuilder(
+              builder: (_, constraints) => RainDropWidget(
+                width: constraints.maxWidth,
+                height: constraints.maxHeight,
+              ),
             ),
-            Text(S.of(context).app_name),
-            FutureBuilder<String>(
-                future: _getVersion(),
-                builder:
-                    (BuildContext context, AsyncSnapshot<String> snapshot) {
-                  if (!snapshot.hasData) {
-                    return Container();
-                  } else {
-                    return Text(snapshot.data!);
-                  }
-                }),
-            TextButton(
-              style: TextButton.styleFrom(
-                  foregroundColor:
-                      Theme.of(context).brightness == Brightness.light
-                          ? Theme.of(context).primaryColor
-                          : Colors.white,
-                  backgroundColor: Colors.transparent),
-              child: Text(S.of(context).beian_info),
-              onPressed: () => launch(Url.BEIAN_URL),
+          ),
+          SafeArea(
+            child: AdaptivePageList(
+              children: [
+                AdaptiveSection(
+                  color: cardColor,
+                  padding: const EdgeInsets.all(20),
+                  separated: false,
+                  children: [
+                    Center(
+                      child: SizedBox(
+                        width: 96,
+                        height: 96,
+                        child: Image.asset('res/icon.png'),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      s.app_name,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleLarge?.copyWith(fontSize: 18),
+                    ),
+                    const SizedBox(height: 4),
+                    FutureBuilder<String>(
+                      future: _version,
+                      builder: (_, snapshot) => Text(
+                        snapshot.data ?? '',
+                        textAlign: TextAlign.center,
+                        style: AdaptiveTypography.caption.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                AdaptiveSection(
+                  color: cardColor,
+                  children: [
+                    AdaptiveListTile(
+                      leading: const Icon(Icons.system_update_alt_rounded),
+                      title: Text(s.check_update_button),
+                      onTap: () => UpdateUtil().checkUpdate(context, true),
+                    ),
+                    AdaptiveListTile(
+                      leading: const Icon(Icons.privacy_tip_outlined),
+                      title: Text(s.check_privacy_button),
+                      onTap: () => PrivacyUtil().checkPrivacy(context, true),
+                    ),
+                    AdaptiveListTile(
+                      leading: const Icon(Icons.info_outline_rounded),
+                      title: Text(s.beian_info),
+                      onTap: () => launchUrl(Uri.parse(Url.BEIAN_URL)),
+                    ),
+                  ],
+                ),
+                AdaptiveSection(
+                  color: cardColor,
+                  title: Text(s.github_open_source),
+                  children: [
+                    AdaptiveListTile(
+                      title: const Text(
+                        Url.OPEN_SOURCE_URL,
+                        style: AdaptiveTypography.body,
+                      ),
+                      trailing: const Icon(Icons.open_in_new_rounded, size: 20),
+                      onTap: () => launchUrl(Uri.parse(Url.OPEN_SOURCE_URL)),
+                    ),
+                  ],
+                ),
+                if (Platform.operatingSystem == 'ohos')
+                  FutureBuilder<bool>(
+                    future: _developer,
+                    builder: (_, snapshot) => snapshot.data == true
+                        ? _generateTitle(s.developer)
+                        : const SizedBox(),
+                  )
+                else
+                  _generateTitle(s.developer),
+                _generateContent(
+                  s.introduction,
+                  onTap: () => launchUrl(Uri.parse(Url.BLOG_URL)),
+                ),
+                _generateTitle(s.open_source_library_title),
+                _generateContent(s.open_source_library_content),
+                _generateTitle(s.easter_egg_title),
+                FutureBuilder<String>(
+                  future: _easter,
+                  builder: (_, snapshot) =>
+                      _generateContent(snapshot.data ?? s.easter_egg),
+                ),
+              ],
             ),
-            Container(
-              padding: const EdgeInsets.all(15.0),
-            ),
-            TextButton(
-              child: Text(S.of(context).check_update_button),
-              onPressed: () {
-                UpdateUtil updateUtil = UpdateUtil();
-                updateUtil.checkUpdate(context, true);
-              },
-            ),
-            TextButton(
-              style: TextButton.styleFrom(
-                  foregroundColor:
-                      Theme.of(context).brightness == Brightness.light
-                          ? Theme.of(context).primaryColor
-                          : Colors.white,
-                  backgroundColor: Colors.transparent),
-              child: Text(S.of(context).check_privacy_button),
-              onPressed: () {
-                PrivacyUtil privacyUtil = PrivacyUtil();
-                privacyUtil.checkPrivacy(context, true);
-              },
-            ),
-            _generateTitle(S.of(context).github_open_source),
-            _generateContent(Url.OPEN_SOURCE_URL,
-                onTap: () => launch(Url.OPEN_SOURCE_URL)),
-            // 针对华为鸿蒙，获取彩蛋来确定是否要展示开发者
-            Platform.operatingSystem == 'ohos'
-                ? FutureBuilder(
-                    future: _showDeveloperOhos(),
-                    builder:
-                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                      if (snapshot.hasData && snapshot.data!) {
-                        return _generateTitle(S.of(context).developer);
-                      }
-                      return Container();
-                    })
-                : _generateTitle(S.of(context).developer),
-            _generateContent(S.of(context).introduction,
-                onTap: () => launch(Url.BLOG_URL)),
-            _generateTitle(S.of(context).open_source_library_title),
-            _generateContent(S.of(context).open_source_library_content),
-            _generateTitle(S.of(context).easter_egg_title),
-            FutureBuilder<String>(
-                future: _getEasterEggContent(S.of(context).easter_egg),
-                builder:
-                    (BuildContext context, AsyncSnapshot<String> snapshot) {
-                  if (!snapshot.hasData) {
-                    return _generateContent(S.of(context).easter_egg);
-                  } else {
-                    return _generateContent(snapshot.data!);
-                  }
-                }),
-          ]))
-        ])));
+          ),
+        ],
+      ),
+    );
   }
 
   Future<String> _getVersion() async {
@@ -125,26 +162,28 @@ class _AboutViewState extends State<AboutView> {
     return packageInfo.version + S.of(context).flutter_lts;
   }
 
-  Widget _generateTitle(String text) {
-    return Container(
-      padding: const EdgeInsets.all(15.0),
-      child: Text(text),
-      alignment: Alignment.centerLeft,
-    );
-  }
-
-  Widget _generateContent(String text, {onTap}) {
-    return InkWell(
-      child: Container(
-        margin: const EdgeInsets.all(15.0),
-        padding: const EdgeInsets.all(10.0),
-        color: Theme.of(context).secondaryHeaderColor,
-        child: Text(text),
-        alignment: Alignment.centerLeft,
+  Widget _generateTitle(String text) => Padding(
+    padding: const EdgeInsets.fromLTRB(4, 4, 4, 10),
+    child: Text(
+      text,
+      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
       ),
-      onTap: onTap,
-    );
-  }
+    ),
+  );
+
+  Widget _generateContent(String text, {VoidCallback? onTap}) =>
+      AdaptiveSection(
+        color: Theme.of(
+          context,
+        ).colorScheme.surfaceContainer.withValues(alpha: .92),
+        children: [
+          AdaptiveListTile(
+            title: Text(text, style: AdaptiveTypography.body),
+            onTap: onTap,
+          ),
+        ],
+      );
 
   static Future<bool> _showDeveloperOhos() async {
     String url = Url.UPDATE_ROOT + '/easterEgg.json';
