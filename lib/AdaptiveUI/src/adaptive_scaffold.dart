@@ -292,7 +292,7 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
     final original =
         AdaptiveUIScope.maybeOf(context)?.useOriginalComponents ?? false;
     final nativeIOS = platform.PlatformInfo.isIOS && barConfig != null;
-    final backend = platform.AndroidToolbarScope.maybeOf(context);
+    final backend = platform.NativeToolbarScope.maybeOf(context);
     final configuration = barConfig?._nativeConfiguration(
       context,
       preservesTitleLayout: nativeIOS,
@@ -341,7 +341,7 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
         final inset = underGlass
             ? statusInset +
                   (barConfig.toolbarHeight ?? (nativeIOS ? 44 : kToolbarHeight))
-            : platform.AndroidToolbarBodyScope.topInsetOf(context);
+            : platform.NativeToolbarBodyScope.topInsetOf(context);
         return Padding(
           padding: EdgeInsets.only(
             top:

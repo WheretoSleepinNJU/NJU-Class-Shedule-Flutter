@@ -1,0 +1,3 @@
+
+# Patch context/removal lines retain upstream whitespace.
+third_party/patches/*.patch -whitespace

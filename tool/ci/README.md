@@ -12,10 +12,10 @@
 
 ## 固定工具链与依赖
 
-- Android/iOS 固定使用官方 Flutter 3.47.2（`d3b14c876900e553bc736ca19295fc09e3853e8e`），与 `.fvmrc` 一致。HarmonyOS 独立使用官方移植版 3.47.7+ohos-0.0.1-pre（`650641656fef1d0578f0bc1ed8f7a35087fc99f3`，Dart 3.13.5）。通过 `NJU_BUILD_PLATFORM=ohos bash tool/ci/bootstrap.sh` 安装到 `.fvm/ohos_sdk`，Android/iOS 使用 `.fvm/flutter_sdk`。两者共享已校验的锁文件，满足 flutter_miuix 的 Dart 3.12 要求。
-- `bootstrap.sh` 校验 SDK 版本标签和提交，并固定三个 `external` 路径依赖的提交。`mobile_scanner` 使用仓库内维护的 `third_party/mobile_scanner`。所有 Pub 依赖严格按 `pubspec.lock` 恢复。
+- 三端统一使用项目原有的 OHOS Flutter 工具链，升级到 `3.47.7+ohos-0.0.1-pre`（`650641656fef1d0578f0bc1ed8f7a35087fc99f3`，Dart 3.13.5）。`.fvmrc`、测试和三端构建使用同一版本；`bash tool/ci/bootstrap.sh` 检出到 `.fvm/flutter_sdk`，满足 flutter_miuix 的 Dart 3.12 要求。
+- `bootstrap.sh` 校验 SDK 标签和提交，并按原有方式固定 `external` 依赖提交。Adaptive Platform UI 使用固定上游检出加 `third_party/patches` 中的局部补丁；友盟的 Pub 归档按版本和 SHA-256 恢复后应用一行 Gradle 补丁。初始化依赖需要 Python 3.12+。不修改全局 Pub 缓存；`mobile_scanner`、`fluttertoast` 和 `package_info_plus` 使用原有 Git/external 路径。所有 Pub 依赖严格按 `pubspec.lock` 恢复。
 - CI 全局使用 `PUB_HOSTED_URL=https://pub.flutter-io.cn`，与 `pubspec.lock` 记录的包源一致，依赖安装、测试和构建均使用同一包源，保留 `--enforce-lockfile` 校验。
-- 初始化 OHOS SDK 时关闭鸿蒙平台支持，避免测试、Android 和 iOS 任务在 `flutter pub get` 生成平台文件时要求鸿蒙 SDK。仅鸿蒙构建任务在安装 SDK 后执行 `flutter config --enable-ohos`。
+- 初始化 SDK 时关闭鸿蒙平台支持，避免测试、Android 和 iOS 任务在 `flutter pub get` 生成平台文件时要求鸿蒙 SDK。仅鸿蒙构建任务在安装 SDK 后执行 `flutter config --enable-ohos`。
 - Release 构建保留 Flutter 自动 Pub / 平台注册文件生成步骤，并在构建后检查 `pubspec.lock` 没有变化。此 SDK 在 `--no-pub` 时也会跳过 Release 插件注册文件重建，可能把 `integration_test` 留在 Android 注册文件中，导致编译失败。
 - Android 使用 Ubuntu 24.04、JDK 21、SDK 37.0（`platforms;android-37.0`）、Build Tools 36.0.0、NDK 28.2.13676358、Gradle 9.5.0；SDK 安装步骤显式选择 `platform-tools`，避免请求已下架的旧 `tools` 包。显式设置 Flutter 的 `jdk-dir`，避免它优先选择 Android Studio 自带的新 JDK。在临时空项目中生成 Gradle wrapper，不依赖本机未提交的 wrapper 文件。未提供 `key.properties` 时按项目默认配置使用 Debug 密钥签名 Release，方便直接安装测试；正式发布需提供发布密钥。
 - iOS 使用 GitHub 托管 `macos-15` ARM64 runner，明确选择该镜像提供的 Xcode 26.3，使用 Ruby 3.3、CocoaPods 1.17.0 和 xcodeproj 1.28.1，满足 CocoaPods 的最低版本要求；固定 JSON gem 2.18.0，使本地插件 podspec 的空数组序列化格式与锁文件一致。版本来源见 [官方镜像清单](https://github.com/actions/runner-images/blob/main/images/macos/macos-15-arm64-Readme.md)。提交 `ios/Podfile.lock` 固定原生依赖，并在构建后检查锁文件没有漂移。主应用最低 iOS 15，小组件最低 iOS 17。

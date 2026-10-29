@@ -81,8 +81,7 @@ void main() {
         MaterialApp(
           navigatorKey: navigator,
           builder: (_, child) => platform.AdaptiveToolbarHost(
-            androidBackend: createComposeTitleBarBackend(),
-            debugAndroidToolbar: true,
+            nativeBackend: createComposeTitleBarBackend(),
             child: child!,
           ),
           home: StatefulBuilder(

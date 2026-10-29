@@ -54,12 +54,12 @@ PROJECT_ROOT="$(cd "$(dirname "$NJU_SETUP_SCRIPT")/.." && pwd)"
 unset NJU_SETUP_SCRIPT
 
 # 配置 FVM Flutter 路径
-if [ -d "$PROJECT_ROOT/.fvm/ohos_sdk" ]; then
-    export FLUTTER_SDK="$PROJECT_ROOT/.fvm/ohos_sdk"
+if [ -d "$PROJECT_ROOT/.fvm/flutter_sdk" ]; then
+    export FLUTTER_SDK="$PROJECT_ROOT/.fvm/flutter_sdk"
     export PATH="$FLUTTER_SDK/bin:$PATH"
     echo "✅ FVM Flutter 路径已配置"
 else
-    echo "⚠️  未找到 FVM Flutter SDK，请先运行: NJU_BUILD_PLATFORM=ohos bash tool/ci/bootstrap.sh"
+    echo "⚠️  未找到 FVM Flutter SDK，请先运行: bash tool/ci/bootstrap.sh"
 fi
 
 # 配置 PUB_CACHE（可选，避免与系统 Flutter 冲突）
@@ -72,5 +72,5 @@ echo "   FLUTTER_STORAGE_BASE_URL: $FLUTTER_STORAGE_BASE_URL"
 echo "   PUB_CACHE: $PUB_CACHE"
 echo ""
 echo "👉 接下来请运行:"
-echo "   1. NJU_BUILD_PLATFORM=ohos bash tool/ci/bootstrap.sh"
+echo "   1. bash tool/ci/bootstrap.sh"
 echo "   2. flutter doctor -v  # 验证环境"

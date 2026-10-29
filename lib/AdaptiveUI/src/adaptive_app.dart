@@ -84,7 +84,7 @@ class _AdaptiveUIAppState extends State<AdaptiveUIApp> {
       nativeGlassSupported: _nativeSupported,
       child: platform.AdaptiveApp(
         navigatorKey: widget.navigatorKey,
-        androidToolbarBackend:
+        nativeToolbarBackend:
             _nativeSupported && !_controller.useOriginalComponents
             ? _toolbar
             : null,

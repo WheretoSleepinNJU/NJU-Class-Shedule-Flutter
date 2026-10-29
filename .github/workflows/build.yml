@@ -61,12 +61,13 @@ jobs:
         with:
           path: |
             .fvm/flutter_sdk
-            .fvm/ohos_sdk
             .fvm/pub-cache
             external/flutter_packages
             external/flutter_plus_plugins_package_info_plus
             external/fluttertpc_device_calendar
-          key: flutter-${{ runner.os }}-${{ runner.arch }}-android-${{ hashFiles('.fvmrc', 'pubspec.lock', 'tool/ci/bootstrap.sh') }}
+            external/adaptive_platform_ui
+            external/umeng_common_sdk
+          key: flutter-${{ runner.os }}-${{ runner.arch }}-android-${{ hashFiles('.fvmrc', 'pubspec.lock', 'tool/ci/bootstrap.sh', 'tool/ci/apply_dependency_patches.py', 'third_party/patches/**') }}
       - name: Install pinned Flutter and dependencies
         run: bash tool/ci/bootstrap.sh
       - uses: actions/setup-node@v4
@@ -84,7 +85,7 @@ jobs:
       matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 90
-    name: ${{ matrix.platform }} (${{ github.event_name == 'workflow_dispatch' && inputs.signed && 'signed' || 'unsigned' }})
+    name: ${{ matrix.platform }} (${{ github.event_name == 'workflow_dispatch' && inputs.signed && 'signed' || (matrix.platform == 'android' && 'default-signed' || 'unsigned') }})
     steps:
       - uses: actions/checkout@v4
         with:
@@ -97,15 +98,14 @@ jobs:
         with:
           path: |
             .fvm/flutter_sdk
-            .fvm/ohos_sdk
             .fvm/pub-cache
             external/flutter_packages
             external/flutter_plus_plugins_package_info_plus
             external/fluttertpc_device_calendar
-          key: flutter-${{ runner.os }}-${{ runner.arch }}-${{ matrix.platform }}-${{ hashFiles('.fvmrc', 'pubspec.lock', 'tool/ci/bootstrap.sh') }}
+            external/adaptive_platform_ui
+            external/umeng_common_sdk
+          key: flutter-${{ runner.os }}-${{ runner.arch }}-${{ matrix.platform }}-${{ hashFiles('.fvmrc', 'pubspec.lock', 'tool/ci/bootstrap.sh', 'tool/ci/apply_dependency_patches.py', 'third_party/patches/**') }}
       - name: Install pinned Flutter and dependencies
-        env:
-          NJU_BUILD_PLATFORM: ${{ matrix.platform }}
         run: bash tool/ci/bootstrap.sh
 
       - uses: actions/setup-java@v4

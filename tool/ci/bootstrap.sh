@@ -2,20 +2,11 @@
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 
-# Android/iOS use the stable upstream SDK. HarmonyOS has a separate, pinned
-# preview SDK with Dart >=3.12; sharing the old 3.35 SDK breaks flutter_miuix.
-nju_platform=${NJU_BUILD_PLATFORM:-android}
-if [[ "$nju_platform" == ohos ]]; then
-  flutter_ref=3.47.7+ohos-0.0.1-pre
-  flutter_commit=650641656fef1d0578f0bc1ed8f7a35087fc99f3
-  flutter_repo=https://gitcode.com/openharmony-sig/flutter_flutter.git
-  flutter_dir=.fvm/ohos_sdk
-else
-  flutter_ref=3.47.2
-  flutter_commit=d3b14c876900e553bc736ca19295fc09e3853e8e
-  flutter_repo=https://github.com/flutter/flutter.git
-  flutter_dir=.fvm/flutter_sdk
-fi
+# Keep one OHOS Flutter SDK for Android, iOS, HarmonyOS and host tests.
+flutter_ref=3.47.7+ohos-0.0.1-pre
+flutter_commit=650641656fef1d0578f0bc1ed8f7a35087fc99f3
+flutter_repo=https://gitcode.com/openharmony-sig/flutter_flutter.git
+flutter_dir=.fvm/flutter_sdk
 checkout_dependency() {
   local destination=$1 remote=$2 commit=$3 tag=${4:-}
   local ref=$commit tag_commit=$commit
@@ -54,6 +45,11 @@ checkout_dependency external/fluttertpc_device_calendar \
   https://gitcode.com/openharmony-sig/fluttertpc_device_calendar.git \
   2b81c4dd8025f1c497104edf3b049e431feac88a
 
+checkout_dependency external/adaptive_platform_ui \
+  https://github.com/berkaycatak/adaptive_platform_ui.git \
+  04f81286f7a1b8fbb67c489aa8d0cd663b5cd3ed
+python3 tool/ci/apply_dependency_patches.py
+
 export FLUTTER_ROOT="$PWD/$flutter_dir"
 export PUB_CACHE="$PWD/.fvm/pub-cache"
 export PATH="$FLUTTER_ROOT/bin:$PATH"
@@ -65,7 +61,5 @@ flutter --version
 # Pub regenerates tooling for every enabled platform. The OHOS job enables
 # HarmonyOS support after installing its SDK; tests, Android and iOS do not need it.
 flutter config --no-analytics
-if [[ "$nju_platform" == ohos ]]; then
-  flutter config --no-enable-ohos
-fi
+flutter config --no-enable-ohos
 flutter pub get --enforce-lockfile

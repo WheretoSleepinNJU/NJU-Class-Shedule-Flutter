@@ -22,7 +22,7 @@ class AdaptiveContentInsets extends InheritedWidget {
       context
           .dependOnInheritedWidgetOfExactType<AdaptiveContentInsets>()
           ?.top ??
-      platform.AndroidToolbarBodyScope.topInsetOf(context);
+      platform.NativeToolbarBodyScope.topInsetOf(context);
   static EdgeInsets? scrollPaddingOf(
     BuildContext context, [
     EdgeInsetsGeometry? padding,

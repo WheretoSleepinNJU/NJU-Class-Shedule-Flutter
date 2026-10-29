@@ -1,0 +1,11 @@
+--- a/android/build.gradle
++++ b/android/build.gradle
+@@ -17,7 +17,7 @@
+ rootProject.allprojects {
+     repositories {
+         google()
+-        jcenter()
++        mavenCentral()
+         maven { url 'https://repo1.maven.org/maven2/'}
+     }
+ }

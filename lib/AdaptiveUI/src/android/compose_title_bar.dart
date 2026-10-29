@@ -6,9 +6,9 @@ import '../theme/deadliner_color_theme.dart';
 import '../native_top_bar_configuration.dart';
 
 /// The framework owns page registration; this backend owns the Compose bridge.
-AndroidToolbarBackend createComposeTitleBarBackend() {
+NativeToolbarBackend createComposeTitleBarBackend() {
   final height = ValueNotifier<double>(52);
-  return AndroidToolbarBackend(
+  return NativeToolbarBackend(
     height: height,
     supports: (bar) =>
         bar.appBar == null &&
@@ -149,7 +149,7 @@ class _ComposeTitleBarHostState extends State<ComposeTitleBarHost>
   Future<void> _sync() async {
     if (!mounted) return;
     final candidate = widget.registry.active;
-    _watch(candidate?.androidNativeToolbar == true ? candidate : null);
+    _watch(candidate?.nativeToolbar == true ? candidate : null);
     final entry = _entry;
     // Inactive means a system window took focus, not that the page disappeared.
     // Android owns window visibility; keep the route chrome mounted.

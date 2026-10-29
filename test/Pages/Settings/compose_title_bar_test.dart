@@ -54,8 +54,7 @@ void main() {
         MaterialApp(
           navigatorKey: navigator,
           builder: (context, child) => AdaptiveToolbarHost(
-            androidBackend: backend,
-            debugAndroidToolbar: true,
+            nativeBackend: backend,
             child: child!,
           ),
           home: SettingsScaffold(
@@ -143,8 +142,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           builder: (context, child) => AdaptiveToolbarHost(
-            androidBackend: backend,
-            debugAndroidToolbar: true,
+            nativeBackend: backend,
             child: child!,
           ),
           home: const AdaptiveScaffold(
@@ -175,8 +173,7 @@ void main() {
         MaterialApp(
           theme: ThemeData(brightness: brightness),
           builder: (context, child) => AdaptiveToolbarHost(
-            androidBackend: backend,
-            debugAndroidToolbar: true,
+            nativeBackend: backend,
             child: child!,
           ),
           home: const SettingsScaffold(title: 'native', body: Text('content')),
@@ -207,8 +204,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           builder: (_, child) => AdaptiveToolbarHost(
-            androidBackend: backend,
-            debugAndroidToolbar: true,
+            nativeBackend: backend,
             child: child!,
           ),
           home: SettingsScaffold(
