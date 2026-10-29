@@ -471,7 +471,7 @@
     {
       "title": "中国科学院大学研究生课表",
       "pinyin": "zhongguokexueyuandaxueyanjiushengkebiao",
-      "description": "国科大在线个人课表导入",
+      "description": "南哪课表远征果壳！中科院也得排好课表",
       "page_title": "国科大研究生课表",
       "initialUrl": "https://sep.ucas.ac.cn/d_index/Z2tkenhfbG9jYWw=/",
       "redirectUrl": "http://mooc.ucas.edu.cn/portal",
@@ -483,8 +483,8 @@
       "extractJSfileiOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/ucasyjsxk.js",
       "extractJSfileOHOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/ucasyjsxk.js",
       "banner_content": "导入方式：登录 SEP 后将自动跳转国科大在线个人课表\n登录后请耐心等待，脚本会自动读取本学期所有周次的课程\n仅研究生账号实测通过，本科生路径未验证",
-      "banner_action": "前往国科大 SEP",
-      "banner_url": "https://sep.ucas.ac.cn",
+      "banner_action": "朕知道了",
+      "banner_url": "",
       "class_time_list": [
         {
           "start": "08:30",
@@ -537,6 +537,77 @@
         {
           "start": "21:05",
           "end": "21:50"
+        }
+      ],
+      "semester_start_monday": "2026-08-31",
+      "isGrey": true,
+      "isGrey3.1.0": false
+    },
+    {
+      "title": "南京师范大学本科生教务系统",
+      "pinyin": "nanjingshifandaxuebenkejiaowu",
+      "description": "南师大怎么不是南大呢",
+      "page_title": "南京师范大学课表",
+      "initialUrl": "https://ehallapp.nnu.edu.cn/jwapp/sys/wdkb/*default/index.do",
+      "redirectUrl": "",
+      "targetUrl": "https://ehallapp.nnu.edu.cn/jwapp/sys/wdkb/*default/index.do",
+      "preExtractJS": "",
+      "delayTime": 3,
+      "extractJS": "",
+      "extractJSfileAndroid": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/nnubksjw.js",
+      "extractJSfileiOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/nnubksjw.js",
+      "extractJSfileOHOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/nnubksjw.js",
+      "banner_content": "导入方式：登录后进入我的课表查看页面。若页面无法打开，请关闭代理或将 nnu.edu.cn 设置为直连。",
+      "banner_action": "使用南京师范大学vpn",
+      "banner_url": "",
+      "class_time_list": [
+        {
+          "start": "08:00",
+          "end": "08:40"
+        },
+        {
+          "start": "08:45",
+          "end": "09:25"
+        },
+        {
+          "start": "09:40",
+          "end": "10:20"
+        },
+        {
+          "start": "10:35",
+          "end": "11:15"
+        },
+        {
+          "start": "11:20",
+          "end": "12:00"
+        },
+        {
+          "start": "13:30",
+          "end": "14:10"
+        },
+        {
+          "start": "14:15",
+          "end": "14:55"
+        },
+        {
+          "start": "15:10",
+          "end": "15:50"
+        },
+        {
+          "start": "15:55",
+          "end": "16:35"
+        },
+        {
+          "start": "18:30",
+          "end": "19:10"
+        },
+        {
+          "start": "19:20",
+          "end": "20:00"
+        },
+        {
+          "start": "20:10",
+          "end": "20:50"
         }
       ],
       "semester_start_monday": "2026-08-31",

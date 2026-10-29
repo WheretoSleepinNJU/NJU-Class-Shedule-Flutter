@@ -1,4 +1,8 @@
 # Miscellaneous
+# Generated launch videos
+/brag-output/
+/brag-output-*/
+
 *.class
 *.lock
 *.log
