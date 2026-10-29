@@ -1,9 +1,9 @@
 import { FrameCallback, LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
 import { Available, deviceInfo } from '@kit.BasicServicesKit';
 import { BottomBuilderParams, DividerMode, DividerShowType, hdsMaterial, HdsNavigation,
-  HdsNavigationAttribute, HdsNavigationMenuItemOptions, HdsNavigationTitleBarOptions,
-  HdsNavigationTitleMode, HdsNavDestination, HdsNavDestinationAttribute, HdsNavDestinationTitleMode,
-  HdsTabs, HdsTabsAttribute, HdsTabsController, IconStyleMode, ScrollEffectType,
+  HdsNavigationMenuItemOptions, HdsNavigationTitleBarOptions,
+  HdsNavigationTitleMode, HdsNavDestination, HdsNavDestinationTitleMode,
+  HdsTabs, HdsTabsController, IconStyleMode, ScrollEffectType,
   TextStyleMode, TitleBarStyleOptions } from '@kit.UIDesignKit';
 import { HdsAction, HdsHeaderState, HdsNavigationItem, HdsNavigationState, chromeColor } from './HdsChromeState';
 import { HdsChromeBridge } from './HdsChromeBridge';
@@ -56,16 +56,6 @@ function titleStyle(state: HdsHeaderState): TitleBarStyleOptions {
   return style;
 }
 
-class NavigationTheme implements AttributeModifier<HdsNavigationAttribute> {
-  applyNormalAttribute(instance: HdsNavigationAttribute): void {
-    if (deviceInfo.sdkApiVersion >= 23) instance.withTheme({ enableThemeColorMode: true });
-  }
-}
-class DestinationTheme implements AttributeModifier<HdsNavDestinationAttribute> {
-  applyNormalAttribute(instance: HdsNavDestinationAttribute): void {
-    if (deviceInfo.sdkApiVersion >= 23) instance.withTheme({ enableThemeColorMode: true });
-  }
-}
 class ScrollFrame extends FrameCallback {
   private callback: () => void;
   constructor(callback: () => void) { super(); this.callback = callback; }
@@ -159,7 +149,7 @@ export struct HdsChromeHeader {
   @Builder private categoryTabs() {
     Tabs({ index: this.header.selectedTabIndex, controller: this.categories }) {
       ForEach(this.header.tabLabels, (label: string) => {
-        TabContent() {}.tabBar(SubTabBarStyle.of(label).labelStyle({
+        TabContent() {}.tabBar(SubTabBarStyle.of(label).padding({ left: 8, right: 8, top: 8, bottom: 8 }).labelStyle({
           selectedColor: chromeColor(this.header.primary, 4278228473),
           unselectedColor: chromeColor(this.header.foreground, 4279637526), font: { size: 14 }
         }))
@@ -176,40 +166,43 @@ export struct HdsChromeHeader {
       .onAreaChange((): void => { this.appliedScrollOffset = -1; this.scheduleScroll(); })
   }
   @Builder private destination(_name: string) {
-    HdsNavDestination() { this.scrollProxy(this.destinationScroller) }
-      .titleBar(this.options()).titleMode(HdsNavDestinationTitleMode.MINI)
-      .bindToScrollable([this.destinationScroller]).backgroundColor(Color.Transparent)
-      .attributeModifier(new DestinationTheme())
-      .onBackPressed((): boolean => { HdsChromeBridge.shared.back(this.header.owner); return true; })
-      .onShown((): void => { this.appliedScrollOffset = -1; this.scheduleScroll(); })
-      .hitTestBehavior(HitTestMode.Transparent)
+    if (deviceInfo.sdkApiVersion >= 23) {
+      HdsNavDestination() { this.scrollProxy(this.destinationScroller) }
+        .titleBar(this.options()).titleMode(HdsNavDestinationTitleMode.MINI)
+        .bindToScrollable([this.destinationScroller]).backgroundColor(Color.Transparent)
+        .withTheme({ enableThemeColorMode: true })
+        .onBackPressed((): boolean => { HdsChromeBridge.shared.back(this.header.owner); return true; })
+        .onShown((): void => { this.appliedScrollOffset = -1; this.scheduleScroll(); })
+        .hitTestBehavior(HitTestMode.Transparent)
+    } else {
+      HdsNavDestination() { this.scrollProxy(this.destinationScroller) }
+        .titleBar(this.options()).titleMode(HdsNavDestinationTitleMode.MINI)
+        .bindToScrollable([this.destinationScroller]).backgroundColor(Color.Transparent)
+        .onBackPressed((): boolean => { HdsChromeBridge.shared.back(this.header.owner); return true; })
+        .onShown((): void => { this.appliedScrollOffset = -1; this.scheduleScroll(); })
+        .hitTestBehavior(HitTestMode.Transparent)
+    }
   }
   build() {
     WithTheme({ colorMode: this.header.dark ? ThemeColorMode.DARK : ThemeColorMode.LIGHT }) {
       Column() {
-        HdsNavigation(this.paths) { this.scrollProxy(this.rootScroller) }
-          .titleBar(this.options()).titleMode(HdsNavigationTitleMode.MINI).hideBackButton(true)
-          .hideTitleBar(this.header.canBack).mode(NavigationMode.Stack).navBarWidth('100%')
-          .navDestination(this.destination).bindToScrollable([this.rootScroller])
-          .attributeModifier(new NavigationTheme()).backgroundColor(Color.Transparent)
-          .width('100%').height('100%').hitTestBehavior(HitTestMode.Transparent)
+        if (deviceInfo.sdkApiVersion >= 23) {
+          HdsNavigation(this.paths) { this.scrollProxy(this.rootScroller) }
+            .titleBar(this.options()).titleMode(HdsNavigationTitleMode.MINI).hideBackButton(true)
+            .hideTitleBar(this.header.canBack).mode(NavigationMode.Stack).navBarWidth('100%')
+            .navDestination(this.destination).bindToScrollable([this.rootScroller])
+            .withTheme({ enableThemeColorMode: true }).backgroundColor(Color.Transparent)
+            .width('100%').height('100%').hitTestBehavior(HitTestMode.Transparent)
+        } else {
+          HdsNavigation(this.paths) { this.scrollProxy(this.rootScroller) }
+            .titleBar(this.options()).titleMode(HdsNavigationTitleMode.MINI).hideBackButton(true)
+            .hideTitleBar(this.header.canBack).mode(NavigationMode.Stack).navBarWidth('100%')
+            .navDestination(this.destination).bindToScrollable([this.rootScroller])
+            .backgroundColor(Color.Transparent)
+            .width('100%').height('100%').hitTestBehavior(HitTestMode.Transparent)
+        }
       }.width('100%').height(this.statusBarHeight + this.header.occupiedHeight() + MASK_EXTRA_HEIGHT)
         .clip(true).direction(this.header.rtl ? Direction.Rtl : Direction.Ltr).hitTestBehavior(HitTestMode.Transparent)
-    }
-  }
-}
-
-class NavigationMaterial implements AttributeModifier<HdsTabsAttribute> {
-  private width: number;
-  constructor(width: number) { this.width = width; }
-  applyNormalAttribute(instance: HdsTabsAttribute): void {
-    if (deviceInfo.sdkApiVersion >= 23) {
-      instance.barFloatingStyle({ barWidth: { smallWidth: this.width, mediumWidth: this.width, largeWidth: this.width },
-        barSideMargin: 24, barBottomMargin: 0,
-        systemMaterialEffect: { materialType: hdsMaterial.MaterialType.IMMERSIVE, materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE },
-        gradientMask: { maskColor: '#00000000', maskHeight: MASK_EXTRA_HEIGHT } });
-    } else {
-      instance.barBackgroundBlurStyle(BlurStyle.COMPONENT_REGULAR);
     }
   }
 }
@@ -235,19 +228,40 @@ export struct HdsChromeNavigation {
   }
   build() {
     WithTheme({ colorMode: this.navigation.dark ? ThemeColorMode.DARK : ThemeColorMode.LIGHT }) {
-      HdsTabs({ index: this.navigation.selectedIndex, controller: this.tabs }) {
-        ForEach(this.navigation.items, (item: HdsNavigationItem, index: number) => {
-          TabContent() {}.tabBar(this.tabLabel(item, index))
-        }, (item: HdsNavigationItem) => item.icon + ':' + item.label)
-      }.width(this.navigation.width + this.sideMargin() * 2).height(this.navigation.height + MASK_EXTRA_HEIGHT)
-        .position({ x: this.navigation.left - this.sideMargin(), y: this.navigation.top - MASK_EXTRA_HEIGHT })
-        .barPosition(BarPosition.End).barMode(BarMode.Fixed).barOverlap(true).barHeight(this.navigation.height)
-        .barWidth(this.navigation.width).barBackgroundColor('#00000000').divider({ mode: DividerMode.NONE })
-        .attributeModifier(new NavigationMaterial(this.navigation.width)).backgroundColor(Color.Transparent)
-        .scrollable(false).animationDuration(200).enabled(this.inputReady)
-        .direction(this.navigation.rtl ? Direction.Rtl : Direction.Ltr)
-        .onTabBarClick((index: number): void => { HdsChromeBridge.shared.navigate(this.navigation.owner, index); })
-        .hitTestBehavior(HitTestMode.Transparent)
+      // HDS extension attributes require the declarative component API.
+      // The generic AttributeModifier receiver only implements ArkUI base APIs.
+      if (deviceInfo.sdkApiVersion >= 23) {
+        HdsTabs({ index: this.navigation.selectedIndex, controller: this.tabs }) {
+          ForEach(this.navigation.items, (item: HdsNavigationItem, index: number) => {
+            TabContent() {}.tabBar(this.tabLabel(item, index))
+          }, (item: HdsNavigationItem) => item.icon + ':' + item.label)
+        }.width(this.navigation.width + this.sideMargin() * 2).height(this.navigation.height + MASK_EXTRA_HEIGHT)
+          .position({ x: this.navigation.left - this.sideMargin(), y: this.navigation.top - MASK_EXTRA_HEIGHT })
+          .barPosition(BarPosition.End).barMode(BarMode.Fixed).barOverlap(true).barHeight(this.navigation.height)
+          .barWidth(this.navigation.width).barBackgroundColor('#00000000').divider({ mode: DividerMode.NONE })
+          .barFloatingStyle({ barWidth: { smallWidth: this.navigation.width, mediumWidth: this.navigation.width, largeWidth: this.navigation.width },
+            barSideMargin: 24, barBottomMargin: 0,
+            systemMaterialEffect: { materialType: hdsMaterial.MaterialType.IMMERSIVE, materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE },
+            gradientMask: { maskColor: '#00000000', maskHeight: MASK_EXTRA_HEIGHT } }).backgroundColor(Color.Transparent)
+          .scrollable(false).animationDuration(200).enabled(this.inputReady)
+          .direction(this.navigation.rtl ? Direction.Rtl : Direction.Ltr)
+          .onTabBarClick((index: number): void => { HdsChromeBridge.shared.navigate(this.navigation.owner, index); })
+          .hitTestBehavior(HitTestMode.Transparent)
+      } else {
+        HdsTabs({ index: this.navigation.selectedIndex, controller: this.tabs }) {
+          ForEach(this.navigation.items, (item: HdsNavigationItem, index: number) => {
+            TabContent() {}.tabBar(this.tabLabel(item, index))
+          }, (item: HdsNavigationItem) => item.icon + ':' + item.label)
+        }.width(this.navigation.width + this.sideMargin() * 2).height(this.navigation.height + MASK_EXTRA_HEIGHT)
+          .position({ x: this.navigation.left - this.sideMargin(), y: this.navigation.top - MASK_EXTRA_HEIGHT })
+          .barPosition(BarPosition.End).barMode(BarMode.Fixed).barOverlap(true).barHeight(this.navigation.height)
+          .barWidth(this.navigation.width).barBackgroundColor('#00000000').divider({ mode: DividerMode.NONE })
+          .barBackgroundBlurStyle(BlurStyle.COMPONENT_REGULAR).backgroundColor(Color.Transparent)
+          .scrollable(false).animationDuration(200).enabled(this.inputReady)
+          .direction(this.navigation.rtl ? Direction.Rtl : Direction.Ltr)
+          .onTabBarClick((index: number): void => { HdsChromeBridge.shared.navigate(this.navigation.owner, index); })
+          .hitTestBehavior(HitTestMode.Transparent)
+      }
     }
   }
 }
