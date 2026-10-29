@@ -13,6 +13,8 @@ def main():
     parser.add_argument('--adb', required=True)
     parser.add_argument('--serial', default='emulator-5580')
     parser.add_argument('--screenshots', action='store_true')
+    parser.add_argument('--target', default='integration_test/home_tabs_test.dart',
+                        help='Integration entry point (may compose additional acceptance cases)')
     parser.add_argument('--plain-name', help='Run only the matching integration case')
     args = parser.parse_args()
     if not args.serial.startswith('emulator-'):
@@ -34,7 +36,7 @@ def main():
         raise RuntimeError(message)
 
     command = [args.flutter, 'test', '--no-pub', '--dart-define=DRIVE_ANDROID_NAV=true',
-               'integration_test/home_tabs_test.dart', '-d', args.serial]
+               args.target, '-d', args.serial]
     if args.screenshots:
         command.insert(3, '--dart-define=CAPTURE_HOME_TABS=true')
     if args.plain_name:
