@@ -353,10 +353,8 @@ class _AdaptiveNavigationBar extends StatelessWidget {
           child: LayoutBuilder(
             builder: (context, constraints) => Center(
               child: SizedBox(
-                width: math.min(
-                  math.max(0, constraints.maxWidth - 32),
-                  math.min(380, items.length * 80),
-                ),
+                // HDS owns the floating bar width and native item layout.
+                width: math.max(0, constraints.maxWidth - 48),
                 height: HdsNavigation.heightOf(context),
                 child: HdsNavigation(
                   visible: !hidden,

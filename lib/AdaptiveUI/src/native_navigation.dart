@@ -140,6 +140,7 @@ class _NativeNavigationState extends State<NativeNavigation>
       // JSON endpoints also accept flat semantic colors. Preserve the existing
       // Compose palette contract during the shared-transport migration.
       if (widget.jsonTransport) 'primary': theme.colorScheme.primary.toARGB32(),
+      if (widget.jsonTransport) 'surface': theme.colorScheme.surface.toARGB32(),
       if (widget.jsonTransport)
         'onSurface': theme.colorScheme.onSurface.toARGB32(),
       'fontScale': MediaQuery.textScalerOf(context).scale(16) / 16,

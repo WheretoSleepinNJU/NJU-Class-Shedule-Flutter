@@ -106,6 +106,7 @@ export class HdsNavigationState {
   dark: boolean = false;
   rtl: boolean = false;
   primary: number = 4278228473;
+  surface: number = 4294967295;
   onSurface: number = 4279637526;
   items: HdsNavigationItem[] = [];
 
@@ -120,6 +121,7 @@ export class HdsNavigationState {
     state.width = chromeNumber(value.width, 0, 0, 10000);
     state.height = chromeNumber(value.height, 56, 1, 200);
     state.dark = value.dark === true;
+    state.surface = chromeNumber(value.surface, state.dark ? 4278190080 : 4294967295, 0, 4294967295);
     state.rtl = value.rtl === true;
     state.primary = chromeNumber(value.primary, state.primary, 0, 4294967295);
     state.onSurface = chromeNumber(value.onSurface, state.onSurface, 0, 4294967295);

@@ -194,3 +194,9 @@ test('malformed native state fails closed and engine teardown removes handlers',
   bridge.systemBack();
   assert.equal(backEvents.length, 1);
 });
+
+test('navigation backdrop follows the Flutter surface and has a dark legacy fallback', () => {
+  assert.equal(HdsNavigationState.decode(navigation({ surface: 0xff152030 })).surface, 0xff152030);
+  assert.equal(HdsNavigationState.decode(navigation({ dark: true })).surface, 0xff000000);
+  assert.equal(HdsNavigationState.decode(navigation({ dark: false })).surface, 0xffffffff);
+});

@@ -10,6 +10,15 @@ import { HdsChromeBridge } from './HdsChromeBridge';
 
 // Rendering APIs are verified against UIDesignKit; Flutter remains the route owner.
 const MASK_EXTRA_HEIGHT = 32;
+const TOOLBAR_ICON_SIZE = 24;
+function toolbarSymbol(icon: Resource, foreground: number): SymbolGlyphModifier {
+  const modifier = new SymbolGlyphModifier(icon);
+  modifier.fontSize(TOOLBAR_ICON_SIZE);
+  modifier.fontColor([chromeColor(foreground, 4279637526)]);
+  modifier.fontWeight(FontWeight.Medium);
+  modifier.renderingStrategy(SymbolRenderingStrategy.SINGLE);
+  return modifier;
+}
 function actionSymbol(name: string): Resource {
   switch (name) {
     case 'plus': return $r('sys.symbol.plus');
@@ -104,7 +113,7 @@ export struct HdsChromeHeader {
   }
   private menuItem(state: HdsHeaderState, action: HdsAction): HdsNavigationMenuItemOptions {
     const item: HdsNavigationMenuItemOptions = { content: {
-      icon: action.title.length > 0 ? undefined : new SymbolGlyphModifier(actionSymbol(action.symbol)),
+      icon: action.title.length > 0 ? undefined : toolbarSymbol(actionSymbol(action.symbol), state.foreground),
       label: action.loading ? action.label + '…' : action.label,
       type: action.title.length > 0 ? TextStyleMode.NORMAL : IconStyleMode.NORMAL,
       isEnabled: this.inputReady && state.interactive && action.enabled && !action.loading,
@@ -120,7 +129,7 @@ export struct HdsChromeHeader {
       content: {
         title: { mainTitle: state.titleTappable ? '' : state.title, subTitle: state.titleTappable ? undefined : state.subtitle },
         menu: { value: state.actions.map((action: HdsAction) => this.menuItem(state, action)), maxCount: 3 },
-        backIcon: { icon: new SymbolGlyphModifier($r('sys.symbol.chevron_left')), label: state.backLabel,
+        backIcon: { icon: toolbarSymbol($r('sys.symbol.arrow_left'), state.foreground), label: state.backLabel,
           isEnabled: this.inputReady && state.interactive,
           action: (): void => { HdsChromeBridge.shared.back(state.owner); } },
         divider: { showType: DividerShowType.OFF }
@@ -218,13 +227,23 @@ export struct HdsChromeNavigation {
     if (this.navigation.items.length > 0) this.tabs.changeIndex(this.navigation.selectedIndex);
   }
   private sideMargin(): number { return deviceInfo.sdkApiVersion >= 23 ? 24 : 0; }
-  @Builder private tabLabel(item: HdsNavigationItem, index: number) {
-    Column({ space: 3 }) {
-      SymbolGlyph(navigationSymbol(item.icon)).fontSize('23vp').fontColor([
-        chromeColor(index === this.navigation.selectedIndex ? this.navigation.primary : this.navigation.onSurface, 4279637526)])
-      Text(item.label).fontSize(12).maxLines(1).textOverflow({ overflow: TextOverflow.Ellipsis }).fontWeight(index === this.navigation.selectedIndex ? FontWeight.Medium : FontWeight.Normal)
-        .fontColor(chromeColor(index === this.navigation.selectedIndex ? this.navigation.primary : this.navigation.onSurface, 4279637526))
-    }.width('100%').height(this.navigation.height).justifyContent(FlexAlign.Center).accessibilityText(item.label)
+  private tabStyle(item: HdsNavigationItem): BottomTabBarStyle {
+    const icon = navigationSymbol(item.icon);
+    const selected = chromeColor(this.navigation.primary, 4278228473);
+    const unselected = chromeColor(this.navigation.onSurface, this.navigation.dark ? 4294967295 : 4279637526);
+    const symbols: TabBarSymbol = {
+      normal: new SymbolGlyphModifier(icon).fontSize(24).fontColor([unselected])
+        .renderingStrategy(SymbolRenderingStrategy.SINGLE),
+      selected: new SymbolGlyphModifier(icon).fontSize(24).fontColor([selected])
+        .renderingStrategy(SymbolRenderingStrategy.SINGLE)
+        .symbolEffect(new BounceSymbolEffect(EffectScope.WHOLE, EffectDirection.DOWN))
+    };
+    return BottomTabBarStyle.of(symbols, item.label)
+      .iconStyle({ selectedColor: selected, unselectedColor: unselected })
+      .labelStyle({ selectedColor: selected, unselectedColor: unselected });
+  }
+  private backdropColor(): string {
+    return '#80' + chromeColor(this.navigation.surface, this.navigation.dark ? 4278190080 : 4294967295).slice(3);
   }
   build() {
     WithTheme({ colorMode: this.navigation.dark ? ThemeColorMode.DARK : ThemeColorMode.LIGHT }) {
@@ -232,32 +251,32 @@ export struct HdsChromeNavigation {
       // The generic AttributeModifier receiver only implements ArkUI base APIs.
       if (deviceInfo.sdkApiVersion >= 23) {
         HdsTabs({ index: this.navigation.selectedIndex, controller: this.tabs }) {
-          ForEach(this.navigation.items, (item: HdsNavigationItem, index: number) => {
-            TabContent() {}.tabBar(this.tabLabel(item, index))
+          ForEach(this.navigation.items, (item: HdsNavigationItem) => {
+            TabContent() {}.tabBar(this.tabStyle(item))
           }, (item: HdsNavigationItem) => item.icon + ':' + item.label)
         }.width(this.navigation.width + this.sideMargin() * 2).height(this.navigation.height + MASK_EXTRA_HEIGHT)
           .position({ x: this.navigation.left - this.sideMargin(), y: this.navigation.top - MASK_EXTRA_HEIGHT })
-          .barPosition(BarPosition.End).barMode(BarMode.Fixed).barOverlap(true).barHeight(this.navigation.height)
-          .barWidth(this.navigation.width).barBackgroundColor('#00000000').divider({ mode: DividerMode.NONE })
-          .barFloatingStyle({ barWidth: { smallWidth: this.navigation.width, mediumWidth: this.navigation.width, largeWidth: this.navigation.width },
-            barSideMargin: 24, barBottomMargin: 0,
+          .barPosition(BarPosition.End).barMode(BarMode.Fixed).barOverlap(true)
+          .barBackgroundColor('#00000000').divider({ mode: DividerMode.NONE })
+          .barFloatingStyle({ barSideMargin: 24, barBottomMargin: 0,
             systemMaterialEffect: { materialType: hdsMaterial.MaterialType.IMMERSIVE, materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE },
-            gradientMask: { maskColor: '#00000000', maskHeight: MASK_EXTRA_HEIGHT } }).backgroundColor(Color.Transparent)
-          .scrollable(false).animationDuration(200).enabled(this.inputReady)
+            gradientMask: { maskColor: this.backdropColor(), maskHeight: 42 },
+            lightColor: chromeColor(this.navigation.primary, 4278228473) }).backgroundColor(Color.Transparent)
+          .clip(false).vertical(false).scrollable(false).animationDuration(300).enabled(this.inputReady)
           .direction(this.navigation.rtl ? Direction.Rtl : Direction.Ltr)
           .onTabBarClick((index: number): void => { HdsChromeBridge.shared.navigate(this.navigation.owner, index); })
           .hitTestBehavior(HitTestMode.Transparent)
       } else {
         HdsTabs({ index: this.navigation.selectedIndex, controller: this.tabs }) {
-          ForEach(this.navigation.items, (item: HdsNavigationItem, index: number) => {
-            TabContent() {}.tabBar(this.tabLabel(item, index))
+          ForEach(this.navigation.items, (item: HdsNavigationItem) => {
+            TabContent() {}.tabBar(this.tabStyle(item))
           }, (item: HdsNavigationItem) => item.icon + ':' + item.label)
         }.width(this.navigation.width + this.sideMargin() * 2).height(this.navigation.height + MASK_EXTRA_HEIGHT)
           .position({ x: this.navigation.left - this.sideMargin(), y: this.navigation.top - MASK_EXTRA_HEIGHT })
-          .barPosition(BarPosition.End).barMode(BarMode.Fixed).barOverlap(true).barHeight(this.navigation.height)
-          .barWidth(this.navigation.width).barBackgroundColor('#00000000').divider({ mode: DividerMode.NONE })
+          .barPosition(BarPosition.End).barMode(BarMode.Fixed).barOverlap(true)
+          .barBackgroundColor('#00000000').divider({ mode: DividerMode.NONE })
           .barBackgroundBlurStyle(BlurStyle.COMPONENT_REGULAR).backgroundColor(Color.Transparent)
-          .scrollable(false).animationDuration(200).enabled(this.inputReady)
+          .clip(false).vertical(false).scrollable(false).animationDuration(300).enabled(this.inputReady)
           .direction(this.navigation.rtl ? Direction.Rtl : Direction.Ltr)
           .onTabBarClick((index: number): void => { HdsChromeBridge.shared.navigate(this.navigation.owner, index); })
           .hitTestBehavior(HitTestMode.Transparent)
