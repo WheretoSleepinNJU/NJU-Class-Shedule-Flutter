@@ -1,4 +1,6 @@
 import 'dart:convert';
+import '../Models/CourseGroup.dart';
+import '../Models/CourseModel.dart';
 import '../Models/Db/DbHelper.dart';
 import 'CourseImportCodec.dart';
 
@@ -30,7 +32,11 @@ Map<String, dynamic> decodeOnlineImportResult(Object result) {
   return {...Map<String, dynamic>.from(value), 'courses': courses};
 }
 
-Future<int> saveOnlineImport(Map<String, dynamic> data, Map config) async {
+Future<int> saveOnlineImport(
+  Map<String, dynamic> data,
+  Map config, {
+  DbHelper? dbHelper,
+}) async {
   // Normalize every row before creating anything, then commit as one operation.
   final rows =
       (data['courses'] as List)
@@ -47,15 +53,32 @@ Future<int> saveOnlineImport(Map<String, dynamic> data, Map config) async {
     if (config['semester_start_monday'] != null)
       'semester_start_monday': config['semester_start_monday'],
   };
-  final db = await DbHelper().open();
+  final db = await (dbHelper ?? DbHelper()).open();
   return db.transaction((txn) async {
+    final courses = rows.map(Course.fromMap).toList();
+    final maximum = await txn.rawQuery(
+      'SELECT MAX($columnCourseId) AS maxId FROM ${DbHelper.COURSE_TABLE_NAME}',
+    );
+    var nextCourseId = ((maximum.first['maxId'] as num?)?.toInt() ?? -1) + 1;
+    // Batch inserts bypass CourseProvider.insert. Allocate local color IDs
+    // per logical course, retaining the source IDs only for grouping meetings.
+    for (final group in CourseGroup.collect(courses)) {
+      for (final course in group) {
+        course.courseId = nextCourseId;
+      }
+      nextCourseId++;
+    }
     final id = await txn.insert(DbHelper.COURSETABLE_TABLE_NAME, {
       'name': data['name'].trim(),
       'data': metadata.isEmpty ? '' : jsonEncode(metadata),
     });
     final batch = txn.batch();
-    for (final row in rows) {
-      batch.insert(DbHelper.COURSE_TABLE_NAME, {...row, 'tableid': id});
+    for (final course in courses) {
+      course.tableId = id;
+      batch.insert(
+        DbHelper.COURSE_TABLE_NAME,
+        course.toMap()..remove(columnId),
+      );
     }
     await batch.commit(noResult: true);
     return id;

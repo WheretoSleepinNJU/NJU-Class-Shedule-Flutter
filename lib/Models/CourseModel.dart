@@ -330,6 +330,42 @@ class CourseProvider {
     return rst.isNotEmpty;
   }
 
+  /// Backfill imports made before batch import assigned color/group IDs.
+  /// Existing IDs and explicit colors are retained.
+  Future<int> repairMissingCourseIds() async {
+    await open();
+    return db!.transaction((txn) async {
+      final missing = await txn.query(
+        tableName,
+        columns: [columnId],
+        where: '$columnCourseId IS NULL',
+        limit: 1,
+      );
+      if (missing.isEmpty) return 0;
+
+      final rows = await txn.query(tableName, orderBy: columnId);
+      final courses = rows.map(Course.fromMap).toList();
+      final maximum = await txn.rawQuery(
+        'SELECT MAX($columnCourseId) AS maxId FROM $tableName',
+      );
+      var nextCourseId = ((maximum.first['maxId'] as num?)?.toInt() ?? -1) + 1;
+      var repaired = 0;
+      for (final group in CourseGroup.collect(courses)) {
+        final existingId = group.map((c) => c.courseId).whereType<int>().firstOrNull;
+        final colorId = existingId ?? nextCourseId++;
+        for (final course in group.where((c) => c.courseId == null)) {
+          repaired += await txn.update(
+            tableName,
+            {columnCourseId: colorId},
+            where: '$columnId = ? AND $columnCourseId IS NULL',
+            whereArgs: [course.id],
+          );
+        }
+      }
+      return repaired;
+    });
+  }
+
   //获取课程 courseid，如果存在已有课程则为已有课程，否则指定新id
   Future<int> getCourseId(Course course) async {
     List<Map> rst = await db!.query(tableName,

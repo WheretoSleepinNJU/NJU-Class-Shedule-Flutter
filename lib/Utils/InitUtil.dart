@@ -6,6 +6,7 @@ import 'Analytics.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:in_app_review/in_app_review.dart';
 import '../Models/CourseTableModel.dart';
+import '../Models/CourseModel.dart' show CourseProvider;
 import '../Resources/Config.dart';
 import '../Resources/Url.dart';
 import '../Utils/ColorUtil.dart';
@@ -19,6 +20,7 @@ class InitUtil {
     int themeModeIndex = await getThemeMode();
     String themeCustom = await getThemeCustom();
     await checkDataBase();
+    await CourseProvider().repairMissingCourseIds();
     await WeekUtil.checkWeek();
     await ColorPool.checkColorPool();
 
