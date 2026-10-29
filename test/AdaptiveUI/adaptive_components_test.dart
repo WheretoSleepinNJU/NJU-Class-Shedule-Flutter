@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_miuix/miuix.dart' as miuix;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,6 +22,73 @@ Widget host(
 
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
+
+  testWidgets(
+    'MIUIX chip, edit action and compact row center their actual text lines',
+    (tester) async {
+      final preference = AdaptiveUIController();
+      await tester.pumpWidget(
+        host(
+          preference,
+          Column(
+            children: [
+              AdaptiveFilterChip(
+                label: const Text('全校'),
+                selected: true,
+                onSelected: (_) {},
+              ),
+              AdaptiveButton.text(onPressed: () {}, child: const Text('编辑')),
+              SizedBox(
+                height: 40,
+                width: 320,
+                child: AdaptiveButton.text(
+                  style: TextButton.styleFrom(
+                    minimumSize: const Size(0, 40),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 5,
+                    ),
+                    textStyle: const TextStyle(fontSize: 13, height: 1.4),
+                  ),
+                  onPressed: () {},
+                  child: const Row(
+                    children: [
+                      Icon(Icons.schedule, size: 16),
+                      Expanded(child: Text('自由时间课程')),
+                      Text('查看'),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      for (final label in ['全校', '编辑', '自由时间课程', '查看']) {
+        final text = find.text(label);
+        final paragraph = tester.renderObject<RenderParagraph>(text);
+        final button = find
+            .ancestor(of: text, matching: find.byType(miuix.MiuixButton))
+            .first;
+        final rect = tester.getRect(button);
+        final boxes = paragraph.getBoxesForSelection(
+          TextSelection(baseOffset: 0, extentOffset: label.length),
+        );
+        expect(boxes, isNotEmpty);
+        final line = boxes.first.toRect();
+        final center = paragraph.localToGlobal(line.center);
+        expect(
+          center.dy,
+          closeTo(rect.center.dy, 1),
+          reason: '$label glyph center',
+        );
+      }
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+      preference.dispose();
+    },
+  );
 
   testWidgets(
     'form value, selection, focus and validation survive renderer changes',

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'adaptive_ui_controller.dart';
 import 'adaptive_content.dart';
+import 'adaptive_tabs.dart';
 import 'adaptive_navigation.dart';
 import 'theme/deadliner_color_theme.dart';
 import 'android/compose_glass_surface.dart';
@@ -26,10 +27,14 @@ class AdaptiveTopAppBar {
     this.automaticallyImplyLeading = true,
     this.titleSpacing,
     this.toolbarHeight,
+    this.tabs,
   });
 
   /// Preserve a floating/custom header layout, with native glass icon actions.
   final bool preserveLayout;
+
+  /// Categories share the native header material and remain pinned above content.
+  final AdaptiveTabRow? tabs;
   final Widget? title, leading;
   final List<Widget>? actions;
   final Color? backgroundColor;
@@ -40,6 +45,7 @@ class AdaptiveTopAppBar {
   final double? titleSpacing, toolbarHeight;
 
   bool get _simple =>
+      tabs == null &&
       !preserveLayout &&
       (title == null ||
           (title is Text &&
@@ -136,6 +142,10 @@ class AdaptiveTopAppBar {
       }
     }
     return NativeTopBarConfiguration(
+      tabLabels: tabs?.tabs,
+      selectedTabIndex: tabs?.selectedIndex ?? 0,
+      onTabSelected: tabs?.onSelected,
+      tabRowHeight: AdaptiveTabRow.heightOf(context),
       title: text?.data,
       onTitleTap: titleTap,
       actions: converted,
@@ -177,6 +187,17 @@ class AdaptiveTopAppBar {
       );
   AppBar _material(BuildContext context, {bool glass = false}) => AppBar(
     title: title,
+    bottom: tabs == null
+        ? null
+        : PreferredSize(
+            preferredSize: Size.fromHeight(
+              AdaptiveTabRow.heightOf(context) + 8,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: tabs,
+            ),
+          ),
     actions: [
       for (final action in actions ?? const <Widget>[])
         if (glass &&
@@ -301,7 +322,8 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
         !original &&
         backend != null &&
         configuration != null &&
-        backend.supports(configuration);
+        backend.supports(configuration) &&
+        (barConfig?.tabs == null || AdaptiveTabRow.heightOf(context) <= 42.5);
     final fallback =
         nativeIOS ||
         (!nativeAndroid && barConfig?._simple == false) ||
@@ -340,7 +362,11 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
             : media.padding.bottom;
         final inset = underGlass
             ? statusInset +
-                  (barConfig.toolbarHeight ?? (nativeIOS ? 44 : kToolbarHeight))
+                  (barConfig.toolbarHeight ??
+                      (nativeIOS ? 44 : kToolbarHeight)) +
+                  (barConfig.tabs == null
+                      ? 0
+                      : AdaptiveTabRow.heightOf(context) + 8)
             : platform.NativeToolbarBodyScope.topInsetOf(context);
         return Padding(
           padding: EdgeInsets.only(
@@ -348,7 +374,11 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
                 nativeIOS &&
                     !widget.scrollUnderAppBar &&
                     !widget.extendBodyBehindAppBar
-                ? statusInset + (barConfig.toolbarHeight ?? 44)
+                ? statusInset +
+                      (barConfig.toolbarHeight ?? 44) +
+                      (barConfig.tabs == null
+                          ? 0
+                          : AdaptiveTabRow.heightOf(context) + 8)
                 : 0,
           ),
           child: MediaQuery(
@@ -397,7 +427,28 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
           widget.extendBodyBehindAppBar ||
           (widget.scrollUnderAppBar && nativeAndroid),
       extendBody: widget.extendBody,
-      body: content,
+      body: Stack(
+        children: [
+          Positioned.fill(child: content),
+          if ((nativeIOS || nativeAndroid) && barConfig?.tabs != null)
+            Positioned(
+              top:
+                  statusInset +
+                  (nativeIOS ? (barConfig.toolbarHeight ?? 44) : 52),
+              left: 0,
+              right: 0,
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 760),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: AdaptiveHostedTabScope(child: barConfig!.tabs!),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
       fallbackUsesNativeToolbar: nativeAndroid,
       fallbackBuilder: fallback
           ? (context, body) => Scaffold(

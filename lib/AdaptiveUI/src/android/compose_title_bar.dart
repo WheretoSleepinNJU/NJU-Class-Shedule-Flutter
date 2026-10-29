@@ -88,6 +88,12 @@ class _ComposeTitleBarHostState extends State<ComposeTitleBarHost>
     } else if (call.method == 'title') {
       final bar = entry.appBar;
       if (bar is NativeTopBarConfiguration) bar.onTitleTap?.call();
+    } else if (call.method == 'tab') {
+      final index = data['index'];
+      final bar = entry.appBar;
+      if (index is int && index >= 0 && index < (bar?.tabLabels?.length ?? 0)) {
+        bar?.onTabSelected?.call(index);
+      }
     } else if (call.method == 'action') {
       final index = data['index'];
       final actions = entry.appBar?.actions ?? const <AdaptiveAppBarAction>[];
@@ -165,6 +171,8 @@ class _ComposeTitleBarHostState extends State<ComposeTitleBarHost>
       'visible': visible,
       'owner': _owner,
       'title': entry?.appBar?.title ?? '',
+      'tabLabels': entry?.appBar?.tabLabels ?? const <String>[],
+      'selectedTabIndex': entry?.appBar?.selectedTabIndex ?? 0,
       'subtitle': entry?.appBar?.subtitle ?? '',
       'titleTappable':
           entry?.appBar is NativeTopBarConfiguration &&

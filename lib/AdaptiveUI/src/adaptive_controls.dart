@@ -654,7 +654,7 @@ class AdaptiveFilterChip extends StatelessWidget {
           ),
           child: DefaultTextStyle.merge(
             style: AdaptiveTypography.action.copyWith(color: foreground),
-            child: label,
+            child: Center(widthFactor: 1, heightFactor: 1, child: label),
           ),
         ),
       );

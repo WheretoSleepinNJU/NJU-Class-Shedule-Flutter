@@ -19,6 +19,10 @@ class NativeTopBarAction extends AdaptiveAppBarAction {
 class NativeTopBarConfiguration extends AdaptiveAppBar {
   const NativeTopBarConfiguration({
     super.title,
+    super.tabLabels,
+    super.selectedTabIndex,
+    super.tabRowHeight,
+    super.onTabSelected,
     super.actions,
     super.onTitleTap,
     super.textScale,

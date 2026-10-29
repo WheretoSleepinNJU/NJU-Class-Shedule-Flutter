@@ -154,7 +154,10 @@ class AdaptiveChromeHost(private val activity: Activity, engine: FlutterEngine) 
                     "glassTopBarOffset" to dialogBackdrop.topBarOffset,
                     "glassTopBarProgress" to resolveTopBarScrollProgress(dialogBackdrop.topBarOffset,
                         TopBarMaterialRevealStartDistance.value, TopBarMaterialRevealEndDistance.value), "glassIconButtons" to dialogBackdrop.iconButtons, "glassNavigationBars" to if (navigation.visible) 1 else 0,
-                    "tabsVisible" to tabs.visible, "tabsSelectedIndex" to tabs.selectedIndex, "tabsActions" to tabActions, "tabsInputReady" to tabsInputReady,
+                    "tabsVisible" to (tabs.visible || (title.visible && title.interactive && title.tabLabels.isNotEmpty())),
+                    "tabsSelectedIndex" to if (title.visible && title.tabLabels.isNotEmpty()) title.selectedTabIndex else tabs.selectedIndex,
+                    "tabsActions" to tabActions, "tabsInputReady" to (tabsInputReady || (title.visible && title.interactive && title.tabLabels.isNotEmpty() && hostResumed && windowFocused)),
+                    "headerTabLabels" to title.tabLabels,
                     "tabsBounds" to listOf(tabs.left, tabs.top, tabs.width, tabs.height),
                     "chromeInputAllowed" to (hostResumed && windowFocused), "toolbarHitHeight" to contentRoot?.toolbarHeight,
                     "navigationDark" to navigation.theme.dark, "navigationOnSurface" to navigation.theme.onSurface,
@@ -224,6 +227,12 @@ class AdaptiveChromeHost(private val activity: Activity, engine: FlutterEngine) 
                 val frame = title
                 ChromeContent(flutter, frame, navigation, tabs, inputEpoch, hostResumed && windowFocused, iconFont, dialogBackdrop, sourceVersion,
                     onRecord = { sourceRecordCount++ },
+                    onHeaderTabSelected = { index ->
+                        if (hostResumed && windowFocused && frame.visible && frame.interactive && index in frame.tabLabels.indices) {
+                            tabActions++
+                            channel.invokeMethod("tab", mapOf("owner" to frame.owner, "index" to index))
+                        }
+                    },
                     onNavigationReady = { owner, ready ->
                         if (owner == navigation.owner) navigationInputReady = ready
                     },
@@ -411,7 +420,8 @@ private data class TitleAction(val index: Int, val label: String, val codePoint:
 private data class TitleState(val visible: Boolean = false, val title: String = "", val subtitle: String = "",
     val owner: Long = 0, val canBack: Boolean = false, val interactive: Boolean = false,
     val scrollOffset: Float = 0f, val backLabel: String = "返回", val actions: List<TitleAction> = emptyList(),
-    val theme: ChromeTheme = ChromeTheme(), val titleTappable: Boolean = false) {
+    val theme: ChromeTheme = ChromeTheme(), val titleTappable: Boolean = false,
+    val tabLabels: List<String> = emptyList(), val selectedTabIndex: Int = 0) {
     val progress: Float get() = resolveTopBarScrollProgress(scrollOffset,
         TopBarMaterialRevealStartDistance.value, TopBarMaterialRevealEndDistance.value)
     companion object {
@@ -426,14 +436,16 @@ private data class TitleState(val visible: Boolean = false, val title: String = 
                     m["label"] as? String ?: "", (m["codePoint"] as? Number)?.toInt(),
                     m["mirror"] == true, m["title"] as? String,
                     m["enabled"] != false, m["loading"] == true, m["prominent"] == true)
-            }.orEmpty(), ChromeTheme.from(a), a["titleTappable"] == true)
+            }.orEmpty(), ChromeTheme.from(a), a["titleTappable"] == true,
+            (a["tabLabels"] as? List<*>)?.filterIsInstance<String>().orEmpty(),
+            (a["selectedTabIndex"] as? Number)?.toInt() ?: 0)
     }
 }
 
 @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class, androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun ChromeContent(flutter: FlutterView, title: TitleState, navigation: NavigationState, tabs: NavigationState, inputEpoch: Long, active: Boolean, iconFont: FontFamily, dialog: GlassBackdropState, sourceVersion: State<Long>,
-    onRecord: () -> Unit, onTabSelected: (Int) -> Unit, onTabsReady: (Long, Boolean) -> Unit, onNavigation: (Int) -> Unit, onNavigationReady: (Long, Boolean) -> Unit, onHeight: (Float) -> Unit, onBack: () -> Unit, onTitle: () -> Unit, onAction: (Int) -> Unit) {
+    onRecord: () -> Unit, onHeaderTabSelected: (Int) -> Unit, onTabSelected: (Int) -> Unit, onTabsReady: (Long, Boolean) -> Unit, onNavigation: (Int) -> Unit, onNavigationReady: (Long, Boolean) -> Unit, onHeight: (Float) -> Unit, onBack: () -> Unit, onTitle: () -> Unit, onAction: (Int) -> Unit) {
     val t = if (title.visible) title.theme else navigation.theme
     val foreground = Color(t.onSurface)
     val material = remember(t.palette, t.dark) { t.palette.material(t.dark) }
@@ -534,37 +546,52 @@ private fun ChromeContent(flutter: FlutterView, title: TitleState, navigation: N
                 if (title.visible) {
                     val statusHeight = WindowInsets.statusBars.getTop(LocalDensity.current)
                     CompositionLocalProvider(LocalTopBarScrollProgress provides title.progress) {
-                        Box(Modifier.fillMaxWidth().onGloballyPositioned { onHeight((it.size.height - statusHeight) / density.density) }
-                            .then(if (title.titleTappable) Modifier.clickable(enabled = title.interactive, onClick = onTitle) else Modifier)) {
-                            TopAppBar(title.title, subtitle = title.subtitle.takeIf { it.isNotEmpty() }, mode = TopAppBarStyle.SMALL,
-                                navigationIcon = if (title.canBack) ({
-                                    TopBarIconButton(onClick = onBack, enabled = title.interactive,
-                                        modifier = Modifier.semantics { contentDescription = title.backLabel }) {
-                                        Image(painterResource(R.drawable.deadliner_glass_back), null, colorFilter = ColorFilter.tint(foreground),
-                                            modifier = Modifier.size(24.dp).graphicsLayer { scaleX = if (t.rtl) -1f else 1f })
-                                    }
-                                }) else null,
-                                actions = { title.actions.forEach { action ->
-                                    val enabled = title.interactive && action.enabled && !action.loading
-                                    if (action.text != null) {
-                                        SoftGlassButton(onClick = { onAction(action.index) }, enabled = enabled,
-                                            prominent = action.prominent, capsule = true, minHeight = 44.dp,
-                                            insideMargin = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
-                                            modifier = Modifier.semantics { contentDescription = action.label }) {
-                                            if (action.loading) {
-                                                androidx.compose.material3.CircularProgressIndicator(Modifier.size(18.dp),
-                                                    color = androidx.compose.material3.LocalContentColor.current, strokeWidth = 2.dp)
-                                            } else androidx.compose.material3.Text(action.text, maxLines = 1)
+                        // One canonical material owns title, categories and the fading gap.
+                        ProgressiveTopBarMaterial {
+                            Column(Modifier.fillMaxWidth().onGloballyPositioned { onHeight((it.size.height - statusHeight) / density.density) }) {
+                                Box(if (title.titleTappable) Modifier.clickable(enabled = title.interactive, onClick = onTitle) else Modifier) {
+                                    TopAppBar(title.title, subtitle = title.subtitle.takeIf { it.isNotEmpty() }, mode = TopAppBarStyle.SMALL,
+                                        navigationIcon = if (title.canBack) ({
+                                            TopBarIconButton(onClick = onBack, enabled = title.interactive,
+                                                modifier = Modifier.semantics { contentDescription = title.backLabel }) {
+                                                Image(painterResource(R.drawable.deadliner_glass_back), null, colorFilter = ColorFilter.tint(foreground),
+                                                    modifier = Modifier.size(24.dp).graphicsLayer { scaleX = if (t.rtl) -1f else 1f })
+                                            }
+                                        }) else null,
+                                        actions = { title.actions.forEach { action ->
+                                            val enabled = title.interactive && action.enabled && !action.loading
+                                            if (action.text != null) {
+                                                SoftGlassButton(onClick = { onAction(action.index) }, enabled = enabled,
+                                                    prominent = action.prominent, capsule = true, minHeight = 44.dp,
+                                                    insideMargin = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+                                                    modifier = Modifier.semantics { contentDescription = action.label }) {
+                                                    if (action.loading) {
+                                                        androidx.compose.material3.CircularProgressIndicator(Modifier.size(18.dp),
+                                                            color = androidx.compose.material3.LocalContentColor.current, strokeWidth = 2.dp)
+                                                    } else androidx.compose.material3.Text(action.text, maxLines = 1)
+                                                }
+                                            } else if (action.codePoint != null) {
+                                                TopBarIconButton(onClick = { onAction(action.index) }, enabled = enabled,
+                                                    modifier = Modifier.semantics { contentDescription = action.label }) {
+                                                    BasicText(String(Character.toChars(action.codePoint)),
+                                                        style = TextStyle(color = foreground.copy(alpha = if (enabled) 1f else .38f), fontSize = 24.sp, fontFamily = iconFont),
+                                                        modifier = Modifier.graphicsLayer { scaleX = if (action.mirror && t.rtl) -1f else 1f })
+                                                }
+                                            }
+                                        } })
+                                }
+                                if (title.tabLabels.isNotEmpty()) {
+                                    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
+                                        Box(Modifier.widthIn(max = 760.dp).fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 8.dp)) {
+                                            key(title.owner, inputEpoch) {
+                                                ImmersiveTextTabRow(title.tabLabels, title.selectedTabIndex, modifier = Modifier.widthIn(max = 420.dp).clearAndSetSemantics {},
+                                                    onTabSelected = { if (active && title.interactive) onHeaderTabSelected(it) },
+                                                    backdrop = backdrop)
+                                            }
                                         }
-                                    } else if (action.codePoint != null) {
-                                        TopBarIconButton(onClick = { onAction(action.index) }, enabled = enabled,
-                                            modifier = Modifier.semantics { contentDescription = action.label }) {
-                                            BasicText(String(Character.toChars(action.codePoint)),
-                                                style = TextStyle(color = foreground.copy(alpha = if (enabled) 1f else .38f), fontSize = 24.sp, fontFamily = iconFont),
-                                                modifier = Modifier.graphicsLayer { scaleX = if (action.mirror && t.rtl) -1f else 1f })
-                                        }
                                     }
-                                } })
+                                }
+                            }
                         }
                     }
                 }

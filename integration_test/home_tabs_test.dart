@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:adaptive_platform_ui/src/widgets/ios26/ios26_native_toolbar.dart'
+    as native_toolbar;
 import 'dart:ui' as ui;
 import 'package:wheretosleepinnju/AdaptiveUI/src/android/compose_navigation.dart';
 import 'package:adaptive_platform_ui/adaptive_platform_ui.dart' as platform;
@@ -90,6 +92,22 @@ void main() {
               teacher: '示例老师',
               classroom: '仙Ⅰ-201',
               info: '每周课前完成习题，课堂讨论后提交学习记录。',
+            ),
+          );
+        }
+        for (var i = 0; i < 12; i++) {
+          await courses.insert(
+            Course(
+              table.id!,
+              '滚动验收课程 $i',
+              '[1,2,3]',
+              3,
+              1,
+              1,
+              0,
+              courseId: 200 + i,
+              teacher: '老师',
+              classroom: '仙Ⅰ-201',
             ),
           );
         }
@@ -398,16 +416,63 @@ void main() {
           expect((await android())['navigationDark'], dark);
         }
         await capture('home-courses');
+        final categoriesRect = tester.getRect(find.byType(AdaptiveTabRow));
+        final scrollable = find
+            .descendant(
+              of: find.byType(CoursesView),
+              matching: find.byType(Scrollable),
+            )
+            .first;
+        final scroll = tester.state<ScrollableState>(scrollable).position;
+        expect(tester.getTopLeft(scrollable).dy, lessThan(categoriesRect.top));
+        for (final fraction in [.45, 1.0]) {
+          scroll.jumpTo(scroll.maxScrollExtent * fraction);
+          await tester.pump(const Duration(milliseconds: 400));
+          expect(tester.getRect(find.byType(AdaptiveTabRow)), categoriesRect);
+          if (Platform.isAndroid) {
+            final snapshot = await android();
+            expect(snapshot['headerTabLabels'], ['已添加', '全校', '讲座']);
+            expect(snapshot['progress'], 1);
+            expect(
+              snapshot['toolbarHitHeight'] as num,
+              greaterThan(categoriesRect.bottom * tester.view.devicePixelRatio),
+            );
+          } else {
+            final toolbar = tester
+                .state<native_toolbar.IOS26NativeToolbarState>(
+                  find.byType(native_toolbar.IOS26NativeToolbar).last,
+                );
+            final snapshot = await toolbar.nativeSnapshot();
+            final bounds = snapshot?['tabsBounds'] as List;
+            expect(bounds[3], 42);
+            expect(
+              snapshot?['headerHeight'] as num,
+              greaterThan((bounds[1] as num) + (bounds[3] as num)),
+            );
+            expect(
+              ((snapshot?['configuration'] as Map)['scrollOffset'] as num),
+              greaterThan(20),
+            );
+          }
+          await capture(
+            'courses-header-scroll-${fraction == 1 ? 'end' : 'middle'}',
+          );
+        }
+        scroll.jumpTo(0);
+        await tester.pump(const Duration(milliseconds: 400));
         Future<void> category(int index) async {
           if (Platform.isIOS) {
-            final segmented = tester.state<platform.IOS26SegmentedControlState>(
-              find.byType(platform.IOS26SegmentedControl),
-            );
-            final snapshot = await segmented.nativeSnapshot();
-            expect(snapshot?['renderer'], 'UISegmentedControl');
-            await segmented.activateNativeSegment(index);
-          } else if (find.byType(ComposeTabRow).evaluate().isNotEmpty) {
-            final rect = tester.getRect(find.byType(ComposeTabRow));
+            final toolbar = tester
+                .state<native_toolbar.IOS26NativeToolbarState>(
+                  find.byType(native_toolbar.IOS26NativeToolbar).last,
+                );
+            final snapshot = await toolbar.nativeSnapshot();
+            expect(snapshot?['tabsRenderer'], 'UISegmentedControl');
+            expect(snapshot?['tabsEnabled'], true);
+            await toolbar.activateNativeTab(index);
+          } else if ((await android())['headerTabLabels'] is List &&
+              ((await android())['headerTabLabels'] as List).isNotEmpty) {
+            final rect = tester.getRect(find.byType(AdaptiveTabRow));
             final point = Offset(
               rect.left + rect.width * (index + .5) / 3,
               rect.center.dy,
@@ -438,7 +503,7 @@ void main() {
         }
 
         if (Platform.isAndroid) {
-          await until(() => find.byType(ComposeTabRow).evaluate().isNotEmpty);
+          await until(() => find.byType(AdaptiveTabRow).evaluate().isNotEmpty);
           for (var i = 0; i < 60; i++) {
             if ((await android())['tabsInputReady'] == true) break;
             await tester.runAsync(
@@ -468,7 +533,11 @@ void main() {
             expect((await android())['tabsVisible'], false);
           }
           if (Platform.isIOS) {
-            expect(find.byType(platform.IOS26SegmentedControl), findsNothing);
+            final toolbar = tester
+                .state<native_toolbar.IOS26NativeToolbarState>(
+                  find.byType(native_toolbar.IOS26NativeToolbar).last,
+                );
+            expect((await toolbar.nativeSnapshot())?['tabsEnabled'], false);
           }
           await capture(name);
           navigator.currentState!.pop();

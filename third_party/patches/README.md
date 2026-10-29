@@ -4,7 +4,7 @@ Dependencies are restored outside the tracked source tree by `tool/ci/bootstrap.
 
 | Dependency | Pinned upstream | Local patch |
 | --- | --- | --- |
-| adaptive_platform_ui 1.0.2 | [04f81286f7a1b8fbb67c489aa8d0cd663b5cd3ed](https://github.com/berkaycatak/adaptive_platform_ui/commit/04f81286f7a1b8fbb67c489aa8d0cd663b5cd3ed) | Optional native toolbar backend, structured UIKit titles/actions, native navigation sizing/tints, input contracts and bounded integration diagnostics |
+| adaptive_platform_ui 1.0.2 | [04f81286f7a1b8fbb67c489aa8d0cd663b5cd3ed](https://github.com/berkaycatak/adaptive_platform_ui/commit/04f81286f7a1b8fbb67c489aa8d0cd663b5cd3ed) | Optional native toolbar backend, structured UIKit titles/actions and integrated category headers, native navigation sizing/tints, input contracts and bounded integration diagnostics |
 | umeng_common_sdk 1.3.0 | [Pub release archive](https://pub.dev/packages/umeng_common_sdk/versions/1.3.0), SHA-256 `8374ced1ab1d89f596ff71c0eff044d5395337145c9a69a6be02f5d8a678e42c` | Replace Gradle 9's removed `jcenter()` shorthand with `mavenCentral()` |
 
 The initializer checks upstream revisions/archive hashes, applies patches idempotently, and refuses incompatible local modifications. It never patches the global Pub cache. Licenses remain in the upstream checkouts and release archives. Mobile scanner, Fluttertoast and package info use their existing pinned Git/external sources without local source copies.

@@ -24,4 +24,4 @@ export 'src/adaptive_typography.dart';
 
 export 'src/adaptive_navigation.dart';
 
-export 'src/adaptive_tabs.dart';
+export 'src/adaptive_tabs.dart' show AdaptiveTabRow;

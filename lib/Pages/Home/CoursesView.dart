@@ -184,9 +184,19 @@ class CoursesViewState extends State<CoursesView> {
     final s = S.of(context);
     final labels = [s.course_added, s.course_catalog, s.course_lectures];
     return AdaptiveScaffold(
-      scrollUnderAppBar: false,
       appBar: AdaptiveTopAppBar(
         title: Text(s.home_courses),
+        tabs: AdaptiveTabRow(
+          tabs: labels,
+          selectedIndex: _category,
+          onSelected: (index) {
+            setState(() {
+              _category = index;
+              _visited.add(index);
+            });
+            if (index == 0) reload();
+          },
+        ),
         actions: [
           AdaptiveIconButton(
             icon: const Icon(Icons.add_rounded),
@@ -195,52 +205,27 @@ class CoursesViewState extends State<CoursesView> {
           ),
         ],
       ),
-      body: Column(
+      body: IndexedStack(
+        index: _category,
         children: [
-          AdaptivePageFrame(
-            child: SizedBox(
-              width: double.infinity,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                child: AdaptiveTabRow(
-                  tabs: labels,
-                  selectedIndex: _category,
-                  onSelected: (index) {
-                    setState(() {
-                      _category = index;
-                      _visited.add(index);
-                    });
-                    if (index == 0) reload();
-                  },
-                ),
-              ),
-            ),
+          Visibility(
+            visible: _category == 0,
+            maintainState: true,
+            child: _added(),
           ),
-          Expanded(
-            child: IndexedStack(
-              index: _category,
-              children: [
-                Visibility(
-                  visible: _category == 0,
-                  maintainState: true,
-                  child: _added(),
-                ),
-                Visibility(
-                  visible: _category == 1,
-                  maintainState: true,
-                  child: _visited.contains(1)
-                      ? const AdaptiveEmbeddedPage(child: AllCourseView())
-                      : const SizedBox.shrink(),
-                ),
-                Visibility(
-                  visible: _category == 2,
-                  maintainState: true,
-                  child: _visited.contains(2)
-                      ? const AdaptiveEmbeddedPage(child: LectureView())
-                      : const SizedBox.shrink(),
-                ),
-              ],
-            ),
+          Visibility(
+            visible: _category == 1,
+            maintainState: true,
+            child: _visited.contains(1)
+                ? const AdaptiveEmbeddedPage(child: AllCourseView())
+                : const SizedBox.shrink(),
+          ),
+          Visibility(
+            visible: _category == 2,
+            maintainState: true,
+            child: _visited.contains(2)
+                ? const AdaptiveEmbeddedPage(child: LectureView())
+                : const SizedBox.shrink(),
           ),
         ],
       ),

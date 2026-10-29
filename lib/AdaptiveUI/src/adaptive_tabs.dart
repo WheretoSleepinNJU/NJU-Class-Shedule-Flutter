@@ -18,6 +18,8 @@ class AdaptiveTabRow extends StatelessWidget {
   final List<String> tabs;
   final int selectedIndex;
   final ValueChanged<int> onSelected;
+  static double heightOf(BuildContext context) =>
+      math.max(42.0, MediaQuery.textScalerOf(context).scale(14) * 1.3 + 12);
   @override
   Widget build(BuildContext context) => Align(
     alignment: AlignmentDirectional.centerStart,
@@ -31,14 +33,37 @@ class AdaptiveTabRow extends StatelessWidget {
   );
 
   Widget _control(BuildContext context) {
-    final height = math.max(
-      42.0,
-      MediaQuery.textScalerOf(context).scale(14) * 1.3 + 12,
-    );
+    final height = heightOf(context);
     final visible =
         TickerMode.valuesOf(context).enabled &&
         (ModalRoute.isCurrentOf(context) ?? true) &&
         MediaQuery.viewInsetsOf(context).bottom == 0;
+
+    if (AdaptiveHostedTabScope.of(context)) {
+      // Native chrome paints the control; retain Flutter accessibility and
+      // geometry without creating a second platform view or backdrop.
+      return ExcludeSemantics(
+        excluding: platform.PlatformInfo.isIOS,
+        child: SizedBox(
+          height: height,
+          child: Row(
+            children: [
+              for (var i = 0; i < tabs.length; i++)
+                Expanded(
+                  child: Semantics(
+                    label: tabs[i],
+                    selected: i == selectedIndex,
+                    button: true,
+                    enabled: visible,
+                    onTap: visible ? () => onSelected(i) : null,
+                    child: const SizedBox.expand(),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      );
+    }
     Widget material() => SizedBox(
       width: double.infinity,
       child: SegmentedButton<int>(
@@ -91,4 +116,14 @@ class AdaptiveTabRow extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Internal bridge for a tab row painted inside the native toolbar container.
+class AdaptiveHostedTabScope extends InheritedWidget {
+  const AdaptiveHostedTabScope({super.key, required super.child});
+  static bool of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<AdaptiveHostedTabScope>() !=
+      null;
+  @override
+  bool updateShouldNotify(AdaptiveHostedTabScope oldWidget) => false;
 }

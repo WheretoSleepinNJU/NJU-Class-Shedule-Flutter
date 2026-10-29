@@ -225,7 +225,9 @@ class AdaptiveButton extends StatelessWidget {
             data: IconThemeData(
               color: enabled ? fg : defaults.disabledContentColor,
             ),
-            child: contents,
+            // MIUIX passes its minimum height into the padded child. Center
+            // loosens that constraint so the painted text line stays centered.
+            child: Center(widthFactor: 1, heightFactor: 1, child: contents),
           ),
         ),
       );
