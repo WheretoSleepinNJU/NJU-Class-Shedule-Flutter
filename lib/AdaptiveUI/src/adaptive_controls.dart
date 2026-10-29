@@ -178,7 +178,9 @@ class AdaptiveCard extends platform.AdaptiveCard {
     super.borderWidth,
   });
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => _RetainedAdaptiveCard(card: this);
+
+  Widget _buildCard(BuildContext context, Widget contents) {
     if (AdaptiveUIScope.usesMiuix(context)) {
       final colors = miuix.MiuixTheme.of(context).colors;
       return Padding(
@@ -195,7 +197,7 @@ class AdaptiveCard extends platform.AdaptiveCard {
                 ),
           child: Semantics(
             container: semanticContainer,
-            child: Material(type: MaterialType.transparency, child: child),
+            child: Material(type: MaterialType.transparency, child: contents),
           ),
         ),
       );
@@ -224,11 +226,29 @@ class AdaptiveCard extends platform.AdaptiveCard {
         clipBehavior: clipBehavior ?? Clip.antiAlias,
         child: Semantics(
           container: semanticContainer,
-          child: Padding(padding: padding ?? EdgeInsets.zero, child: child),
+          child: Padding(padding: padding ?? EdgeInsets.zero, child: contents),
         ),
       ),
     );
   }
+}
+
+/// Reparent the same contents when the renderer changes its surface wrappers.
+/// Form fields own validation, selection and unsaved controllers below the card.
+class _RetainedAdaptiveCard extends StatefulWidget {
+  const _RetainedAdaptiveCard({required this.card});
+  final AdaptiveCard card;
+  @override
+  State<_RetainedAdaptiveCard> createState() => _RetainedAdaptiveCardState();
+}
+
+class _RetainedAdaptiveCardState extends State<_RetainedAdaptiveCard> {
+  final _contentsKey = GlobalKey();
+  @override
+  Widget build(BuildContext context) => widget.card._buildCard(
+    context,
+    KeyedSubtree(key: _contentsKey, child: widget.card.child),
+  );
 }
 
 class AdaptiveListTile extends platform.AdaptiveListTile {

@@ -15,6 +15,7 @@ def main():
     parser.add_argument('--screenshots', action='store_true')
     parser.add_argument('--target', default='integration_test/home_tabs_test.dart',
                         help='Integration entry point (may compose additional acceptance cases)')
+    parser.add_argument('--binary', help='Prebuilt integration APK; avoids building while the emulator runs')
     parser.add_argument('--plain-name', help='Run only the matching integration case')
     args = parser.parse_args()
     if not args.serial.startswith('emulator-'):
@@ -35,19 +36,25 @@ def main():
             time.sleep(.1)
         raise RuntimeError(message)
 
-    command = [args.flutter, 'test', '--no-pub', '--dart-define=DRIVE_ANDROID_NAV=true',
-               args.target, '-d', args.serial]
-    if args.screenshots:
-        command.insert(3, '--dart-define=CAPTURE_HOME_TABS=true')
-    if args.plain_name:
-        command.extend(['--plain-name', args.plain_name])
+    if args.binary:
+        command = [args.flutter, 'drive', '--no-pub',
+                   '--driver=integration_test/driver.dart', f'--target={args.target}',
+                   f'--use-application-binary={args.binary}', '-d', args.serial]
+    else:
+        command = [args.flutter, 'test', '--no-pub', '--dart-define=DRIVE_ANDROID_NAV=true',
+                   args.target, '-d', args.serial]
+        if args.screenshots:
+            command[3:3] = ['--dart-define=CAPTURE_HOME_TABS=true',
+                            '--dart-define=CAPTURE_ANDROID_PAGES=true']
+        if args.plain_name:
+            command.extend(['--plain-name', args.plain_name])
     with log.open('w') as stream:
         process = subprocess.Popen(command, cwd=root, env=os.environ.copy(),
                                    stdout=stream, stderr=subprocess.STDOUT)
         seen = 0
         try:
             while process.poll() is None:
-                events = re.findall(r'HOME_(NAV_TAP|PAGE_READY|INTERRUPT_LOCK): ([^\r\n]+)', log.read_text())
+                events = re.findall(r'(?:HOME|ANDROID)_(NAV_TAP|PAGE_READY|INTERRUPT_LOCK): ([^\r\n]+)', log.read_text())
                 for kind, value in events[seen:]:
                     if kind == 'NAV_TAP':
                         x, y = value.split()

@@ -132,6 +132,14 @@ void main() {
             await tester.pump();
             if (ready()) return;
           }
+          if (Platform.isAndroid) {
+            final snapshot = (await const MethodChannel(
+              'nju/compose-titlebar',
+            ).invokeMapMethod<Object?, Object?>('diagnostics'))!;
+            debugPrint(
+              'HOME_NATIVE_FAILURE: ${Map.fromEntries(snapshot.entries.where((entry) => !entry.key.toString().contains("color")))}',
+            );
+          }
           fail('Home state not reached');
         }
 
@@ -173,6 +181,12 @@ void main() {
                 if ((await android())['navigationSelectedIndex'] == index) {
                   break;
                 }
+              }
+              if ((await android())['navigationSelectedIndex'] != index) {
+                final state = await android();
+                debugPrint(
+                  'HOME_NATIVE_FAILURE: ${Map.fromEntries(state.entries.where((entry) => !entry.key.toString().contains("color")))}',
+                );
               }
               expect((await android())['navigationSelectedIndex'], index);
             } else {
@@ -433,6 +447,7 @@ void main() {
             await tester.pump();
           }
           expect((await android())['tabsVisible'], true);
+          expect((await android())['tabsInputReady'], true);
         }
         await category(2);
         await category(0);

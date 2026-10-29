@@ -156,6 +156,7 @@ class AdaptiveChromeHost(private val activity: Activity, engine: FlutterEngine) 
                         TopBarMaterialRevealStartDistance.value, TopBarMaterialRevealEndDistance.value), "glassIconButtons" to dialogBackdrop.iconButtons, "glassNavigationBars" to if (navigation.visible) 1 else 0,
                     "tabsVisible" to tabs.visible, "tabsSelectedIndex" to tabs.selectedIndex, "tabsActions" to tabActions, "tabsInputReady" to tabsInputReady,
                     "tabsBounds" to listOf(tabs.left, tabs.top, tabs.width, tabs.height),
+                    "chromeInputAllowed" to (hostResumed && windowFocused), "toolbarHitHeight" to contentRoot?.toolbarHeight,
                     "navigationDark" to navigation.theme.dark, "navigationOnSurface" to navigation.theme.onSurface,
                     "navigationRenderer" to "activity-compose", "navigationInputReady" to navigationInputReady, "navigationLayout" to "stacked",
                     "navigationItems" to navigation.items.map { it.icon }, "navigationSelectedIndex" to navigation.selectedIndex,
@@ -495,10 +496,10 @@ private fun ChromeContent(flutter: FlutterView, title: TitleState, navigation: N
                                 DisposableEffect(navigation.owner) {
                                     onDispose { onNavigationReady(navigation.owner, false) }
                                 }
-                                Box(Modifier.onGloballyPositioned { onNavigationReady(navigation.owner, true) }.clearAndSetSemantics {}.offset {
+                                Box(Modifier.offset {
                                     IntOffset((navigation.left * density.density + flutter.left).toInt(),
                                         (navigation.top * density.density + flutter.top).toInt())
-                                }.requiredSize(navigation.width.dp, navigation.height.dp)) {
+                                }.requiredSize(navigation.width.dp, navigation.height.dp).onGloballyPositioned { onNavigationReady(navigation.owner, true) }.clearAndSetSemantics {}) {
                                     val items = navigation.items.mapIndexed { index, item ->
                                         val vector = when (item.icon) {
                                             "NotesFill" -> MiuixIcons.NotesFill
@@ -521,10 +522,10 @@ private fun ChromeContent(flutter: FlutterView, title: TitleState, navigation: N
                 if (tabs.visible) {
                     key(tabs.owner, inputEpoch) {
                         DisposableEffect(tabs.owner) { onDispose { onTabsReady(tabs.owner, false) } }
-                        Box(Modifier.onGloballyPositioned { onTabsReady(tabs.owner, true) }.clearAndSetSemantics {}.offset {
+                        Box(Modifier.offset {
                             IntOffset((tabs.left * density.density + flutter.left).toInt(),
                                 (tabs.top * density.density + flutter.top).toInt())
-                        }.requiredSize(tabs.width.dp, tabs.height.dp)) {
+                        }.requiredSize(tabs.width.dp, tabs.height.dp).onGloballyPositioned { onTabsReady(tabs.owner, true) }.clearAndSetSemantics {}) {
                             ImmersiveTextTabRow(tabs.items.map { it.label }, tabs.selectedIndex,
                                 onTabSelected = onTabSelected, materialProgress = 1f, backdrop = backdrop)
                         }
