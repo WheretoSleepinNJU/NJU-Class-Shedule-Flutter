@@ -41,6 +41,14 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
     model.getMaterial3ColorForDark().then((_) => model.refresh());
   }
 
+  Future<void> _resetCourseColors() async {
+    await ColorPool.shuffleColorPool();
+    if (!mounted) return;
+    ScopedModel.of<MainStateModel>(context, rebuildOnChange: false).refresh();
+    UmengCommonSdk.onEvent("more_setting", {"type": 1});
+    Toast.showToast(S.of(context).shuffle_color_pool_success_toast, context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return SettingsScaffold(
@@ -112,16 +120,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                 SettingsTile(
                   title: Text(S.of(context).shuffle_color_pool_title),
                   subtitle: Text(S.of(context).shuffle_color_pool_subtitle),
-                  onTap: () {
-                    ColorPool.shuffleColorPool();
-                    UmengCommonSdk.onEvent("more_setting", {"type": 1});
-                    Toast.showToast(
-                      S.of(context).shuffle_color_pool_success_toast,
-                      context,
-                    );
-                    Navigator.of(context).pop();
-                    Navigator.of(context).pop();
-                  },
+                  onTap: _resetCourseColors,
                 ),
                 // TODO: Refresh multi times when changing themes.
                 const ThemeChanger(),

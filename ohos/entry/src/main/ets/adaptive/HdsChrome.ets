@@ -129,7 +129,7 @@ export struct HdsChromeHeader {
       content: {
         title: { mainTitle: state.titleTappable ? '' : state.title, subTitle: state.titleTappable ? undefined : state.subtitle },
         menu: { value: state.actions.map((action: HdsAction) => this.menuItem(state, action)), maxCount: 3 },
-        backIcon: { icon: toolbarSymbol($r('sys.symbol.arrow_left'), state.foreground), label: state.backLabel,
+        backIcon: { icon: toolbarSymbol($r('sys.symbol.chevron_backward'), state.foreground), label: state.backLabel,
           isEnabled: this.inputReady && state.interactive,
           action: (): void => { HdsChromeBridge.shared.back(state.owner); } },
         divider: { showType: DividerShowType.OFF }
@@ -219,6 +219,7 @@ export struct HdsChromeHeader {
 @Available({ minApiVersion: '20' })
 @Component
 export struct HdsChromeNavigation {
+  @Prop bottomInset: number = 0;
   @StorageLink('nju.hds.navigation') @Watch('onNavigationChanged') navigation: HdsNavigationState = new HdsNavigationState();
   @StorageLink('nju.hds.input') inputReady: boolean = false;
   private tabs: HdsTabsController = new HdsTabsController();
@@ -226,7 +227,6 @@ export struct HdsChromeNavigation {
   private onNavigationChanged(): void {
     if (this.navigation.items.length > 0) this.tabs.changeIndex(this.navigation.selectedIndex);
   }
-  private sideMargin(): number { return deviceInfo.sdkApiVersion >= 23 ? 24 : 0; }
   private tabStyle(item: HdsNavigationItem): BottomTabBarStyle {
     const icon = navigationSymbol(item.icon);
     const selected = chromeColor(this.navigation.primary, 4278228473);
@@ -252,13 +252,14 @@ export struct HdsChromeNavigation {
       if (deviceInfo.sdkApiVersion >= 23) {
         HdsTabs({ index: this.navigation.selectedIndex, controller: this.tabs }) {
           ForEach(this.navigation.items, (item: HdsNavigationItem) => {
-            TabContent() {}.tabBar(this.tabStyle(item))
+            TabContent() {}.tabBar(this.tabStyle(item)).hitTestBehavior(HitTestMode.None)
           }, (item: HdsNavigationItem) => item.icon + ':' + item.label)
-        }.width(this.navigation.width + this.sideMargin() * 2).height(this.navigation.height + MASK_EXTRA_HEIGHT)
-          .position({ x: this.navigation.left - this.sideMargin(), y: this.navigation.top - MASK_EXTRA_HEIGHT })
+        }.width('100%').height('100%').align(Alignment.Bottom)
+          .expandSafeArea([SafeAreaType.SYSTEM], [SafeAreaEdge.BOTTOM])
           .barPosition(BarPosition.End).barMode(BarMode.Fixed).barOverlap(true)
           .barBackgroundColor('#00000000').divider({ mode: DividerMode.NONE })
-          .barFloatingStyle({ barSideMargin: 24, barBottomMargin: 0,
+          // Expand the material to the window edge while keeping controls above the gesture area.
+          .barFloatingStyle({ barSideMargin: 24, barBottomMargin: this.bottomInset + 2,
             systemMaterialEffect: { materialType: hdsMaterial.MaterialType.IMMERSIVE, materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE },
             gradientMask: { maskColor: this.backdropColor(), maskHeight: 42 },
             lightColor: chromeColor(this.navigation.primary, 4278228473) }).backgroundColor(Color.Transparent)
@@ -269,13 +270,14 @@ export struct HdsChromeNavigation {
       } else {
         HdsTabs({ index: this.navigation.selectedIndex, controller: this.tabs }) {
           ForEach(this.navigation.items, (item: HdsNavigationItem) => {
-            TabContent() {}.tabBar(this.tabStyle(item))
+            TabContent() {}.tabBar(this.tabStyle(item)).hitTestBehavior(HitTestMode.None)
           }, (item: HdsNavigationItem) => item.icon + ':' + item.label)
-        }.width(this.navigation.width + this.sideMargin() * 2).height(this.navigation.height + MASK_EXTRA_HEIGHT)
-          .position({ x: this.navigation.left - this.sideMargin(), y: this.navigation.top - MASK_EXTRA_HEIGHT })
+        }.width('100%').height('100%').align(Alignment.Bottom)
+          .expandSafeArea([SafeAreaType.SYSTEM], [SafeAreaEdge.BOTTOM])
           .barPosition(BarPosition.End).barMode(BarMode.Fixed).barOverlap(true)
           .barBackgroundColor('#00000000').divider({ mode: DividerMode.NONE })
           .barBackgroundBlurStyle(BlurStyle.COMPONENT_REGULAR).backgroundColor(Color.Transparent)
+          .padding({ bottom: this.bottomInset + 2 })
           .clip(false).vertical(false).scrollable(false).animationDuration(300).enabled(this.inputReady)
           .direction(this.navigation.rtl ? Direction.Rtl : Direction.Ltr)
           .onTabBarClick((index: number): void => { HdsChromeBridge.shared.navigate(this.navigation.owner, index); })

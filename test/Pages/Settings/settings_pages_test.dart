@@ -1,5 +1,6 @@
 import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -13,6 +14,7 @@ import 'package:wheretosleepinnju/Pages/Settings/MoreSettingsView.dart';
 import 'package:wheretosleepinnju/Pages/Settings/WidgetSettingsView.dart';
 import 'package:wheretosleepinnju/Pages/Settings/BackgroundSettingsView.dart';
 import 'package:wheretosleepinnju/Utils/States/MainState.dart';
+import 'package:wheretosleepinnju/Resources/Colors.dart';
 import 'package:wheretosleepinnju/generated/l10n.dart';
 
 class _TestDocuments extends PathProviderPlatform {
@@ -45,6 +47,71 @@ void main() {
       )..addFont(File(icons).readAsBytes().then(ByteData.sublistView))).load();
     }
   });
+
+  testWidgets(
+    'reset course colors preserves the root route and publishes saved colors',
+    (tester) async {
+      for (final name in ['umeng_common_sdk', 'PonnamKarthik/fluttertoast']) {
+        final channel = MethodChannel(name);
+        tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          channel,
+          (_) async => true,
+        );
+        addTearDown(
+          () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+            channel,
+            null,
+          ),
+        );
+      }
+      final preferences = await SharedPreferences.getInstance();
+      await preferences.setString('colorPool', '[0]');
+      final model = MainStateModel();
+      final navigator = GlobalKey<NavigatorState>();
+      await tester.pumpWidget(
+        ScopedModel<MainStateModel>(
+          model: model,
+          child: AdaptiveApp(
+            navigatorKey: navigator,
+            locale: const Locale('zh', 'CN'),
+            supportedLocales: S.delegate.supportedLocales,
+            localizationsDelegates: const [
+              S.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            home: const Scaffold(body: Text('主页')),
+          ),
+        ),
+      );
+      navigator.currentState!.push(
+        MaterialPageRoute<void>(builder: (_) => const MoreSettingsView()),
+      );
+      await tester.pumpAndSettle();
+      String? publishedPool;
+      void onRefresh() {
+        publishedPool = preferences.getString('colorPool');
+      }
+
+      model.addListener(onRefresh);
+      addTearDown(() => model.removeListener(onRefresh));
+      await tester.ensureVisible(find.text('重置课程颜色'));
+      await tester.tap(find.text('重置课程颜色'));
+      await tester.pumpAndSettle();
+      expect(find.byType(MoreSettingsView), findsOneWidget);
+      expect(navigator.currentState!.canPop(), isTrue);
+      expect(publishedPool, preferences.getString('colorPool'));
+      expect(publishedPool, isNotNull);
+      final saved = List<int>.from(jsonDecode(publishedPool!) as List)..sort();
+      expect(saved, List<int>.generate(colorList.length, (index) => index));
+      navigator.currentState!.pop();
+      await tester.pumpAndSettle();
+      expect(find.text('主页'), findsOneWidget);
+      expect(navigator.currentState!.canPop(), isFalse);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   for (final entry in <String, Widget>{
     'settings': const SettingsView(),

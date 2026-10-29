@@ -14,6 +14,7 @@ struct Index {
   @StorageLink('nju.hds.header') header: HdsHeaderState = new HdsHeaderState();
   @StorageLink('nju.hds.navigation') navigation: HdsNavigationState = new HdsNavigationState();
   @State statusBarHeight: number = 0;
+  @State navigationBarHeight: number = 0;
   private mainWindow: window.Window | null = null;
   private appeared: boolean = false;
   private avoidAreaChanged: (area: window.AvoidAreaOptions) => void = (_area: window.AvoidAreaOptions): void => { this.readStatusInset(); };
@@ -43,14 +44,15 @@ struct Index {
     const cutout = this.mainWindow.getWindowAvoidArea(window.AvoidAreaType.TYPE_CUTOUT);
     const navigation = this.mainWindow.getWindowAvoidArea(window.AvoidAreaType.TYPE_NAVIGATION_INDICATOR);
     this.statusBarHeight = this.getUIContext().px2vp(Math.max(area.topRect.height, cutout.topRect.height));
-    HdsChromeBridge.shared.setWindowInsets(this.statusBarHeight, this.getUIContext().px2vp(navigation.bottomRect.height));
+    this.navigationBarHeight = this.getUIContext().px2vp(navigation.bottomRect.height);
+    HdsChromeBridge.shared.setWindowInsets(this.statusBarHeight, this.navigationBarHeight);
     } catch (error) {}
   }
   build() {
     Stack({ alignContent: Alignment.Top }) {
       FlutterPage({ viewId: this.viewId, xComponentRenderFit: RenderFit.TOP }).width('100%').height('100%')
       if (deviceInfo.sdkApiVersion >= 20 && this.navigation.visible) {
-        HdsChromeNavigation()
+        HdsChromeNavigation({ bottomInset: this.navigationBarHeight })
       }
       if (deviceInfo.sdkApiVersion >= 20 && this.header.visible) {
         HdsChromeHeader({ statusBarHeight: this.statusBarHeight })
