@@ -34,7 +34,9 @@ class _WidgetDebugPageState extends State<WidgetDebugPage> {
   void _addLog(String message) {
     setState(() {
       _logs.insert(
-          0, '[${DateTime.now().toString().substring(11, 19)}] $message');
+        0,
+        '[${DateTime.now().toString().substring(11, 19)}] $message',
+      );
       if (_logs.length > 50) {
         _logs.removeLast();
       }
@@ -176,10 +178,11 @@ class _WidgetDebugPageState extends State<WidgetDebugPage> {
   @override
   Widget build(BuildContext context) {
     return AdaptiveScaffold(
+      scrollUnderAppBar: false,
       appBar: AdaptiveTopAppBar(
         title: const Text('Widget 调试工具'),
         actions: [
-          IconButton(
+          AdaptiveIconButton(
             icon: const Icon(Icons.delete_outline),
             onPressed: _clearLogs,
             tooltip: '清空日志',
@@ -191,11 +194,12 @@ class _WidgetDebugPageState extends State<WidgetDebugPage> {
           // 操作按钮
           Container(
             padding: const EdgeInsets.all(16),
-            color: Colors.grey[100],
+            color: Theme.of(context).colorScheme.surfaceContainer,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                ElevatedButton.icon(
+                AdaptiveButton.icon(
+                  variant: AdaptiveButtonVariant.elevated,
                   onPressed: _isLoading ? null : _sendWidgetData,
                   icon: const Icon(Icons.send),
                   label: const Text('发送 Widget 数据'),
@@ -207,7 +211,8 @@ class _WidgetDebugPageState extends State<WidgetDebugPage> {
                 Row(
                   children: [
                     Expanded(
-                      child: ElevatedButton.icon(
+                      child: AdaptiveButton.icon(
+                        variant: AdaptiveButtonVariant.elevated,
                         onPressed: _isLoading ? null : _getWidgetData,
                         icon: const Icon(Icons.data_object),
                         label: const Text('查看数据'),
@@ -218,7 +223,8 @@ class _WidgetDebugPageState extends State<WidgetDebugPage> {
                     ),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: ElevatedButton.icon(
+                      child: AdaptiveButton.icon(
+                        variant: AdaptiveButtonVariant.elevated,
                         onPressed: _isLoading ? null : _refreshWidgets,
                         icon: const Icon(Icons.refresh),
                         label: const Text('刷新 Widget'),
@@ -233,7 +239,8 @@ class _WidgetDebugPageState extends State<WidgetDebugPage> {
                 Row(
                   children: [
                     Expanded(
-                      child: OutlinedButton.icon(
+                      child: AdaptiveButton.icon(
+                        variant: AdaptiveButtonVariant.outlined,
                         onPressed: _isLoading ? null : _getPlatformInfo,
                         icon: const Icon(Icons.info_outline),
                         label: const Text('平台信息'),
@@ -241,7 +248,8 @@ class _WidgetDebugPageState extends State<WidgetDebugPage> {
                     ),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: OutlinedButton.icon(
+                      child: AdaptiveButton.icon(
+                        variant: AdaptiveButtonVariant.outlined,
                         onPressed: _isLoading ? null : _testAppGroupAccess,
                         icon: const Icon(Icons.link),
                         label: const Text('测试连接'),
@@ -250,7 +258,8 @@ class _WidgetDebugPageState extends State<WidgetDebugPage> {
                   ],
                 ),
                 const SizedBox(height: 8),
-                OutlinedButton.icon(
+                AdaptiveButton.icon(
+                  variant: AdaptiveButtonVariant.outlined,
                   onPressed: _isLoading ? null : _clearCache,
                   icon: const Icon(Icons.cleaning_services),
                   label: const Text('清除缓存'),
@@ -269,8 +278,11 @@ class _WidgetDebugPageState extends State<WidgetDebugPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.article_outlined,
-                            size: 48, color: Colors.grey[400]),
+                        Icon(
+                          Icons.article_outlined,
+                          size: 48,
+                          color: Colors.grey[400],
+                        ),
                         const SizedBox(height: 16),
                         Text(
                           '点击上方按钮开始测试',

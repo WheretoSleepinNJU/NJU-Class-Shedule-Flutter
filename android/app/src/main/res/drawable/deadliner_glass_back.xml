@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2026, compose-miuix-ui contributors. Apache-2.0.
+     PR #423 @ 8d52b45f223d4bec9a719d3d6ca52972cc7ea5fb
+     MiuixIcons.Glass.Regular.ChevronBackward; original viewport and transform.
+     AdaptiveChromeHost owns RTL mirroring, so do not auto-mirror a second time. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp"
+    android:viewportWidth="1142.9" android:viewportHeight="1142.9"
+    android:autoMirrored="false">
+    <group android:translateX="-85.7" android:translateY="1142.9" android:scaleY="-1">
+        <path android:fillColor="#FFFFFFFF" android:fillType="nonZero"
+            android:pathData="M301.7 551.4 L775.7 78.4 Q785.7 68.4 796.2 68.9 Q806.7 69.4 820.7 83.4 L838.7 101.4 Q847.7 110.4 848.7 120.4 Q849.7 130.4 841.7 138.4 L410.7 570.4 L841.7 1001.4 Q849.7 1009.4 849.2 1020.4 Q848.7 1031.4 841.7 1039.4 L812.7 1067.4 Q805.7 1074.4 795.7 1073.9 Q785.7 1073.4 777.7 1065.4 L300.7 588.4 Q293.7 581.4 293.7 570.4 Q293.7 559.4 301.7 551.4 Z" />
+    </group>
+</vector>

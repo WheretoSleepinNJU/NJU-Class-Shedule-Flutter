@@ -56,6 +56,9 @@ class iOS26ToolbarPlatformView: NSObject, FlutterPlatformView {
 
     private var isDark: Bool = false
     private var perActionTintTags: Set<Int> = []
+    private var currentConfiguration: [String: Any] = [:]
+    private var nativeBackdrop: UIVisualEffectView?
+    private var nativeTitle: NativeToolbarTitleControl?
 
     init(
         frame: CGRect,
@@ -92,6 +95,7 @@ class iOS26ToolbarPlatformView: NSObject, FlutterPlatformView {
 
         if let params = args as? [String: Any] {
             configureItems(params)
+            configureNativePresentation(params)
             // Apply global tint color after configuring items
             if let n = params["tint"] as? NSNumber {
                 let color = Self.colorFromARGB(n.intValue)
@@ -202,6 +206,7 @@ class iOS26ToolbarPlatformView: NSObject, FlutterPlatformView {
                     action: #selector(leadingTapped)
                 )
             }
+            leadingButton.isEnabled = params["backEnabled"] as? Bool != false
             leadingItems.append(leadingButton)
         }
 
@@ -248,7 +253,14 @@ class iOS26ToolbarPlatformView: NSObject, FlutterPlatformView {
                     )
                 }
 
+                if action["loading"] as? Bool == true {
+                    let spinner = UIActivityIndicatorView(style: .medium)
+                    spinner.startAnimating()
+                    spinner.frame = CGRect(x: 0, y: 0, width: 32, height: 32)
+                    button = UIBarButtonItem(customView: spinner)
+                }
                 if let btn = button {
+                    btn.isEnabled = action["enabled"] as? Bool != false && action["loading"] as? Bool != true
                     btn.tag = index
                     if let label = action["label"] as? String {
                         btn.accessibilityLabel = label
@@ -304,6 +316,66 @@ class iOS26ToolbarPlatformView: NSObject, FlutterPlatformView {
         navigationItem.rightBarButtonItems = rightGroup.reversed()
     }
 
+    private func configureNativePresentation(_ params: [String: Any]) {
+        guard params["nativeTitleLayout"] as? Bool == true else { return }
+        currentConfiguration = params
+        isDark = params["isDark"] as? Bool ?? false
+        containerView.overrideUserInterfaceStyle = isDark ? .dark : .light
+        let foreground = (params["foreground"] as? NSNumber).map { Self.colorFromARGB($0.intValue) } ?? UIColor.label
+        containerView.tintColor = foreground
+        navigationBar.tintColor = foreground
+        navigationBar.titleTextAttributes = [.foregroundColor: foreground]
+        if nativeBackdrop == nil {
+            let effect = UIVisualEffectView(effect: UIBlurEffect(style: .systemMaterial))
+            effect.translatesAutoresizingMaskIntoConstraints = false
+            effect.isUserInteractionEnabled = false
+            containerView.insertSubview(effect, belowSubview: navigationBar)
+            NSLayoutConstraint.activate([
+                effect.topAnchor.constraint(equalTo: containerView.topAnchor),
+                effect.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+                effect.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+                effect.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
+            ])
+            nativeBackdrop = effect
+        }
+        let offset = (params["scrollOffset"] as? NSNumber)?.doubleValue ?? 0
+        nativeBackdrop?.alpha = CGFloat(max(0, min(offset / 20, 1)))
+        let title = params["title"] as? String ?? ""
+        let subtitle = params["subtitle"] as? String
+        let tappable = params["titleTappable"] as? Bool == true
+        let leading = params["leadingTitle"] as? Bool == true
+        if leading || subtitle != nil || tappable {
+            let control = NativeToolbarTitleControl(frame: .zero)
+            let scale = (params["fontScale"] as? NSNumber)?.doubleValue ?? 1
+            control.configure(title: title, subtitle: subtitle, foreground: foreground,
+                scale: CGFloat(scale), leading: leading)
+            control.isEnabled = tappable && params["interactive"] as? Bool != false
+            control.accessibilityLabel = params["semanticLabel"] as? String ?? [title, subtitle].compactMap { $0 }.joined(separator: ", ")
+            control.accessibilityTraits = tappable ? [.button] : [.header]
+            control.addTarget(self, action: #selector(titleTapped), for: .touchUpInside)
+            nativeTitle = control
+            control.frame = CGRect(origin: .zero, size: control.intrinsicContentSize)
+            if leading {
+                navigationItem.titleView = nil
+                navigationItem.title = nil
+                let titleItem = UIBarButtonItem(customView: control)
+                titleItem.width = control.intrinsicContentSize.width
+                if #available(iOS 26.0, *) { titleItem.hidesSharedBackground = true }
+                navigationItem.leftBarButtonItems = [titleItem]
+            } else {
+                navigationItem.titleView = control
+            }
+        } else {
+            nativeTitle = nil
+            navigationItem.titleView = nil
+            navigationItem.title = title
+        }
+    }
+
+    @objc private func titleTapped() {
+        channel.invokeMethod("onTitleTapped", arguments: nil)
+    }
+
     /// Builds the menu of a bar button; dividers split it into inline groups
     private func makeMenu(_ entries: [[String: Any]], actionIndex: Int) -> UIMenu {
         var groups: [[UIMenuElement]] = []
@@ -355,6 +427,27 @@ class iOS26ToolbarPlatformView: NSObject, FlutterPlatformView {
 
     private func handleMethodCall(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch call.method {
+        case "updateConfiguration":
+            guard let params = call.arguments as? [String: Any] else { result(FlutterMethodNotImplemented); return }
+            let previousContent = currentConfiguration.filter { $0.key != "scrollOffset" }
+            let newContent = params.filter { $0.key != "scrollOffset" }
+            if NSDictionary(dictionary: previousContent).isEqual(to: newContent) {
+                currentConfiguration = params
+                let offset = (params["scrollOffset"] as? NSNumber)?.doubleValue ?? 0
+                nativeBackdrop?.alpha = CGFloat(max(0, min(offset / 20, 1)))
+            } else {
+                perActionTintTags.removeAll()
+                configureItems(params)
+                configureNativePresentation(params)
+            }
+            result(nil)
+        case "diagnostics":
+            result(["renderer": NSStringFromClass(type(of: navigationBar)), "titleRenderer": "UIKit",
+                "actionViews": (navigationItem.rightBarButtonItems ?? []).map { item in
+                    item.customView.map { NSStringFromClass(type(of: $0)) } ?? "UIBarButtonItem"
+                },
+                "titleWidth": nativeTitle.map { Double($0.bounds.width) } ?? 0,
+                "title": currentConfiguration["title"] ?? "", "configuration": currentConfiguration])
         case "updateTitle":
             if let args = call.arguments as? [String: Any], let title = args["title"] as? String {
                 navigationItem.title = title
@@ -421,4 +514,40 @@ class iOS26ToolbarPlatformView: NSObject, FlutterPlatformView {
         let b = CGFloat(argb & 0xFF) / 255.0
         return UIColor(red: r, green: g, blue: b, alpha: a)
     }
+}
+
+/// UIKit owns both labels, intrinsic size and activation; never a Flutter overlay.
+private final class NativeToolbarTitleControl: UIControl {
+    private let main = UILabel()
+    private let subtitle = UILabel()
+    private let stack = UIStackView()
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        stack.axis = .vertical
+        stack.spacing = 2
+        stack.addArrangedSubview(main)
+        stack.addArrangedSubview(subtitle)
+        addSubview(stack)
+        isAccessibilityElement = true
+        main.lineBreakMode = .byTruncatingTail
+        subtitle.lineBreakMode = .byTruncatingTail
+    }
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+    func configure(title: String, subtitle detail: String?, foreground: UIColor, scale: CGFloat, leading: Bool) {
+        main.text = title
+        main.font = .systemFont(ofSize: (leading ? 18 : 17) * min(max(scale, 0.8), 2), weight: .semibold)
+        main.textColor = foreground
+        subtitle.text = detail
+        subtitle.font = .systemFont(ofSize: 12 * min(max(scale, 0.8), 1.4), weight: .regular)
+        subtitle.textColor = foreground.withAlphaComponent(0.65)
+        subtitle.isHidden = detail == nil || detail?.isEmpty == true
+        stack.alignment = leading ? .leading : .center
+        invalidateIntrinsicContentSize()
+    }
+    override var intrinsicContentSize: CGSize {
+        let title = main.intrinsicContentSize
+        let detail = subtitle.isHidden ? CGSize.zero : subtitle.intrinsicContentSize
+        return CGSize(width: max(title.width, detail.width), height: title.height + detail.height + (subtitle.isHidden ? 0 : 2))
+    }
+    override func layoutSubviews() { super.layoutSubviews(); stack.frame = bounds }
 }

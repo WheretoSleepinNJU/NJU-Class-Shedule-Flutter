@@ -48,7 +48,7 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
       body: SettingsListView(
         padding: const EdgeInsets.all(16),
         children: [
-          const AdaptiveAppearanceSwitch(),
+          const SettingsSurface(child: AdaptiveAppearanceSwitch()),
           const SizedBox(height: 16),
           SettingsSurface(
             child: Column(
@@ -165,33 +165,6 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
                       ).changeMaterial3Color(dark: v);
                       setState(() {});
                     },
-                  ),
-                ),
-                SettingsTile(
-                  title: Text(S.of(context).hide_add_button_title),
-                  subtitle: Text(S.of(context).hide_add_button_subtitle),
-                  trailing: FutureBuilder<bool>(
-                    future: _getAddButton(),
-                    builder:
-                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                          if (!snapshot.hasData) {
-                            return Container(width: 0);
-                          } else {
-                            return SettingsSwitch(
-                              value: !snapshot.data!,
-                              onChanged: (bool value) {
-                                UmengCommonSdk.onEvent("more_setting", {
-                                  "type": 5,
-                                  "result": value.toString(),
-                                });
-                                ScopedModel.of<MainStateModel>(
-                                  context,
-                                ).setAddButton(!value);
-                                setState(() {});
-                              },
-                            );
-                          }
-                        },
                   ),
                 ),
                 SettingsTile(
@@ -473,9 +446,5 @@ class _MoreSettingsViewState extends State<MoreSettingsView> {
 
   Future<bool> _getForceZoom() async {
     return await ScopedModel.of<MainStateModel>(context).getForceZoom();
-  }
-
-  Future<bool> _getAddButton() async {
-    return await ScopedModel.of<MainStateModel>(context).getAddButton();
   }
 }

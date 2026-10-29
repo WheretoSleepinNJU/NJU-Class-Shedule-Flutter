@@ -60,10 +60,16 @@ class IOS26SegmentedControl extends StatefulWidget {
   final Color? selectedTextColor;
 
   @override
-  State<IOS26SegmentedControl> createState() => _IOS26SegmentedControlState();
+  State<IOS26SegmentedControl> createState() => IOS26SegmentedControlState();
 }
 
-class _IOS26SegmentedControlState extends State<IOS26SegmentedControl> {
+class IOS26SegmentedControlState extends State<IOS26SegmentedControl> {
+  @visibleForTesting
+  Future<Map<Object?, Object?>?> nativeSnapshot() =>
+      _channel.invokeMapMethod<Object?, Object?>('diagnostics');
+  @visibleForTesting
+  Future<void> activateNativeSegment(int index) =>
+      _channel.invokeMethod<void>('activateSegment', {'index': index});
   static int _nextId = 0;
   late final int _id;
   late final MethodChannel _channel;
@@ -176,9 +182,7 @@ class _IOS26SegmentedControlState extends State<IOS26SegmentedControl> {
 
     final effectiveSelectedTextColor =
         widget.selectedTextColor ??
-        (widget.color != null
-            ? CupertinoColors.white
-            : effectiveTextColor);
+        (widget.color != null ? CupertinoColors.white : effectiveTextColor);
 
     return <String, dynamic>{
       'textColor': _colorToARGB(effectiveTextColor),

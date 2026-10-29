@@ -34,6 +34,8 @@ class AdaptiveAppBarAction {
     this.spacerAfter = ToolbarSpacerType.none,
     this.prominent = false,
     this.tintColor,
+    this.enabled = true,
+    this.loading = false,
   }) : assert(
          iosSymbol != null ||
              icon != null ||
@@ -51,6 +53,9 @@ class AdaptiveAppBarAction {
        );
 
   static void _noAction() {}
+
+  /// Native activation state. A pending action keeps its identity and label.
+  final bool enabled, loading;
 
   /// SF Symbol name for iOS 26+ ONLY (e.g., 'info.circle', 'plus.circle')
   /// - iOS 26+: Uses UIImage(systemName:) in native UIBarButtonItem
@@ -105,6 +110,7 @@ class AdaptiveAppBarAction {
 
   /// Calls [onPressed], or opens [menuItems] in a bar drawn by Flutter
   void press(BuildContext context, {NavigatorState? navigator}) {
+    if (!enabled || loading) return;
     if (!hasMenu) return onPressed();
     AdaptivePopupMenuButton.show<dynamic>(
       context,
@@ -159,6 +165,8 @@ class AdaptiveAppBarAction {
         other.title == title &&
         other.label == label &&
         other.prominent == prominent &&
+        other.enabled == enabled &&
+        other.loading == loading &&
         other.tintColor == tintColor &&
         listEquals(_menuSignature, other._menuSignature);
   }
@@ -171,6 +179,8 @@ class AdaptiveAppBarAction {
     title,
     label,
     prominent,
+    enabled,
+    loading,
     tintColor,
     Object.hashAll(_menuSignature ?? const []),
   );
@@ -198,6 +208,8 @@ class AdaptiveAppBarAction {
       if (iosSymbol != null) 'icon': iosSymbol!,
       if (title != null) 'title': title!,
       if (effectiveLabel != null) 'label': effectiveLabel!,
+      'enabled': enabled,
+      'loading': loading,
       'spacerAfter': spacerAfter.index, // 0=none, 1=fixed, 2=flexible
       if (prominent) 'prominent': true,
       if (tintColor != null) 'tint': tintColor!.toARGB32(),

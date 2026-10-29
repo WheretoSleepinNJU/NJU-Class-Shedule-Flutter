@@ -21,7 +21,17 @@ void main() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(channel, null);
   });
-  Map latest() => calls.lastWhere((c) => c.method == 'update').arguments as Map;
+  Map latest() {
+    final state = <Object?, Object?>{};
+    for (final call in calls) {
+      if (call.method == 'update') state.addAll(call.arguments as Map);
+      if (call.method == 'scroll' &&
+          (call.arguments as Map)['owner'] == state['owner'])
+        state.addAll(call.arguments as Map);
+    }
+    return state;
+  }
+
   Future<void> native(WidgetTester tester, String method, Object data) =>
       tester.runAsync(() async {
         await TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
@@ -189,4 +199,53 @@ void main() {
       );
     }
   });
+  testWidgets(
+    'native chrome stays mounted on focus loss and resynchronizes after resume',
+    (tester) async {
+      var presses = 0;
+      final backend = createComposeTitleBarBackend();
+      await tester.pumpWidget(
+        MaterialApp(
+          builder: (_, child) => AdaptiveToolbarHost(
+            androidBackend: backend,
+            debugAndroidToolbar: true,
+            child: child!,
+          ),
+          home: SettingsScaffold(
+            title: '持久顶栏',
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.add),
+                onPressed: () => presses++,
+              ),
+            ],
+            body: const SettingsListView(children: [Text('草稿内容')]),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final owner = latest()['owner'];
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+      await tester.pumpAndSettle();
+      expect(latest()['visible'], true);
+      expect(
+        latest()['interactive'],
+        true,
+      ); // Route state stays independent of window focus.
+      await native(tester, 'action', {'owner': owner, 'index': 0});
+      expect(presses, 0);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+      await tester.pump();
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pumpAndSettle();
+      expect(latest()['visible'], true);
+      expect(latest()['interactive'], true);
+      expect(latest()['owner'], owner);
+      await native(tester, 'action', {'owner': owner, 'index': 0});
+      expect(presses, 1);
+      expect(find.text('草稿内容'), findsOneWidget);
+      await tester.pumpWidget(const SizedBox());
+      await tester.pumpAndSettle();
+    },
+  );
 }

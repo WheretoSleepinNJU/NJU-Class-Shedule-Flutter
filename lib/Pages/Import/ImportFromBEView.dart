@@ -194,11 +194,12 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
   @override
   Widget build(BuildContext context) {
     return AdaptiveScaffold(
+      scrollUnderAppBar: false,
       appBar: AdaptiveTopAppBar(
         title: Text(widget.config['page_title']),
         actions: <Widget>[
           if (widget.testMode)
-            IconButton(
+            AdaptiveIconButton(
               key: const ValueKey('import-test-retry'),
               tooltip: S.of(context).import_test_retry,
               icon: const Icon(Icons.play_arrow),
@@ -207,7 +208,7 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
                       ? null
                       : () => import(_webViewController, context),
             ),
-          IconButton(
+          AdaptiveIconButton(
             icon: const Icon(Icons.refresh),
             onPressed:
                 widget.testMode && _extracting
@@ -257,7 +258,7 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
                                 style: Theme.of(context).textTheme.bodySmall,
                               ),
                             ),
-                            IconButton(
+                            AdaptiveIconButton(
                               tooltip:
                                   MaterialLocalizations.of(
                                     context,
@@ -291,7 +292,7 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
                     ),
                     backgroundColor: Theme.of(context).primaryColor,
                     actions: [
-                      TextButton(
+                      AdaptiveButton.text(
                         style: TextButton.styleFrom(
                           foregroundColor: Colors.white,
                           backgroundColor: Theme.of(context).primaryColor,
@@ -299,7 +300,7 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
                         child: Text(widget.config['banner_action']),
                         onPressed:
                             () => launchUrl(
-                              Uri.parse(widget.config['banner_url']),
+                              Uri.parse(widget.config['banner_url'])
                             ),
                       ),
                     ],
@@ -407,7 +408,7 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
         await showDialog<void>(
           context: context,
           builder:
-              (dialogContext) => AlertDialog(
+              (dialogContext) => AdaptiveDialog(
                 title: Text(S.of(context).import_test_error),
                 content: SingleChildScrollView(
                   child: SelectableText(
@@ -421,10 +422,10 @@ class ImportFromBEViewState extends State<ImportFromBEView> {
                   ),
                 ),
                 actions: [
-                  TextButton(
+                  AdaptiveButton.text(
                     onPressed: () => Navigator.pop(dialogContext),
                     child: Text(
-                      MaterialLocalizations.of(context).closeButtonLabel,
+                      MaterialLocalizations.of(context).closeButtonLabel
                     ),
                   ),
                 ],

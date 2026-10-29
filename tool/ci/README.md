@@ -6,18 +6,18 @@
 
 | 平台 | 默认产物 | `signed=true` 的产物 |
 | --- | --- | --- |
-| Android | `android-unsigned.apk`，不能直接安装 | `android-signed.apk`，使用已有发布密钥，可正常安装升级 |
+| Android | `android-default-signed.apk`，使用默认 Debug 密钥，可直接安装测试 | `android-signed.apk`，使用已有发布密钥，可正常安装升级 |
 | iOS | `ios-unsigned.xcarchive.zip`，未签名归档，不能直接安装 | `ios-app-store.ipa`，用于 App Store Connect / TestFlight，不是 Ad Hoc 安装包 |
 | HarmonyOS | `ohos-unsigned.hap`，不能直接安装 | `ohos-signed.hap`，安装或发布能力取决于所提供的 Profile |
 
 ## 固定工具链与依赖
 
-- Flutter 使用 `.fvmrc` 中的 `3.35.8-ohos-1.0.4`，并校验提交 `8320f6ded3f0bdc5409545e26dcd2596bf054203`，三端不混用官方 Flutter SDK。初始化时显式保留本地版本标签；修复缺少标签的 SDK 缓存时，同时清除旧版本元数据，避免被识别成 `0.0.0-unknown`。
-- `bootstrap.sh` 固定三个 `external` 路径依赖的提交，并按 `pubspec.lock` 严格恢复 Pub 依赖。`mobile_scanner` 直接使用 `pubspec.yaml` 中固定的 Git 提交，不在主仓库登记 `external/fluttertpc_mobile_scanner` 子模块。
+- Android/iOS 固定使用官方 Flutter 3.47.2（`d3b14c876900e553bc736ca19295fc09e3853e8e`），与 `.fvmrc` 一致。HarmonyOS 独立使用官方移植版 3.47.7+ohos-0.0.1-pre（`650641656fef1d0578f0bc1ed8f7a35087fc99f3`，Dart 3.13.5）。通过 `NJU_BUILD_PLATFORM=ohos bash tool/ci/bootstrap.sh` 安装到 `.fvm/ohos_sdk`，Android/iOS 使用 `.fvm/flutter_sdk`。两者共享已校验的锁文件，满足 flutter_miuix 的 Dart 3.12 要求。
+- `bootstrap.sh` 校验 SDK 版本标签和提交，并固定三个 `external` 路径依赖的提交。`mobile_scanner` 使用仓库内维护的 `third_party/mobile_scanner`。所有 Pub 依赖严格按 `pubspec.lock` 恢复。
 - CI 全局使用 `PUB_HOSTED_URL=https://pub.flutter-io.cn`，与 `pubspec.lock` 记录的包源一致，依赖安装、测试和构建均使用同一包源，保留 `--enforce-lockfile` 校验。
-- 初始化时关闭鸿蒙平台支持，避免测试、Android 和 iOS 任务在 `flutter pub get` 生成平台文件时要求鸿蒙 SDK。仅鸿蒙构建任务在安装 SDK 后执行 `flutter config --enable-ohos`。
+- 初始化 OHOS SDK 时关闭鸿蒙平台支持，避免测试、Android 和 iOS 任务在 `flutter pub get` 生成平台文件时要求鸿蒙 SDK。仅鸿蒙构建任务在安装 SDK 后执行 `flutter config --enable-ohos`。
 - Release 构建保留 Flutter 自动 Pub / 平台注册文件生成步骤，并在构建后检查 `pubspec.lock` 没有变化。此 SDK 在 `--no-pub` 时也会跳过 Release 插件注册文件重建，可能把 `integration_test` 留在 Android 注册文件中，导致编译失败。
-- Android 使用 Ubuntu 24.04、JDK 17、SDK 36、Gradle 8.13；SDK 安装步骤显式选择 `platform-tools`，避免请求已下架的旧 `tools` 包。显式设置 Flutter 的 `jdk-dir`，避免它优先选择 Android Studio 自带的新 JDK。在临时空项目中生成 Gradle wrapper，不依赖本机未提交的 wrapper 文件。未提供 `key.properties` 时产出无签名 Release，不会退回 Debug 签名。
+- Android 使用 Ubuntu 24.04、JDK 21、SDK 37、Build Tools 36.0.0、NDK 28.2.13676358、Gradle 9.5.0；SDK 安装步骤显式选择 `platform-tools`，避免请求已下架的旧 `tools` 包。显式设置 Flutter 的 `jdk-dir`，避免它优先选择 Android Studio 自带的新 JDK。在临时空项目中生成 Gradle wrapper，不依赖本机未提交的 wrapper 文件。未提供 `key.properties` 时按项目默认配置使用 Debug 密钥签名 Release，方便直接安装测试；正式发布需提供发布密钥。
 - iOS 使用 GitHub 托管 `macos-15` ARM64 runner，明确选择该镜像提供的 Xcode 26.3，使用 Ruby 3.3、CocoaPods 1.17.0 和 xcodeproj 1.28.1，满足 CocoaPods 的最低版本要求；固定 JSON gem 2.18.0，使本地插件 podspec 的空数组序列化格式与锁文件一致。版本来源见 [官方镜像清单](https://github.com/actions/runner-images/blob/main/images/macos/macos-15-arm64-Readme.md)。提交 `ios/Podfile.lock` 固定原生依赖，并在构建后检查锁文件没有漂移。主应用最低 iOS 15，小组件最低 iOS 17。
 - 鸿蒙使用 Ubuntu 24.04 x64、JDK 21 和 Command Line Tools `26.0.0.851`（API 26），满足 Flutter 引擎自动填充接口的编译要求。官方入口见 [华为下载中心](https://developer.huawei.com/consumer/cn/download/command-line-tools-for-hmos)。官方直链会过期，CI 使用 [归档镜像的固定提交](https://gitcode.com/rustzhang/harmonyos-sdk/commit/73941bbcbc9783fca65761de79dad738987dff12) 重组原始 ZIP，校验 SHA-256 `ab604bd92721d5cbcafd154e6461d46b9f1b105e7b89eab04a9d046681198082` 后才解压；该值也与 [DevEco Linux 打包记录](https://github.com/alex3236/devecostudio-linux/blob/v26.0.0/PKGBUILD) 一致。工具包约 2.2 GB，首次运行会较慢。升级时同时更改 `install_ohos_sdk.sh` 中的版本、提交和校验值。
 - CI 在临时检出目录清除 `ohos/build-profile.json5` 中的本机签名配置和旧式 `compileSdkVersion`，检查安装的 SDK 至少为 API 26，再由工具链自动选择内置 SDK；保留最低兼容版本、目标版本、产品和模块设置。先构建 unsigned HAP，再用 SDK 自带的 `hap-sign-tool.jar` 签名并验证，避免依赖 DevEco 本机 `material` 目录的加密口令。签名参数参见 [OpenHarmony 官方说明](https://gitee.com/openharmony/docs/blob/master/en/application-dev/security/hapsigntool-guidelines.md)。
@@ -77,3 +77,6 @@ ruby -c tool/ci/configure_ios_signing.rb
 ```
 
 `bootstrap.sh` 与签名脚本面向 CI 的临时检出目录。特别是鸿蒙配置脚本会覆盖该检出目录的签名配置，请勿对日常开发目录直接执行。提交并推送 workflow 后，才会在 GitHub 产生真正的托管 runner 构建记录；本地检查不代表远端运行已通过。
+
+
+CI 同时执行 Android 实况活动/小组件 JVM 回归、全部导入脚本与鸿蒙小组件逻辑测试；Node 24 提供原生 TypeScript 去类型 API。iOS 执行共享日历逻辑回归。

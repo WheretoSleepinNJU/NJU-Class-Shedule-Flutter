@@ -223,26 +223,26 @@ class _BackgroundSettingsViewState extends State<BackgroundSettingsView> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  SettingsTile(
-                    key: const ValueKey('background-frequency'),
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(s.background_frequency),
-                    subtitle: Text(s.background_frequency_subtitle),
-                    trailing: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxWidth: MediaQuery.sizeOf(context).width * .42,
+                  SettingsSurface(
+                    child: SettingsTile(
+                      key: const ValueKey('background-frequency'),
+                      title: Text(s.background_frequency),
+                      subtitle: Text(s.background_frequency_subtitle),
+                      trailing: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: MediaQuery.sizeOf(context).width * .42,
+                        ),
+                        child: Text(
+                          settings.frequency == BackgroundFrequency.everyVisit
+                              ? s.background_every_visit
+                              : s.background_every_days(settings.days),
+                          textAlign: TextAlign.end,
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: colors.primary),
+                        ),
                       ),
-                      child: Text(
-                        settings.frequency == BackgroundFrequency.everyVisit
-                            ? s.background_every_visit
-                            : s.background_every_days(settings.days),
-                        textAlign: TextAlign.end,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.bodyMedium?.copyWith(color: colors.primary),
-                      ),
+                      onTap: _busy ? null : _frequency,
                     ),
-                    onTap: _busy ? null : _frequency,
                   ),
                   const SizedBox(height: 16),
                   SettingsIconButton(

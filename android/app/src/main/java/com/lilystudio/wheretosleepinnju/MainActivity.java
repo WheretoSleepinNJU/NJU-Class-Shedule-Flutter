@@ -8,6 +8,7 @@ import io.flutter.embedding.android.RenderMode;
 import com.lilystudio.wheretosleepinnju.compose.AdaptiveChromeHost;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import androidx.core.view.WindowCompat;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.embedding.engine.FlutterEngine;
@@ -55,6 +56,7 @@ public class MainActivity extends FlutterActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         if (adaptiveChromeHost != null) adaptiveChromeHost.setResumed(true);
         CourseActivityEngine.setAppForeground(true);
         CourseActivityEngine.reconcile(this, true);
@@ -65,6 +67,19 @@ public class MainActivity extends FlutterActivity {
         if (adaptiveChromeHost != null) adaptiveChromeHost.setResumed(false);
         CourseActivityEngine.setAppForeground(false);
         super.onPause();
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (adaptiveChromeHost != null) adaptiveChromeHost.onWindowTouch(event);
+        return super.dispatchTouchEvent(event);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+        if (adaptiveChromeHost != null) adaptiveChromeHost.onWindowFocusChanged(hasFocus);
     }
 
     @Override

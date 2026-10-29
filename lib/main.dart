@@ -8,7 +8,7 @@ import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 // import 'package:talkingdata_sdk_plugin/talkingdata_sdk_plugin.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter/material.dart';
-import 'Pages/CourseTable/CourseTableView.dart';
+import 'Pages/Home/HomeView.dart';
 import 'Resources/Themes.dart';
 import 'Resources/Constant.dart';
 import 'Utils/States/MainState.dart';
@@ -110,7 +110,7 @@ class _MyAppState extends State<MyApp> {
             materialLightTheme: lightTheme,
             materialDarkTheme: darkTheme,
             themeMode: model.themeMode ?? widget.themeMode,
-            home: const CourseTableView(),
+            home: const HomeView(),
             builder: (context, child) {
               // 获取当前系统的配置（包含屏幕尺寸、亮度、系统设置的字重等）
               final mediaQueryData = MediaQuery.of(context);

@@ -55,16 +55,15 @@ class _ImportTestViewState extends State<ImportTestView> {
     };
     setState(() => _running = true);
     try {
-      final result =
-          widget.runImport != null
-              ? await widget.runImport!(context, config)
-              : await Navigator.push<bool>(
-                context,
-                MaterialPageRoute(
-                  builder:
-                      (_) => ImportFromBEView(config: config, testMode: true),
-                ),
-              );
+      final result = widget.runImport != null
+          ? await widget.runImport!(context, config)
+          : await Navigator.push<bool>(
+              context,
+              MaterialPageRoute(
+                builder: (_) =>
+                    ImportFromBEView(config: config, testMode: true),
+              ),
+            );
       if (mounted && result == true) Navigator.pop(context, true);
     } finally {
       if (mounted) setState(() => _running = false);
@@ -79,10 +78,11 @@ class _ImportTestViewState extends State<ImportTestView> {
       body: SafeArea(
         child: Form(
           key: _form,
-          child: SingleChildScrollView(
+          child: AdaptivePageScroll(
             padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+            child: AdaptiveSection(
+              padding: const EdgeInsets.all(16),
+              separated: false,
               children: [
                 Text(
                   s.import_test_hint,
@@ -92,26 +92,24 @@ class _ImportTestViewState extends State<ImportTestView> {
                 for (final name in _fields.keys)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 18),
-                    child: TextFormField(
+                    child: AdaptiveTextFormField(
                       key: ValueKey('import-field-$name'),
                       controller: _fields[name],
                       autocorrect: false,
                       enableSuggestions: false,
-                      keyboardType:
-                          name == 'delayTime'
-                              ? TextInputType.number
-                              : name.endsWith('JS')
-                              ? TextInputType.multiline
-                              : TextInputType.url,
+                      keyboardType: name == 'delayTime'
+                          ? TextInputType.number
+                          : name.endsWith('JS')
+                          ? TextInputType.multiline
+                          : TextInputType.url,
                       minLines: name.endsWith('JS') ? 4 : 1,
                       maxLines: name.endsWith('JS') ? 10 : 3,
                       decoration: InputDecoration(
                         labelText: name,
                         border: const OutlineInputBorder(),
-                        helperText:
-                            name == 'redirectUrl'
-                                ? s.import_test_redirect_hint
-                                : null,
+                        helperText: name == 'redirectUrl'
+                            ? s.import_test_redirect_hint
+                            : null,
                         helperMaxLines: 3,
                       ),
                       validator: (value) {
@@ -132,7 +130,8 @@ class _ImportTestViewState extends State<ImportTestView> {
                       },
                     ),
                   ),
-                FilledButton.icon(
+                AdaptiveButton.icon(
+                  variant: AdaptiveButtonVariant.filled,
                   key: const ValueKey('start-import-test'),
                   onPressed: _running ? null : _start,
                   icon: const Icon(Icons.play_arrow),

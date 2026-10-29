@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:adaptive_platform_ui/adaptive_platform_ui.dart' as platform;
 import 'adaptive_ui_controller.dart';
+import 'adaptive_miuix_theme.dart';
 import 'android/compose_title_bar.dart';
 
 class AdaptiveUIApp extends StatefulWidget {
@@ -80,6 +81,7 @@ class _AdaptiveUIAppState extends State<AdaptiveUIApp> {
     animation: _controller,
     builder: (context, _) => AdaptiveUIScope(
       controller: _controller,
+      nativeGlassSupported: _nativeSupported,
       child: platform.AdaptiveApp(
         navigatorKey: widget.navigatorKey,
         androidToolbarBackend:
@@ -110,10 +112,12 @@ class _AdaptiveUIAppState extends State<AdaptiveUIApp> {
                   ThemeData(
                     brightness: dark ? Brightness.dark : Brightness.light,
                   ),
-              child: ScaffoldMessenger(child: contents),
+              child: ScaffoldMessenger(
+                child: AdaptiveMiuixTheme(child: contents),
+              ),
             );
           }
-          return contents;
+          return AdaptiveMiuixTheme(child: contents);
         },
       ),
     ),

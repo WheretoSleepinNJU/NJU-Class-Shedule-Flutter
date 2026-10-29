@@ -8,6 +8,7 @@ import 'dart:convert';
 import "dart:math";
 
 import 'package:palette_generator/palette_generator.dart';
+import 'package:libmonet/material_color_utilities.dart' as monet;
 
 class HexColor extends Color {
   static int _getColorFromHex(String hexColor) {
@@ -62,6 +63,39 @@ class ColorPool {
 }
 
 class ColorUtil {
+  /// A one-off 96px sample, never a frame capture. Score colorful candidates by
+  /// population; monochrome images retain their neutral hue instead of blue.
+  static Future<String?> backgroundSeed(String imagePath) async {
+    ui.Codec? codec;
+    ui.Image? image;
+    try {
+      codec = await ui.instantiateImageCodec(
+        await File(imagePath).readAsBytes(),
+        targetWidth: 96,
+        targetHeight: 96,
+        allowUpscaling: false,
+      );
+      image = (await codec.getNextFrame()).image;
+      final palette = await PaletteGenerator.fromImage(
+        image,
+        maximumColorCount: 24,
+        filters: const [],
+      );
+      final colors = {
+        for (final c in palette.paletteColors) c.color.toARGB32(): c.population,
+      };
+      if (colors.isEmpty) return null;
+      final fallback = palette.dominantColor!.color.toARGB32();
+      final seed = monet.Score.score(colors, 1, fallback).first;
+      return '#${(seed & 0xffffff).toRadixString(16).padLeft(6, '0')}';
+    } catch (_) {
+      return null;
+    } finally {
+      image?.dispose();
+      codec?.dispose();
+    }
+  }
+
   /// 计算图片顶部的亮度，返回是否应该使用白色文字
   /// true = 背景深，用白字
   /// false = 背景浅，用黑字

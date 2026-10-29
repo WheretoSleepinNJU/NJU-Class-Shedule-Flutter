@@ -21,27 +21,40 @@ class QRShareView extends StatefulWidget {
   State<QRShareView> createState() => _QRShareViewState();
 }
 
-class _QRShareViewState extends State<QRShareView> {
+class _QRShareViewState extends State<QRShareView> with WidgetsBindingObserver {
   Timer? _timer;
   int _index = 0;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _startAnimation();
+  }
+
+  void _startAnimation() {
+    _timer?.cancel();
     if (widget.frames.length > 1) {
-      _timer = Timer.periodic(const Duration(milliseconds: 1000), (_) {
-        if (!mounted) {
-          return;
+      _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+        if (mounted) {
+          setState(() => _index = (_index + 1) % widget.frames.length);
         }
-        setState(() {
-          _index = (_index + 1) % widget.frames.length;
-        });
       });
     }
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _startAnimation();
+    } else {
+      _timer?.cancel();
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _timer?.cancel();
     super.dispose();
   }
@@ -54,48 +67,52 @@ class _QRShareViewState extends State<QRShareView> {
         : '1/1';
 
     return AdaptiveScaffold(
-      appBar: AdaptiveTopAppBar(
-        title: Text(S.of(context).export_title),
-      ),
+      appBar: AdaptiveTopAppBar(title: Text(S.of(context).export_title)),
       body: SafeArea(
-        child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            QrImageView(
-              data: current,
-              version: QrVersions.auto,
-              size: 260.0,
-              backgroundColor: Colors.white,
-            ),
-            const Padding(padding: EdgeInsets.all(8)),
-            Text(
-              'QR $progress',
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 14),
-            ),
-            const Padding(padding: EdgeInsets.all(8)),
-            Text(
-              S.of(context).import_from_qrcode_content,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 16),
-            ),
-            const Padding(padding: EdgeInsets.all(6)),
-            ElevatedButton(
-              onPressed: () async {
-                await Clipboard.setData(
-                    ClipboardData(text: widget.singleShareText));
-                if (!mounted) {
-                  return;
-                }
-                Toast.showToast(
-                    S.of(context).qr_share_copy_success_toast, context);
-              },
-              child: Text(S.of(context).qr_share_copy_button),
-            ),
-          ],
-        ),
+        child: AdaptivePageScroll(
+          child: AdaptiveSection(
+            padding: const EdgeInsets.all(16),
+            separated: false,
+            children: [
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: QrImageView(
+                  data: current,
+                  version: QrVersions.auto,
+                  size: 260.0,
+                  backgroundColor: Colors.white,
+                ),
+              ),
+              const Padding(padding: EdgeInsets.all(8)),
+              Text(
+                'QR $progress',
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 14),
+              ),
+              const Padding(padding: EdgeInsets.all(8)),
+              Text(
+                S.of(context).import_from_qrcode_content,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 16),
+              ),
+              const Padding(padding: EdgeInsets.all(6)),
+              AdaptiveButton.elevated(
+                onPressed: () async {
+                  await Clipboard.setData(
+                    ClipboardData(text: widget.singleShareText),
+                  );
+                  if (!mounted) {
+                    return;
+                  }
+                  Toast.showToast(
+                    S.of(context).qr_share_copy_success_toast,
+                    context,
+                  );
+                },
+                child: Text(S.of(context).qr_share_copy_button),
+              ),
+            ],
+          ),
         ),
       ),
     );

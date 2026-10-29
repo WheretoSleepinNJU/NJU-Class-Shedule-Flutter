@@ -16,6 +16,7 @@ class IOS26NativeTabBar extends StatefulWidget {
     this.unselectedItemTint,
     this.backgroundColor,
     this.height,
+    this.onHeightChanged,
     this.minimizeBehavior = TabBarMinimizeBehavior.automatic,
     this.showNativeView = true,
     this.hidden = false,
@@ -28,6 +29,9 @@ class IOS26NativeTabBar extends StatefulWidget {
   final Color? unselectedItemTint;
   final Color? backgroundColor;
   final double? height;
+
+  /// The host reserves the height measured by UIKit, including style changes.
+  final ValueChanged<double>? onHeightChanged;
   final bool showNativeView;
 
   /// Whether the native tab bar is hidden.
@@ -40,11 +44,18 @@ class IOS26NativeTabBar extends StatefulWidget {
   final TabBarMinimizeBehavior minimizeBehavior;
 
   @override
-  State<IOS26NativeTabBar> createState() => _IOS26NativeTabBarState();
+  State<IOS26NativeTabBar> createState() => IOS26NativeTabBarState();
 }
 
-class _IOS26NativeTabBarState extends State<IOS26NativeTabBar> {
+class IOS26NativeTabBarState extends State<IOS26NativeTabBar> {
   MethodChannel? _channel;
+  @visibleForTesting
+  Future<Map<Object?, Object?>?> nativeSnapshot() async =>
+      _channel?.invokeMapMethod<Object?, Object?>('diagnostics');
+  @visibleForTesting
+  Future<void> activateNativeItem(int index) async =>
+      _channel?.invokeMethod<void>('activateItem', {'index': index});
+
   int? _lastIndex;
   int? _lastTint;
   int? _lastUnselectedTint;
@@ -69,7 +80,9 @@ class _IOS26NativeTabBarState extends State<IOS26NativeTabBar> {
   bool? _lastHidden;
 
   bool get _isDark =>
-      MediaQuery.platformBrightnessOf(context) == Brightness.dark;
+      (CupertinoTheme.of(context).brightness ??
+          MediaQuery.platformBrightnessOf(context)) ==
+      Brightness.dark;
   bool get _isRtl => Directionality.of(context) == TextDirection.rtl;
   Color? get _effectiveTint =>
       widget.tint ?? CupertinoTheme.of(context).primaryColor;
@@ -320,6 +333,9 @@ class _IOS26NativeTabBarState extends State<IOS26NativeTabBar> {
   }
 
   Future<dynamic> _onMethodCall(MethodCall call) async {
+    if (call.method == 'intrinsicSizeChanged') {
+      await _requestIntrinsicSize();
+    }
     if (call.method == 'valueChanged') {
       final args = call.arguments as Map?;
       final idx = (args?['index'] as num?)?.toInt();
@@ -354,7 +370,7 @@ class _IOS26NativeTabBarState extends State<IOS26NativeTabBar> {
       style['tint'] = tint;
       _lastTint = tint;
     }
-    if (_lastUnselectedTint != unselectedTint && unselectedTint != null) {
+    if (_lastUnselectedTint != unselectedTint) {
       style['unselectedItemTint'] = unselectedTint;
       _lastUnselectedTint = unselectedTint;
     }
@@ -505,10 +521,11 @@ class _IOS26NativeTabBarState extends State<IOS26NativeTabBar> {
     try {
       final size = await ch.invokeMethod<Map>('getIntrinsicSize');
       final h = (size?['height'] as num?)?.toDouble();
-      if (!mounted) return;
-      setState(() {
-        if (h != null && h > 0) _intrinsicHeight = h;
-      });
+      if (!mounted || h == null || !h.isFinite || h <= 0) return;
+      if (_intrinsicHeight != h) {
+        setState(() => _intrinsicHeight = h);
+        widget.onHeightChanged?.call(h);
+      }
     } catch (_) {}
   }
 

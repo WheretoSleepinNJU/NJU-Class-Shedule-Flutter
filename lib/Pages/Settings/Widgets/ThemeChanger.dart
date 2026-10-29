@@ -211,7 +211,7 @@ class _CustomDot extends StatelessWidget {
               height: big,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: scheme.surfaceContainerHighest,
+                color: scheme.surfaceContainer,
                 border: Border.all(color: outline, width: 1.2),
               ),
               child: Icon(

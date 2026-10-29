@@ -21,7 +21,24 @@ class IOS26NativeToolbar extends StatefulWidget {
     this.height = 44.0,
     this.showNativeView = true,
     this.showsGradient = true,
+    this.nativeTitleLayout = false,
+    this.subtitle,
+    this.leadingTitle = false,
+    this.semanticLabel,
+    this.foreground,
+    this.textScale,
+    this.onTitleTap,
+    this.scrollOffset = 0,
+    this.interactive = true,
+    this.backEnabled = true,
   });
+
+  final bool nativeTitleLayout, leadingTitle, interactive, backEnabled;
+  final String? subtitle, semanticLabel;
+  final Color? foreground;
+  final double? textScale;
+  final VoidCallback? onTitleTap;
+  final double scrollOffset;
 
   final String? title;
   final Widget? leading;
@@ -50,17 +67,45 @@ class IOS26NativeToolbar extends StatefulWidget {
   final bool showsGradient;
 
   @override
-  State<IOS26NativeToolbar> createState() => _IOS26NativeToolbarState();
+  State<IOS26NativeToolbar> createState() => IOS26NativeToolbarState();
 }
 
-class _IOS26NativeToolbarState extends State<IOS26NativeToolbar> {
+class IOS26NativeToolbarState extends State<IOS26NativeToolbar> {
   MethodChannel? _channel;
+  String? _nativeSignature;
+  @visibleForTesting
+  String? get nativeChannelName => _channel?.name;
+  @visibleForTesting
+  Future<Map<Object?, Object?>?> nativeSnapshot() async =>
+      _channel?.invokeMapMethod<Object?, Object?>('diagnostics');
+  Map<String, dynamic> _nativeParams() => {
+    'nativeTitleLayout': true,
+    'showsGradient': false,
+    'title': widget.title ?? '',
+    'subtitle': widget.subtitle,
+    'leadingTitle': widget.leadingTitle,
+    'titleTappable': widget.onTitleTap != null,
+    'semanticLabel': widget.semanticLabel,
+    'foreground': widget.foreground?.toARGB32(),
+    'fontScale': widget.textScale ?? 1,
+    'isDark': _isDark,
+    'scrollOffset': widget.scrollOffset,
+    'interactive': widget.interactive,
+    'backEnabled': widget.interactive && widget.backEnabled,
+    if (widget.leadingText != null) 'leading': widget.leadingText,
+    'actions': [
+      for (final action in widget.actions ?? const <AdaptiveAppBarAction>[])
+        {
+          ...action.toNativeMap(),
+          'enabled': widget.interactive && action.enabled,
+        },
+    ],
+  };
   bool? _lastIsDark;
   int? _lastTint;
   List<AdaptiveAppBarAction>? _lastActions;
 
-  bool get _isDark =>
-      MediaQuery.platformBrightnessOf(context) == Brightness.dark;
+  bool get _isDark => CupertinoTheme.brightnessOf(context) == Brightness.dark;
 
   int _colorToARGB(Color color) {
     // Resolve CupertinoDynamicColor if needed
@@ -89,7 +134,7 @@ class _IOS26NativeToolbarState extends State<IOS26NativeToolbar> {
     super.didUpdateWidget(oldWidget);
     _syncPropsToNativeIfNeeded();
 
-    if (widget.title != oldWidget.title) {
+    if (widget.title != oldWidget.title && !widget.nativeTitleLayout) {
       final ch = _channel;
       // Skip when a titleWidget overlay is shown — the native title stays hidden
       if (ch != null && widget.title != null && widget.titleWidget == null) {
@@ -101,6 +146,18 @@ class _IOS26NativeToolbarState extends State<IOS26NativeToolbar> {
   Future<void> _syncPropsToNativeIfNeeded() async {
     final ch = _channel;
     if (ch == null) return;
+    if (widget.nativeTitleLayout) {
+      final params = _nativeParams();
+      final signature = params.toString();
+      if (signature == _nativeSignature) return;
+      _nativeSignature = signature;
+      try {
+        await ch.invokeMethod('updateConfiguration', params);
+      } catch (_) {
+        _nativeSignature = null;
+      }
+      return;
+    }
 
     // Sync brightness
     final isDark = _isDark;
@@ -166,22 +223,27 @@ class _IOS26NativeToolbarState extends State<IOS26NativeToolbar> {
 
     final safePadding = MediaQuery.of(context).padding.top;
 
-    final creationParams = <String, dynamic>{
-      // Hide native title when a titleWidget overlay is provided
-      if (widget.title != null && widget.titleWidget == null)
-        'title': widget.title!,
-      if (widget.leading == null && widget.leadingText != null)
-        'leading': widget.leadingText!,
-      if (widget.actions != null && widget.actions!.isNotEmpty)
-        'actions': widget.actions!.map((a) => a.toNativeMap()).toList(),
-      'isDark': _isDark,
-      if (!widget.showsGradient) 'showsGradient': false,
-      if (widget.tintColor != null) 'tint': _colorToARGB(widget.tintColor!),
-    };
+    final creationParams = widget.nativeTitleLayout
+        ? _nativeParams()
+        : <String, dynamic>{
+            // Hide native title when a titleWidget overlay is provided
+            if (widget.title != null && widget.titleWidget == null)
+              'title': widget.title!,
+            if (widget.leading == null && widget.leadingText != null)
+              'leading': widget.leadingText!,
+            if (widget.actions != null && widget.actions!.isNotEmpty)
+              'actions': widget.actions!.map((a) => a.toNativeMap()).toList(),
+            'isDark': _isDark,
+            if (!widget.showsGradient) 'showsGradient': false,
+            if (widget.tintColor != null)
+              'tint': _colorToARGB(widget.tintColor!),
+          };
 
     return AnimatedContainer(
       height: widget.height + safePadding,
-      duration: const Duration(milliseconds: 1000),
+      duration: widget.nativeTitleLayout
+          ? Duration.zero
+          : const Duration(milliseconds: 1000),
       curve: const IOSSpringCurve(),
       child: Stack(
         children: [
@@ -202,7 +264,7 @@ class _IOS26NativeToolbarState extends State<IOS26NativeToolbar> {
                 child: widget.leading!,
               ),
             ),
-          if (widget.titleWidget != null)
+          if (widget.titleWidget != null && !widget.nativeTitleLayout)
             Positioned(
               left: 0,
               right: 0,
@@ -223,10 +285,15 @@ class _IOS26NativeToolbarState extends State<IOS26NativeToolbar> {
         ? _colorToARGB(widget.tintColor!)
         : null;
     _lastActions = widget.actions != null ? List.of(widget.actions!) : null;
+    if (widget.nativeTitleLayout) _syncPropsToNativeIfNeeded();
   }
 
   Future<dynamic> _handleMethodCall(MethodCall call) async {
+    if (widget.nativeTitleLayout && !widget.interactive) return;
     switch (call.method) {
+      case 'onTitleTapped':
+        widget.onTitleTap?.call();
+        break;
       case 'onLeadingTapped':
         widget.onLeadingTap?.call();
         break;

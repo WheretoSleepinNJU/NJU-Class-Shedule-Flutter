@@ -205,6 +205,16 @@ class iOS26SegmentedControlView: NSObject, FlutterPlatformView {
 
     private func handleMethodCall(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch call.method {
+        case "diagnostics":
+            result(["renderer": "UISegmentedControl", "selectedIndex": segmentedControl.selectedSegmentIndex,
+                    "count": segmentedControl.numberOfSegments, "attached": _view.window != nil])
+        case "activateSegment":
+            if let args = call.arguments as? [String: Any], let index = args["index"] as? Int,
+               index >= 0 && index < segmentedControl.numberOfSegments && segmentedControl.isEnabled {
+                segmentedControl.selectedSegmentIndex = index
+                segmentedControl.sendActions(for: .valueChanged)
+            }
+            result(nil)
         case "setSelectedIndex":
             if let args = call.arguments as? [String: Any],
                let index = args["index"] as? Int {

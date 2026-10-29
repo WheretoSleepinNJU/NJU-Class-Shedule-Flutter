@@ -9,13 +9,27 @@ import '../../../Utils/WeekUtil.dart';
 import '../../../Components/Toast.dart';
 import '../../../Resources/Config.dart';
 
-class WeekChanger extends StatelessWidget {
+class WeekChanger extends StatefulWidget {
   const WeekChanger({Key? key}) : super(key: key);
+
+  @override
+  State<WeekChanger> createState() => _WeekChangerState();
+}
+
+class _WeekChangerState extends State<WeekChanger> {
+  Future<int>? _week;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Listen to model changes, not to each unrelated parent repaint/rebuild.
+    MainStateModel.of(context);
+    _week = _getWeek(context);
+  }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<int>(
-      future: _getWeek(context),
+      future: _week,
       builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
         if (!snapshot.hasData) {
           return Container();
@@ -83,7 +97,6 @@ class WeekChanger extends StatelessWidget {
       if (!context.mounted) return false;
       Toast.showToast(S.of(context).nowweek_edited_success_toast, context);
       ScopedModel.of<MainStateModel>(context).refresh();
-      Navigator.of(context).pop();
     }
     return true;
   }

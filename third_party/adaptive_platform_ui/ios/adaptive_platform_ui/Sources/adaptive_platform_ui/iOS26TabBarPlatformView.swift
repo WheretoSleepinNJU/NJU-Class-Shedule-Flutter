@@ -408,14 +408,32 @@ class iOS26TabBarPlatformView: NSObject, FlutterPlatformView, UITabBarDelegate {
 
         bar.setNeedsLayout()
         bar.layoutIfNeeded()
+        channel.invokeMethod("intrinsicSizeChanged", arguments: nil)
         container.setNeedsLayout()
     }
 
     private func handleMethodCall(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch call.method {
+        case "diagnostics":
+            let items = tabBar?.items ?? []
+            result(["renderer": "UITabBar", "labels": items.map { $0.title ?? "" },
+                    "selectedIndex": tabBar?.selectedItem.flatMap { items.firstIndex(of: $0) } ?? -1,
+                    "attached": container.window != nil, "width": Double(container.bounds.width),
+                    "height": Double(container.bounds.height),
+                    "safeAreaBottom": Double(tabBar?.safeAreaInsets.bottom ?? 0),
+                    "fittedHeight": Double(tabBar?.sizeThatFits(container.bounds.size).height ?? 0),
+                    "isDark": tabBar?.traitCollection.userInterfaceStyle == .dark])
+        case "activateItem":
+            guard let args = call.arguments as? [String: Any], let index = args["index"] as? Int,
+                  let bar = tabBar, let items = bar.items, items.indices.contains(index) else {
+                result(FlutterError(code: "bad_args", message: "Invalid tab", details: nil)); return
+            }
+            bar.selectedItem = items[index]
+            self.tabBar(bar, didSelect: items[index])
+            result(nil)
         case "getIntrinsicSize":
             if let bar = self.tabBar {
-                let size = bar.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude))
+                let size = bar.sizeThatFits(CGSize(width: max(1, self.container.bounds.width), height: CGFloat.greatestFiniteMagnitude))
                 result(["width": Double(size.width), "height": Double(size.height)])
             } else {
                 result(["width": Double(self.container.bounds.width), "height": 50.0])
@@ -605,19 +623,19 @@ class iOS26TabBarPlatformView: NSObject, FlutterPlatformView, UITabBarDelegate {
                 self.tabBar?.tintColor = c
                 tintColor = c
             }
-            if let n = args["unselectedItemTint"] as? NSNumber {
-                let c = Self.colorFromARGB(n.intValue)
+            if args.keys.contains("unselectedItemTint") {
+                let color = (args["unselectedItemTint"] as? NSNumber).map {
+                    Self.colorFromARGB($0.intValue)
+                }
                 if #available(iOS 10.0, *) {
-                    self.tabBar?.unselectedItemTintColor = c
-                    NSLog("✅ setStyle: unselectedItemTintColor set to \(c)")
-
-                    // iOS 26+: Rebuild items with current state so untinted
-                    // and tinted icon variants are regenerated consistently.
+                    self.tabBar?.unselectedItemTintColor = color
+                    // nil restores UIKit's automatic foreground, and template
+                    // symbols must be regenerated to discard a baked-in tint.
                     if #available(iOS 26.0, *) {
                         self.rebuildItemsWithCurrentState()
                     }
                 }
-                unselectedColor = c
+                unselectedColor = color
             }
             if let n = args["backgroundColor"] as? NSNumber {
                 let c = Self.colorFromARGB(n.intValue)

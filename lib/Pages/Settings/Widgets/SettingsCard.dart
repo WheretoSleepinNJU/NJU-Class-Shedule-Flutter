@@ -1,4 +1,5 @@
 import 'PlatformSettings.dart';
+import '../../../AdaptiveUI/adaptive_ui.dart';
 import 'package:flutter/material.dart';
 
 /// A group of related settings on a single, flat rounded surface.
@@ -9,12 +10,7 @@ class SettingsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: SettingsSurface(
-        child: Column(mainAxisSize: MainAxisSize.min, children: children),
-      ),
-    );
+    return AdaptiveSection(children: children);
   }
 }
 

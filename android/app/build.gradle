@@ -146,3 +146,12 @@ dependencies {
 //    implementation "com.umeng.umsdk:oaid_oppo:1.0.4" // (可选)
 //    implementation "com.umeng.umsdk:oaid_vivo:1.0.0.1" // (可选)
 }
+
+// Flutter's copied assets feed AGP's unit-test APK packaging. Declare this edge
+// explicitly for Gradle 9's task validation rather than relying on execution order.
+tasks.configureEach { task ->
+    if (task.name.startsWith('package') && task.name.endsWith('UnitTestForUnitTest')) {
+        def variant = task.name.substring('package'.length(), task.name.length() - 'UnitTestForUnitTest'.length())
+        task.dependsOn(tasks.matching { it.name == "copyFlutterAssets${variant}" })
+    }
+}

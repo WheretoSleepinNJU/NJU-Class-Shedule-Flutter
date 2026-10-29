@@ -28,79 +28,87 @@ import 'Widgets/SettingsCard.dart';
 import '../../core/widget_data/utils/widget_refresh_helper.dart';
 
 class SettingsView extends StatefulWidget {
-  const SettingsView({Key? key}) : super(key: key);
+  const SettingsView({Key? key, this.profile = false}) : super(key: key);
+  final bool profile;
 
   @override
   _SettingsViewState createState() => _SettingsViewState();
 }
 
 class _SettingsViewState extends State<SettingsView> {
+  late final Future<String> _version = _getVersion();
+  late final Future<bool> _donate = _shouldShowDonate();
   @override
   Widget build(BuildContext context) {
     return SettingsScaffold(
-      title: S.of(context).settings_title,
+      title: widget.profile
+          ? S.of(context).home_profile
+          : S.of(context).settings_title,
       body: SettingsListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         children: [
           SettingsCard(
             children: [
-              SettingsEntry(
-                icon: Icons.add_rounded,
-                iconColor: const Color(0xFF3478F6),
-                title: Text(S.of(context).import_manually_title),
-                subtitle: Text(S.of(context).import_manually_subtitle),
-                onTap: () {
-                  UmengCommonSdk.onEvent("class_import", {
-                    "type": "manual",
-                    "action": "show",
-                  });
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => const AddView(),
-                    ),
-                  );
-                },
-              ),
-              SettingsEntry(
-                icon: Icons.download_rounded,
-                iconColor: const Color(0xFF3478F6),
-                title: Text(S.of(context).import_title),
-                subtitle: Text(S.of(context).import_subtitle),
-                onTap: () async {
-                  UmengCommonSdk.onEvent("class_import", {
-                    "type": "auto",
-                    "action": "show",
-                  });
-                  bool? status = await Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => const ImportView(),
-                    ),
-                  );
-                  if (status == true) {
-                    Navigator.of(context).pop(status);
-                  }
-                },
-              ),
-              SettingsEntry(
-                icon: Icons.campaign_rounded,
-                iconColor: const Color(0xFFEF9B27),
-                title: Text(S.of(context).view_lecture_title),
-                subtitle: Text(S.of(context).view_lecture_subtitle),
-                onTap: () async {
-                  UmengCommonSdk.onEvent("class_import", {
-                    "type": "lecture",
-                    "action": "show",
-                  });
-                  bool? status = await Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => const LectureView(),
-                    ),
-                  );
-                  if (status == true) {
-                    Navigator.of(context).pop(status);
-                  }
-                },
-              ),
+              if (!widget.profile)
+                SettingsEntry(
+                  icon: Icons.add_rounded,
+                  iconColor: const Color(0xFF3478F6),
+                  title: Text(S.of(context).import_manually_title),
+                  subtitle: Text(S.of(context).import_manually_subtitle),
+                  onTap: () {
+                    UmengCommonSdk.onEvent("class_import", {
+                      "type": "manual",
+                      "action": "show",
+                    });
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => const AddView(),
+                      ),
+                    );
+                  },
+                ),
+              if (!widget.profile)
+                SettingsEntry(
+                  icon: Icons.download_rounded,
+                  iconColor: const Color(0xFF3478F6),
+                  title: Text(S.of(context).import_title),
+                  subtitle: Text(S.of(context).import_subtitle),
+                  onTap: () async {
+                    UmengCommonSdk.onEvent("class_import", {
+                      "type": "auto",
+                      "action": "show",
+                    });
+                    bool? status = await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => const ImportView(),
+                      ),
+                    );
+                    if (status == true) {
+                      Navigator.of(context).pop(status);
+                    }
+                  },
+                ),
+              if (!widget.profile)
+                SettingsEntry(
+                  icon: Icons.campaign_rounded,
+                  iconColor: const Color(0xFFEF9B27),
+                  title: Text(S.of(context).view_lecture_title),
+                  subtitle: Text(S.of(context).view_lecture_subtitle),
+                  onTap: () async {
+                    UmengCommonSdk.onEvent("class_import", {
+                      "type": "lecture",
+                      "action": "show",
+                    });
+                    bool? status = await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => const LectureView(),
+                      ),
+                    );
+                    if (status == true) {
+                      Navigator.of(context).pop(status);
+                    }
+                  },
+                ),
               SettingsEntry(
                 icon: Icons.qr_code_rounded,
                 iconColor: const Color(0xFF4EAAF0),
@@ -266,7 +274,7 @@ class _SettingsViewState extends State<SettingsView> {
                 },
               ),
               FutureBuilder<bool>(
-                future: _shouldShowDonate(),
+                future: _donate,
                 builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
                   if (snapshot.hasData && snapshot.data == false) {
                     return const SizedBox.shrink();
@@ -303,7 +311,7 @@ class _SettingsViewState extends State<SettingsView> {
                 iconColor: const Color(0xFF8796A8),
                 title: Text(S.of(context).about_title),
                 subtitle: FutureBuilder<String>(
-                  future: _getVersion(),
+                  future: _version,
                   builder:
                       (BuildContext context, AsyncSnapshot<String> snapshot) {
                         if (!snapshot.hasData) {
@@ -336,8 +344,13 @@ class _SettingsViewState extends State<SettingsView> {
       return true;
     }
     try {
-      String currentVersion = await _getVersion();
-      final dio = Dio();
+      String currentVersion = await _version;
+      final dio = Dio(
+        BaseOptions(
+          connectTimeout: const Duration(seconds: 10),
+          receiveTimeout: const Duration(seconds: 10),
+        ),
+      );
       final response = await dio.get('${Url.UPDATE_ROOT}/showDonate.json');
       return response.data[currentVersion] ?? false;
     } catch (e) {

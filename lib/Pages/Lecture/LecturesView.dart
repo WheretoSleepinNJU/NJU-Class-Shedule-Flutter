@@ -35,9 +35,12 @@ class _LectureViewState extends State<LectureView> {
   final List<String> _filterStatus = [];
   bool _loadError = false;
   bool _loading = false;
-  final Dio _dio = Dio(BaseOptions(
+  final Dio _dio = Dio(
+    BaseOptions(
       connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 15)));
+      receiveTimeout: const Duration(seconds: 15),
+    ),
+  );
 
   AdaptiveTopAppBar buildAppBar(BuildContext context) {
     return AdaptiveTopAppBar(
@@ -97,23 +100,28 @@ class _LectureViewState extends State<LectureView> {
     if (_loading) return false;
     _loading = true;
     try {
-    var params = {'limit': 5, 'page': pageNum + 1, 'tag': _filterStatus};
-    if (_filterStatus.isEmpty) params.remove('tag');
-    var response =
-        await _dio.get(Url.URL_BACKEND + '/getAll', queryParameters: params);
-    if (!mounted) return false;
-    totalPages = response.data['total_page'];
+      var params = {'limit': 5, 'page': pageNum + 1, 'tag': _filterStatus};
+      if (_filterStatus.isEmpty) params.remove('tag');
+      var response = await _dio.get(
+        Url.URL_BACKEND + '/getAll',
+        queryParameters: params,
+      );
+      if (!mounted) return false;
+      totalPages = response.data['total_page'];
 
-    for (Map lectureRow in response.data['data']) {
-      _lectureCards.add(LectureCard(
-          lecture: await _parseLecture(lectureRow),
-          count: lectureRow['count']));
-    }
+      for (Map lectureRow in response.data['data']) {
+        _lectureCards.add(
+          LectureCard(
+            lecture: await _parseLecture(lectureRow),
+            count: lectureRow['count'],
+          ),
+        );
+      }
 
-    setState(() {
-      _lectureCards = _lectureCards;
-    });
-    return true;
+      setState(() {
+        _lectureCards = _lectureCards;
+      });
+      return true;
     } catch (_) {
       if (mounted) setState(() => _loadError = true);
       return false;
@@ -137,20 +145,21 @@ class _LectureViewState extends State<LectureView> {
     bool expired = now.isAfter(endTime);
 
     return Lecture(
-        0,
-        data['title'],
-        weekNum.toString(),
-        startTime.weekday,
-        data['startIndex'],
-        data['endIndex'] - data['startIndex'],
-        Constant.ADD_BY_LECTURE,
-        data['id'],
-        timeString,
-        data['accurate'],
-        expired,
-        classroom: data['classroom'],
-        teacher: data['teacher'],
-        info: data['info']);
+      0,
+      data['title'],
+      weekNum.toString(),
+      startTime.weekday,
+      data['startIndex'],
+      data['endIndex'] - data['startIndex'],
+      Constant.ADD_BY_LECTURE,
+      data['id'],
+      timeString,
+      data['accurate'],
+      expired,
+      classroom: data['classroom'],
+      teacher: data['teacher'],
+      info: data['info'],
+    );
   }
 
   Future<void> _refresh() async {
@@ -181,11 +190,11 @@ class _LectureViewState extends State<LectureView> {
   @override
   Widget build(BuildContext context) {
     return AdaptiveScaffold(
-        appBar:
-            // searchBar.build(context),
-            AdaptiveTopAppBar(
-                title: Text(S.of(context).lecture_title),
-                actions: const <Widget>[
+      appBar:
+          // searchBar.build(context),
+          AdaptiveTopAppBar(
+            title: Text(S.of(context).lecture_title),
+            actions: const <Widget>[
               // searchBar.getSearchAction(context),
               // IconButton(
               //   icon: Icon(Icons.search),
@@ -195,82 +204,87 @@ class _LectureViewState extends State<LectureView> {
               //   icon: Icon(Icons.filter_list),
               //   onPressed: () async {},
               // ),
-            ]),
-        body: SafeArea(
-          child: RefreshIndicator(
+            ],
+          ),
+      body: SafeArea(
+        child: AdaptiveRefreshIndicator(
           color: Theme.of(context).brightness == Brightness.light
               ? Theme.of(context).primaryColor
               : Colors.white,
-          key: _refreshKey,
+          refreshIndicatorKey: _refreshKey,
           onRefresh: _refresh,
-          child: ListView(
+          child: AdaptivePageList(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
             physics: const AlwaysScrollableScrollPhysics(),
-            children: List<Widget>.generate(
-                _lectureCards.length, (int i) => _lectureCards[i])
-              ..insertAll(0, _loadError ? [
-                TextButton(onPressed: _refresh,
-                    child: Text(S.of(context).network_error_toast))
-              ] : <Widget>[])
-              ..insert(
-                  0,
-                  Padding(
-                      padding:
-                          const EdgeInsets.only(top: 5, left: 10, right: 10),
-                      child: SizedBox(
-                          height: 50, // 设置横向列表的高度
-                          child: ListView(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            children: List<Padding>.generate(
-                                _filterNames.length,
-                                (int i) => Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 5),
-                                      child: FilterChip(
-                                        label: Text(_filterNames[i]),
-                                        labelStyle: TextStyle(
-                                            color:
-                                                Theme.of(context).brightness ==
-                                                        Brightness.light
-                                                    ? (_filterStatus.contains(
-                                                            _filterNames[i])
-                                                        ? Colors.white
-                                                        : Colors.black)
-                                                    : Colors.white),
-                                        checkmarkColor: Colors.white,
-                                        selected: _filterStatus
-                                            .contains(_filterNames[i]),
-                                        selectedColor:
-                                            Theme.of(context).brightness ==
-                                                    Brightness.light
-                                                ? Theme.of(context).primaryColor
-                                                : Colors.grey,
-                                        onSelected: (bool value) {
-                                          setState(() {
-                                            if (value) {
-                                              _filterStatus
-                                                  .add(_filterNames[i]);
-                                            } else {
-                                              _filterStatus
-                                                  .remove(_filterNames[i]);
-                                            }
-                                            _refresh();
-                                          });
-                                        },
-                                      ),
-                                    )),
-                          ))))
-              ..add(Column(
-                children: [
-                  const Divider(),
-                  Padding(
-                      padding: const EdgeInsets.only(top: 5, bottom: 20),
-                      child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(S.of(context).lecture_bottom,
-                              style: const TextStyle(color: Colors.grey))))
-                ],
-              )),
+            children:
+                List<Widget>.generate(
+                    _lectureCards.length,
+                    (int i) => _lectureCards[i],
+                  )
+                  ..insertAll(
+                    0,
+                    _loadError
+                        ? [
+                            AdaptiveButton.text(
+                              onPressed: _refresh,
+                              child: Text(S.of(context).network_error_toast),
+                            ),
+                          ]
+                        : <Widget>[],
+                  )
+                  ..insert(
+                    0,
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: AdaptiveScrollView(
+                        scrollDirection: Axis.horizontal,
+                        padding: EdgeInsets.zero,
+                        child: Row(
+                          children: List<Widget>.generate(
+                            _filterNames.length,
+                            (i) => Padding(
+                              padding: EdgeInsetsDirectional.only(
+                                end: i == _filterNames.length - 1 ? 0 : 8,
+                              ),
+                              child: AdaptiveFilterChip(
+                                label: Text(_filterNames[i]),
+                                selected: _filterStatus.contains(
+                                  _filterNames[i],
+                                ),
+                                onSelected: (value) {
+                                  setState(() {
+                                    if (value) {
+                                      _filterStatus.add(_filterNames[i]);
+                                    } else {
+                                      _filterStatus.remove(_filterNames[i]);
+                                    }
+                                  });
+                                  _refresh();
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                  ..add(
+                    Column(
+                      children: [
+                        const Divider(),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5, bottom: 20),
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              S.of(context).lecture_bottom,
+                              style: const TextStyle(color: Colors.grey),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
             controller: _scrollController,
           ),
           // ListView.builder(
@@ -295,6 +309,8 @@ class _LectureViewState extends State<LectureView> {
           //   itemCount: _lectureCards.length + 1,
           //   controller: _scrollController,
           // )
-        )));
+        ),
+      ),
+    );
   }
 }

@@ -22,11 +22,13 @@ class ManageTableView extends StatefulWidget {
 class _ManageTableViewState extends State<ManageTableView> {
   late final CourseTableProvider courseTableProvider;
   int _selectedIndex = 0;
+  late Future<List> _data;
 
   @override
   void initState() {
     super.initState();
     courseTableProvider = widget.provider ?? CourseTableProvider();
+    _data = _loadData();
   }
 
   @override
@@ -35,7 +37,7 @@ class _ManageTableViewState extends State<ManageTableView> {
       appBar: AdaptiveTopAppBar(
         title: Text(S.of(context).class_table_manage_title),
         actions: <Widget>[
-          IconButton(
+          AdaptiveIconButton(
             icon: const Icon(Icons.add),
             onPressed: () async {
               String str = await _addTableDialog(context);
@@ -59,26 +61,21 @@ class _ManageTableViewState extends State<ManageTableView> {
         ],
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: FutureBuilder<List<Widget>>(
-            future: _getData(context),
-            builder: (
-              BuildContext context,
-              AsyncSnapshot<List<Widget>> snapshot,
-            ) {
-              if (!snapshot.hasData) {
-                return Container();
-              } else {
-                return Column(
-                  children:
-                      ListTile.divideTiles(
-                        context: context,
-                        tiles: snapshot.data!,
-                      ).toList(),
-                );
-              }
-            },
-          ),
+        child: FutureBuilder<List>(
+          future: _data,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) return const SizedBox.shrink();
+            final rows = _rows(context, snapshot.data!);
+            return AdaptivePageList(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              children: [
+                for (var index = 0; index < rows.length; index++) ...[
+                  if (index > 0) const AdaptiveDivider(),
+                  rows[index],
+                ],
+              ],
+            );
+          },
         ),
       ),
     );
@@ -119,7 +116,9 @@ class _ManageTableViewState extends State<ManageTableView> {
         throw StateError('Missing timetable');
       }
       if (!mounted) return;
-      setState(() {});
+      setState(() {
+        _data = _loadData();
+      });
       // Notify the timetable page and refresh the selected widget's metadata.
       if (id == _selectedIndex) {
         await ScopedModel.of<MainStateModel>(context).changeclassTable(id);
@@ -133,44 +132,44 @@ class _ManageTableViewState extends State<ManageTableView> {
     }
   }
 
-  Future<List<Widget>> _getData(BuildContext context) async {
-    List courseTables = await courseTableProvider.getAllCourseTable();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  Future<List> _loadData() async {
+    final tables = await courseTableProvider.getAllCourseTable();
+    final prefs = await SharedPreferences.getInstance();
     if (_selectedIndex == 0) _selectedIndex = prefs.getInt('tableId') ?? 1;
+    return tables;
+  }
+
+  List<Widget> _rows(BuildContext context, List courseTables) {
     List<Widget> result = List.generate(
       courseTables.length,
-      (int i) => Container(
-        color:
-            _selectedIndex == courseTables[i]['id']
-                ? Theme.of(context).colorScheme.primaryContainer
-                : Theme.of(context).colorScheme.surface,
-        child: ListTile(
+      (int i) => AdaptiveSurface(
+        color: _selectedIndex == courseTables[i]['id']
+            ? Theme.of(context).colorScheme.primaryContainer
+            : Theme.of(context).colorScheme.surface,
+        child: AdaptiveListTile(
           selected: _selectedIndex == courseTables[i]['id'],
           title: Text(
             courseTables[i]['name'],
             style: TextStyle(
-              color:
-                  _selectedIndex == courseTables[i]['id']
-                      ? Theme.of(context).colorScheme.onPrimaryContainer
-                      : Theme.of(context).colorScheme.onSurface,
-              fontWeight:
-                  _selectedIndex == courseTables[i]['id']
-                      ? FontWeight.w600
-                      : FontWeight.normal,
+              color: _selectedIndex == courseTables[i]['id']
+                  ? Theme.of(context).colorScheme.onPrimaryContainer
+                  : Theme.of(context).colorScheme.onSurface,
+              fontWeight: _selectedIndex == courseTables[i]['id']
+                  ? FontWeight.w600
+                  : FontWeight.normal,
             ),
           ),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              IconButton(
+              AdaptiveIconButton(
                 key: ValueKey('rename-table-${courseTables[i]['id']}'),
                 tooltip: S.of(context).rename_table,
                 icon: const Icon(Icons.edit_outlined),
-                onPressed:
-                    () => _renameTable(
-                      courseTables[i]['id'],
-                      courseTables[i]['name'],
-                    ),
+                onPressed: () => _renameTable(
+                  courseTables[i]['id'],
+                  courseTables[i]['name'],
+                ),
               ),
               if (_selectedIndex == courseTables[i]['id'])
                 Icon(
@@ -178,7 +177,7 @@ class _ManageTableViewState extends State<ManageTableView> {
                   color: Theme.of(context).colorScheme.onPrimaryContainer,
                 )
               else
-                IconButton(
+                AdaptiveIconButton(
                   icon: const Icon(Icons.delete),
                   onPressed: () async {
                     bool rst = await _delTableDialog(context);

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 
 import '../style/sf_symbol.dart';
 import '../widgets/adaptive_app_bar_action.dart';
@@ -23,6 +24,17 @@ class TopToolbarContent {
     this.actions = const <AdaptiveAppBarAction>[],
     this.tint,
     this.navigator,
+    this.nativeTitleLayout = false,
+    this.subtitle,
+    this.leadingTitle = false,
+    this.semanticLabel,
+    this.foreground,
+    this.textScale,
+    this.onTitleTap,
+    this.height = kHostedToolbarHeight,
+    this.scrollOffset = 0,
+    this.route,
+    this.systemOverlayStyle,
   });
 
   /// No page owns the chrome, the page has no toolbar, or it draws a
@@ -45,8 +57,28 @@ class TopToolbarContent {
           : appBar.actions ?? const <AdaptiveAppBarAction>[],
       tint: appBar.tintColor,
       navigator: entry.navigator,
+      nativeTitleLayout: appBar.nativeTitleLayout,
+      subtitle: appBar.subtitle,
+      leadingTitle: appBar.leadingTitle,
+      semanticLabel: appBar.semanticLabel,
+      foreground: appBar.foreground,
+      textScale: appBar.textScale,
+      onTitleTap: appBar.onTitleTap,
+      height: appBar.toolbarHeight ?? kHostedToolbarHeight,
+      scrollOffset: entry.scrollOffset,
+      route: entry.route,
+      systemOverlayStyle: appBar.systemOverlayStyle,
     );
   }
+
+  final bool nativeTitleLayout, leadingTitle;
+  final String? subtitle, semanticLabel;
+  final Color? foreground;
+  final double? textScale;
+  final VoidCallback? onTitleTap;
+  final double height, scrollOffset;
+  final ModalRoute<Object?>? route;
+  final SystemUiOverlayStyle? systemOverlayStyle;
 
   final String? title;
 
@@ -100,6 +132,7 @@ class HostedTopToolbar extends StatelessWidget {
     final upper = TopToolbarContent.of(upperEntry, titleOnly: titleOnly);
     final lower = TopToolbarContent.of(lowerEntry, titleOnly: titleOnly);
     final upperOwns = blend.upperOwns;
+    final fullUIKit = upper.nativeTitleLayout || lower.nativeTitleLayout;
     final upperOpacity = blend.upperOpacity;
     final lowerOpacity = blend.lowerOpacity;
 
@@ -127,12 +160,12 @@ class HostedTopToolbar extends StatelessWidget {
       (true, true) => kAlwaysDismissedAnimation,
     };
 
-    return Align(
+    final bar = Align(
       alignment: Alignment.topCenter,
       child: SizedBox(
         height: titleOnly
             ? kDuoTitleBandHeight
-            : kHostedToolbarHeight + topInset,
+            : (upperOwns ? upper.height : lower.height) + topInset,
         child: IgnorePointer(
           ignoring: blend.ownerIsCovered,
           child: FadeTransition(
@@ -146,7 +179,9 @@ class HostedTopToolbar extends StatelessWidget {
                 FadeTransition(
                   key: const ValueKey<String>('adaptive_toolbar_backdrop'),
                   opacity: backdropOpacity,
-                  child: titleOnly
+                  child: fullUIKit
+                      ? const SizedBox.shrink()
+                      : titleOnly
                       ? const DuoTitleBackdrop()
                       : const _Backdrop(),
                 ),
@@ -164,7 +199,7 @@ class HostedTopToolbar extends StatelessWidget {
                     opacity: upperOpacity,
                     interactive: upperOwns,
                   ),
-                if (backOpacity != null)
+                if (backOpacity != null && !fullUIKit)
                   Positioned(
                     key: const ValueKey<String>('adaptive_toolbar_back'),
                     left: 16 + (_isWindowed(context) ? 62 : 0),
@@ -187,6 +222,16 @@ class HostedTopToolbar extends StatelessWidget {
           ),
         ),
       ),
+    );
+    if (!fullUIKit) return bar;
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value:
+          (upperOwns ? upper : lower).systemOverlayStyle ??
+          SystemUiOverlayStyle(
+            statusBarBrightness: MediaQuery.platformBrightnessOf(context),
+            statusBarColor: const Color(0x00000000),
+          ),
+      child: bar,
     );
   }
 
@@ -211,7 +256,7 @@ class HostedTopToolbar extends StatelessWidget {
         excluding: !interactive,
         child: IgnorePointer(
           ignoring: !interactive,
-          child: titleOnly
+          child: titleOnly && !content.nativeTitleLayout
               // On iPhone Duo the title sits at the leading edge and the
               // controls are in the trailing bar, so there is no bar to draw.
               ? DuoToolbarTitle(
@@ -222,13 +267,36 @@ class HostedTopToolbar extends StatelessWidget {
               ? IOS26NativeToolbar(
                   title: content.title,
                   titleWidget: content.titleOverlay,
+                  nativeTitleLayout: content.nativeTitleLayout,
+                  subtitle: content.subtitle,
+                  leadingTitle: content.leadingTitle || titleOnly,
+                  semanticLabel: content.semanticLabel,
+                  foreground: content.foreground,
+                  textScale: content.textScale,
+                  onTitleTap: content.onTitleTap,
+                  height: content.height,
+                  scrollOffset: content.scrollOffset,
+                  interactive:
+                      interactive && (content.route?.isCurrent ?? true),
+                  backEnabled:
+                      content.route?.popDisposition !=
+                      RoutePopDisposition.doNotPop,
+                  leadingText: content.nativeTitleLayout && content.impliesBack
+                      ? ''
+                      : null,
+                  onLeadingTap: () => content.navigator?.maybePop(),
                   leading: content.customLeading,
                   actions: content.actions,
                   tintColor: content.tint,
                   showsGradient: false,
                   onActionTap: (index) {
                     if (index >= 0 && index < content.actions.length) {
-                      content.actions[index].onPressed();
+                      if (interactive && (content.route?.isCurrent ?? true)) {
+                        final action = content.actions[index];
+                        if (action.enabled && !action.loading) {
+                          action.onPressed();
+                        }
+                      }
                     }
                   },
                 )

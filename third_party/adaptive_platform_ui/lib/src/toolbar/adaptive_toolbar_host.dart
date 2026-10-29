@@ -112,10 +112,9 @@ class _AdaptiveToolbarHostState extends State<AdaptiveToolbarHost>
   @override
   Widget build(BuildContext context) {
     final fold = widget.debugFold ?? _fold;
-    // The fixed chrome only exists where pages use the native iOS 26
-    // toolbar; elsewhere pages keep their own Cupertino / Material bars.
-    final hostsToolbar =
-        widget.debugFold != null || PlatformInfo.isIOS26OrHigher();
+    // iOS pages publish their UIKit toolbar to this shared host. Other
+    // platforms keep their own bars or use the installed Android backend.
+    final hostsToolbar = widget.debugFold != null || PlatformInfo.isIOS;
     final edge =
         widget.debugVerticalBarEdge ??
         _edge?.value ??

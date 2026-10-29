@@ -36,7 +36,8 @@ class _WebViewState extends State<ImportFromXKView> {
             if (widget.config['redirectUrl'] != '' &&
                 url.startsWith(widget.config['redirectUrl'])) {
               _webViewController
-                  .loadRequest(Uri.parse(widget.config['targetUrl']));
+                  .loadRequest(Uri.parse(widget.config['targetUrl']),
+              );
             } else if (url.startsWith(widget.config['targetUrl'])) {
               import(_webViewController, context);
             }
@@ -46,8 +47,9 @@ class _WebViewState extends State<ImportFromXKView> {
       ..addJavaScriptChannel(
         'SnackbarJSChannel',
         onMessageReceived: (JavaScriptMessage message) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(message.message),
+          ScaffoldMessenger.of(context,
+          ).showSnackBar(SnackBar(
+            content: Text(message.message)
           ));
         },
       );
@@ -58,17 +60,20 @@ class _WebViewState extends State<ImportFromXKView> {
   @override
   Widget build(BuildContext context) {
     return AdaptiveScaffold(
+      scrollUnderAppBar: false,
       appBar: AdaptiveTopAppBar(
         title: Text(widget.config['page_title']),
         actions: <Widget>[
-          IconButton(
+          AdaptiveIconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () async {
               await cookieManager.clearCookies();
               _webViewController
-                  .loadRequest(Uri.parse(widget.config['initialUrl']));
+                  .loadRequest(Uri.parse(widget.config['initialUrl']),
+              );
             },
           )
+        ,
         ],
       ),
       body: Builder(
@@ -82,19 +87,25 @@ class _WebViewState extends State<ImportFromXKView> {
                         fit: BoxFit.scaleDown,
                         alignment: Alignment.centerLeft,
                         child: Text(widget.config['banner_content'],
-                            style: const TextStyle(color: Colors.white))),
+                            style: const TextStyle(color: Colors.white),
+                        ),
+                      ),
                     backgroundColor: Theme.of(context).primaryColor,
                     actions: [
-                      TextButton(
+                      AdaptiveButton.text(
                           style: TextButton.styleFrom(
                               foregroundColor: Colors.white,
-                              backgroundColor: Theme.of(context).primaryColor),
+                              backgroundColor: Theme.of(context).primaryColor,
+                          ),
                           child: Text(widget.config['banner_action']),
-                          onPressed: () => launch(widget.config['banner_url'])),
+                          onPressed: () => launch(widget.config['banner_url']),
+                        ),
                     ],
                   ),
             Expanded(child: WebViewWidget(controller: _webViewController))
-          ]);
+          ,
+            ],
+          );
         },
       ),
     );
@@ -106,7 +117,8 @@ class _WebViewState extends State<ImportFromXKView> {
     await Future.delayed(Duration(seconds: widget.config['delayTime'] ?? 0));
 
     var result = await controller
-        .runJavaScriptReturningResult(widget.config['extractJS']);
+        .runJavaScriptReturningResult(widget.config['extractJS'],
+    );
     String response = result.toString();
 
     if (response.startsWith('"') && response.endsWith('"')) {
@@ -121,7 +133,8 @@ class _WebViewState extends State<ImportFromXKView> {
     try {
       await cp.parseCourse(rst);
       UmengCommonSdk.onEvent(
-          "class_import", {"type": "xk", "action": "success"});
+          "class_import", {"type": "xk", "action": "success",
+      });
       Toast.showToast(S.of(context).class_parse_toast_success, context);
       Navigator.of(context).pop(true);
     } catch (e) {

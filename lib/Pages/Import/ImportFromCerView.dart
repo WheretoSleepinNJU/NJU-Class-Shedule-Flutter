@@ -42,7 +42,8 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
             if (widget.config['redirectUrl'] != '' &&
                 url.startsWith(widget.config['redirectUrl'])) {
               _webViewController
-                  .loadRequest(Uri.parse(widget.config['targetUrl']));
+                  .loadRequest(Uri.parse(widget.config['targetUrl']),
+              );
             } else if (url.startsWith(widget.config['targetUrl'])) {
               import(_webViewController, context);
             }
@@ -52,8 +53,9 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
       ..addJavaScriptChannel(
         'SnackbarJSChannel',
         onMessageReceived: (JavaScriptMessage message) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(message.message),
+          ScaffoldMessenger.of(context,
+          ).showSnackBar(SnackBar(
+            content: Text(message.message)
           ));
         },
       );
@@ -64,15 +66,17 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
   @override
   Widget build(BuildContext context) {
     return AdaptiveScaffold(
+      scrollUnderAppBar: false,
       appBar: AdaptiveTopAppBar(
         title: Text(widget.config['page_title']),
         actions: <Widget>[
-          IconButton(
+          AdaptiveIconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () async {
               await cookieManager.clearCookies();
               _webViewController
-                  .loadRequest(Uri.parse(widget.config['initialUrl']));
+                  .loadRequest(Uri.parse(widget.config['initialUrl']),
+              );
             },
           ),
         ],
@@ -88,26 +92,33 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
                         fit: BoxFit.scaleDown,
                         alignment: Alignment.centerLeft,
                         child: Text(widget.config['banner_content'],
-                            style: const TextStyle(color: Colors.white))),
+                            style: const TextStyle(color: Colors.white),
+                        ),
+                      ),
                     backgroundColor: Theme.of(context).primaryColor,
                     actions: [
-                      TextButton(
+                      AdaptiveButton.text(
                           style: TextButton.styleFrom(
                               foregroundColor: Colors.white,
-                              backgroundColor: Theme.of(context).primaryColor),
+                              backgroundColor: Theme.of(context).primaryColor,
+                          ),
                           child: Text(widget.config['banner_action']),
-                          onPressed: () => launch(widget.config['banner_url'])),
+                          onPressed: () => launch(widget.config['banner_url']),
+                        ),
                     ],
                   ),
             Expanded(child: WebViewWidget(controller: _webViewController))
-          ]);
+          ,
+            ],
+          );
         },
       ),
     );
   }
 
   import(WebViewController controller, BuildContext context,
-      {String? res}) async {
+      {String? res,
+  }) async {
     String response = "";
     if (res != null) {
       response = res;
@@ -117,7 +128,8 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
       await Future.delayed(Duration(seconds: widget.config['delayTime'] ?? 0));
 
       var result = await controller
-          .runJavaScriptReturningResult(widget.config['extractJS']);
+          .runJavaScriptReturningResult(widget.config['extractJS'],
+      );
       response = result.toString();
 
       if (response.startsWith('"') && response.endsWith('"')) {
@@ -132,7 +144,8 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
       int rst = await cp.addCourseTable(courseTableName, context);
       await cp.parseCourse(rst);
       UmengCommonSdk.onEvent(
-          "class_import", {"type": "cer", "action": "success"});
+          "class_import", {"type": "cer", "action": "success",
+      });
       Toast.showToast(S.of(context).class_parse_toast_success, context);
       Navigator.of(context).pop(true);
     } catch (e) {
@@ -147,10 +160,12 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
         "response": response,
         "errorMsg": e.toString(),
         "way": "cer"
+      ,
       };
       try {
         await Dio()
-            .post(Url.URL_BACKEND + "/log/log", data: FormData.fromMap(info));
+            .post(Url.URL_BACKEND + "/log/log", data: FormData.fromMap(info),
+        );
       } catch (e) {
         print(e);
       }
@@ -183,20 +198,27 @@ class ImportFromCerViewState extends State<ImportFromCerView> {
                             launch(Url.QQ_GROUP_OHOS_URL);
                           }
                           Navigator.of(context).pop();
-                        })),
+                        },
+                ),
+              ),
                 Container(
                     alignment: Alignment.centerRight,
                     child: TransBgTextButton(
                         color: Colors.grey,
                         child: Text(S.of(context).parse_error_dialog_other_ways,
-                            style: const TextStyle(color: Colors.grey)),
+                            style: const TextStyle(color: Colors.grey),
+                  ),
                         onPressed: () async {
                           Navigator.of(context).pop();
                           Navigator.of(context).pop();
-                        }))
-              ],
+                        },
+                ),
+              )
+              ,
+            ],
             );
-          });
+          },
+      );
     }
   }
 }

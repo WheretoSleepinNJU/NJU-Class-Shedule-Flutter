@@ -1,0 +1,23 @@
+{
+  "repository": "lingqiqi5211/miuix",
+  "revision": "8d52b45f223d4bec9a719d3d6ca52972cc7ea5fb",
+  "pull_request": "https://github.com/compose-miuix-ui/miuix/pull/423",
+  "path": "miuix-glass-icons/src/commonMain/kotlin/top/yukonga/miuix/kmp/icon/glass/ChevronBackward.kt",
+  "source_sha256": "2920d9e0424be344da70594129a2ff2a673f4a5c82c9966fb4137a0c8d61fabb",
+  "glyph": "MiuixIcons.Glass.Regular.ChevronBackward",
+  "default_size_dp": 24,
+  "viewport": [
+    1142.9,
+    1142.9
+  ],
+  "translation": [
+    -85.7,
+    1142.9
+  ],
+  "scale": [
+    1,
+    -1
+  ],
+  "rtl": "AdaptiveChromeHost mirrors the glyph once",
+  "license": "Apache-2.0"
+}

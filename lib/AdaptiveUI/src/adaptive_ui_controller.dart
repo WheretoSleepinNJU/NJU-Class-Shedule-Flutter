@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'adaptive_controls.dart' as ui;
 import 'package:adaptive_platform_ui/adaptive_platform_ui.dart' as platform;
 
 class AdaptiveUIController extends ChangeNotifier {
@@ -42,8 +43,29 @@ class AdaptiveUIScope extends InheritedNotifier<AdaptiveUIController> {
   const AdaptiveUIScope({
     super.key,
     required AdaptiveUIController controller,
+    this.nativeGlassSupported = false,
+    @visibleForTesting this.debugMiuix = false,
     required super.child,
   }) : super(notifier: controller);
+  final bool nativeGlassSupported;
+  final bool debugMiuix;
+  static bool usesMiuix(BuildContext context) {
+    final scope = context.dependOnInheritedWidgetOfExactType<AdaptiveUIScope>();
+    return scope != null &&
+        !scope.notifier!.useOriginalComponents &&
+        (scope.debugMiuix || platform.PlatformInfo.isAndroid);
+  }
+
+  static bool supportsNativeGlass(BuildContext context) =>
+      context
+          .dependOnInheritedWidgetOfExactType<AdaptiveUIScope>()
+          ?.nativeGlassSupported ??
+      false;
+  @override
+  bool updateShouldNotify(AdaptiveUIScope oldWidget) =>
+      nativeGlassSupported != oldWidget.nativeGlassSupported ||
+      debugMiuix != oldWidget.debugMiuix ||
+      super.updateShouldNotify(oldWidget);
   static AdaptiveUIController? maybeOf(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType<AdaptiveUIScope>()?.notifier;
 }
@@ -54,13 +76,13 @@ class AdaptiveAppearanceSwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = AdaptiveUIScope.maybeOf(context);
-    return platform.AdaptiveCard(
+    return ui.AdaptiveCard(
       margin: EdgeInsets.zero,
       padding: EdgeInsets.zero,
-      child: platform.AdaptiveListTile(
+      child: ui.AdaptiveListTile(
         title: const Text('使用原始组件'),
         subtitle: const Text('开启后使用平台默认组件，保留当前页面和数据'),
-        trailing: platform.AdaptiveSwitch(
+        trailing: ui.AdaptiveSwitch(
           value: controller?.useOriginalComponents ?? true,
           onChanged: controller == null
               ? null

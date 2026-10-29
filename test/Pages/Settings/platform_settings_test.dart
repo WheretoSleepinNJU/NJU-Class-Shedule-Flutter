@@ -1,4 +1,6 @@
-import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart'
+    show AdaptiveScaffold;
+import 'package:wheretosleepinnju/AdaptiveUI/adaptive_ui.dart' as ui;
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -55,9 +57,9 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.byType(AdaptiveScaffold), findsOneWidget);
-    expect(find.byType(AdaptiveCard), findsOneWidget);
-    expect(find.byType(AdaptiveListTile), findsOneWidget);
-    expect(find.byType(AdaptiveSwitch), findsOneWidget);
+    expect(find.byType(ui.AdaptiveCard), findsOneWidget);
+    expect(find.byType(ui.AdaptiveListTile), findsOneWidget);
+    expect(find.byType(ui.AdaptiveSwitch), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 

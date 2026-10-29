@@ -25,6 +25,13 @@ class AllCourseView extends StatefulWidget {
 
 class _AllCourseViewState extends State<AllCourseView> {
   // late SearchBar searchBar;
+  final _dio = Dio(
+    BaseOptions(
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 15),
+    ),
+  );
+  bool _loading = false, _loadError = false;
   int totalPages = 1;
   int pageNum = 0;
   String searchParam = '';
@@ -64,7 +71,7 @@ class _AllCourseViewState extends State<AllCourseView> {
       if (_scrollController.position.maxScrollExtent -
               _scrollController.position.pixels <=
           edge) {
-        if (pageNum < totalPages - 1) {
+        if (!_loading && !_loadError && pageNum < totalPages - 1) {
           pageNum++;
           _loadAllCourses();
         }
@@ -77,21 +84,39 @@ class _AllCourseViewState extends State<AllCourseView> {
   // }
 
   Future<bool> _loadAllCourses() async {
-    Dio dio = Dio();
-    // print(pageNum);
-    var response = await dio.get(Url.URL_BACKEND + '/getAll',
-        queryParameters: {'limit': 10, 'page': pageNum + 1});
-    totalPages = response.data['total_page'];
-
-    for (Map courseRow in response.data['data']) {
-      _lectureCards.add(CourseCard(
-          course: await _parseAllCourse(courseRow), count: courseRow['count']));
+    if (_loading) return false;
+    _loading = true;
+    try {
+      final response = await _dio.get(
+        Url.URL_BACKEND + '/getAll',
+        queryParameters: {'limit': 10, 'page': pageNum + 1},
+      );
+      final cards = <CourseCard>[];
+      for (final row in response.data['data']) {
+        cards.add(
+          CourseCard(course: await _parseAllCourse(row), count: row['count']),
+        );
+      }
+      if (!mounted) return false;
+      setState(() {
+        totalPages = response.data['total_page'];
+        _loadError = false;
+        _lectureCards.addAll(cards);
+      });
+      return true;
+    } catch (_) {
+      if (mounted) setState(() => _loadError = true);
+      return false;
+    } finally {
+      _loading = false;
     }
+  }
 
-    setState(() {
-      _lectureCards = _lectureCards;
-    });
-    return true;
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _dio.close(force: true);
+    super.dispose();
   }
 
   Future<Course> _parseAllCourse(data) async {
@@ -109,23 +134,27 @@ class _AllCourseViewState extends State<AllCourseView> {
     // bool expired = now.isAfter(endTime);
 
     return Course(
-        0,
-        data['title'],
-        weekNum.toString(),
-        startTime.weekday,
-        data['startIndex'],
-        data['endIndex'] - data['startIndex'],
-        Constant.ADD_BY_LECTURE,
-        classroom: data['classroom'],
-        teacher: data['teacher'],
-        info: data['info']);
+      0,
+      data['title'],
+      weekNum.toString(),
+      startTime.weekday,
+      data['startIndex'],
+      data['endIndex'] - data['startIndex'],
+      Constant.ADD_BY_LECTURE,
+      classroom: data['classroom'],
+      teacher: data['teacher'],
+      info: data['info'],
+    );
   }
 
   Future<void> _refresh() async {
+    if (_loading) return;
+    setState(() => _loadError = false);
     totalPages = 1;
     pageNum = 0;
     _lectureCards = <CourseCard>[];
     bool rst = await _loadAllCourses();
+    if (!mounted) return;
     if (rst) {
       Toast.showToast(S.of(context).lecture_refresh_success_toast, context);
     } else {
@@ -136,11 +165,11 @@ class _AllCourseViewState extends State<AllCourseView> {
   @override
   Widget build(BuildContext context) {
     return AdaptiveScaffold(
-        appBar:
-            // searchBar.build(context),
-            AdaptiveTopAppBar(
-                title: Text(S.of(context).all_course_title),
-                actions: const <Widget>[
+      appBar:
+          // searchBar.build(context),
+          AdaptiveTopAppBar(
+            title: Text(S.of(context).all_course_title),
+            actions: const <Widget>[
               // searchBar.getSearchAction(context),
               // IconButton(
               //   icon: Icon(Icons.search),
@@ -150,120 +179,79 @@ class _AllCourseViewState extends State<AllCourseView> {
               //   icon: Icon(Icons.filter_list),
               //   onPressed: () async {},
               // ),
-            ]),
-        body: SafeArea(
-          child: RefreshIndicator(
+            ],
+          ),
+      body: SafeArea(
+        child: AdaptiveRefreshIndicator(
           color: Theme.of(context).brightness == Brightness.light
               ? Theme.of(context).primaryColor
               : Colors.white,
-          key: _refreshKey,
+          refreshIndicatorKey: _refreshKey,
           onRefresh: _refresh,
-          child: ListView(
-            children: List<Widget>.generate(
-                _lectureCards.length, (int i) => _lectureCards[i])
-              ..insert(
-                  0,
-                  Padding(
-                      padding:
-                          const EdgeInsets.only(top: 5, left: 10, right: 10),
-                      child: Row(
+          child: AdaptivePageList(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+            physics: const AlwaysScrollableScrollPhysics(),
+            children:
+                List<Widget>.generate(
+                    _lectureCards.length,
+                    (int i) => _lectureCards[i],
+                  )
+                  ..insertAll(
+                    0,
+                    _loadError
+                        ? [
+                            AdaptiveButton.text(
+                              onPressed: _refresh,
+                              child: Text(S.of(context).network_error_toast),
+                            ),
+                          ]
+                        : <Widget>[],
+                  )
+                  ..insert(
+                    0,
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                            child: FilterChip(
-                              label: const Text('精选'),
-                              labelStyle: TextStyle(
-                                  color: _filterStatus.contains(1)
-                                      ? Colors.white
-                                      : Colors.black),
-                              checkmarkColor: Colors.white,
-                              selected: _filterStatus.contains(1),
-                              selectedColor: Theme.of(context).brightness ==
-                                      Brightness.light
-                                  ? Theme.of(context).primaryColor
-                                  : Colors.white,
-                              onSelected: (bool value) {
-                                setState(() {
-                                  if (value) {
-                                    _filterStatus.add(1);
-                                  } else {
-                                    _filterStatus.remove(1);
-                                  }
-                                });
-                              },
+                          for (final (id, name) in [
+                            (1, '精选'),
+                            (2, '仙林'),
+                            (3, '鼓楼'),
+                          ])
+                            AdaptiveFilterChip(
+                              label: Text(name),
+                              selected: _filterStatus.contains(id),
+                              onSelected: (value) => setState(() {
+                                if (value) {
+                                  _filterStatus.add(id);
+                                } else {
+                                  _filterStatus.remove(id);
+                                }
+                              }),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                            child: FilterChip(
-                              label: const Text('仙林'),
-                              labelStyle: TextStyle(
-                                  color: _filterStatus.contains(2)
-                                      ? Colors.white
-                                      : Colors.black),
-                              checkmarkColor: Colors.white,
-                              selected: _filterStatus.contains(2),
-                              selectedColor: Theme.of(context).brightness ==
-                                      Brightness.light
-                                  ? Theme.of(context).primaryColor
-                                  : Colors.white,
-                              onSelected: (bool value) {
-                                setState(() {
-                                  if (value) {
-                                    _filterStatus.add(2);
-                                  } else {
-                                    _filterStatus.remove(2);
-                                  }
-                                });
-                              },
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                            child: FilterChip(
-                              label: const Text('鼓楼'),
-                              labelStyle: TextStyle(
-                                  color: _filterStatus.contains(3)
-                                      ? Colors.white
-                                      : Colors.black),
-                              checkmarkColor: Colors.white,
-                              selected: _filterStatus.contains(3),
-                              selectedColor: Theme.of(context).brightness ==
-                                      Brightness.light
-                                  ? Theme.of(context).primaryColor
-                                  : Colors.white,
-                              onSelected: (bool value) {
-                                setState(() {
-                                  if (value) {
-                                    _filterStatus.add(3);
-                                  } else {
-                                    _filterStatus.remove(3);
-                                  }
-                                });
-                              },
-                            ),
-                          ),
-                          // Padding(
-                          //   padding: const EdgeInsets.symmetric(horizontal: 5),
-                          //   child: ChoiceChip(label: Text('仙林'), selected: true,),
-                          // ),
-                          // Padding(
-                          //   padding: const EdgeInsets.symmetric(horizontal: 5),
-                          //   child: ChoiceChip(label: Text('鼓楼'), selected: true,),
-                          // ),
                         ],
-                      )))
-              ..add(Column(
-                children: [
-                  const Divider(),
-                  Padding(
-                      padding: const EdgeInsets.only(top: 5, bottom: 20),
-                      child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(S.of(context).lecture_bottom,
-                              style: const TextStyle(color: Colors.grey))))
-                ],
-              )),
+                      ),
+                    ),
+                  )
+                  ..add(
+                    Column(
+                      children: [
+                        const Divider(),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5, bottom: 20),
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              S.of(context).lecture_bottom,
+                              style: const TextStyle(color: Colors.grey),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
             controller: _scrollController,
           ),
           // ListView.builder(
@@ -288,6 +276,8 @@ class _AllCourseViewState extends State<AllCourseView> {
           //   itemCount: _lectureCards.length + 1,
           //   controller: _scrollController,
           // )
-        )));
+        ),
+      ),
+    );
   }
 }

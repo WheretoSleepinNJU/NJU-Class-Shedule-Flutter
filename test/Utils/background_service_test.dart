@@ -38,6 +38,76 @@ void main() {
     await sources.delete(recursive: true);
   });
   test(
+    'background samples are cached and never change the global accent',
+    () async {
+      var samples = 0;
+      final colors = BackgroundService(
+        documents: () async => doc,
+        whiteMode: (_) async => true,
+        colorSeed: (file) async {
+          samples++;
+          return File(file).readAsBytesSync().last == 0 ? '#336699' : '#aa5522';
+        },
+      );
+      await prefs.setString('themeCustomColor', '#872574');
+      await prefs.setInt('themeIndex', 9);
+      await colors.ensureCurrent();
+      expect(samples, 0); // No image means no decoding.
+      await colors.addImages(await files(2));
+      final images = (await colors.load()).images;
+      expect(colors.seedFor(images[0]), '#336699');
+      await colors.selectImage(images[1]);
+      expect(colors.seedFor(images[1]), '#aa5522');
+      expect(colors.seedFor(images[0]), isNull);
+      await colors.selectImage(images[0]);
+      await colors.load();
+      expect(samples, 2);
+      expect(prefs.getString('themeCustomColor'), '#872574');
+      expect(prefs.getInt('themeIndex'), 9);
+      final reopened = BackgroundService(
+        documents: () async => doc,
+        whiteMode: (_) async => true,
+        colorSeed: (_) async =>
+            throw StateError('cache should survive restart'),
+      );
+      await reopened.load();
+      expect(reopened.seedFor(images[0]), '#336699');
+      await colors.removeImage(images[0]);
+      expect(colors.seedFor(images[1]), '#aa5522');
+      await colors.clear();
+      expect(colors.backgroundSeed.value, isNull);
+      expect(prefs.getString('backgroundColorSeeds'), isNull);
+      expect(prefs.getString('themeCustomColor'), '#872574');
+    },
+  );
+
+  test(
+    'replaced and unreadable images invalidate safely without repeated decoding',
+    () async {
+      var samples = 0;
+      final colors = BackgroundService(
+        documents: () async => doc,
+        whiteMode: (_) async => true,
+        colorSeed: (file) async {
+          samples++;
+          return File(file).lengthSync() == 3 ? '#334455' : null;
+        },
+      );
+      await colors.addImages(await files(1));
+      final image = (await colors.load()).current;
+      expect(colors.seedFor(image), '#334455');
+      await File(image).writeAsBytes([4, 3, 2, 1]);
+      await colors.load();
+      expect(colors.seedFor(image), isNull);
+      await colors.load();
+      expect(samples, 2);
+      await File(image).delete();
+      await colors.ensureCurrent();
+      expect(colors.backgroundSeed.value, isNull);
+    },
+  );
+
+  test(
     'single-image visits preserve the manual title-color preference',
     () async {
       await service.addImages(await files(1));

@@ -346,9 +346,13 @@ class _IOS26ButtonState extends State<IOS26Button> {
                 children: [
                   Positioned.fill(child: platformView),
                   Center(
+                    widthFactor: 1,
+                    heightFactor: 1,
                     child: IgnorePointer(
                       child: Padding(
-                        padding: widget.padding ?? const EdgeInsets.symmetric(horizontal: 16.0),
+                        padding:
+                            widget.padding ??
+                            const EdgeInsets.symmetric(horizontal: 16.0),
                         child: widget.child!,
                       ),
                     ),

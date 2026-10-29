@@ -24,6 +24,9 @@ class AdaptiveTextField extends StatelessWidget {
     this.maxLength,
     this.obscureText = false,
     this.autocorrect = true,
+    this.enableSuggestions = true,
+    this.autofillHints,
+    this.onTapOutside,
     this.autofocus = false,
     this.enabled = true,
     this.readOnly = false,
@@ -33,6 +36,7 @@ class AdaptiveTextField extends StatelessWidget {
     this.suffixIcon,
     this.onChanged,
     this.onSubmitted,
+    this.onEditingComplete,
     this.onTap,
     this.inputFormatters,
     this.padding,
@@ -80,6 +84,9 @@ class AdaptiveTextField extends StatelessWidget {
 
   /// Whether to enable autocorrection.
   final bool autocorrect;
+  final bool enableSuggestions;
+  final Iterable<String>? autofillHints;
+  final TapRegionCallback? onTapOutside;
 
   /// Whether this text field should focus itself if nothing else is already focused.
   final bool autofocus;
@@ -107,6 +114,7 @@ class AdaptiveTextField extends StatelessWidget {
 
   /// Called when the user indicates that they are done editing the text.
   final ValueChanged<String>? onSubmitted;
+  final VoidCallback? onEditingComplete;
 
   /// Called when the text field is tapped.
   final VoidCallback? onTap;
@@ -143,7 +151,7 @@ class AdaptiveTextField extends StatelessWidget {
     return CupertinoTextField(
       controller: controller,
       focusNode: focusNode,
-      placeholder: placeholder,
+      placeholder: placeholder ?? decoration?.hintText ?? decoration?.labelText,
       keyboardType: keyboardType,
       textInputAction: textInputAction,
       textCapitalization: textCapitalization,
@@ -154,37 +162,44 @@ class AdaptiveTextField extends StatelessWidget {
       maxLength: maxLength,
       obscureText: obscureText,
       autocorrect: autocorrect,
+      enableSuggestions: enableSuggestions,
+      autofillHints: autofillHints,
+      onTapOutside: onTapOutside,
       autofocus: autofocus,
       enabled: enabled,
       readOnly: readOnly,
       prefix:
           prefix ??
-          (prefixIcon != null
+          ((prefixIcon ?? decoration?.prefixIcon ?? decoration?.icon) != null
               ? Padding(
                   padding: const EdgeInsets.only(left: 6, right: 6),
                   child: GestureDetector(
                     onTap: () {
                       // Prevent focus when tapping on prefix icon
                     },
-                    child: prefixIcon,
+                    child:
+                        prefixIcon ??
+                        decoration?.prefixIcon ??
+                        decoration?.icon,
                   ),
                 )
               : null),
       suffix:
           suffix ??
-          (suffixIcon != null
+          ((suffixIcon ?? decoration?.suffixIcon) != null
               ? Padding(
                   padding: const EdgeInsets.only(right: 6),
                   child: GestureDetector(
                     onTap: () {
                       // Prevent focus when tapping on suffix icon
                     },
-                    child: suffixIcon,
+                    child: suffixIcon ?? decoration?.suffixIcon,
                   ),
                 )
               : null),
       onChanged: onChanged,
       onSubmitted: onSubmitted,
+      onEditingComplete: onEditingComplete,
       onTap: onTap,
       inputFormatters: inputFormatters,
       padding:
@@ -192,9 +207,12 @@ class AdaptiveTextField extends StatelessWidget {
       decoration:
           cupertinoDecoration ??
           BoxDecoration(
-            color: enabled
-                ? CupertinoColors.tertiarySystemBackground
-                : CupertinoColors.quaternarySystemFill,
+            color: CupertinoDynamicColor.resolve(
+              enabled
+                  ? CupertinoColors.tertiarySystemBackground
+                  : CupertinoColors.quaternarySystemFill,
+              context,
+            ),
             borderRadius: BorderRadius.circular(8),
           ),
     );
@@ -214,11 +232,15 @@ class AdaptiveTextField extends StatelessWidget {
       maxLength: maxLength,
       obscureText: obscureText,
       autocorrect: autocorrect,
+      enableSuggestions: enableSuggestions,
+      autofillHints: autofillHints,
+      onTapOutside: onTapOutside,
       autofocus: autofocus,
       enabled: enabled,
       readOnly: readOnly,
       onChanged: onChanged,
       onSubmitted: onSubmitted,
+      onEditingComplete: onEditingComplete,
       onTap: onTap,
       inputFormatters: inputFormatters,
       decoration:

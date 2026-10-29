@@ -65,20 +65,18 @@ class _ThemeCustomDialogState extends State<ThemeCustomDialog> {
     final bool useM3Dark = (model.material3ColorForDark == true);
 
     final seed = _seedColor;
+    final previewHex = '#${seed.toARGB32().toRadixString(16).padLeft(8, '0')}';
 
-    // 预览：如果 M3 开关开 -> 用 fromSeed primary；关 -> 直接用 seed（更鲜艳）
-    final lightPrimary = useM3Light
-        ? ColorScheme.fromSeed(
-            seedColor: seed,
-            brightness: Brightness.light,
-          ).primary
-        : seed;
-    final darkPrimary = useM3Dark
-        ? ColorScheme.fromSeed(
-            seedColor: seed,
-            brightness: Brightness.dark,
-          ).primary
-        : seed;
+    final lightPrimary = AppThemes.build(
+      previewHex,
+      Brightness.light,
+      useSeedScheme: useM3Light,
+    ).colorScheme.primary;
+    final darkPrimary = AppThemes.build(
+      previewHex,
+      Brightness.dark,
+      useSeedScheme: useM3Dark,
+    ).colorScheme.primary;
 
     return SettingsActionDialog(
       '自定义主题颜色',
@@ -208,7 +206,7 @@ class _PreviewCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: scheme.surfaceContainerHighest,
+        color: scheme.surfaceContainer,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(

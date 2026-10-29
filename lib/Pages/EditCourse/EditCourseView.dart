@@ -47,10 +47,9 @@ class _MeetingDraft {
           original?.weekNumbers.toSet() ??
           copy?.weeks.toSet() ??
           {for (var i = 1; i <= Config.MAX_WEEKS; i++) i},
-      day =
-          original == null
-              ? (copy == null ? 1 : copy.day % 7 + 1)
-              : (original.weekTime ?? 1).clamp(1, 7),
+      day = original == null
+          ? (copy == null ? 1 : copy.day % 7 + 1)
+          : (original.weekTime ?? 1).clamp(1, 7),
       start = math.max(1, original?.startTime ?? copy?.start ?? 1),
       end = math.max(
         1,
@@ -115,12 +114,9 @@ class _EditCourseViewState extends State<EditCourseView> {
       var selected = _tableId ?? prefs.getInt('tableId');
       final all = await tables.getAllCourseTable();
       if (!all.any((t) => t['id'] == selected)) {
-        selected =
-            all.isEmpty
-                ? (await tables.insert(
-                  CourseTable(Config.default_class_table),
-                )).id!
-                : all.first['id'] as int;
+        selected = all.isEmpty
+            ? (await tables.insert(CourseTable(Config.default_class_table))).id!
+            : all.first['id'] as int;
         await prefs.setInt('tableId', selected);
       }
       final times =
@@ -200,28 +196,27 @@ class _EditCourseViewState extends State<EditCourseView> {
     final s = S.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
-      builder:
-          (dialogContext) => MDialog(
-            s.delete_class_dialog_title,
-            Text(
-              '${s.delete_class_dialog_content(widget.course!.name ?? '')}\n\n${s.delete_all_meetings(_originals.length)}',
-            ),
-            overrideActions: [
-              TextButton(
-                key: const ValueKey('cancel-course-deletion'),
-                onPressed: () => Navigator.of(dialogContext).pop(false),
-                child: Text(s.cancel),
-              ),
-              TextButton(
-                key: const ValueKey('confirm-course-deletion'),
-                style: TextButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.error,
-                ),
-                onPressed: () => Navigator.of(dialogContext).pop(true),
-                child: Text(s.delete_class_dialog_title),
-              ),
-            ],
+      builder: (dialogContext) => MDialog(
+        s.delete_class_dialog_title,
+        Text(
+          '${s.delete_class_dialog_content(widget.course!.name ?? '')}\n\n${s.delete_all_meetings(_originals.length)}',
+        ),
+        overrideActions: [
+          AdaptiveButton.text(
+            key: const ValueKey('cancel-course-deletion'),
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(s.cancel),
           ),
+          AdaptiveButton.text(
+            key: const ValueKey('confirm-course-deletion'),
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
+            ),
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: Text(s.delete_class_dialog_title),
+          ),
+        ],
+      ),
     );
     if (confirmed != true || !mounted) return;
     setState(() => _deleting = true);
@@ -258,7 +253,7 @@ class _EditCourseViewState extends State<EditCourseView> {
     bool required = false,
   }) => Padding(
     padding: const EdgeInsets.only(bottom: 16),
-    child: TextFormField(
+    child: AdaptiveTextFormField(
       key: ValueKey(key),
       controller: controller,
       maxLines: null,
@@ -266,13 +261,11 @@ class _EditCourseViewState extends State<EditCourseView> {
         labelText: label,
         border: const OutlineInputBorder(),
       ),
-      validator:
-          required
-              ? (value) =>
-                  (value?.trim().isEmpty ?? true)
-                      ? S.of(context).class_name_empty
-                      : null
-              : null,
+      validator: required
+          ? (value) => (value?.trim().isEmpty ?? true)
+                ? S.of(context).class_name_empty
+                : null
+          : null,
     ),
   );
 
@@ -283,18 +276,12 @@ class _EditCourseViewState extends State<EditCourseView> {
       slot.weeks.isEmpty ? 0 : slot.weeks.reduce(math.max),
     );
     final maxClasses = math.max(_times.length, math.max(slot.start, slot.end));
-    final summary =
-        slot.pending
-            ? s.time_pending
-            : '${Constant.WEEK_WITH_BIAS[slot.day]} · ${s.class_duration('${slot.start}', '${slot.end}')}';
+    final summary = slot.pending
+        ? s.time_pending
+        : '${Constant.WEEK_WITH_BIAS[slot.day]} · ${s.class_duration('${slot.start}', '${slot.end}')}';
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: Material(
-        color: theme.colorScheme.surface,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-          side: BorderSide(color: theme.colorScheme.outlineVariant),
-        ),
+      child: AdaptiveCard(
         child: ExpansionTile(
           key: ValueKey('course-slot-${slot.key}'),
           initiallyExpanded: slot.expanded,
@@ -313,14 +300,13 @@ class _EditCourseViewState extends State<EditCourseView> {
             mainAxisSize: MainAxisSize.min,
             children: [
               if (_slots.length > 1)
-                IconButton(
+                AdaptiveIconButton(
                   key: ValueKey('remove-slot-${slot.key}'),
                   tooltip: s.remove_meeting,
                   icon: const Icon(Icons.remove_circle_outline, size: 20),
-                  onPressed:
-                      _saving
-                          ? null
-                          : () => setState(() => _slots.remove(slot)),
+                  onPressed: _saving
+                      ? null
+                      : () => setState(() => _slots.remove(slot)),
                 ),
               Icon(
                 slot.expanded ? Icons.expand_less : Icons.expand_more,
@@ -353,23 +339,20 @@ class _EditCourseViewState extends State<EditCourseView> {
                   s.double_week,
                   s.clear_selection,
                 ])
-                  TextButton(
-                    onPressed:
-                        () => setState(() {
-                          slot.weeks.clear();
-                          if (option != s.clear_selection) {
-                            slot.weeks.addAll(
-                              List.generate(maxWeeks, (i) => i + 1).where(
-                                (w) =>
-                                    option == s.select_all ||
-                                    (option == s.single_week
-                                        ? w.isOdd
-                                        : w.isEven),
-                              ),
-                            );
-                          }
-                          slot.weekError = slot.weeks.isEmpty;
-                        }),
+                  AdaptiveButton.text(
+                    onPressed: () => setState(() {
+                      slot.weeks.clear();
+                      if (option != s.clear_selection) {
+                        slot.weeks.addAll(
+                          List.generate(maxWeeks, (i) => i + 1).where(
+                            (w) =>
+                                option == s.select_all ||
+                                (option == s.single_week ? w.isOdd : w.isEven),
+                          ),
+                        );
+                      }
+                      slot.weekError = slot.weeks.isEmpty;
+                    }),
                     child: Text(option),
                   ),
               ],
@@ -390,13 +373,10 @@ class _EditCourseViewState extends State<EditCourseView> {
                     labelPadding: EdgeInsets.zero,
                     label: Center(child: Text('$week')),
                     selected: slot.weeks.contains(week),
-                    onSelected:
-                        (selected) => setState(() {
-                          selected
-                              ? slot.weeks.add(week)
-                              : slot.weeks.remove(week);
-                          slot.weekError = slot.weeks.isEmpty;
-                        }),
+                    onSelected: (selected) => setState(() {
+                      selected ? slot.weeks.add(week) : slot.weeks.remove(week);
+                      slot.weekError = slot.weeks.isEmpty;
+                    }),
                   ),
                 );
               }),
@@ -415,25 +395,24 @@ class _EditCourseViewState extends State<EditCourseView> {
                 ),
               ),
             const SizedBox(height: 12),
-            SwitchListTile.adaptive(
-              contentPadding: EdgeInsets.zero,
+            AdaptiveSwitchListTile(
+              padding: EdgeInsets.zero,
               title: Text(s.free_or_pending_time),
               value: slot.pending,
               onChanged: (value) => setState(() => slot.pending = value),
             ),
             if (!slot.pending) ...[
               const SizedBox(height: 12),
-              DropdownButtonFormField<int>(
+              AdaptiveDropdownFormField<int>(
                 key: ValueKey(_key(slot, 'edit-day-${slot.day}')),
                 initialValue: slot.day,
-                isExpanded: true,
                 decoration: InputDecoration(
                   labelText: s.week_day,
                   border: const OutlineInputBorder(),
                 ),
                 items: List.generate(
                   7,
-                  (i) => DropdownMenuItem(
+                  (i) => AdaptiveOption<int>(
                     value: i + 1,
                     child: Text(Constant.WEEK_WITH_BIAS[i + 1]),
                   ),
@@ -442,7 +421,7 @@ class _EditCourseViewState extends State<EditCourseView> {
               ),
               const SizedBox(height: 16),
               for (final start in [true, false]) ...[
-                DropdownButtonFormField<int>(
+                AdaptiveDropdownFormField<int>(
                   key: ValueKey(
                     _key(
                       slot,
@@ -450,14 +429,13 @@ class _EditCourseViewState extends State<EditCourseView> {
                     ),
                   ),
                   initialValue: start ? slot.start : slot.end,
-                  isExpanded: true,
                   decoration: InputDecoration(
                     labelText: start ? s.start_class : s.end_class,
                     border: const OutlineInputBorder(),
                   ),
                   items: List.generate(
                     maxClasses,
-                    (i) => DropdownMenuItem(
+                    (i) => AdaptiveOption<int>(
                       value: i + 1,
                       child: Text(
                         _period(i + 1),
@@ -466,16 +444,15 @@ class _EditCourseViewState extends State<EditCourseView> {
                       ),
                     ),
                   ),
-                  onChanged:
-                      (v) => setState(() {
-                        if (start) {
-                          slot.start = v!;
-                          slot.end = math.max(slot.start, slot.end);
-                        } else {
-                          slot.end = v!;
-                          slot.start = math.min(slot.start, slot.end);
-                        }
-                      }),
+                  onChanged: (v) => setState(() {
+                    if (start) {
+                      slot.start = v!;
+                      slot.end = math.max(slot.start, slot.end);
+                    } else {
+                      slot.end = v!;
+                      slot.start = math.min(slot.start, slot.end);
+                    }
+                  }),
                 ),
                 if (start) const SizedBox(height: 16),
               ],
@@ -508,54 +485,46 @@ class _EditCourseViewState extends State<EditCourseView> {
           appBar: AdaptiveTopAppBar(
             title: Text(_creating ? s.add_manually_title : s.edit_course),
             actions: [
-              TextButton(
-                key: const ValueKey('save-course'),
+              AdaptiveTopBarActionButton(
+                buttonKey: const ValueKey('save-course'),
+                label: _creating ? s.add_class : s.save,
                 onPressed: _busy || _tableId == null ? null : _save,
-                child:
-                    _saving
-                        ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                        : Text(_creating ? s.add_class : s.save),
+                loading: _saving,
+                prominent: true,
               ),
               const SizedBox(width: 8),
             ],
           ),
-          bottomNavigationBar:
-              _creating
-                  ? null
-                  : SafeArea(
-                    top: false,
-                    minimum: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-                    child: OutlinedButton.icon(
-                      key: const ValueKey('delete-course'),
-                      onPressed: _busy ? null : _delete,
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: theme.colorScheme.error,
-                        side: BorderSide(
-                          color: theme.colorScheme.error.withValues(alpha: .4),
-                        ),
-                        minimumSize: const Size.fromHeight(44),
+          bottomNavigationBar: _creating
+              ? null
+              : SafeArea(
+                  top: false,
+                  minimum: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+                  child: AdaptiveButton.icon(
+                    variant: AdaptiveButtonVariant.outlined,
+                    key: const ValueKey('delete-course'),
+                    onPressed: _busy ? null : _delete,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: theme.colorScheme.error,
+                      side: BorderSide(
+                        color: theme.colorScheme.error.withValues(alpha: .4),
                       ),
-                      icon:
-                          _deleting
-                              ? const SizedBox(
-                                width: 18,
-                                height: 18,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
-                              )
-                              : const Icon(Icons.delete_outline, size: 20),
-                      label: Text(s.delete_class_dialog_title),
+                      minimumSize: const Size.fromHeight(44),
                     ),
+                    icon: _deleting
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.delete_outline, size: 20),
+                    label: Text(s.delete_class_dialog_title),
                   ),
+                ),
           body: SafeArea(
             child: Form(
               key: _form,
-              child: ListView(
+              child: AdaptivePageList(
                 padding: EdgeInsets.fromLTRB(
                   16,
                   20,
@@ -565,13 +534,19 @@ class _EditCourseViewState extends State<EditCourseView> {
                 keyboardDismissBehavior:
                     ScrollViewKeyboardDismissBehavior.onDrag,
                 children: [
-                  _field(
-                    'edit-course-name',
-                    _name,
-                    s.class_name,
-                    required: true,
+                  AdaptiveSection(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                    separated: false,
+                    children: [
+                      _field(
+                        'edit-course-name',
+                        _name,
+                        s.class_name,
+                        required: true,
+                      ),
+                      _field('edit-course-info', _info, s.class_info),
+                    ],
                   ),
-                  _field('edit-course-info', _info, s.class_info),
                   Row(
                     children: [
                       Expanded(
@@ -580,10 +555,12 @@ class _EditCourseViewState extends State<EditCourseView> {
                           style: theme.textTheme.titleMedium,
                         ),
                       ),
-                      TextButton.icon(
+                      AdaptiveButton.icon(
+                        variant: AdaptiveButtonVariant.text,
                         key: const ValueKey('add-course-slot'),
-                        onPressed:
-                            _busy ? null : () => setState(() => _addDraft()),
+                        onPressed: _busy
+                            ? null
+                            : () => setState(() => _addDraft()),
                         icon: const Icon(Icons.add, size: 18),
                         label: Text(s.add_meeting),
                       ),

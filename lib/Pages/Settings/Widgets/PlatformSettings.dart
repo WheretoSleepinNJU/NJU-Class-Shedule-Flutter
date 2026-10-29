@@ -1,9 +1,7 @@
 import '../../../AdaptiveUI/adaptive_ui.dart' as ui;
-import 'package:adaptive_platform_ui/adaptive_platform_ui.dart' as adaptive;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-/// Product-facing adapters: both platforms are rendered by adaptive_platform_ui.
+/// Product-facing names delegate renderer selection to AdaptiveUI.
 /// Keep settings persistence and navigation independent of the selected library.
 class SettingsScaffold extends StatelessWidget {
   const SettingsScaffold({
@@ -20,13 +18,7 @@ class SettingsScaffold extends StatelessWidget {
     return ui.AdaptiveScaffold(
       appBar: ui.AdaptiveTopAppBar(title: Text(title), actions: actions),
       scrollUnderAppBar: true,
-      body: Align(
-        alignment: Alignment.topCenter,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 720),
-          child: body,
-        ),
-      ),
+      body: ui.AdaptivePageFrame(child: body),
     );
   }
 }
@@ -37,27 +29,17 @@ class SettingsListView extends StatelessWidget {
   final List<Widget> children;
   final EdgeInsetsGeometry? padding;
   @override
-  Widget build(BuildContext context) {
-    final inset = adaptive.AndroidToolbarBodyScope.topInsetOf(context);
-    final resolved = padding?.resolve(Directionality.of(context));
-    return ListView(
-      padding: inset > 0
-          ? (resolved ??
-                    EdgeInsets.only(
-                      bottom: MediaQuery.paddingOf(context).bottom,
-                    ))
-                .add(EdgeInsets.only(top: inset))
-          : padding,
-      children: children,
-    );
-  }
+  Widget build(BuildContext context) => ui.AdaptivePageList(
+    children: children,
+    padding: padding ?? ui.AdaptiveLayout.pagePadding,
+  );
 }
 
 class SettingsSurface extends StatelessWidget {
   const SettingsSurface({super.key, required this.child});
   final Widget child;
   @override
-  Widget build(BuildContext context) => adaptive.AdaptiveCard(
+  Widget build(BuildContext context) => ui.AdaptiveCard(
     margin: EdgeInsets.zero,
     padding: EdgeInsets.zero,
     clipBehavior: Clip.antiAlias,
@@ -83,7 +65,7 @@ class SettingsTile extends StatelessWidget {
   final bool enabled;
   final EdgeInsetsGeometry? contentPadding;
   @override
-  Widget build(BuildContext context) => adaptive.AdaptiveListTile(
+  Widget build(BuildContext context) => ui.AdaptiveListTile(
     title: title,
     subtitle: subtitle,
     leading: leading,
@@ -107,7 +89,7 @@ class SettingsSwitch extends StatelessWidget {
   final ValueChanged<bool>? onChanged;
   @override
   Widget build(BuildContext context) =>
-      adaptive.AdaptiveSwitch(value: value, onChanged: onChanged);
+      ui.AdaptiveSwitch(value: value, onChanged: onChanged);
 }
 
 class SettingsSwitchTile extends StatelessWidget {
@@ -135,57 +117,20 @@ class SettingsSwitchTile extends StatelessWidget {
   );
 }
 
-class SettingsOption<T> {
-  const SettingsOption({required this.value, required this.child});
-  final T value;
-  final Widget child;
+class SettingsOption<T> extends ui.AdaptiveOption<T> {
+  const SettingsOption({required super.value, required super.child});
 }
 
-String _label(Widget widget) => widget is Text
-    ? widget.data ?? ''
-    : widget is Row
-    ? widget.children.whereType<Text>().map((e) => e.data ?? '').join(' ')
-    : '';
-
-class SettingsDropdown<T> extends StatelessWidget {
+class SettingsDropdown<T> extends ui.AdaptiveDropdown<T> {
   const SettingsDropdown({
     super.key,
-    required this.value,
-    required this.items,
-    required this.onChanged,
+    required super.value,
+    required super.items,
+    required super.onChanged,
   });
-  final T? value;
-  final List<SettingsOption<T>> items;
-  final ValueChanged<T?>? onChanged;
-  @override
-  Widget build(BuildContext context) {
-    final selected = items.where((item) => item.value == value).firstOrNull;
-    final label = selected == null ? '—' : _label(selected.child);
-    if (onChanged == null) {
-      return Text(
-        label,
-        style: TextStyle(color: Theme.of(context).disabledColor),
-      );
-    }
-    return adaptive.AdaptivePopupMenuButton.text<T>(
-      label: label,
-      shrinkWrap: true,
-      items: items
-          .map(
-            (item) => adaptive.AdaptivePopupMenuItem<T>(
-              label: _label(item.child),
-              value: item.value,
-              selected: item.value == value,
-            ),
-          )
-          .toList(),
-      onSelected: (_, item) => onChanged?.call(item.value),
-    );
-  }
 }
 
-/// The package's native alert API accepts messages, not arbitrary form widgets.
-/// Keep form content and Navigator results using Flutter's platform dialog.
+/// Form and Navigator state stay in Flutter; AdaptiveUI owns the surface.
 class SettingsDialog extends StatelessWidget {
   const SettingsDialog({
     super.key,
@@ -196,7 +141,8 @@ class SettingsDialog extends StatelessWidget {
   final Widget title, content;
   final List<Widget> actions;
   @override
-  Widget build(BuildContext context) => AlertDialog.adaptive(
+  Widget build(BuildContext context) => ui.AdaptiveDialog(
+    platformAdaptive: true,
     title: title,
     content: SingleChildScrollView(child: content),
     actions: actions,
@@ -241,24 +187,7 @@ class SettingsButton extends StatelessWidget {
   final Widget child;
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    // Adaptive plain buttons supply their own foreground. Clear the legacy
-    // filled TextButton background so dialog actions retain readable contrast.
-    return Theme(
-      data: theme.copyWith(
-        textButtonTheme: const TextButtonThemeData(
-          style: ButtonStyle(
-            backgroundColor: WidgetStatePropertyAll(Colors.transparent),
-          ),
-        ),
-      ),
-      child: adaptive.AdaptiveButton.child(
-        onPressed: onPressed,
-        enabled: onPressed != null,
-        style: adaptive.AdaptiveButtonStyle.plain,
-        child: child,
-      ),
-    );
+    return ui.AdaptiveButton.text(onPressed: onPressed, child: child);
   }
 }
 
@@ -272,18 +201,11 @@ class SettingsIconButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final Widget icon, label;
   @override
-  Widget build(BuildContext context) => adaptive.AdaptiveButton.child(
+  Widget build(BuildContext context) => ui.AdaptiveButton.icon(
     onPressed: onPressed,
-    enabled: onPressed != null,
-    style: adaptive.AdaptiveButtonStyle.bordered,
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        icon,
-        const SizedBox(width: 8),
-        Flexible(child: label),
-      ],
-    ),
+    icon: icon,
+    label: label,
+    variant: ui.AdaptiveButtonVariant.outlined,
   );
 }
 
@@ -298,12 +220,13 @@ class SettingsIconAction extends StatelessWidget {
   final Widget child;
   final Color? backgroundColor;
   @override
-  Widget build(BuildContext context) => adaptive.AdaptiveButton.child(
+  Widget build(BuildContext context) => ui.AdaptiveButton.text(
     onPressed: onPressed,
-    enabled: onPressed != null,
-    style: adaptive.AdaptiveButtonStyle.plain,
-    color: backgroundColor,
-    minSize: const Size(44, 44),
+
+    style: TextButton.styleFrom(
+      backgroundColor: backgroundColor,
+      minimumSize: const Size(44, 44),
+    ),
     child: child,
   );
 }
@@ -319,13 +242,16 @@ class SettingsPressable extends StatelessWidget {
   final Widget child;
   final BorderRadius? borderRadius;
   @override
-  Widget build(BuildContext context) => adaptive.AdaptiveButton.child(
+  Widget build(BuildContext context) => ui.AdaptiveButton.text(
     onPressed: onPressed,
-    enabled: onPressed != null,
-    style: adaptive.AdaptiveButtonStyle.plain,
-    padding: EdgeInsets.zero,
-    minSize: Size.zero,
-    borderRadius: borderRadius,
+
+    style: TextButton.styleFrom(
+      padding: EdgeInsets.zero,
+      minimumSize: Size.zero,
+      shape: borderRadius == null
+          ? null
+          : RoundedRectangleBorder(borderRadius: borderRadius!),
+    ),
     child: child,
   );
 }
@@ -345,7 +271,7 @@ class SettingsTextField extends StatelessWidget {
   final String label;
   final Widget? leadingIcon, trailingIcon;
   @override
-  Widget build(BuildContext context) => adaptive.AdaptiveTextField(
+  Widget build(BuildContext context) => ui.AdaptiveTextField(
     controller: controller,
     autofocus: autofocus,
     placeholder: label,
@@ -355,67 +281,15 @@ class SettingsTextField extends StatelessWidget {
   );
 }
 
-/// Numeric wheel is not provided by the package. Retain a Cupertino picker on
-/// iOS and a Material dropdown on Android, with the same bounded value contract.
-class SettingsNumberPicker extends StatefulWidget {
+class SettingsNumberPicker extends ui.AdaptiveNumberPicker {
   const SettingsNumberPicker({
     super.key,
-    required this.value,
-    required this.onValueChanged,
-    this.min = 0,
-    this.max = 10,
-    this.label,
+    required super.value,
+    required super.onValueChanged,
+    super.min,
+    super.max,
+    super.label,
   });
-  final int value, min, max;
-  final ValueChanged<int> onValueChanged;
-  final String Function(int)? label;
-  @override
-  State<SettingsNumberPicker> createState() => _SettingsNumberPickerState();
-}
-
-class _SettingsNumberPickerState extends State<SettingsNumberPicker> {
-  late final _controller = FixedExtentScrollController(
-    initialItem: widget.value.clamp(widget.min, widget.max) - widget.min,
-  );
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    String label(int value) => widget.label?.call(value) ?? '$value';
-    if (adaptive.PlatformInfo.isIOS) {
-      return SizedBox(
-        height: 160,
-        child: CupertinoPicker.builder(
-          scrollController: _controller,
-          itemExtent: 36,
-          childCount: widget.max - widget.min + 1,
-          onSelectedItemChanged: (index) =>
-              widget.onValueChanged(widget.min + index),
-          itemBuilder: (_, index) =>
-              Center(child: Text(label(widget.min + index))),
-        ),
-      );
-    }
-    return SizedBox(
-      width: 240,
-      child: DropdownButton<int>(
-        isExpanded: true,
-        menuMaxHeight: 320,
-        value: widget.value.clamp(widget.min, widget.max),
-        items: [
-          for (var value = widget.min; value <= widget.max; value++)
-            DropdownMenuItem(value: value, child: Text(label(value))),
-        ],
-        onChanged: (value) {
-          if (value != null) widget.onValueChanged(value);
-        },
-      ),
-    );
-  }
 }
 
 class SettingsRadioPreference extends StatelessWidget {
@@ -432,7 +306,7 @@ class SettingsRadioPreference extends StatelessWidget {
   Widget build(BuildContext context) => SettingsTile(
     title: Text(title),
     onTap: onClick,
-    trailing: adaptive.AdaptiveRadio<bool>(
+    trailing: ui.AdaptiveRadio<bool>(
       value: true,
       groupValue: selected,
       onChanged: (_) => onClick(),
@@ -443,20 +317,18 @@ class SettingsRadioPreference extends StatelessWidget {
 class SettingsCircularProgressIndicator extends StatelessWidget {
   const SettingsCircularProgressIndicator({super.key});
   @override
-  Widget build(BuildContext context) =>
-      const CircularProgressIndicator.adaptive();
+  Widget build(BuildContext context) => const ui.AdaptiveProgressIndicator();
 }
 
 class SettingsLinearProgressIndicator extends StatelessWidget {
   const SettingsLinearProgressIndicator({super.key});
   @override
-  Widget build(BuildContext context) => adaptive.PlatformInfo.isIOS
-      ? const CupertinoActivityIndicator()
-      : const LinearProgressIndicator();
+  Widget build(BuildContext context) =>
+      const ui.AdaptiveProgressIndicator(linear: true);
 }
 
 class SettingsHorizontalDivider extends StatelessWidget {
   const SettingsHorizontalDivider({super.key});
   @override
-  Widget build(BuildContext context) => const Divider();
+  Widget build(BuildContext context) => const ui.AdaptiveDivider();
 }

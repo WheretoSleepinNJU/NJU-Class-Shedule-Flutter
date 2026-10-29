@@ -1,13 +1,14 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter/services.dart';
 import 'adaptive_app_bar_action.dart';
 
 /// Configuration for an adaptive app bar
 ///
 /// This class holds the configuration for the app bar in [AdaptiveScaffold].
 /// The actual rendering is platform-specific:
-/// - iOS 26+ with useNativeToolbar: Native UIToolbar with Liquid Glass effects
+/// - iOS with useNativeToolbar: UIKit UINavigationBar (Liquid Glass on iOS 26+)
 /// - iOS 26+ without useNativeToolbar: CupertinoNavigationBar with custom back button
-/// - iOS <26: CupertinoNavigationBar
+/// - iOS without useNativeToolbar: CupertinoNavigationBar
 /// - Android: Material AppBar
 ///
 /// You can provide custom navigation bars using [cupertinoNavigationBar] or [appBar]:
@@ -26,7 +27,25 @@ class AdaptiveAppBar {
     this.titleWidget,
     this.cupertinoNavigationBar,
     this.appBar,
+    this.nativeTitleLayout = false,
+    this.onTitleTap,
+    this.leadingTitle = false,
+    this.semanticLabel,
+    this.foreground,
+    this.textScale,
+    this.toolbarHeight,
+    this.systemOverlayStyle,
   });
+
+  /// Render structured title/subtitle content entirely inside UIKit. Existing
+  /// custom Flutter title overlays remain available when this opt-in is false.
+  final bool nativeTitleLayout;
+  final VoidCallback? onTitleTap;
+  final bool leadingTitle;
+  final String? semanticLabel;
+  final Color? foreground;
+  final double? textScale, toolbarHeight;
+  final SystemUiOverlayStyle? systemOverlayStyle;
 
   /// Title for the app bar
   final String? title;
@@ -44,12 +63,10 @@ class AdaptiveAppBar {
   /// If null and navigation is possible, an automatic back button will be shown
   final Widget? leading;
 
-  /// Use native iOS 26 toolbar (iOS 26+ only)
-  /// - When false (default): Uses CupertinoNavigationBar for better compatibility with routers
-  /// - When true: Uses native iOS 26 UIToolbar with Liquid Glass effect
-  ///
-  /// Note: Setting this to true may cause compatibility issues with GoRouter and other
-  /// router packages. Use with caution.
+  /// Use the hosted UIKit navigation bar (true by default).
+  /// Liquid Glass styling is available on iOS 26+; earlier versions use UIKit
+  /// appearances supported by the operating system. When false, pages use
+  /// CupertinoNavigationBar. The host follows the page toolbar registry.
   ///
   /// If true, [cupertinoNavigationBar] will be ignored and native toolbar will be shown.
   final bool useNativeToolbar;
@@ -96,6 +113,14 @@ class AdaptiveAppBar {
     Widget? titleWidget,
     PreferredSizeWidget? cupertinoNavigationBar,
     PreferredSizeWidget? appBar,
+    bool? nativeTitleLayout,
+    VoidCallback? onTitleTap,
+    bool? leadingTitle,
+    String? semanticLabel,
+    Color? foreground,
+    double? textScale,
+    double? toolbarHeight,
+    SystemUiOverlayStyle? systemOverlayStyle,
   }) {
     return AdaptiveAppBar(
       title: title ?? this.title,
@@ -108,6 +133,14 @@ class AdaptiveAppBar {
       cupertinoNavigationBar:
           cupertinoNavigationBar ?? this.cupertinoNavigationBar,
       appBar: appBar ?? this.appBar,
+      nativeTitleLayout: nativeTitleLayout ?? this.nativeTitleLayout,
+      onTitleTap: onTitleTap ?? this.onTitleTap,
+      leadingTitle: leadingTitle ?? this.leadingTitle,
+      semanticLabel: semanticLabel ?? this.semanticLabel,
+      foreground: foreground ?? this.foreground,
+      textScale: textScale ?? this.textScale,
+      toolbarHeight: toolbarHeight ?? this.toolbarHeight,
+      systemOverlayStyle: systemOverlayStyle ?? this.systemOverlayStyle,
     );
   }
 }

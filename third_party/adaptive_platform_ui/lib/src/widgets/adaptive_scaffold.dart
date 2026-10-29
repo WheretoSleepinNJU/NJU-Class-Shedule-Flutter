@@ -120,6 +120,7 @@ class AdaptiveScaffold extends StatefulWidget {
     super.key,
     this.appBar,
     this.fallbackBuilder,
+    this.fallbackUsesNativeToolbar = false,
     this.bottomNavigationBar,
     this.body,
     this.resizeToAvoidBottomInset,
@@ -149,6 +150,10 @@ class AdaptiveScaffold extends StatefulWidget {
 
   /// Application compatibility renderer; stays within the same route registry.
   final Widget Function(BuildContext context, Widget body)? fallbackBuilder;
+
+  /// A custom scaffold may retain a Flutter footer while the backend draws its
+  /// entire toolbar. It must omit its own AppBar in this mode.
+  final bool fallbackUsesNativeToolbar;
 
   /// Bottom navigation bar configuration
   /// If null, no bottom navigation will be shown
@@ -310,7 +315,8 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
   bool _usesAndroidNativeToolbar(BuildContext context) {
     final backend = AndroidToolbarScope.maybeOf(context);
     final bar = widget.appBar;
-    return widget.fallbackBuilder == null &&
+    return (widget.fallbackBuilder == null ||
+            widget.fallbackUsesNativeToolbar) &&
         backend != null &&
         _usesFixedToolbar(context) &&
         bar != null &&
@@ -462,6 +468,7 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
   /// Colors resolve from the ambient brightness so the overlay matches the
   /// native title in light and dark mode.
   Widget? _buildIOS26TitleOverlay() {
+    if (widget.appBar?.nativeTitleLayout == true) return null;
     return _buildAppBarTitle(
       nativeTitleFallback: true,
       titleStyle: TextStyle(

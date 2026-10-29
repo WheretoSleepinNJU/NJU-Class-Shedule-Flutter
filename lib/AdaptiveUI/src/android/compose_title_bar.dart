@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../theme/deadliner_color_theme.dart';
+import '../native_top_bar_configuration.dart';
 
 /// The framework owns page registration; this backend owns the Compose bridge.
 AndroidToolbarBackend createComposeTitleBarBackend() {
@@ -16,9 +18,9 @@ AndroidToolbarBackend createComposeTitleBarBackend() {
           (action) =>
               !action.hasMenu &&
               action.iconWidget == null &&
-              (action.title == null &&
-                  action.icon?.fontFamily == 'MaterialIcons' &&
-                  action.icon?.fontPackage == null),
+              (action.title != null ||
+                  (action.icon?.fontFamily == 'MaterialIcons' &&
+                      action.icon?.fontPackage == null)),
         ),
     builder: (context, registry) => ComposeTitleBarHost(
       registry: registry,
@@ -47,6 +49,9 @@ class _ComposeTitleBarHostState extends State<ComposeTitleBarHost>
   int _owner = 0;
   String? _lastState;
   bool _resumed = true, _scheduled = false;
+  Map<String, Object>? _nativeColors;
+  DeadlinerColorTheme? _palette;
+  double? _lastOffset;
 
   @override
   void initState() {
@@ -74,16 +79,25 @@ class _ComposeTitleBarHostState extends State<ComposeTitleBarHost>
     if (entry == null ||
         !entry.isActive ||
         data['owner'] != _owner ||
+        !_resumed ||
         !_interactive(entry)) {
       return;
     }
     if (call.method == 'back') {
       await entry.navigator?.maybePop();
+    } else if (call.method == 'title') {
+      final bar = entry.appBar;
+      if (bar is NativeTopBarConfiguration) bar.onTitleTap?.call();
     } else if (call.method == 'action') {
       final index = data['index'];
       final actions = entry.appBar?.actions ?? const <AdaptiveAppBarAction>[];
       if (index is int && index >= 0 && index < actions.length) {
-        actions[index].onPressed();
+        final action = actions[index];
+        if (action is NativeTopBarAction &&
+            (!action.enabled || action.loading)) {
+          return;
+        }
+        action.onPressed();
       }
     }
   }
@@ -137,7 +151,14 @@ class _ComposeTitleBarHostState extends State<ComposeTitleBarHost>
     final candidate = widget.registry.active;
     _watch(candidate?.androidNativeToolbar == true ? candidate : null);
     final entry = _entry;
-    final visible = entry != null && _resumed;
+    // Inactive means a system window took focus, not that the page disappeared.
+    // Android owns window visibility; keep the route chrome mounted.
+    final visible = entry != null;
+    final palette = DeadlinerColorTheme.of(Theme.of(context));
+    if (!identical(_palette, palette)) {
+      _palette = palette;
+      _nativeColors = palette.toNativeMap();
+    }
     final colors = Theme.of(context).colorScheme;
     final actions = entry?.appBar?.actions ?? const <AdaptiveAppBarAction>[];
     final state = <String, Object?>{
@@ -145,18 +166,24 @@ class _ComposeTitleBarHostState extends State<ComposeTitleBarHost>
       'owner': _owner,
       'title': entry?.appBar?.title ?? '',
       'subtitle': entry?.appBar?.subtitle ?? '',
+      'titleTappable':
+          entry?.appBar is NativeTopBarConfiguration &&
+          (entry!.appBar as NativeTopBarConfiguration).onTitleTap != null,
       'canBack':
           entry != null &&
           !entry.hasTabBar &&
           (entry.navigator?.canPop() ?? false),
       'interactive': entry != null && _interactive(entry),
       'backLabel': MaterialLocalizations.of(context).backButtonTooltip,
-      'scrollOffset': entry?.scrollOffset ?? 0,
       'dark': Theme.of(context).brightness == Brightness.dark,
       'primary': colors.primary.toARGB32(),
       'surface': colors.surface.toARGB32(),
       'onSurface': colors.onSurface.toARGB32(),
-      'fontScale': MediaQuery.textScalerOf(context).scale(16) / 16,
+      ..._nativeColors!,
+      'fontScale': entry?.appBar is NativeTopBarConfiguration
+          ? (entry!.appBar as NativeTopBarConfiguration).textScale ??
+                MediaQuery.textScalerOf(context).scale(16) / 16
+          : MediaQuery.textScalerOf(context).scale(16) / 16,
       'rtl': Directionality.of(context) == TextDirection.rtl,
       'actions': [
         for (var i = 0; i < actions.length; i++)
@@ -165,16 +192,31 @@ class _ComposeTitleBarHostState extends State<ComposeTitleBarHost>
             'label':
                 actions[i].effectiveLabel ?? actions[i].title ?? '操作 ${i + 1}',
             'title': actions[i].title,
+            'enabled':
+                actions[i] is! NativeTopBarAction ||
+                (actions[i] as NativeTopBarAction).enabled,
+            'loading':
+                actions[i] is NativeTopBarAction &&
+                (actions[i] as NativeTopBarAction).loading,
+            'prominent': actions[i].prominent,
             'codePoint': actions[i].icon?.codePoint,
             'mirror': actions[i].icon?.matchTextDirection ?? false,
           },
       ],
     };
     final signature = state.toString();
-    if (signature == _lastState) return;
+    final offset = entry?.scrollOffset ?? 0.0;
+    if (signature == _lastState && offset == _lastOffset) return;
+    final scrollOnly = signature == _lastState;
     _lastState = signature;
+    _lastOffset = offset;
     try {
-      await _channel.invokeMethod<void>('update', state);
+      await _channel.invokeMethod<void>(
+        scrollOnly ? 'scroll' : 'update',
+        scrollOnly
+            ? {'owner': _owner, 'scrollOffset': offset}
+            : {...state, 'scrollOffset': offset},
+      );
     } on PlatformException {
       _lastState = null;
     } on MissingPluginException {
@@ -202,6 +244,9 @@ class _ComposeTitleBarHostState extends State<ComposeTitleBarHost>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     _resumed = state == AppLifecycleState.resumed;
+    if (_resumed) {
+      _lastState = null; // Reconcile after a suspended/locked window.
+    }
     _scheduleSync();
   }
 

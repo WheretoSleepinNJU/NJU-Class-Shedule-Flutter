@@ -31,61 +31,67 @@ class _WidgetSettingsViewState extends State<WidgetSettingsView> {
       body: SafeArea(
         child: SettingsListView(
           children: [
-            // 即将上课提醒时间
-            SettingsTile(
-              title: const Text('即将上课提醒时间'),
-              subtitle: const Text('在课程开始前多久显示"即将上课"状态'),
-              trailing: FutureBuilder<int>(
-                future: _getApproachingMinutes(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return Container(width: 0);
-                  }
-                  return SettingsDropdown<int>(
-                    value: snapshot.data,
-                    items: _approachingMinutesOptions.map((minutes) {
-                      return SettingsOption<int>(
-                        value: minutes,
-                        child: Text('$minutes 分钟'),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      if (value != null) {
-                        _setApproachingMinutes(value);
-                      }
-                    },
-                  );
-                },
-              ),
-            ),
+            SettingsSurface(
+              child: Column(
+                children: [
+                  // 即将上课提醒时间
+                  SettingsTile(
+                    title: const Text('即将上课提醒时间'),
+                    subtitle: const Text('在课程开始前多久显示"即将上课"状态'),
+                    trailing: FutureBuilder<int>(
+                      future: _getApproachingMinutes(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return Container(width: 0);
+                        }
+                        return SettingsDropdown<int>(
+                          value: snapshot.data,
+                          items: _approachingMinutesOptions.map((minutes) {
+                            return SettingsOption<int>(
+                              value: minutes,
+                              child: Text('$minutes 分钟'),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            if (value != null) {
+                              _setApproachingMinutes(value);
+                            }
+                          },
+                        );
+                      },
+                    ),
+                  ),
 
-            const SettingsHorizontalDivider(),
+                  const SettingsHorizontalDivider(),
 
-            // 明日预览开始时间
-            SettingsTile(
-              title: const Text('明日预览开始时间'),
-              subtitle: const Text('晚上几点后显示明天的课程'),
-              trailing: FutureBuilder<int>(
-                future: _getTomorrowPreviewHour(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return Container(width: 0);
-                  }
-                  return SettingsDropdown<int>(
-                    value: snapshot.data,
-                    items: _tomorrowPreviewHourOptions.map((hour) {
-                      return SettingsOption<int>(
-                        value: hour,
-                        child: Text('$hour:00'),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      if (value != null) {
-                        _setTomorrowPreviewHour(value);
-                      }
-                    },
-                  );
-                },
+                  // 明日预览开始时间
+                  SettingsTile(
+                    title: const Text('明日预览开始时间'),
+                    subtitle: const Text('晚上几点后显示明天的课程'),
+                    trailing: FutureBuilder<int>(
+                      future: _getTomorrowPreviewHour(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return Container(width: 0);
+                        }
+                        return SettingsDropdown<int>(
+                          value: snapshot.data,
+                          items: _tomorrowPreviewHourOptions.map((hour) {
+                            return SettingsOption<int>(
+                              value: hour,
+                              child: Text('$hour:00'),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            if (value != null) {
+                              _setTomorrowPreviewHour(value);
+                            }
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

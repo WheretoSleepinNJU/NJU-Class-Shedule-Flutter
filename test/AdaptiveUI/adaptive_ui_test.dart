@@ -66,7 +66,11 @@ void main() {
     await tester.pumpAndSettle();
     scroll.jumpTo(160);
     await tester.pumpAndSettle();
-    final position = scroll.position;
+    // MediaQuery/viewport changes may legitimately replace ScrollPosition;
+    // the ScrollableState and the user's scroll offset must survive.
+    final scrollState = tester.state<ScrollableState>(
+      find.byType(Scrollable).first,
+    );
     final fieldState = tester.state(find.byType(TextField));
     expect(find.byType(AppBar), findsNothing);
     await tester.runAsync(() => preference.setUseOriginalComponents(true));
@@ -74,14 +78,26 @@ void main() {
     expect(find.byType(AppBar), findsOneWidget);
     expect(text.text, 'unsaved input');
     expect(identical(tester.state(find.byType(TextField)), fieldState), true);
-    expect(identical(scroll.position, position), true);
+    expect(
+      identical(
+        tester.state<ScrollableState>(find.byType(Scrollable).first),
+        scrollState,
+      ),
+      true,
+    );
     expect(scroll.offset, 160);
     expect(navigator.currentState!.canPop(), false);
     await tester.runAsync(() => preference.setUseOriginalComponents(false));
     await tester.pumpAndSettle();
     expect(find.byType(AppBar), findsNothing);
     expect(identical(tester.state(find.byType(TextField)), fieldState), true);
-    expect(identical(scroll.position, position), true);
+    expect(
+      identical(
+        tester.state<ScrollableState>(find.byType(Scrollable).first),
+        scrollState,
+      ),
+      true,
+    );
     expect(scroll.offset, 160);
     await tester.pumpWidget(const SizedBox());
     await tester.pumpAndSettle();
