@@ -128,7 +128,7 @@ jobs:
       - name: Prepare Android SDK and Gradle wrapper
         if: matrix.platform == 'android'
         run: |
-          sdkmanager 'platforms;android-37' 'build-tools;36.0.0' 'ndk;28.2.13676358'
+          sdkmanager 'platforms;android-37.0' 'build-tools;36.0.0' 'ndk;28.2.13676358'
           mkdir -p "$RUNNER_TEMP/gradle-wrapper"
           touch "$RUNNER_TEMP/gradle-wrapper/settings.gradle"
           gradle -p "$RUNNER_TEMP/gradle-wrapper" wrapper --gradle-version 9.5.0 --distribution-type bin
