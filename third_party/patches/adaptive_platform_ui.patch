@@ -104,7 +104,7 @@ index 062ada6..b6a800c 100644
              let format = UIGraphicsImageRendererFormat()
              format.scale = UIScreen.main.scale
 diff --git a/ios/adaptive_platform_ui/Sources/adaptive_platform_ui/iOS26ToolbarPlatformView.swift b/ios/adaptive_platform_ui/Sources/adaptive_platform_ui/iOS26ToolbarPlatformView.swift
-index 3123a39..d32a343 100644
+index 3123a39..bb63ae2 100644
 --- a/ios/adaptive_platform_ui/Sources/adaptive_platform_ui/iOS26ToolbarPlatformView.swift
 +++ b/ios/adaptive_platform_ui/Sources/adaptive_platform_ui/iOS26ToolbarPlatformView.swift
 @@ -32,9 +32,15 @@ class iOS26ToolbarFactory: NSObject, FlutterPlatformViewFactory {
@@ -306,7 +306,7 @@ index 3123a39..d32a343 100644
      /// Builds the menu of a bar button; dividers split it into inline groups
      private func makeMenu(_ entries: [[String: Any]], actionIndex: Int) -> UIMenu {
          var groups: [[UIMenuElement]] = []
-@@ -355,6 +495,39 @@ class iOS26ToolbarPlatformView: NSObject, FlutterPlatformView {
+@@ -355,6 +495,54 @@ class iOS26ToolbarPlatformView: NSObject, FlutterPlatformView {
  
      private func handleMethodCall(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
          switch call.method {
@@ -332,21 +332,36 @@ index 3123a39..d32a343 100644
 +            }
 +            result(nil)
 +        case "diagnostics":
-+            result(["renderer": NSStringFromClass(type(of: navigationBar)), "titleRenderer": "UIKit",
++            let tabsBounds: [Double]
++            if let control = categoryControl {
++                let frame = control.frame
++                tabsBounds = [Double(frame.minX), Double(frame.minY), Double(frame.width), Double(frame.height)]
++            } else {
++                tabsBounds = []
++            }
++            let actionViews: [String] = (navigationItem.rightBarButtonItems ?? []).map { item in
++                guard let customView = item.customView else { return "UIBarButtonItem" }
++                return NSStringFromClass(type(of: customView))
++            }
++            let titleWidth: Double = nativeTitle.map { Double($0.bounds.width) } ?? 0
++            let diagnostics: [String: Any] = [
++                "renderer": NSStringFromClass(type(of: navigationBar)),
++                "titleRenderer": "UIKit",
 +                "tabsRenderer": categoryControl == nil ? "none" : "UISegmentedControl",
 +                "tabsEnabled": categoryControl?.isEnabled ?? false,
 +                "tabsSelectedIndex": categoryControl?.selectedSegmentIndex ?? -1,
-+                "tabsBounds": categoryControl.map { [Double($0.frame.minX), Double($0.frame.minY), Double($0.frame.width), Double($0.frame.height)] } ?? [],
++                "tabsBounds": tabsBounds,
 +                "headerHeight": Double(containerView.bounds.height),
-+                "actionViews": (navigationItem.rightBarButtonItems ?? []).map { item in
-+                    item.customView.map { NSStringFromClass(type(of: $0)) } ?? "UIBarButtonItem"
-+                },
-+                "titleWidth": nativeTitle.map { Double($0.bounds.width) } ?? 0,
-+                "title": currentConfiguration["title"] ?? "", "configuration": currentConfiguration])
++                "actionViews": actionViews,
++                "titleWidth": titleWidth,
++                "title": currentConfiguration["title"] ?? "",
++                "configuration": currentConfiguration
++            ]
++            result(diagnostics)
          case "updateTitle":
              if let args = call.arguments as? [String: Any], let title = args["title"] as? String {
                  navigationItem.title = title
-@@ -422,3 +595,39 @@ class iOS26ToolbarPlatformView: NSObject, FlutterPlatformView {
+@@ -422,3 +610,39 @@ class iOS26ToolbarPlatformView: NSObject, FlutterPlatformView {
          return UIColor(red: r, green: g, blue: b, alpha: a)
      }
  }
