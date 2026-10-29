@@ -57,6 +57,9 @@ def main():
                 events = re.findall(r'(?:HOME|ANDROID)_(NAV_TAP|PAGE_READY|INTERRUPT_LOCK): ([^\r\n]+)', log.read_text())
                 for kind, value in events[seen:]:
                     if kind == 'NAV_TAP':
+                        wait_for(lambda: any('mCurrentFocus=' in line and 'wheretosleepinnju' in line
+                                             for line in device('shell', 'dumpsys', 'window').splitlines()),
+                                 'App is not focused; a system dialog may be blocking real input')
                         x, y = value.split()
                         device('shell', 'input', 'tap', x, y)
                     elif kind == 'INTERRUPT_LOCK':
