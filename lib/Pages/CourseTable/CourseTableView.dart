@@ -46,6 +46,7 @@ class CourseTableViewState extends State<CourseTableView>
   Future<bool>? _data;
   final Map<int, Future<List<Widget>>> _weekPages = {};
   MediaQueryData? _layoutMedia;
+  double? _layoutToolbarHeight;
   MainStateModel? _mainModel;
 
   void _invalidateData() {
@@ -68,7 +69,12 @@ class CourseTableViewState extends State<CourseTableView>
       _weekPages.clear();
     }
     final media = MediaQuery.of(context);
-    if (_layoutMedia != media) {
+    final toolbarHeight = AdaptiveTopAppBar.heightFor(
+      context,
+      preferred: TimetableHeader.toolbarHeight(media.textScaler),
+    );
+    if (_layoutMedia != media || _layoutToolbarHeight != toolbarHeight) {
+      _layoutToolbarHeight = toolbarHeight;
       _layoutMedia = media;
       _data = null;
       _weekPages.clear();
@@ -175,7 +181,9 @@ class CourseTableViewState extends State<CourseTableView>
     // Settings and course details retain the full system text scale.
     _tableTextScaler = mediaQuery.textScaler.clamp(maxScaleFactor: 1.4);
     final textScale = _tableTextScaler.scale(12) / 12;
-    _toolbarHeight = TimetableHeader.toolbarHeight(mediaQuery.textScaler);
+    _toolbarHeight =
+        _layoutToolbarHeight ??
+        TimetableHeader.toolbarHeight(mediaQuery.textScaler);
     _weekTitleHeight = 30 * textScale;
     _classTitleWidth = 40 * textScale;
     _weekTitleWidth = (_screenWidth - _classTitleWidth) / _maxShowDays;

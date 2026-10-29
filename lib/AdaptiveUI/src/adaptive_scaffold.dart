@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'adaptive_ui_controller.dart';
 import 'adaptive_content.dart';
 import 'adaptive_tabs.dart';
+import 'ohos/hds_chrome.dart';
 import 'adaptive_navigation.dart';
 import 'theme/deadliner_color_theme.dart';
 import 'android/compose_glass_surface.dart';
@@ -168,6 +169,11 @@ class AdaptiveTopAppBar {
 
   static void _ignoreAction() {}
 
+  /// Let a fixed native title band participate in custom page geometry.
+  static double heightFor(BuildContext context, {required double preferred}) =>
+      platform.NativeToolbarScope.maybeOf(context)?.preferredToolbarHeight ??
+      preferred;
+
   platform.AdaptiveAppBar _configuration({required bool native}) =>
       platform.AdaptiveAppBar(
         title: title is Text ? (title as Text).data : null,
@@ -316,27 +322,30 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
     final backend = platform.NativeToolbarScope.maybeOf(context);
     final configuration = barConfig?._nativeConfiguration(
       context,
-      preservesTitleLayout: nativeIOS,
+      preservesTitleLayout: nativeIOS || isHarmonyOS,
     );
-    final nativeAndroid =
+    final nativeBackend =
         !original &&
         backend != null &&
         configuration != null &&
         backend.supports(configuration) &&
-        (barConfig?.tabs == null || AdaptiveTabRow.heightOf(context) <= 42.5);
+        (isHarmonyOS ||
+            barConfig?.tabs == null ||
+            AdaptiveTabRow.heightOf(context) <= 42.5);
     final fallback =
         nativeIOS ||
-        (!nativeAndroid && barConfig?._simple == false) ||
+        (!nativeBackend && barConfig?._simple == false) ||
         widget.bottomNavigationBar != null ||
         (original && !platform.PlatformInfo.isIOS);
     final bar = nativeIOS
         ? configuration
-        : nativeAndroid
+        : nativeBackend
         ? configuration
         : barConfig?._configuration(native: !fallback);
     final glass =
+        platform.PlatformInfo.isAndroid &&
         fallback &&
-        !nativeAndroid &&
+        !nativeBackend &&
         !nativeIOS &&
         !original &&
         barConfig != null &&
@@ -382,9 +391,9 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
                 : 0,
           ),
           child: MediaQuery(
-            data: (underGlass || nativeIOS || nativeAndroid || immersiveScroll)
+            data: (underGlass || nativeIOS || nativeBackend || immersiveScroll)
                 ? media.removePadding(
-                    removeTop: underGlass || nativeIOS || nativeAndroid,
+                    removeTop: underGlass || nativeIOS || nativeBackend,
                     removeBottom: immersiveScroll,
                   )
                 : media,
@@ -425,16 +434,30 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
       floatingActionButton: widget.floatingActionButton,
       extendBodyBehindAppBar:
           widget.extendBodyBehindAppBar ||
-          (widget.scrollUnderAppBar && nativeAndroid),
+          (widget.scrollUnderAppBar && nativeBackend),
       extendBody: widget.extendBody,
       body: Stack(
         children: [
           Positioned.fill(child: content),
-          if ((nativeIOS || nativeAndroid) && barConfig?.tabs != null)
+          if (isHarmonyOS &&
+              nativeBackend &&
+              (widget.scrollUnderAppBar || widget.extendBodyBehindAppBar))
+            Builder(
+              builder: (context) => Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                height: platform.NativeToolbarBodyScope.topInsetOf(context),
+                child: const AbsorbPointer(child: SizedBox.expand()),
+              ),
+            ),
+          if ((nativeIOS || nativeBackend) && barConfig?.tabs != null)
             Positioned(
               top:
                   statusInset +
-                  (nativeIOS ? (barConfig.toolbarHeight ?? 44) : 52),
+                  (nativeIOS
+                      ? (barConfig.toolbarHeight ?? 44)
+                      : (backend?.preferredToolbarHeight ?? 52)),
               left: 0,
               right: 0,
               child: Center(
@@ -449,10 +472,10 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
             ),
         ],
       ),
-      fallbackUsesNativeToolbar: nativeAndroid,
+      fallbackUsesNativeToolbar: nativeBackend,
       fallbackBuilder: fallback
           ? (context, body) => Scaffold(
-              appBar: nativeAndroid || nativeIOS || barConfig == null
+              appBar: nativeBackend || nativeIOS || barConfig == null
                   ? null
                   : _AdaptiveFlutterTopBar(
                       foreground: barConfig._material(context, glass: glass),

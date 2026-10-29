@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'adaptive_ui_controller.dart';
 import 'adaptive_typography.dart';
 import 'android/compose_navigation.dart';
+import 'ohos/hds_chrome.dart';
 
 /// Controlled page categories. All platform and original-renderer choices live
 /// here; pages retain the same content tree and selection state.
@@ -43,7 +44,7 @@ class AdaptiveTabRow extends StatelessWidget {
       // Native chrome paints the control; retain Flutter accessibility and
       // geometry without creating a second platform view or backdrop.
       return ExcludeSemantics(
-        excluding: platform.PlatformInfo.isIOS,
+        excluding: platform.PlatformInfo.isIOS || isHarmonyOS,
         child: SizedBox(
           height: height,
           child: Row(
@@ -100,7 +101,8 @@ class AdaptiveTabRow extends StatelessWidget {
     }
     final original =
         AdaptiveUIScope.maybeOf(context)?.useOriginalComponents ?? true;
-    if (original ||
+    if (isHarmonyOS ||
+        original ||
         !AdaptiveUIScope.supportsNativeGlass(context) ||
         height > 42.5) {
       return material();

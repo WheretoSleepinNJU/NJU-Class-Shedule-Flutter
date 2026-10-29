@@ -1,3 +1,4 @@
+import { HdsChromeBridge } from '../adaptive/HdsChromeBridge';
 import { FlutterAbility, FlutterEngine, FlutterShellArgs, MethodCall, MethodChannel, MethodResult } from '@ohos/flutter_ohos';
 import { GeneratedPluginRegistrant } from '../plugins/GeneratedPluginRegistrant';
 import { BusinessError } from '@kit.BasicServicesKit';
@@ -23,7 +24,23 @@ export default class EntryAbility extends FlutterAbility {
     super.configureFlutterEngine(flutterEngine)
     GeneratedPluginRegistrant.registerWith(flutterEngine)
 
+    HdsChromeBridge.shared.attach(flutterEngine, this.context);
     this.setupWidgetChannel(flutterEngine)
+  }
+
+  cleanUpFlutterEngine(flutterEngine: FlutterEngine): void {
+    HdsChromeBridge.shared.detachEngine(flutterEngine);
+    super.cleanUpFlutterEngine(flutterEngine);
+  }
+
+  onForeground(): void {
+    super.onForeground();
+    HdsChromeBridge.shared.setResumed(true);
+  }
+
+  onBackground(): void {
+    HdsChromeBridge.shared.setResumed(false);
+    super.onBackground();
   }
 
   private setupWidgetChannel(flutterEngine: FlutterEngine) {

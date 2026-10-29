@@ -1,27 +1,62 @@
+import { FlutterPage } from '@ohos/flutter_ohos';
+import { window } from '@kit.ArkUI';
+import { deviceInfo } from '@kit.BasicServicesKit';
+import { HdsChromeHeader, HdsChromeNavigation } from '../adaptive/HdsChrome';
+import { HdsChromeBridge } from '../adaptive/HdsChromeBridge';
+import { HdsHeaderState, HdsNavigationState } from '../adaptive/HdsChromeState';
 
-import common from '@ohos.app.ability.common';
-import { FlutterPage } from '@ohos/flutter_ohos'
-import { window, KeyboardAvoidMode } from '@kit.ArkUI';
-
-let storage = LocalStorage.getShared()
-const EVENT_BACK_PRESS = 'EVENT_BACK_PRESS'
+const storage: LocalStorage = LocalStorage.getShared();
 
 @Entry(storage)
 @Component
 struct Index {
-  private context = getContext(this) as common.UIAbilityContext
-  @LocalStorageLink('viewId') viewId: string = "";
+  @LocalStorageLink('viewId') viewId: string = '';
+  @StorageLink('nju.hds.header') header: HdsHeaderState = new HdsHeaderState();
+  @StorageLink('nju.hds.navigation') navigation: HdsNavigationState = new HdsNavigationState();
+  @State statusBarHeight: number = 0;
+  private mainWindow: window.Window | null = null;
+  private appeared: boolean = false;
+  private avoidAreaChanged: (area: window.AvoidAreaOptions) => void = (_area: window.AvoidAreaOptions): void => { this.readStatusInset(); };
 
+  aboutToAppear(): void {
+    this.appeared = true;
+    HdsChromeBridge.shared.setReady(true);
+    const context = this.getUIContext().getHostContext();
+    if (!context) return;
+    window.getLastWindow(context).then((mainWindow: window.Window): void => {
+      if (!this.appeared) return;
+      this.mainWindow = mainWindow;
+      this.readStatusInset();
+      mainWindow.on('avoidAreaChange', this.avoidAreaChanged);
+    }).catch((): void => {});
+  }
+  aboutToDisappear(): void {
+    this.appeared = false;
+    HdsChromeBridge.shared.setReady(false);
+    try { this.mainWindow?.off('avoidAreaChange', this.avoidAreaChanged); } catch (error) {}
+    this.mainWindow = null;
+  }
+  private readStatusInset(): void {
+    if (!this.mainWindow) return;
+    try {
+    const area = this.mainWindow.getWindowAvoidArea(window.AvoidAreaType.TYPE_SYSTEM);
+    const cutout = this.mainWindow.getWindowAvoidArea(window.AvoidAreaType.TYPE_CUTOUT);
+    const navigation = this.mainWindow.getWindowAvoidArea(window.AvoidAreaType.TYPE_NAVIGATION_INDICATOR);
+    this.statusBarHeight = this.getUIContext().px2vp(Math.max(area.topRect.height, cutout.topRect.height));
+    HdsChromeBridge.shared.setWindowInsets(this.statusBarHeight, this.getUIContext().px2vp(navigation.bottomRect.height));
+    } catch (error) {}
+  }
   build() {
-    Column() {
-      FlutterPage({ viewId: this.viewId })
-    }
-    .width('100%')
-    .height('100%')
+    Stack({ alignContent: Alignment.Top }) {
+      FlutterPage({ viewId: this.viewId, xComponentRenderFit: RenderFit.TOP }).width('100%').height('100%')
+      if (deviceInfo.sdkApiVersion >= 20 && this.navigation.visible) {
+        HdsChromeNavigation()
+      }
+      if (deviceInfo.sdkApiVersion >= 20 && this.header.visible) {
+        HdsChromeHeader({ statusBarHeight: this.statusBarHeight })
+      }
+    }.width('100%').height('100%').onAreaChange((): void => { this.readStatusInset(); })
+      .expandSafeArea([SafeAreaType.SYSTEM], [SafeAreaEdge.TOP, SafeAreaEdge.BOTTOM])
   }
-
-  onBackPress(): boolean {
-    this.context.eventHub.emit(EVENT_BACK_PRESS)
-    return true
-  }
+  onBackPress(): boolean { HdsChromeBridge.shared.systemBack(); return true; }
 }

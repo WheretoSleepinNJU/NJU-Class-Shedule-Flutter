@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:adaptive_platform_ui/adaptive_platform_ui.dart' as platform;
 import 'adaptive_ui_controller.dart';
 import 'android/compose_navigation.dart';
+import 'ohos/hds_chrome.dart';
 import 'theme/deadliner_color_theme.dart';
 
 class AdaptiveNavigationItem {
@@ -166,7 +167,7 @@ class _AdaptiveNavigationShellState extends State<AdaptiveNavigationShell> {
         ? (platform.PlatformInfo.isIOS26OrHigher() ? _iosBarHeight : 50.0) +
               24.0
         : nativeGlass
-        ? 56.0
+        ? (isHarmonyOS ? HdsNavigation.heightOf(context) + 2 : 56.0)
         : 64.0;
     final onTop = ModalRoute.isCurrentOf(context) ?? true;
     return PopScope(
@@ -344,6 +345,35 @@ class _AdaptiveNavigationBar extends StatelessWidget {
       );
     }
     if (!nativeGlass) return material();
+    if (isHarmonyOS) {
+      return SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 2),
+          child: LayoutBuilder(
+            builder: (context, constraints) => Center(
+              child: SizedBox(
+                width: math.min(
+                  math.max(0, constraints.maxWidth - 32),
+                  math.min(380, items.length * 80),
+                ),
+                height: HdsNavigation.heightOf(context),
+                child: HdsNavigation(
+                  visible: !hidden,
+                  items: [
+                    for (final item in items)
+                      {'label': item.label, 'icon': item.androidIcon},
+                  ],
+                  selectedIndex: selectedIndex,
+                  onSelected: onSelected,
+                  fallback: material(),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
     return SafeArea(
       top: false,
       child: Padding(

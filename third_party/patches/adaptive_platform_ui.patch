@@ -715,10 +715,10 @@ index 7c8767d..a65a55a 100644
                  )
 diff --git a/lib/src/toolbar/native_toolbar_backend.dart b/lib/src/toolbar/native_toolbar_backend.dart
 new file mode 100644
-index 0000000..4c8ba15
+index 0000000..a350420
 --- /dev/null
 +++ b/lib/src/toolbar/native_toolbar_backend.dart
-@@ -0,0 +1,50 @@
+@@ -0,0 +1,54 @@
 +import 'package:flutter/foundation.dart';
 +import 'package:flutter/widgets.dart';
 +import '../widgets/adaptive_app_bar.dart';
@@ -731,9 +731,13 @@ index 0000000..4c8ba15
 +    required this.builder,
 +    required this.height,
 +    required this.supports,
++    this.preferredToolbarHeight,
 +  });
 +  final Widget Function(BuildContext context, ToolbarRegistry registry) builder;
 +  final ValueListenable<double> height;
++
++  /// Native title band height, excluding status bar and optional categories.
++  final double? preferredToolbarHeight;
 +  final bool Function(AdaptiveAppBar appBar) supports;
 +}
 +
@@ -793,7 +797,7 @@ index 3ea7170..4b9fb27 100644
    /// A null entry still counts, so the chrome empties out instead of keeping
    /// the previous page's items on a page that has none.
 diff --git a/lib/src/widgets/adaptive_app.dart b/lib/src/widgets/adaptive_app.dart
-index 2327f7a..559f178 100644
+index 2327f7a..9c40c06 100644
 --- a/lib/src/widgets/adaptive_app.dart
 +++ b/lib/src/widgets/adaptive_app.dart
 @@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
@@ -808,7 +812,7 @@ index 2327f7a..559f178 100644
  
  /// An adaptive app that uses MaterialApp for Android and CupertinoApp for iOS
  class AdaptiveApp extends StatelessWidget {
-+  /// Optional app-owned native Android toolbar; iOS keeps its own host.
++  /// Optional app-owned native toolbar backend; iOS keeps its own host.
 +  final NativeToolbarBackend? nativeToolbarBackend;
 +
    /// Creates an AdaptiveApp with navigation
@@ -1011,7 +1015,7 @@ index 39fac72..fc06610 100644
        if (prominent) 'prominent': true,
        if (tintColor != null) 'tint': tintColor!.toARGB32(),
 diff --git a/lib/src/widgets/adaptive_scaffold.dart b/lib/src/widgets/adaptive_scaffold.dart
-index ef19c06..a5a66df 100644
+index ef19c06..6a5f663 100644
 --- a/lib/src/widgets/adaptive_scaffold.dart
 +++ b/lib/src/widgets/adaptive_scaffold.dart
 @@ -11,6 +11,7 @@ import 'adaptive_button.dart';
@@ -1146,7 +1150,7 @@ index ef19c06..a5a66df 100644
      return _buildAppBarTitle(
        nativeTitleFallback: true,
        titleStyle: TextStyle(
-@@ -434,19 +510,33 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
+@@ -434,19 +510,50 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
    Widget build(BuildContext context) {
      final page = _buildPage(context);
      final bg = widget.backgroundColor;
@@ -1159,6 +1163,9 @@ index ef19c06..a5a66df 100644
 +    final dark = bg != null && bg.a >= .5
 +        ? ThemeData.estimateBrightnessForColor(bg) == Brightness.dark
 +        : Theme.of(context).brightness == Brightness.dark;
++    final requested = _usesNativeToolbar(context)
++        ? widget.appBar?.systemOverlayStyle
++        : null;
 +    // Stable wrapper across renderer changes preserves scroll/form subtree state.
      return AnnotatedRegion<SystemUiOverlayStyle>(
 -      value: dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
@@ -1172,6 +1179,20 @@ index ef19c06..a5a66df 100644
 +            systemNavigationBarIconBrightness: dark
 +                ? Brightness.light
 +                : Brightness.dark,
++          )
++          .copyWith(
++            statusBarColor: requested?.statusBarColor,
++            statusBarBrightness: requested?.statusBarBrightness,
++            statusBarIconBrightness: requested?.statusBarIconBrightness,
++            systemStatusBarContrastEnforced:
++                requested?.systemStatusBarContrastEnforced,
++            systemNavigationBarColor: requested?.systemNavigationBarColor,
++            systemNavigationBarDividerColor:
++                requested?.systemNavigationBarDividerColor,
++            systemNavigationBarIconBrightness:
++                requested?.systemNavigationBarIconBrightness,
++            systemNavigationBarContrastEnforced:
++                requested?.systemNavigationBarContrastEnforced,
 +          ),
        child: page,
      );
@@ -1187,7 +1208,7 @@ index ef19c06..a5a66df 100644
      final useNativeToolbar = widget.appBar?.useNativeToolbar ?? false;
      final useNativeBottomBar =
          widget.bottomNavigationBar?.useNativeBottomBar ?? true;
-@@ -895,8 +985,11 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
+@@ -895,8 +1002,11 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
  
        return Scaffold(
          key: widget.scaffoldKey,
@@ -1201,7 +1222,7 @@ index ef19c06..a5a66df 100644
          resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
          bottomNavigationBar: bottomNavBar,
          floatingActionButton: widget.floatingActionButton,
-@@ -962,8 +1055,11 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
+@@ -962,8 +1072,11 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
      // Always use Scaffold to ensure Material context
      return Scaffold(
        key: widget.scaffoldKey,
