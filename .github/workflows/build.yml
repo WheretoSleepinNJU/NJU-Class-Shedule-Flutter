@@ -71,7 +71,7 @@ jobs:
       - name: Flutter and import regression tests
         run: |
           flutter test
-          node --test test/api/thuyjsjw.test.cjs
+          node --test test/api/*.test.cjs
 
   build:
     needs: [plan, test]
