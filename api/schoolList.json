@@ -557,7 +557,7 @@
       "extractJSfileAndroid": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/nnubksjw.js",
       "extractJSfileiOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/nnubksjw.js",
       "extractJSfileOHOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/nnubksjw.js",
-      "banner_content": "导入方式：登录后进入我的课表查看页面。若页面无法打开，请关闭代理或将 nnu.edu.cn 设置为直连。",
+      "banner_content": "导入方式：登录后进入我的课表查看页面。\n若页面无法打开，请关闭代理或将 nnu.edu.cn 设置为直连。",
       "banner_action": "使用南京师范大学vpn",
       "banner_url": "",
       "class_time_list": [
