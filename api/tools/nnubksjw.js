@@ -220,19 +220,13 @@
       if (seen.has(key)) continue;
       seen.add(key);
 
-      // 不同时段生成独立的课程编号
-      const classNumber = [
-        name,
-        teacher,
-        time.day,
-        time.start
-      ].join("-");
-
       // 9. 构造南哪课表课程数据
       courses.push({
         name,
         classroom,
-        class_number: classNumber,
+        // 页面没有教学班编号，不用上课时段伪造编号。
+        // App 优先按教学班编号分组；留空后才会使用共享 course_id。
+        class_number: "",
         teacher,
 
         test_time: "",
