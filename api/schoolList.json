@@ -81,6 +81,86 @@
       "isGrey3.1.0": false
     },
     {
+      "title": "北京航空航天大学本科生教务系统",
+      "pinyin": "beijinghangkonghangtiandaxuebenkejiaowu",
+      "description": "北航本科生课表导入",
+      "page_title": "北航教务登录",
+      "initialUrl": "https://byxt-443.e1.buaa.edu.cn/",
+      "redirectUrl": "",
+      "targetUrl": "https://byxt-443.e1.buaa.edu.cn/jwapp/sys/homeapp/home/index.html",
+      "preExtractJS": "window.__NJU_SCHEDULE_IMPORT_CONFIG__={\"semester_start_monday\":\"2026-09-07\"};",
+      "delayTime": 3,
+      "extractJS": "",
+      "extractJSfileAndroid": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/buaabksjw.js",
+      "extractJSfileiOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/buaabksjw.js",
+      "extractJSfileOHOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/buaabksjw.js",
+      "banner_content": "导入方式：使用北航统一认证登录后，自动导入当前学期已排课课程（含实验课）。\n未排课课程请在教务系统查询后手动添加。访问异常可先打开学校官方VPN。",
+      "banner_action": "北航官方VPN入口",
+      "banner_url": "https://e.buaa.edu.cn/",
+      "class_time_list": [
+        {
+          "start": "08:00",
+          "end": "08:45"
+        },
+        {
+          "start": "08:50",
+          "end": "09:35"
+        },
+        {
+          "start": "09:50",
+          "end": "10:35"
+        },
+        {
+          "start": "10:40",
+          "end": "11:25"
+        },
+        {
+          "start": "11:30",
+          "end": "12:15"
+        },
+        {
+          "start": "14:00",
+          "end": "14:45"
+        },
+        {
+          "start": "14:50",
+          "end": "15:35"
+        },
+        {
+          "start": "15:50",
+          "end": "16:35"
+        },
+        {
+          "start": "16:40",
+          "end": "17:25"
+        },
+        {
+          "start": "17:30",
+          "end": "18:15"
+        },
+        {
+          "start": "19:00",
+          "end": "19:45"
+        },
+        {
+          "start": "19:50",
+          "end": "20:35"
+        },
+        {
+          "start": "20:40",
+          "end": "21:25"
+        },
+        {
+          "start": "21:30",
+          "end": "22:15"
+        }
+      ],
+      "semester_start_monday": "2026-09-07",
+      "week_count": 19,
+      "isGrey": true,
+      "isGrey3.1.0": false
+    },
+    {
       "title": "东南大学本研课表",
       "pinyin": "dongnandaxue",
       "description": "南哪课表嘛，东南也算南哪（大误",
