@@ -21,7 +21,8 @@ class InitUtil {
     String themeCustom = await getThemeCustom();
     await checkDataBase();
     await CourseProvider().repairMissingCourseIds();
-    await WeekUtil.checkWeek();
+    // Browsing another week lasts for this session, not the next cold start.
+    await WeekUtil.checkWeek(resetDisplayedWeek: true);
     await ColorPool.checkColorPool();
 
     // 初始化 Widget 数据

@@ -2,7 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
 class WeekUtil {
-  static Future<void> checkWeek() async {
+  static Future<void> checkWeek({bool resetDisplayedWeek = false}) async {
     final sp = await SharedPreferences.getInstance();
     final currentMonday = _getMonday();
     final previousMonday = DateTime.tryParse(
@@ -17,8 +17,10 @@ class WeekUtil {
         DateTime.parse(currentMonday).difference(previousMonday).inDays ~/ 7;
     if (bias != 0) {
       await _setWeek(currentMonday, bias);
-    } else if (sp.getInt('tmpWeekIndex') == null) {
-      await sp.setInt('tmpWeekIndex', previousWeek < 1 ? 1 : previousWeek);
+    }
+    if (resetDisplayedWeek || sp.getInt('tmpWeekIndex') == null) {
+      final currentWeek = sp.getInt('weekIndex') ?? 1;
+      await sp.setInt('tmpWeekIndex', currentWeek < 1 ? 1 : currentWeek);
     }
   }
 
