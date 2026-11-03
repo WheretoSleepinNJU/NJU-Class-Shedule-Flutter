@@ -26,6 +26,15 @@ func decode(_ values: [String: Any]) -> WidgetScheduleData {
 func date(_ text: String) -> Date { parseWidgetISODate(text)! }
 var calendar = Calendar(identifier: .gregorian)
 calendar.timeZone = TimeZone(identifier: "Asia/Shanghai")!
+let clockDate = date("2026-11-04T13:30:00+08:00")
+for clock in ["00:00", "08:00", "12:00", "14:00", "23:59"] {
+    check(parseWidgetTime(clock, on: clockDate, calendar: calendar) == date("2026-11-04T\(clock):00+08:00"),
+          "fixed timetable clock \(clock) retains its hour and target day")
+}
+for invalid in ["24:00", "14:60", "14:", "14:00:00", "下午2:00"] {
+    check(parseWidgetTime(invalid, on: clockDate, calendar: calendar) == nil,
+          "invalid timetable clock \(invalid) is rejected")
+}
 var values = fixture
 let monday = course("ThisWeek", day: 1, weeks: [1])
 let nextWeek = course("NextWeek", day: 1, weeks: [2])

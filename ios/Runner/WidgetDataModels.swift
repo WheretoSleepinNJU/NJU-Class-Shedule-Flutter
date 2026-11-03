@@ -184,15 +184,24 @@ struct AnyCodable: Codable {
 }
 
 // MARK: - Calendar projection shared by snapshots and future timeline entries
+/// Timetable values are fixed 24-hour clock components, not localized text.
+/// DateFormatter("HH:mm") can still obey iOS's forced 12-hour preference and
+/// reject every course time. Construct the date directly instead.
+func parseWidgetTime(_ value: String, on date: Date, calendar: Calendar = .current) -> Date? {
+    let parts = value.split(separator: ":", omittingEmptySubsequences: false)
+    guard parts.count == 2,
+          let hour = Int(parts[0]), let minute = Int(parts[1]),
+          (0...23).contains(hour), (0...59).contains(minute) else { return nil }
+    return calendar.date(bySettingHour: hour, minute: minute, second: 0, of: date)
+}
+
 extension WidgetScheduleData {
     /// Keep every course boundary: dropping nearby transitions can freeze an
     /// ended class until the next distant entry or the following day.
     func transitionDates(after now: Date, calendar: Calendar = .current) -> [Date] {
         var dates = Set<Date>()
         func time(_ value: String) -> Date? {
-            let parts = value.split(separator: ":").compactMap { Int($0) }
-            guard parts.count == 2, (0...23).contains(parts[0]), (0...59).contains(parts[1]) else { return nil }
-            return calendar.date(bySettingHour: parts[0], minute: parts[1], second: 0, of: now)
+            parseWidgetTime(value, on: now, calendar: calendar)
         }
         for course in todayCourses {
             guard let period = timeTemplate.getPeriodRange(startPeriod: course.startPeriod, periodCount: course.periodCount) else { continue }

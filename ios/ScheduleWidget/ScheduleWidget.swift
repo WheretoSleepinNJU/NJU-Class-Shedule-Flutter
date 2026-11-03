@@ -91,19 +91,7 @@ struct ScheduleEntry: TimelineEntry {
 
 // MARK: - Shared Time & State Helpers
 private func parseTimeOnDate(_ timeString: String, date: Date) -> Date? {
-    let formatter = DateFormatter()
-    formatter.dateFormat = "HH:mm"
-    formatter.timeZone = TimeZone.current
-
-    guard let time = formatter.date(from: timeString) else { return nil }
-
-    let calendar = Calendar.current
-    let components = calendar.dateComponents([.hour, .minute], from: time)
-
-    return calendar.date(bySettingHour: components.hour ?? 0,
-                         minute: components.minute ?? 0,
-                         second: 0,
-                         of: date)
+    parseWidgetTime(timeString, on: date)
 }
 
 private func getMinutesUntilCourse(_ course: WidgetCourse, template: SchoolTimeTemplate, from referenceDate: Date) -> Int? {
@@ -469,20 +457,7 @@ struct Provider: TimelineProvider {
     }
 
     private func parseTime(_ timeString: String) -> Date? {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
-        formatter.timeZone = TimeZone.current
-
-        guard let time = formatter.date(from: timeString) else { return nil }
-
-        let calendar = Calendar.current
-        let now = Date()
-        let components = calendar.dateComponents([.hour, .minute], from: time)
-
-        return calendar.date(bySettingHour: components.hour ?? 0,
-                            minute: components.minute ?? 0,
-                            second: 0,
-                            of: now)
+        parseWidgetTime(timeString, on: Date())
     }
 
     // MARK: - Relevance Calculation
