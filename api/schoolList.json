@@ -556,7 +556,7 @@
       "initialUrl": "https://sep.ucas.ac.cn/d_index/Z2tkenhfbG9jYWw=/",
       "redirectUrl": "http://mooc.ucas.edu.cn/portal",
       "targetUrl": "https://kb.mooc.ucas.edu.cn/res/pc/curriculum/schedule.html",
-      "preExtractJS": "",
+      "preExtractJS": "(function(){try{var N=20;var cache={};window.__ucasLessonsCache=cache;for(var w=1;w<=N;w++){(function(week){var xhr=new XMLHttpRequest();xhr.open(\"GET\",\"/pc/curriculum/getMyLessons?curTime=\"+new Date().getTime()+\"&week=\"+week,true);try{xhr.setRequestHeader(\"X-Requested-With\",\"XMLHttpRequest\");}catch(e){}xhr.onreadystatechange=function(){if(xhr.readyState===4){try{if(xhr.status===200&&xhr.responseText){var j=JSON.parse(xhr.responseText);if(j&&j.result===1)cache[week]=j;}}catch(e){}}};xhr.send(null);})(w);}}catch(e){}})();",
       "delayTime": 3,
       "extractJS": "",
       "extractJSfileAndroid": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/ucasyjsxk.js",

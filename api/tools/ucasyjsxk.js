@@ -25,6 +25,22 @@ function scheduleHtmlParser() {
     return JSON.parse(xhr.responseText);
   }
 
+  // 取某周课表：优先用 preExtractJS 并行预取好的缓存（window.__ucasLessonsCache），
+  // 缓存缺失（如单独运行本脚本）再退回同步请求。
+  function fetchWeek(w) {
+    const cache =
+      (typeof window !== "undefined" && window.__ucasLessonsCache) || null;
+    if (cache && cache[w] && cache[w].result === 1) {
+      return cache[w];
+    }
+    const url =
+      "/pc/curriculum/getMyLessons?curTime=" +
+      new Date().getTime() +
+      "&week=" +
+      w;
+    return getJSON(url);
+  }
+
   // 周次文本 "2,3,4,5,7-11" / "2、3、4" / "1-16单" / "2-18双" → 周次数组（1 起始）
   function parseWeeks(text) {
     const weeks = [];
@@ -84,10 +100,8 @@ function scheduleHtmlParser() {
   }
 
   function run() {
-    // 先取一次拿到学期配置（maxWeek / 学期名）
-    const firstUrl =
-      "/pc/curriculum/getMyLessons?curTime=" + new Date().getTime() + "&week=1";
-    const first = getJSON(firstUrl);
+    // 先取一次拿到学期配置（maxWeek / 学期名）；优先走并行预取缓存
+    const first = fetchWeek(1);
     if (!first || first.result !== 1 || !first.data) {
       // 未登录或会话失效：直接抛错，App 会上报错误页
       throw new Error("getMyLessons 未返回有效数据（可能未登录）：" +
@@ -103,12 +117,8 @@ function scheduleHtmlParser() {
     const merged = [];
     for (let w = 1; w <= maxWeek; w++) {
       try {
-        const url =
-          "/pc/curriculum/getMyLessons?curTime=" +
-          new Date().getTime() +
-          "&week=" +
-          w;
-        const rsp = getJSON(url);
+        // fetchWeek 优先读 preExtractJS 的并行预取缓存，缺失再同步请求
+        const rsp = fetchWeek(w);
         if (!rsp || rsp.result !== 1 || !rsp.data) continue;
         const arr = rsp.data.lessonArray || [];
         for (let i = 0; i < arr.length; i++) {
