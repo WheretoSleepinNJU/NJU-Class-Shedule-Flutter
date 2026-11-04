@@ -97,11 +97,22 @@ class CourseWidget extends StatelessWidget {
                   ),
                 ),
               );
-              if (courseCount == 1) return content;
+              final fittedContent =
+                  constraints.maxHeight < lineHeight + contentPadding.vertical
+                      ? FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.topLeft,
+                        child: SizedBox(
+                          width: constraints.maxWidth,
+                          child: content,
+                        ),
+                      )
+                      : content;
+              if (courseCount == 1) return fittedContent;
               return Stack(
                 fit: StackFit.expand,
                 children: [
-                  content,
+                  fittedContent,
                   Positioned(
                     top: 0,
                     right: 0,

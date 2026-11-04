@@ -64,7 +64,6 @@ class CourseTableViewState extends State<CourseTableView>
   late int _nowWeekNum;
   late int _nowShowWeekNum;
   late double _screenWidth;
-  late double _screenHeight;
   late double _classTitleWidth;
   late double _classTitleHeight;
   late double _weekTitleHeight;
@@ -136,7 +135,6 @@ class CourseTableViewState extends State<CourseTableView>
     // The timetable is inside SafeArea; landscape iPhones reserve horizontal
     // space for the sensor housing on both sides of the content.
     _screenWidth = mediaQuery.size.width - mediaQuery.padding.horizontal;
-    _screenHeight = mediaQuery.size.height;
     // Seven day columns share a fixed width. Keep this compact overview
     // readable without letting period labels squeeze out the courses.
     // Settings and course details retain the full system text scale.
@@ -149,23 +147,15 @@ class CourseTableViewState extends State<CourseTableView>
     _weekTitleWidth = (_screenWidth - _classTitleWidth) / _maxShowDays;
     int height = await ScopedModel.of<MainStateModel>(context).getClassHeight();
 
-    if (_isForceZoom) {
-      // 强制缩放时，课程表填满整个屏幕，FreeClass 浮动覆盖在上方
-      _classTitleHeight =
-          (_screenHeight -
-              _toolbarHeight -
-              mediaQuery.padding.top -
-              (_isShowDate ? _weekTitleHeight * 1.2 : _weekTitleHeight)) /
-          _maxShowClasses;
-    } else if (height.toDouble() != 0) {
+    if (height.toDouble() != 0) {
       _classTitleHeight = height.toDouble();
     } else {
       _classTitleHeight = 52;
     }
-    // Keep period labels readable at accessibility font sizes. The timetable
-    // already scrolls vertically, so fitting every row must not clip labels.
+    // Scrolling mode keeps labels readable at larger font sizes. Force zoom
+    // must retain the fitted row height; ClassTitle scales its labels to fit.
     final minimumRowHeight = (_isShowClassTime ? 52.0 : 24.0) * textScale;
-    if (_classTitleHeight < minimumRowHeight) {
+    if (!_isForceZoom && _classTitleHeight < minimumRowHeight) {
       _classTitleHeight = minimumRowHeight;
     }
 
@@ -175,12 +165,13 @@ class CourseTableViewState extends State<CourseTableView>
   Future<List<Widget>> _buildClassesWidgetListByWeek(
     BuildContext context,
     int weekNum,
+    double rowHeight,
   ) async {
     final CourseTablePresenter presenter = CourseTablePresenter();
     await presenter.refreshClasses(_tableIndex, weekNum);
     return (await presenter.getClassesWidgetList(
           context,
-          _classTitleHeight,
+          rowHeight,
           _weekTitleWidth,
           weekNum,
           _isShowNonCurrentWeekCourses,
@@ -512,75 +503,96 @@ class CourseTableViewState extends State<CourseTableView>
                                               int pageIndex,
                                             ) {
                                               final int weekNum = pageIndex + 1;
-                                              return FutureBuilder<
-                                                List<Widget>
-                                              >(
-                                                future:
-                                                    _buildClassesWidgetListByWeek(
-                                                      context,
-                                                      weekNum,
-                                                    ),
+                                              return LayoutBuilder(
                                                 builder: (
-                                                  BuildContext context,
-                                                  AsyncSnapshot<List<Widget>>
-                                                  classesSnapshot,
+                                                  context,
+                                                  constraints,
                                                 ) {
-                                                  if (!classesSnapshot
-                                                      .hasData) {
-                                                    return const SizedBox.expand();
-                                                  }
-                                                  List<Widget>
-                                                  divider = List.generate(
-                                                    _maxShowClasses,
-                                                    (int i) => Container(
-                                                      margin: EdgeInsets.only(
-                                                        top:
-                                                            (i + 1) *
-                                                            _classTitleHeight,
-                                                      ),
-                                                      width:
-                                                          _weekTitleWidth *
-                                                          _maxShowDays,
-                                                      child: const Separator(
-                                                        color: Colors.grey,
-                                                      ),
-                                                    ),
-                                                  );
-                                                  return SingleChildScrollView(
-                                                    controller:
-                                                        _scrollController,
-                                                    child: Row(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        ClassTitle(
-                                                          _maxShowClasses,
-                                                          _classTitleHeight,
-                                                          _classTitleWidth,
-                                                          _isShowClassTime,
-                                                          _isWhiteMode,
-                                                          classTimeList:
-                                                              _classTimeList,
+                                                  // Use the space remaining after the actual
+                                                  // headers and SafeArea have been laid out.
+                                                  final rowHeight =
+                                                      _isForceZoom
+                                                          ? constraints
+                                                                  .maxHeight /
+                                                              _maxShowClasses
+                                                          : _classTitleHeight;
+                                                  return FutureBuilder<
+                                                    List<Widget>
+                                                  >(
+                                                    future:
+                                                        _buildClassesWidgetListByWeek(
+                                                          context,
+                                                          weekNum,
+                                                          rowHeight,
                                                         ),
-                                                        SizedBox(
-                                                          height:
-                                                              _classTitleHeight *
-                                                              _maxShowClasses,
+                                                    builder: (
+                                                      BuildContext context,
+                                                      AsyncSnapshot<
+                                                        List<Widget>
+                                                      >
+                                                      classesSnapshot,
+                                                    ) {
+                                                      if (!classesSnapshot
+                                                          .hasData) {
+                                                        return const SizedBox.expand();
+                                                      }
+                                                      List<Widget>
+                                                      divider = List.generate(
+                                                        _maxShowClasses,
+                                                        (int i) => Container(
+                                                          margin:
+                                                              EdgeInsets.only(
+                                                                top:
+                                                                    (i + 1) *
+                                                                    rowHeight,
+                                                              ),
                                                           width:
-                                                              _screenWidth -
-                                                              _classTitleWidth,
-                                                          child: Stack(
-                                                            clipBehavior:
-                                                                Clip.none,
-                                                            children:
-                                                                divider +
-                                                                classesSnapshot
-                                                                    .data!,
-                                                          ),
+                                                              _weekTitleWidth *
+                                                              _maxShowDays,
+                                                          child:
+                                                              const Separator(
+                                                                color:
+                                                                    Colors.grey,
+                                                              ),
                                                         ),
-                                                      ],
-                                                    ),
+                                                      );
+                                                      return SingleChildScrollView(
+                                                        controller:
+                                                            _scrollController,
+                                                        child: Row(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            ClassTitle(
+                                                              _maxShowClasses,
+                                                              rowHeight,
+                                                              _classTitleWidth,
+                                                              _isShowClassTime,
+                                                              _isWhiteMode,
+                                                              classTimeList:
+                                                                  _classTimeList,
+                                                            ),
+                                                            SizedBox(
+                                                              height:
+                                                                  rowHeight *
+                                                                  _maxShowClasses,
+                                                              width:
+                                                                  _screenWidth -
+                                                                  _classTitleWidth,
+                                                              child: Stack(
+                                                                clipBehavior:
+                                                                    Clip.none,
+                                                                children:
+                                                                    divider +
+                                                                    classesSnapshot
+                                                                        .data!,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      );
+                                                    },
                                                   );
                                                 },
                                               );
