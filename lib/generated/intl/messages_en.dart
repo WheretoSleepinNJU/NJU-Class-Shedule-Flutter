@@ -196,6 +196,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "class_single": m3,
     "class_table_manage_title": MessageLookupByLibrary.simpleMessage("课表管理"),
     "class_teacher": MessageLookupByLibrary.simpleMessage("上课老师"),
+    "class_times_hint": MessageLookupByLibrary.simpleMessage(
+      "Enter one period per line in HH:mm-HH:mm format.",
+    ),
+    "class_times_invalid": MessageLookupByLibrary.simpleMessage(
+      "Keep the same number of periods. Use valid times in order, without overlaps.",
+    ),
     "clear_selection": MessageLookupByLibrary.simpleMessage("清空"),
     "course_meetings": MessageLookupByLibrary.simpleMessage("上课时段"),
     "course_weeks": MessageLookupByLibrary.simpleMessage("上课周次"),
@@ -229,6 +235,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "easter_egg_title": MessageLookupByLibrary.simpleMessage("彩蛋与致谢"),
     "edit": MessageLookupByLibrary.simpleMessage("编辑"),
+    "edit_class_times": MessageLookupByLibrary.simpleMessage(
+      "Edit class times",
+    ),
     "edit_course": MessageLookupByLibrary.simpleMessage("编辑课程"),
     "end_class": MessageLookupByLibrary.simpleMessage("结束节次"),
     "export_classtable_subtitle": MessageLookupByLibrary.simpleMessage(

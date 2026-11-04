@@ -2145,6 +2145,36 @@ class S {
     );
   }
 
+  /// `Enter one period per line in HH:mm-HH:mm format.`
+  String get class_times_hint {
+    return Intl.message(
+      'Enter one period per line in HH:mm-HH:mm format.',
+      name: 'class_times_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Keep the same number of periods. Use valid times in order, without overlaps.`
+  String get class_times_invalid {
+    return Intl.message(
+      'Keep the same number of periods. Use valid times in order, without overlaps.',
+      name: 'class_times_invalid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit class times`
+  String get edit_class_times {
+    return Intl.message(
+      'Edit class times',
+      name: 'edit_class_times',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Rename timetable`
   String get rename_table {
     return Intl.message(

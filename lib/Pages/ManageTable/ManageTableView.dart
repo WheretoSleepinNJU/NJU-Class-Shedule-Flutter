@@ -6,6 +6,7 @@ import '../../Models/CourseTableModel.dart';
 import '../../Utils/States/MainState.dart';
 import '../../Components/Toast.dart';
 import 'Widgets/AddDialog.dart';
+import 'Widgets/ClassTimesDialog.dart';
 import 'Widgets/DelDialog.dart';
 import 'Widgets/TableNameDialog.dart';
 
@@ -119,15 +120,41 @@ class _ManageTableViewState extends State<ManageTableView> {
       }
       if (!mounted) return;
       setState(() {});
-      // Notify the timetable page and refresh the selected widget's metadata.
-      if (id == _selectedIndex) {
-        await ScopedModel.of<MainStateModel>(context).changeclassTable(id);
-      }
+      await _refreshSelectedTable(id);
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(S.of(context).table_rename_failed)),
         );
+      }
+    }
+  }
+
+  Future<void> _refreshSelectedTable(int id) async {
+    if (id == _selectedIndex) {
+      await ScopedModel.of<MainStateModel>(context).changeclassTable(id);
+    }
+  }
+
+  Future<void> _editClassTimes(int id) async {
+    try {
+      final times = await courseTableProvider.getClassTimeList(id);
+      if (!mounted) return;
+      final edited = await showDialog<List<Map<String, String>>>(
+        context: context,
+        builder: (_) => ClassTimesDialog(times: times),
+      );
+      if (edited == null || !mounted) return;
+      if (!await courseTableProvider.updateClassTimeList(id, edited)) {
+        throw StateError('Missing timetable');
+      }
+      if (!mounted) return;
+      await _refreshSelectedTable(id);
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(S.of(context).save_failed)));
       }
     }
   }
@@ -161,6 +188,12 @@ class _ManageTableViewState extends State<ManageTableView> {
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
+              IconButton(
+                key: ValueKey('edit-class-times-${courseTables[i]['id']}'),
+                tooltip: S.of(context).edit_class_times,
+                icon: const Icon(Icons.schedule),
+                onPressed: () => _editClassTimes(courseTables[i]['id']),
+              ),
               IconButton(
                 key: ValueKey('rename-table-${courseTables[i]['id']}'),
                 tooltip: S.of(context).rename_table,

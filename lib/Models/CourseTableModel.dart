@@ -126,6 +126,32 @@ class CourseTableProvider {
     }
   }
 
+  /// Update only the period times in the timetable's JSON metadata.
+  Future<bool> updateClassTimeList(int id, List<Map> times) async {
+    await open();
+    return db!.transaction((txn) async {
+      final rows = await txn.query(
+        tableName,
+        columns: [columnData],
+        where: '$columnId = ?',
+        whereArgs: [id],
+      );
+      if (rows.isEmpty) return false;
+      final rawData = rows.single[columnData] as String?;
+      final data = rawData == null || rawData.isEmpty
+          ? <String, dynamic>{}
+          : jsonDecode(rawData) as Map<String, dynamic>;
+      data['class_time_list'] = times;
+      return await txn.update(
+            tableName,
+            {columnData: jsonEncode(data)},
+            where: '$columnId = ?',
+            whereArgs: [id],
+          ) ==
+          1;
+    });
+  }
+
   Future<int> delete(int id) async {
     await open();
     CourseProvider courseProvider = CourseProvider();

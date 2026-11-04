@@ -176,6 +176,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "class_single": m3,
     "class_table_manage_title": MessageLookupByLibrary.simpleMessage("课表管理"),
     "class_teacher": MessageLookupByLibrary.simpleMessage("上课老师"),
+    "class_times_hint": MessageLookupByLibrary.simpleMessage(
+      "每行填写一节，格式为 HH:mm-HH:mm。",
+    ),
+    "class_times_invalid": MessageLookupByLibrary.simpleMessage(
+      "请保留原有节数，按顺序填写有效时间，各节不能重叠。",
+    ),
     "clear_selection": MessageLookupByLibrary.simpleMessage("清空"),
     "course_meetings": MessageLookupByLibrary.simpleMessage("上课时段"),
     "course_weeks": MessageLookupByLibrary.simpleMessage("上课周次"),
@@ -209,6 +215,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "easter_egg_title": MessageLookupByLibrary.simpleMessage("彩蛋与致谢"),
     "edit": MessageLookupByLibrary.simpleMessage("编辑"),
+    "edit_class_times": MessageLookupByLibrary.simpleMessage(
+      "修改上课时间",
+    ),
     "edit_course": MessageLookupByLibrary.simpleMessage("编辑课程"),
     "end_class": MessageLookupByLibrary.simpleMessage("结束节次"),
     "export_classtable_subtitle": MessageLookupByLibrary.simpleMessage(
