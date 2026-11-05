@@ -693,6 +693,80 @@
       "semester_start_monday": "2026-08-31",
       "isGrey": true,
       "isGrey3.1.0": false
+    },
+    {
+      "title": "复旦大学研究生选课系统",
+      "pinyin": "fudandaxueyanjiushengxuanke",
+      "description": "隔壁西南某高校有了，我们东北某高校也必须安排上！",
+      "page_title": "复旦大学研究生课表",
+      "initialUrl": "http://yjsxk.fudan.edu.cn/yjsxkapp/sys/xsxkappfudan/*default/index.do",
+      "redirectUrl": "",
+      "targetUrl": "http://yjsxk.fudan.edu.cn/yjsxkapp/sys/xsxkappfudan/xsxkHome/gotoChooseCourse.do",
+      "preExtractJS": "",
+      "delayTime": 0,
+      "extractJS": "",
+      "extractJSfileAndroid": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/fduyjsxk.js",
+      "extractJSfileiOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/fduyjsxk.js",
+      "extractJSfileOHOS": "https://cdn.idealclover.cn/Projects/wheretosleepinnju/production/tools/fduyjsxk.js",
+      "banner_content": "选择对应学期的选课轮次并登录，进入选课页面后自动读取已选课程。",
+      "banner_action": "",
+      "banner_url": "",
+      "class_time_list": [
+        {
+          "start": "08:00",
+          "end": "08:45"
+        },
+        {
+          "start": "08:55",
+          "end": "09:40"
+        },
+        {
+          "start": "09:55",
+          "end": "10:40"
+        },
+        {
+          "start": "10:50",
+          "end": "11:35"
+        },
+        {
+          "start": "11:45",
+          "end": "12:30"
+        },
+        {
+          "start": "13:30",
+          "end": "14:15"
+        },
+        {
+          "start": "14:25",
+          "end": "15:10"
+        },
+        {
+          "start": "15:25",
+          "end": "16:10"
+        },
+        {
+          "start": "16:20",
+          "end": "17:05"
+        },
+        {
+          "start": "17:15",
+          "end": "18:00"
+        },
+        {
+          "start": "18:30",
+          "end": "19:15"
+        },
+        {
+          "start": "19:25",
+          "end": "20:10"
+        },
+        {
+          "start": "20:20",
+          "end": "21:05"
+        }
+      ],
+      "isGrey": true,
+      "isGrey3.1.0": false
     }
   ]
 }
